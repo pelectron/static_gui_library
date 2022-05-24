@@ -1,0 +1,5 @@
+project('static gui','cpp',default_options:['cpp_std=c++17'])
+add_project_arguments('-ferror-limit=1',language:'cpp')
+executable('menu_ex','menu_example.cpp')
+executable('menu_test','menu_tester.cpp')
+static_gui_dep = declare_dependency(include_directories:include_directories('.'))
