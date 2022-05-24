@@ -34,7 +34,7 @@ namespace sgl {
     using Formatter_t =
         Callable<sgl::error(StaticString<CharT, LineWidth>&, T)>;
     template <typename Formatter>
-    Integer_t(basic_string_view<CharT> name,
+    Integer_t(string_view<CharT> name,
               T                        initial_value,
               T                        delta,
               Formatter&&              formatter)
@@ -47,7 +47,7 @@ namespace sgl {
       }
       format_buffer_.reset();
     }
-    Integer_t(basic_string_view<CharT> name, T initial_value, T delta)
+    Integer_t(string_view<CharT> name, T initial_value, T delta)
         : sgl::Item_t<LineWidth, CharT>(name, &default_handle_input),
           value_(initial_value), delta_(delta) {
       this->clear_text();

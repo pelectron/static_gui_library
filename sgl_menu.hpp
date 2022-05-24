@@ -3,8 +3,8 @@
 #include "sgl_page.hpp"
 namespace sgl {
   /**
-   * @brief This class encapsulates a menu. It consists of several pages. Only
-   * one page is active at any time. Input handling can be customized by
+   * @brief This class encapsulates a menu. It's comprised of several pages.
+   * Only one page is active at any time. Input handling can be customized by
    * providing a input handler. The input handler must have a calling signature
    * of 'error(Menu_t<LineWidth, CharT, Pages...>&, Input)'. By default, the
    * inputs are delegated to the current page.
@@ -37,7 +37,7 @@ namespace sgl {
      * @param name
      * @param pages
      */
-    Menu_t(basic_string_view<CharT> name, Pages&&... pages)
+    Menu_t(string_view<CharT> name, Pages&&... pages)
         : name_(name), pages_(std::forward<Pages>(pages)...) {
       set_menu_impl<0>();
     }
@@ -67,7 +67,7 @@ namespace sgl {
      * @param name
      * @return error
      */
-    error set_active_page(basic_string_view<CharT> name) {
+    error set_active_page(string_view<CharT> name) {
       return set_active_page_impl<0>(name);
     }
     /**
@@ -76,7 +76,7 @@ namespace sgl {
      * @return ItemBase&
      */
     ItemBase& current_item() noexcept { return current_item_impl<0>(); }
-    basic_string_view<CharT> current_page_name() noexcept {
+    string_view<CharT> current_page_name() noexcept {
       return current_page_name_impl<0>();
     }
     /**
@@ -100,9 +100,7 @@ namespace sgl {
       return pages_.template get<I>();
     }
     /**
-     * @brief
-     *
-     * @return constexpr size_t
+     * @brief index of the currently active page
      */
     constexpr size_t index() const noexcept { return index_; }
 
@@ -111,25 +109,24 @@ namespace sgl {
                                       Input input) noexcept {
       return menu.default_handle_input_impl<0>(input);
     }
+
     template <size_t I>
     error default_handle_input_impl(Input input) noexcept {
-      if (index_ == I)
-        return pages_.template get<I>().handle_input(input);
-
-      return default_handle_input_impl<I + 1>(input);
-    }
-    template <>
-    error
-        default_handle_input_impl<sizeof...(Pages) - 1>(Input input) noexcept {
-      if (index_ == sizeof...(Pages) - 1)
-        return pages_.template get<sizeof...(Pages) - 1>().handle_input(input);
-      return error::null_element;
+      if constexpr (I == (sizeof...(Pages) - 1)) {
+          return get_page<sizeof...(Pages) - 1>().handle_input(
+              input);          
+      } else {
+        if (index_ == I)
+          return get_page<I>().handle_input(input);
+        else
+          return default_handle_input_impl<I + 1>(input);
+      }
     }
 
     template <size_t I>
-    error set_active_page_impl(basic_string_view<CharT> name) noexcept {
+    error set_active_page_impl(string_view<CharT> name) noexcept {
       if (name ==
-          basic_string_view<CharT>(pages_.template get<I>().get_name())) {
+          string_view<CharT>(pages_.template get<I>().get_name())) {
         index_ = I;
         return error::no_error;
       } else {
@@ -139,8 +136,8 @@ namespace sgl {
 
     template <>
     error set_active_page_impl<sizeof...(Pages) - 1>(
-        basic_string_view<CharT> name) noexcept {
-      if (name == basic_string_view<CharT>(
+        string_view<CharT> name) noexcept {
+      if (name == string_view<CharT>(
                       pages_.template get<sizeof...(Pages) - 1>().get_name())) {
         index_ = sizeof...(Pages) - 1;
         return error::no_error;
@@ -150,13 +147,13 @@ namespace sgl {
     }
 
     template <size_t I>
-    basic_string_view<CharT> current_page_name_impl() noexcept {
+    string_view<CharT> current_page_name_impl() noexcept {
       if (index_ == I)
         return pages_.template get<I>().get_name();
       return current_page_name_impl<I + 1>();
     }
     template <>
-    basic_string_view<CharT>
+    string_view<CharT>
         current_page_name_impl<sizeof...(Pages) - 1>() noexcept {
       return pages_.template get<sizeof...(Pages) - 1>().get_name();
     }
@@ -182,14 +179,14 @@ namespace sgl {
     ItemBase& current_item_impl<sizeof...(Pages) - 1>() noexcept {
       return pages_.template get<sizeof...(Pages) - 1>().current_item();
     }
-    basic_string_view<CharT> name_;
+    string_view<CharT> name_;
     tuple<Pages...>          pages_;
     size_t                   index_{0};
     InputHandler_t           input_handler_{&default_handle_input};
   };
 
   template <size_t LineWidth, typename CharT, typename... Pages>
-  Menu_t<LineWidth, CharT, Pages...> make_menu(basic_string_view<CharT> name,
+  Menu_t<LineWidth, CharT, Pages...> make_menu(string_view<CharT> name,
                                                Pages&&... pages) {
     return Menu_t<LineWidth, CharT, Pages...>(name,
                                               std::forward<Pages>(pages)...);

@@ -104,8 +104,8 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Page_t(basic_string_view<CharT> name,
-           basic_string_view<CharT> title,
+    Page_t(string_view<CharT> name,
+           string_view<CharT> title,
            sgl::Input               start_edit,
            sgl::Input               stop_edit,
            InputHandler&&           input_handler,
@@ -124,8 +124,8 @@ namespace sgl {
      * @param stop_edit Input that signals to stop editing
      * @param items page items
      */
-    Page_t(basic_string_view<CharT> name,
-           basic_string_view<CharT> title,
+    Page_t(string_view<CharT> name,
+           string_view<CharT> title,
            sgl::Input               start_edit,
            sgl::Input               stop_edit,
            Items&&... items)
@@ -184,10 +184,10 @@ namespace sgl {
     sgl::Input stop_edit_input() const { return stop_edit_; }
 
     /// get the name of the page.
-    basic_string_view<CharT> get_name() const { return name_; }
+    string_view<CharT> get_name() const { return name_; }
 
     /// get the title of the page.
-    basic_string_view<CharT> get_title() const { return title_; }
+    string_view<CharT> get_title() const { return title_; }
 
     /**
      * @brief Set the menu for items which need it, i.e. page links
@@ -275,8 +275,8 @@ namespace sgl {
       }
     }
 
-    basic_string_view<CharT> name_;
-    basic_string_view<CharT> title_;
+    string_view<CharT> name_;
+    string_view<CharT> title_;
     sgl::Input               start_edit_{sgl::Input::enter};
     sgl::Input               stop_edit_{sgl::Input::enter};
     bool                     elem_in_edit_{false};
@@ -295,8 +295,8 @@ namespace sgl {
                                       InputHandler,
                                       Page_t<LineWidth, CharT, Items...>&,
                                       Input>>* = nullptr>
-  Page_t<LineWidth, CharT, Items...> make_page(basic_string_view<CharT> name,
-                                               basic_string_view<CharT> title,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
                                                sgl::Input     start_edit,
                                                sgl::Input     stop_edit,
                                                InputHandler&& input_handler,
@@ -310,8 +310,8 @@ namespace sgl {
         std::forward<Items>(items)...);
   }
   template <size_t LineWidth, typename CharT, typename... Items>
-  Page_t<LineWidth, CharT, Items...> make_page(basic_string_view<CharT> name,
-                                               basic_string_view<CharT> title,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
                                                sgl::Input start_edit,
                                                sgl::Input stop_edit,
                                                Items&&... items) {

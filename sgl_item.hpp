@@ -20,23 +20,23 @@ namespace sgl {
                                                Item_t<LineWidth, CharT>&,
                                                sgl::Input>>;
 
-    Item_t(basic_string_view<CharT> name, basic_string_view<CharT> text)
+    Item_t(string_view<CharT> name, string_view<CharT> text)
         : name(name), text(text) {}
 
-    Item_t(basic_string_view<CharT> name_and_text)
+    Item_t(string_view<CharT> name_and_text)
         : name(name_and_text), text(name_and_text) {}
 
     template <typename InputHandler,
               typename = input_handler_check<InputHandler>>
-    Item_t(basic_string_view<CharT> name,
-           basic_string_view<CharT> text,
+    Item_t(string_view<CharT> name,
+           string_view<CharT> text,
            InputHandler&&           handler)
         : handler(std::forward<InputHandler>(handler)), name(name), text(text) {
     }
 
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Item_t(basic_string_view<CharT> name_and_text, InputHandler&& handler)
+    Item_t(string_view<CharT> name_and_text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)),
           name(name_and_text), text{name_and_text} {}
     template <typename Menu>
@@ -45,13 +45,13 @@ namespace sgl {
     sgl::error set_text(const CharT* str, size_t n) {
       return sgl::error::no_error;
     }
-    sgl::error set_text(basic_string_view<CharT> new_text) {
+    sgl::error set_text(string_view<CharT> new_text) {
       text = new_text;
       return sgl::error::no_error;
     }
     const StaticString<CharT, LineWidth>& get_text() const { return text; }
     StaticString<CharT, LineWidth>&       get_text() { return text; }
-    basic_string_view<CharT>              get_name() const { return name; }
+    string_view<CharT>              get_name() const { return name; }
     void                                  clear_text() { text.reset(); }
 
     template <typename InputHandler,
@@ -71,7 +71,7 @@ namespace sgl {
     }
 
     InputHandler_t                 handler{&default_handle_input};
-    basic_string_view<CharT>       name{};
+    string_view<CharT>       name{};
     StaticString<CharT, LineWidth> text{};
   };
 } // namespace sgl

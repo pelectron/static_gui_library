@@ -19,11 +19,11 @@ namespace sgl {
     using input_handler_check =
         typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
 
-    Button_t(basic_string_view<CharT> name_and_text)
+    Button_t(string_view<CharT> name_and_text)
         : Item_t(name_and_text,
                  &Button_t<LineWidth, CharT>::default_handle_input) {}
 
-    Button_t(basic_string_view<CharT> name, basic_string_view<CharT> text)
+    Button_t(string_view<CharT> name, string_view<CharT> text)
         : Item_t<LineWidth, CharT>(
               name,
               text,
@@ -31,7 +31,7 @@ namespace sgl {
 
     template <typename ClickHandler,
               typename = click_handler_check<ClickHandler>>
-    Button_t(basic_string_view<CharT> name_and_text,
+    Button_t(string_view<CharT> name_and_text,
              ClickHandler&&           click_handler)
         : Item_t<LineWidth, CharT>(
               name_and_text,
@@ -40,8 +40,8 @@ namespace sgl {
 
     template <typename ClickHandler,
               typename = click_handler_check<ClickHandler>>
-    Button_t(basic_string_view<CharT> name,
-             basic_string_view<CharT> text,
+    Button_t(string_view<CharT> name,
+             string_view<CharT> text,
              ClickHandler&&           click_handler)
         : Item_t<LineWidth, CharT>(
               name,
@@ -53,8 +53,8 @@ namespace sgl {
               typename InputHandler,
               typename = click_handler_check<ClickHandler>,
               typename = input_handler_check<InputHandler>>
-    Button_t(basic_string_view<CharT> name,
-             basic_string_view<CharT> text,
+    Button_t(string_view<CharT> name,
+             string_view<CharT> text,
              ClickHandler&&           click_handler,
              InputHandler&&           input_handler)
         : Item_t<LineWidth, CharT>(name,

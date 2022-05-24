@@ -5,7 +5,7 @@ namespace sgl {
   template <typename T, typename CharT>
   struct Pair {
     T                        val{};
-    basic_string_view<CharT> str{};
+    string_view<CharT> str{};
   };
   /**
    * @brief
@@ -21,7 +21,7 @@ namespace sgl {
             typename CharT>
   class Enum_t : public sgl::Item_t<LineWidth, CharT> {
   public:
-    Enum_t(basic_string_view<CharT> name,
+    Enum_t(string_view<CharT> name,
            const Pair<EnumT, char> (&array)[NumEnumerators],
            size_t start_index = 0)
         : sgl::Item_t<LineWidth, CharT>(
@@ -36,7 +36,7 @@ namespace sgl {
       this->set_text(map[index_].str);
     }
     constexpr size_t         size() const { return NumEnumerators; }
-    basic_string_view<CharT> current_string() const noexcept {
+    string_view<CharT> current_string() const noexcept {
       return map[index_].str;
     }
     constexpr size_t index() const { return index_; }

@@ -11,8 +11,8 @@
   using PageLink = sgl::PageLink_t<line_width, char_type>;        \
   using Boolean = sgl::Boolean_t<line_width, char_type>;          \
   template <typename... Items>                                    \
-  auto make_page(sgl::basic_string_view<char_type> name,          \
-                 sgl::basic_string_view<char_type> title,         \
+  auto make_page(sgl::string_view<char_type> name,          \
+                 sgl::string_view<char_type> title,         \
                  sgl::Input                        start_edit,    \
                  sgl::Input                        stop_edit,     \
                  Items&&... items) {                              \
@@ -31,8 +31,8 @@
                 InputHandler,                                     \
                 sgl::Page_t<line_width, char_type, Items...>&,    \
                 sgl::Input>>* = nullptr>                          \
-  auto make_page(sgl::basic_string_view<char_type> name,          \
-                 sgl::basic_string_view<char_type> title,         \
+  auto make_page(sgl::string_view<char_type> name,          \
+                 sgl::string_view<char_type> title,         \
                  sgl::Input                        start_edit,    \
                  sgl::Input                        stop_edit,     \
                  InputHandler&&                    input_handler, \

@@ -30,13 +30,13 @@ namespace sgl {
     constexpr StaticString(const CharT (&string)[N]) : size_(N - 1) {
       overwrite(string, size_);
     }
-    constexpr StaticString(const basic_string_view<CharT> sv)
+    constexpr StaticString(const string_view<CharT> sv)
         : StaticString(sv.data(), sv.size()) {}
     constexpr StaticString(const CharT* str, size_t size) {
       overwrite(str, size);
     }
-    constexpr operator basic_string_view<CharT>() {
-      return basic_string_view<CharT>{data_, size_};
+    constexpr operator string_view<CharT>() {
+      return string_view<CharT>{data_, size_};
     }
     constexpr size_t       size() const noexcept { return size_; }
     constexpr size_t       capacity() const noexcept { return Capacity; }
@@ -71,7 +71,7 @@ namespace sgl {
       }
       return *this;
     }
-    constexpr StaticString& operator=(const basic_string_view<CharT> str) {
+    constexpr StaticString& operator=(const string_view<CharT> str) {
       size_ = 0;
       for (const auto& c : str) {
         data_[size_] = c;

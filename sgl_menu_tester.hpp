@@ -40,13 +40,13 @@ namespace sgl {
   template <typename CharT>
   struct InputPair {
     sgl::Input                    input;
-    sgl::basic_string_view<CharT> string;
+    sgl::string_view<CharT> string;
   };
 
   template <typename CharT, size_t N>
   struct InputMap {
     InputPair<CharT> map[N];
-    sgl::Input       get(sgl::basic_string_view<CharT> string) {
+    sgl::Input       get(sgl::string_view<CharT> string) {
       for (const auto& e : map) {
         if (string == e.string)
           return e.input;
@@ -62,7 +62,7 @@ namespace sgl {
     MenuTester(const Menu& menu, const InputMap<char_type, N>& input_map)
         : menu_(menu), map(input_map) {}
 
-    sgl::error handle_input(sgl::basic_string_view<char_type> input) {
+    sgl::error handle_input(sgl::string_view<char_type> input) {
       sgl::Input i = map.get(input);
       if (i != sgl::Input::none) {
         menu_.handle_input(i);
