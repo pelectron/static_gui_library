@@ -39,7 +39,7 @@ namespace sgl {
 
   template <typename CharT>
   struct InputPair {
-    sgl::Input                    input;
+    sgl::Input              input;
     sgl::string_view<CharT> string;
   };
 

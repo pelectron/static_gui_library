@@ -3,8 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${default}",
-                "${workspaceFolder}/subprojects/delegate/include"
+                "${default}"
             ],
             "defines": [
                 "_DEBUG",

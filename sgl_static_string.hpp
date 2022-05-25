@@ -1,6 +1,6 @@
 #ifndef STATIC_STRING_HPP
 #define STATIC_STRING_HPP
-#include "string_view.hpp"
+#include "sgl_string_view.hpp"
 
 #include <type_traits>
 namespace sgl {
@@ -61,37 +61,30 @@ namespace sgl {
     constexpr bool is_empty() const noexcept { return size_ == 0; }
 
     constexpr StaticString& operator=(const StaticString& other) {
-      size_ = 0;
-      for (const auto& c : other.data_) {
-        data_[size_] = c;
-        ++size_;
-      }
-      for (int i = size_; i < Capacity; ++i) {
+      this->overwrite(other.data_, other.size_);
+      for (int i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
       }
       return *this;
     }
     constexpr StaticString& operator=(const string_view<CharT> str) {
-      size_ = 0;
-      for (const auto& c : str) {
-        data_[size_] = c;
-        ++size_;
-      }
-      for (int i = size_; i < Capacity; ++i) {
+      this->overwrite(str.data(), str.size());
+      for (int i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
       }
       return *this;
     }
+
     constexpr void reset() noexcept {
       for (auto& c : data_) {
         c = 0;
       }
       size_ = 0;
     }
+
     constexpr void resize(size_t new_size) {
-      if (size_ < new_size)
-        size_ = new_size;
-      for (size_t i = size_ - 1; i < new_size; --i) {
+      size_ = new_size;
+      for (size_t i = size_ - 1; i >= new_size; --i) {
         data_[i] = 0;
       }
     }

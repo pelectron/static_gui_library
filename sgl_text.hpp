@@ -26,15 +26,15 @@ namespace sgl {
     using input_handler_check =
         typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
 
-    Text_t(string_view<CharT> name, string_view<CharT> text)
-        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
+    Text_t(string_view<CharT> item_name, string_view<CharT> text)
+        : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
           cursor_(text.size() - 1) {}
 
     template <typename Validator, typename = validator_check<Validator>>
-    Text_t(string_view<CharT> name,
+    Text_t(string_view<CharT> item_name,
            string_view<CharT> text,
-           Validator&&              validate)
-        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
+           Validator&&        validate)
+        : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
 
@@ -42,16 +42,16 @@ namespace sgl {
               typename InputHandler,
               typename = validator_check<Validator>,
               typename = input_handler_check<InputHandler>>
-    Text_t(string_view<CharT> name,
+    Text_t(string_view<CharT> item_name,
            string_view<CharT> text,
-           Validator&&              validate,
-           InputHandler&&           input_handler)
-        : Item_t<LineWidth, CharT>(name,
+           Validator&&        validate,
+           InputHandler&&     input_handler)
+        : Item_t<LineWidth, CharT>(item_name,
                                    text,
                                    std::forward<InputHandler>(input_handler)),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
-    error validate(string_view<CharT> str) { return validate_(str); }
+    error          validate(string_view<CharT> str) { return validate_(str); }
     constexpr void increment_cursor() {
       cursor_ = cursor_ == this->get_text().size() ? cursor_ : cursor_ + 1;
     }
@@ -124,11 +124,17 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class ConstText_t : public Item_t<LineWidth, CharT> {
   public:
-    ConstText_t(string_view<CharT> name, string_view<CharT> text)
-        : Item_t<LineWidth, CharT>(name, text) {}
+    ConstText_t(string_view<CharT> item_name, string_view<CharT> text)
+        : Item_t<LineWidth, CharT>(item_name, text) {}
 
     ConstText_t(string_view<CharT> name_and_text)
         : Item_t<LineWidth, CharT>(name_and_text) {}
   };
+
+  template <size_t LineWidth, typename CharT>
+  struct is_item<ConstText_t<LineWidth, CharT>> : std::true_type {};
+
+  template <size_t LineWidth, typename CharT>
+  struct is_item<Text_t<LineWidth, CharT>> : std::true_type {};
 } // namespace sgl
 #endif

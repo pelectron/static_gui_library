@@ -2,8 +2,8 @@
 #define SGL_PAGE_HPP
 #include "sgl_input.hpp"
 #include "sgl_item.hpp"
-#include "string_view.hpp"
-#include "tuple.hpp"
+#include "sgl_string_view.hpp"
+#include "sgl_tuple.hpp"
 
 namespace sgl {
 
@@ -12,9 +12,9 @@ namespace sgl {
    * items/items.
    * Data:
    * A page consists of the following data:
-   *  - a name, which is primarily used for switching between different pages
-   * without using a index. Must be unique for all pages in a menu.
-   *  - a title
+   *  - a page_name, which is primarily used for switching between different
+   * pages without using a index. Must be unique for all pages in a menu.
+   *  - a page_title
    *  - a 'start_edit' Input value, which tells the input handler when to start
    * editing.
    *  - a 'stop_edit' Input value, which tells the input handler when to stop
@@ -76,27 +76,27 @@ namespace sgl {
                               Page_t<LineWidth, CharT, Items...>&,
                               sgl::Input>>;
     template <size_t I>
-    using type_at_index = type_at_t<I, type_list<Items...>>;
-    // constructors
+    using item_at_t = type_at_t<I, type_list<Items...>>;
 
     Page_t(const Page_t& other)
-        : name_(other.name_), title_(other.title_),
+        : items_(other.items_), input_handler_(other.input_handler_),
+          name_(other.name_), title_(other.title_),
           start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
-          elem_in_edit_(other.elem_in_edit_), index_(other.index_),
-          input_handler_(other.input_handler_), items_(other.items_) {}
-    Page_t(Page_t<LineWidth, CharT, Items...>&& other)
-        : name_(std::move(other.name_)), title_(std::move(other.title_)),
-          start_edit_(std::move(other.start_edit_)),
-          stop_edit_(other.stop_edit_), elem_in_edit_(other.elem_in_edit_),
-          index_(other.index_), input_handler_(std::move(other.input_handler_)),
-          items_(std::move(other.items_)) {}
+          index_(other.index_), elem_in_edit_(other.elem_in_edit_) {}
+
+    Page_t(Page_t&& other)
+        : items_(std::move(other.items_)),
+          input_handler_(std::move(other.input_handler_)),
+          name_(std::move(other.name_)), title_(std::move(other.title_)),
+          start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
+          index_(other.index_), elem_in_edit_(other.elem_in_edit_) {}
 
     /**
      * @brief Construct a new Page_t object
      *
      * @tparam InputHandler
-     * @param name name of the page. Must be unique per menu.
-     * @param title title of the page
+     * @param page_name page_name of the page. Must be unique per menu.
+     * @param page_title page_title of the page
      * @param start_edit Input that signals to start editing
      * @param stop_edit Input that signals to stop editing
      * @param input_handler custom input handler
@@ -104,33 +104,39 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Page_t(string_view<CharT> name,
-           string_view<CharT> title,
-           sgl::Input               start_edit,
-           sgl::Input               stop_edit,
-           InputHandler&&           input_handler,
-           Items... items)
-        : name_(name), title_(title), start_edit_(start_edit),
-          stop_edit_(stop_edit),
+    Page_t(string_view<CharT> page_name,
+           string_view<CharT> page_title,
+           sgl::Input         start_edit,
+           sgl::Input         stop_edit,
+           InputHandler&&     input_handler,
+           Items&&... items)
+        : items_(std::forward<Items>(items)...),
           input_handler_(std::forward<InputHandler>(input_handler)),
-          items_(std::forward<Items>(items)...) {}
+          name_(page_name), title_(page_title), start_edit_(start_edit),
+          stop_edit_(stop_edit) {}
 
     /**
      * @brief Construct a new Page_t with default input handling.
      *
-     * @param name name of the page. Must be unique per menu.
-     * @param title title of the page.
+     * @param page_name name of the page. Must be unique per menu.
+     * @param page_title page_title of the page.
      * @param start_edit Input that signals to start editing
      * @param stop_edit Input that signals to stop editing
      * @param items page items
      */
-    Page_t(string_view<CharT> name,
-           string_view<CharT> title,
-           sgl::Input               start_edit,
-           sgl::Input               stop_edit,
+    Page_t(string_view<CharT> page_name,
+           string_view<CharT> page_title,
+           sgl::Input         start_edit,
+           sgl::Input         stop_edit,
            Items&&... items)
-        : name_(name), title_(title), start_edit_(start_edit),
-          stop_edit_(stop_edit), items_(std::forward<Items>(items)...) {}
+        : items_(std::forward<Items>(items)...), name_(page_name),
+          title_(page_title), start_edit_(start_edit), stop_edit_(stop_edit) {}
+
+    Page_t(string_view<CharT> page_name,
+           string_view<CharT> page_title,
+           Items&&... items)
+        : items_(std::forward<Items>(items)...), name_(page_name),
+          title_(page_title) {}
 
     /// get number of items in the page
     constexpr size_t size() const { return sizeof...(Items); }
@@ -143,7 +149,11 @@ namespace sgl {
 
     /// get reference to current item as ElementBase, a.k.a.
     /// sgl::Item_t<LineWidth, CharT>.
-    ItemBase& current_item() { return get_impl<0>(index_); }
+    ItemBase& current_item() noexcept { return get_impl<0>(index_); }
+
+    const ItemBase& current_item() const noexcept {
+      return cget_impl<0>(index_);
+    }
 
     /// get reference to item by index through ItemBase.
     ItemBase& operator[](size_t i) { return get_impl<0>(i % sizeof...(Items)); }
@@ -155,13 +165,13 @@ namespace sgl {
 
     /// get reference to item by index through the item's declared type.
     template <size_t I>
-    type_at_index<I>& get_item() {
+    item_at_t<I>& get_item() {
       return items_.template get<I>();
     }
 
     /// get const reference to item by index through the item's declared type.
     template <size_t I>
-    const type_at_index<I>& get_item() const {
+    const item_at_t<I>& get_item() const {
       return items_.template get<I>();
     }
 
@@ -178,15 +188,21 @@ namespace sgl {
     void unset_edit_mode() { elem_in_edit_ = false; }
 
     /// get the start edit input value.
-    sgl::Input start_edit_input() const { return start_edit_; }
+    sgl::Input get_start_edit() const { return start_edit_; }
+
+    /// set the start edit input value
+    void set_start_edit(sgl::Input start_edit) { start_edit_ = start_edit; }
 
     /// get the stop edit input.
-    sgl::Input stop_edit_input() const { return stop_edit_; }
+    sgl::Input get_stop_edit() const { return stop_edit_; }
+
+    /// set the sop edit input value
+    void set_stop_edit(sgl::Input stop_edit) { stop_edit_ = stop_edit; }
 
     /// get the name of the page.
     string_view<CharT> get_name() const { return name_; }
 
-    /// get the title of the page.
+    /// get the page_title of the page.
     string_view<CharT> get_title() const { return title_; }
 
     /**
@@ -197,14 +213,16 @@ namespace sgl {
      */
     template <typename Menu>
     void set_menu(Menu* menu) {
-      set_menu_impl<Menu, 0>(menu);
+      set_menu_impl(menu, sgl::index_sequence_for<Items...>{});
     }
+
+  private:
     /// default page input handler.
     static error default_handle_input(Page_t<LineWidth, CharT, Items...>& page,
                                       sgl::Input                          i) {
-      if ((i == page.start_edit_input() and not page.is_in_edit_mode())) {
+      if ((i == page.get_start_edit() and not page.is_in_edit_mode())) {
         page.set_edit_mode();
-      } else if ((i == page.stop_edit_input()) and page.is_in_edit_mode()) {
+      } else if ((i == page.get_stop_edit()) and page.is_in_edit_mode()) {
         page.unset_edit_mode();
       }
       if (page.is_in_edit_mode()) {
@@ -240,87 +258,99 @@ namespace sgl {
       return error::no_error;
     }
 
-  private:
     template <size_t I>
-    ItemBase& get_impl(size_t i) {
-      if (I == i) {
+    ItemBase& get_impl(size_t i) noexcept {
+      if constexpr (I == (sizeof...(Items) - 1)) {
         return static_cast<ItemBase&>(items_.template get<I>());
-      }
-      return get_impl<I + 1>(i);
-    }
-    template <>
-    ItemBase& get_impl<sizeof...(Items) - 1>(size_t i) {
-      return static_cast<ItemBase&>(
-          items_.template get<sizeof...(Items) - 1>());
-    }
-    template <size_t I>
-    const ItemBase& cget_impl(size_t i) const {
-      if (I == i) {
-        return static_cast<const ItemBase&>(items_.template get<I>());
-      }
-      return cget_impl<I + 1>(i);
-    }
-    template <>
-    const ItemBase& cget_impl<sizeof...(Items) - 1>(size_t i) const {
-      return static_cast<const ItemBase&>(
-          items_.template get<sizeof...(Items) - 1>());
-    }
-    template <typename Menu, size_t I>
-    void set_menu_impl(Menu* menu) {
-      if constexpr (((sizeof...(Items) - 1) == I)) {
-        items_.template get<I>().template set_menu<Menu>(menu);
       } else {
-        items_.template get<I>().template set_menu<Menu>(menu);
-        this->set_menu_impl<Menu, I + 1>(menu);
+        if (I == i) {
+          return static_cast<ItemBase&>(items_.template get<I>());
+        }
+        return get_impl<I + 1>(i);
       }
     }
 
+    template <size_t I>
+    const ItemBase& cget_impl(size_t i) const noexcept {
+      if constexpr (I == (sizeof...(Items) - 1)) {
+        return static_cast<const ItemBase&>(items_.template get<I>());
+      } else {
+        if (I == i) {
+          return static_cast<const ItemBase&>(items_.template get<I>());
+        }
+        return cget_impl<I + 1>(i);
+      }
+    }
+
+    template <typename Menu, size_t... I>
+    void set_menu_impl(Menu* menu, index_seq_t<I...>) {
+      (items_.template get<I>().template set_menu<Menu>(menu), ...);
+    }
+
+    tuple<Items...>    items_;
+    InputHandler_t     input_handler_{&default_handle_input};
     string_view<CharT> name_;
     string_view<CharT> title_;
-    sgl::Input               start_edit_{sgl::Input::enter};
-    sgl::Input               stop_edit_{sgl::Input::enter};
-    bool                     elem_in_edit_{false};
-    size_t                   index_{0};
-    InputHandler_t           input_handler_{
-        &Page_t<LineWidth, CharT, Items...>::default_handle_input};
-    tuple<Items...> items_;
+    sgl::Input         start_edit_{sgl::Input::enter};
+    sgl::Input         stop_edit_{sgl::Input::enter};
+    size_t             index_{0};
+    bool               elem_in_edit_{false};
   };
+
+  /// template alias for number_of_items
+  template <typename Page>
+  static constexpr bool number_of_items_v = number_of_items<Page>::value;
+  template <typename Page>
+  struct is_page : std::false_type {};
+  template <size_t LineWidth, typename CharT, typename... Items>
+  struct is_page<Page_t<LineWidth, CharT, Items...>> : std::true_type {};
+  template <typename Page>
+  static constexpr bool is_page_v = is_page<Page>::value;
 
   template <size_t LineWidth,
             typename CharT,
             typename InputHandler,
             typename... Items,
-            typename std::enable_if_t<
+            typename = std::enable_if_t<
                 std::is_invocable_r_v<error,
                                       InputHandler,
                                       Page_t<LineWidth, CharT, Items...>&,
-                                      Input>>* = nullptr>
-  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
-                                               string_view<CharT> title,
-                                               sgl::Input     start_edit,
-                                               sgl::Input     stop_edit,
-                                               InputHandler&& input_handler,
+                                      Input>>>
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
+                                               string_view<CharT> page_title,
+                                               sgl::Input         start_edit,
+                                               sgl::Input         stop_edit,
+                                               InputHandler&&     input_handler,
                                                Items&&... items) {
     return Page_t<LineWidth, CharT, Items...>(
-        name,
-        title,
+        page_name,
+        page_title,
         start_edit,
         stop_edit,
         std::forward<InputHandler>(input_handler),
         std::forward<Items>(items)...);
   }
+
   template <size_t LineWidth, typename CharT, typename... Items>
-  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
-                                               string_view<CharT> title,
-                                               sgl::Input start_edit,
-                                               sgl::Input stop_edit,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
+                                               string_view<CharT> page_title,
+                                               sgl::Input         start_edit,
+                                               sgl::Input         stop_edit,
                                                Items&&... items) {
-    return Page_t<LineWidth, CharT, Items...>(name,
-                                              title,
+    return Page_t<LineWidth, CharT, Items...>(page_name,
+                                              page_title,
                                               start_edit,
                                               stop_edit,
                                               std::forward<Items>(items)...);
   }
 
+  template <size_t LineWidth, typename CharT, typename... Items>
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
+                                               string_view<CharT> page_title,
+                                               Items&&... items) {
+    return Page_t<LineWidth, CharT, Items...>(page_name,
+                                              page_title,
+                                              std::forward<Items>(items)...);
+  }
 } // namespace sgl
 #endif

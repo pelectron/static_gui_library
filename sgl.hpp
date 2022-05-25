@@ -10,6 +10,7 @@
 #include "sgl_numeric.hpp"
 #include "sgl_page.hpp"
 #include "sgl_page_link.hpp"
+#include "sgl_string_view.hpp"
 #include "sgl_text.hpp"
-#include "string_view.hpp"
+
 #endif

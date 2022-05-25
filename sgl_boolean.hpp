@@ -6,19 +6,27 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class Boolean_t : public sgl::Button_t<LineWidth, CharT> {
   public:
-    Boolean_t(string_view<CharT> name, bool initial_value)
+    static constexpr CharT True[]{'T', 'R', 'U', 'E', '\0'};
+
+    static constexpr CharT False[]{'F', 'A', 'L', 'S', 'E', '\0'};
+
+    Boolean_t(string_view<CharT> item_name, bool initial_value)
         : Button_t<LineWidth, CharT>(
-              name,
-              initial_value ? "TRUE" : "FALSE",
+              item_name,
+              initial_value ? string_view<CharT>(True)
+                            : string_view<CharT>(False),
               [](Button_t<LineWidth, CharT>& button) {
                 if (string_view<CharT>(button.get_text()) ==
-                    string_view<CharT>("TRUE")) {
-                  button.set_text("FALSE");
+                    string_view<CharT>(True)) {
+                  button.set_text(False);
                 } else {
-                  button.set_text("TRUE");
+                  button.set_text(True);
                 }
                 return sgl::error::no_error;
               }) {}
   };
+
+  template <size_t LineWidth, typename CharT>
+  struct is_item<Boolean_t<LineWidth, CharT>> : std::true_type {};
 } // namespace sgl
 #endif

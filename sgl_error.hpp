@@ -12,6 +12,7 @@ namespace sgl {
     edit_finished,
     format_error,
     page_not_found,
+    invalid_page_index,
   };
 }
 #endif

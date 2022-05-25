@@ -62,9 +62,8 @@ int main() {
 
     std::getline(std::cin, s);
     if (s == "quit")
-      goto BREAK_ALL;
+      break;
     menu_tester.handle_input(sgl::string_view<char>(s));
   }
-BREAK_ALL:
   return 0;
 }

@@ -12,28 +12,31 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class PageLink_t : public Button_t<LineWidth, CharT> {
   public:
-    PageLink_t(string_view<CharT> name,
+    PageLink_t(string_view<CharT> item_name,
                string_view<CharT> text,
                string_view<CharT> page_to_link)
-        : Button_t<LineWidth, CharT>(name, text), page_name(page_to_link) {}
-
+        : Button_t<LineWidth, CharT>(item_name, text),
+          page_name_(page_to_link) {}
+    // static overload of Item_t::set_menu
     template <typename Menu>
     void set_menu(Menu* menu) {
-      this->menu = static_cast<void*>(menu);
       this->set_click_handler(
-          &PageLink_t<LineWidth, CharT>::handle_page_click<Menu>);
+          [m = menu](Button_t<LineWidth, CharT>& page_link) {
+            auto& link = static_cast<PageLink_t<LineWidth, CharT>&>(
+                page_link); // casting to correct type
+            return m->set_active_page(
+                link.page_name()); // setting active page by name
+          });
     }
+
+    constexpr string_view<CharT> page_name() const { return page_name_; }
 
   private:
-    void*                    menu{nullptr};
-    string_view<CharT> page_name;
-
-    template <typename Menu>
-    static error handle_page_click(Button_t<LineWidth, CharT>& page_link) {
-      auto& link = static_cast<PageLink_t<LineWidth, CharT>&>(page_link);
-      static_cast<Menu*>(link.menu)->set_active_page(link.page_name);
-      return error::no_error;
-    }
+    string_view<CharT> page_name_;
   };
+
+  template <size_t LineWidth, typename CharT>
+  struct is_item<PageLink_t<LineWidth, CharT>> : std::true_type {};
+
 } // namespace sgl
 #endif

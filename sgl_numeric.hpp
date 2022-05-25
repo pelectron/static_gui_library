@@ -1,6 +1,6 @@
 #ifndef SGL_NUMERIC_HPP
 #define SGL_NUMERIC_HPP
-#include "config.h"
+#include "sgl_config.h"
 #include "sgl_item.hpp"
 #if ENABLE_CHARCONV
   #include <charconv>
@@ -33,12 +33,13 @@ namespace sgl {
                   "T must not be bool. Use Boolean_t for a boolean item.");
     using Formatter_t =
         Callable<sgl::error(StaticString<CharT, LineWidth>&, T)>;
+
     template <typename Formatter>
-    Integer_t(string_view<CharT> name,
-              T                        initial_value,
-              T                        delta,
-              Formatter&&              formatter)
-        : sgl::Item_t<LineWidth, CharT>(name, &default_handle_input),
+    Integer_t(string_view<CharT> item_name,
+              T                  initial_value,
+              T                  delta,
+              Formatter&&        formatter)
+        : sgl::Item_t<LineWidth, CharT>(item_name, &default_handle_input),
           format_(std::forward<Formatter>(formatter)), value_(initial_value),
           delta_(delta) {
       this->clear_text();
@@ -47,8 +48,9 @@ namespace sgl {
       }
       format_buffer_.reset();
     }
-    Integer_t(string_view<CharT> name, T initial_value, T delta)
-        : sgl::Item_t<LineWidth, CharT>(name, &default_handle_input),
+
+    Integer_t(string_view<CharT> item_name, T initial_value, T delta)
+        : sgl::Item_t<LineWidth, CharT>(item_name, &default_handle_input),
           value_(initial_value), delta_(delta) {
       this->clear_text();
       if (sgl::error::no_error == format(format_buffer_, initial_value)) {
@@ -102,5 +104,8 @@ namespace sgl {
     T                              delta_{1};
     StaticString<CharT, LineWidth> format_buffer_;
   };
+
+  template <typename T, size_t LineWidth, typename CharT>
+  struct is_item<Integer_t<T, LineWidth, CharT>> : std::true_type {};
 } // namespace sgl
 #endif

@@ -23,59 +23,61 @@ namespace sgl {
         : Item_t(name_and_text,
                  &Button_t<LineWidth, CharT>::default_handle_input) {}
 
-    Button_t(string_view<CharT> name, string_view<CharT> text)
+    Button_t(string_view<CharT> item_name, string_view<CharT> text)
         : Item_t<LineWidth, CharT>(
-              name,
+              item_name,
               text,
               &Button_t<LineWidth, CharT>::default_handle_input) {}
 
-    template <typename ClickHandler,
-              typename = click_handler_check<ClickHandler>>
-    Button_t(string_view<CharT> name_and_text,
-             ClickHandler&&           click_handler)
-        : Item_t<LineWidth, CharT>(
-              name_and_text,
-              &Button_t<LineWidth, CharT>::default_handle_input),
-          on_click(std::forward<ClickHandler>(click_handler)) {}
-
-    template <typename ClickHandler,
-              typename = click_handler_check<ClickHandler>>
-    Button_t(string_view<CharT> name,
+    template <typename ClickHandler>
+    Button_t(string_view<CharT> item_name,
              string_view<CharT> text,
-             ClickHandler&&           click_handler)
+             ClickHandler&&     click_handler)
         : Item_t<LineWidth, CharT>(
-              name,
+              item_name,
               text,
               &Button_t<LineWidth, CharT>::default_handle_input),
-          on_click(std::forward<ClickHandler>(click_handler)) {}
+          click_handler_(std::forward<ClickHandler>(click_handler)) {
+      static_assert(std::is_invocable_r_v<sgl::error,
+                                          ClickHandler,
+                                          sgl::Button_t<LineWidth, CharT>&>,
+                    "the supplied click_handler does not meet the click "
+                    "handler requirements");
+    }
 
     template <typename ClickHandler,
               typename InputHandler,
               typename = click_handler_check<ClickHandler>,
               typename = input_handler_check<InputHandler>>
-    Button_t(string_view<CharT> name,
+    Button_t(string_view<CharT> item_name,
              string_view<CharT> text,
-             ClickHandler&&           click_handler,
-             InputHandler&&           input_handler)
-        : Item_t<LineWidth, CharT>(name,
+             ClickHandler&&     click_handler,
+             InputHandler&&     input_handler)
+        : Item_t<LineWidth, CharT>(item_name,
                                    text,
                                    std::forward<InputHandler>(input_handler)),
-          on_click(std::forward<ClickHandler>(click_handler)) {}
+          click_handler_(std::forward<ClickHandler>(click_handler)) {}
 
-    template <typename ClickHandler,
-              typename = click_handler_check<ClickHandler>>
+    template <typename ClickHandler>
     void set_click_handler(ClickHandler&& click_handler) {
+      static_assert(std::is_invocable_r_v<sgl::error,
+                                          ClickHandler,
+                                          sgl::Button_t<LineWidth, CharT>&>,
+                    "the supplied click_handler does not meet the click "
+                    "handler requirements");
       if constexpr (std::is_same_v<decltype(click_handler), ClickHandler_t>) {
-        on_click = std::forward<ClickHandler>(click_handler);
+        click_handler_ = std::forward<ClickHandler>(click_handler);
       } else {
-        on_click.bind(std::forward<ClickHandler>(click_handler));
+        click_handler_.bind(std::forward<ClickHandler>(click_handler));
       }
     }
-    sgl::error click() { return on_click(*this); }
+
+    // execute click handler
+    sgl::error click() { return click_handler_(*this); }
 
   private:
     static sgl::error default_handle_input(Item_t<LineWidth, CharT>& button,
-                                           sgl::Input                input) {
+                                           sgl::Input /*input*/) {
       sgl::error ec = static_cast<Button_t<LineWidth, CharT>&>(button).click();
       switch (ec) {
         case sgl::error::no_error:
@@ -89,7 +91,10 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    ClickHandler_t on_click;
+    ClickHandler_t click_handler_{&default_handle_click};
   };
+
+  template <size_t LineWidth, typename CharT>
+  struct is_item<Button_t<LineWidth, CharT>> : std::true_type {};
 } // namespace sgl
 #endif

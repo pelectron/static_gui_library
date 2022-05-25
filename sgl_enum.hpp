@@ -4,7 +4,7 @@
 namespace sgl {
   template <typename T, typename CharT>
   struct Pair {
-    T                        val{};
+    T                  val{};
     string_view<CharT> str{};
   };
   /**
@@ -21,21 +21,22 @@ namespace sgl {
             typename CharT>
   class Enum_t : public sgl::Item_t<LineWidth, CharT> {
   public:
-    Enum_t(string_view<CharT> name,
+    Enum_t(string_view<CharT> item_name,
            const Pair<EnumT, char> (&array)[NumEnumerators],
            size_t start_index = 0)
         : sgl::Item_t<LineWidth, CharT>(
-              name,
+              item_name,
+              array[start_index].str,
               &Enum_t<EnumT, NumEnumerators, LineWidth, CharT>::
                   default_handle_input),
           index_(start_index) {
-      this->clear_text();
       for (size_t i = 0; i < NumEnumerators; ++i) {
         map[i] = array[i];
       }
-      this->set_text(map[index_].str);
     }
-    constexpr size_t         size() const { return NumEnumerators; }
+
+    constexpr size_t size() const { return NumEnumerators; }
+
     string_view<CharT> current_string() const noexcept {
       return map[index_].str;
     }
@@ -70,5 +71,12 @@ namespace sgl {
     Pair<EnumT, CharT> map[NumEnumerators]{};
     size_t             index_{0};
   };
+
+  template <typename EnumT,
+            size_t NumEnumerators,
+            size_t LineWidth,
+            typename CharT>
+  struct is_item<Enum_t<EnumT, NumEnumerators, LineWidth, CharT>>
+      : std::true_type {};
 } // namespace sgl
 #endif
