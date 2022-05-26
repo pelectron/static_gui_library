@@ -25,8 +25,8 @@ namespace sgl {
   }
 #endif
   /**
-   * @brief This class models a numeric item. It consists of a value of type T, a delta
-   * value of type T and a formatter to format T's into strings.
+   * @brief This class models a numeric item. It consists of a value of type T,
+   * a delta value of type T and a formatter to format T's into strings.
    *
    * @tparam T value type
    * @tparam LineWidth display width
@@ -37,7 +37,8 @@ namespace sgl {
   template <typename T, size_t LineWidth, typename CharT>
   class Numeric_t : public sgl::Item_t<LineWidth, CharT> {
   public:
-    static_assert(std::is_integral_v<T>, "T must be an integral type");
+    static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>,
+                  "T must be an integral type");
     static_assert(!std::is_same_v<bool, T>,
                   "T must not be bool. Use Boolean_t for a boolean item.");
     /// concrete formatter type
@@ -219,7 +220,7 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    Formatter_t                    format_{&default_format<CharT, LineWidth>};
+    Formatter_t                    format_{&default_format<CharT, LineWidth,T>};
     T                              value_{0};
     T                              delta_{1};
     StaticString<CharT, LineWidth> format_buffer_;
