@@ -22,7 +22,7 @@ namespace sgl {
         typename sgl::Button_t<LineWidth, CharT>::string_view_t;
 
     Button_t(string_view_t name_and_text)
-        : Item_t(name_and_text,
+        : Item_t<LineWidth, CharT>(name_and_text,
                  &Button_t<LineWidth, CharT>::default_handle_input) {}
 
     Button_t(string_view_t item_name, string_view_t text)
