@@ -120,7 +120,7 @@ namespace sgl {
       static_assert(std::is_invocable_r_v<Ret, F, Args...>, "");
       static_assert(sizeof(F) <= sizeof(buffer), "");
 
-      new (buffer) std::decay_t<F>(std::forward<std::decay_t<F>>(f));
+      new (buffer) std::decay_t<F>(std::forward<F>(f));
       invoke = &inline_invoke<std::decay_t<F>>;
     }
   };
