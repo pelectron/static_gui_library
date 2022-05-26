@@ -75,15 +75,21 @@ namespace sgl {
     }
 
     /**
-     * @brief Set the active page object
+     * @brief Set the active page by name
      *
-     * @param page_name
-     * @return error
+     * @param page_name name of the page
+     * @return sgl::error
      */
     sgl::error set_active_page(string_view_t page_name) {
       return set_active_page_impl<0>(page_name);
     }
 
+    /**
+     * @brief Set the active page by index
+     * 
+     * @param page_index 
+     * @return sgl::error 
+     */
     sgl::error set_active_page(size_t page_index) {
       if (page_index < num_pages) {
         index_ = page_index;
@@ -98,6 +104,11 @@ namespace sgl {
      */
     ItemBase& current_item() noexcept { return current_item_impl<0>(); }
 
+    /**
+     * @brief get current item
+     * 
+     * @return const ItemBase& 
+     */
     const ItemBase& current_item() const noexcept {
       return const_current_item_impl<0>();
     }
@@ -165,7 +176,7 @@ namespace sgl {
     item_at_t<PageIndex, ItemIndex>& get_item() {
       return pages_.template get<PageIndex>().template get_item<ItemIndex>();
     }
-    
+
     /**
      * @brief get reference to item at ItemIndex from page at PageIndex
      * 
