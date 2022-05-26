@@ -296,16 +296,6 @@ namespace sgl {
     bool            elem_in_edit_{false};
   };
 
-  /// template alias for number_of_items
-  template <typename Page>
-  static constexpr bool number_of_items_v = number_of_items<Page>::value;
-  template <typename Page>
-  struct is_page : std::false_type {};
-  template <size_t LineWidth, typename CharT, typename... Items>
-  struct is_page<Page_t<LineWidth, CharT, Items...>> : std::true_type {};
-  template <typename Page>
-  static constexpr bool is_page_v = is_page<Page>::value;
-
   template <size_t LineWidth,
             typename CharT,
             typename InputHandler,

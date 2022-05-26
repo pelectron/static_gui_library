@@ -9,12 +9,12 @@
 
 namespace sgl {
   /**
-   * @addtogroup item_types Item Types
-   * @{
    * @brief
    *
    * @tparam LineWidth number of characters per line in the menu
    * @tparam CharT character type of the item
+   * @addtogroup item_types Item Types
+   * @{
    */
   template <size_t LineWidth, typename CharT>
   class Item_t {

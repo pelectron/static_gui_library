@@ -4,6 +4,7 @@
 
 #include <iostream>
 namespace sgl {
+  /// @cond
   template <typename Page>
   void print_page(const Page& page) {
     std::cout << "Title : " << page.get_title().data() << std::endl;
@@ -82,5 +83,6 @@ namespace sgl {
     Menu                   menu_;
     InputMap<char_type, N> map;
   };
+  /// @endcond
 } // namespace sgl
 #endif

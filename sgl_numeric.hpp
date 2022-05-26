@@ -25,14 +25,14 @@ namespace sgl {
   }
 #endif
   /**
+   * @brief This class models a numeric item. It consists of a value of type T, a delta
+   * value of type T and a formatter to format T's into strings.
+   *
+   * @tparam T value type
+   * @tparam LineWidth display width
+   * @tparam CharT character type
    * @addtogroup item_types Item Types
    * @{
-   * @brief
-   *
-   *
-   * @tparam T
-   * @tparam LineWidth
-   * @tparam CharT
    */
   template <typename T, size_t LineWidth, typename CharT>
   class Numeric_t : public sgl::Item_t<LineWidth, CharT> {

@@ -2,6 +2,7 @@
 #define SGL_TRAITS_HPP
 #include "sgl_fwd.hpp"
 namespace sgl {
+  /// @cond
   /// type trait to get the number of pages in a menu.
   template <typename Menu>
   struct number_of_pages;
@@ -53,5 +54,15 @@ namespace sgl {
 
   template <size_t LineWidth, typename CharT>
   struct is_item<Text_t<LineWidth, CharT>> : std::true_type {};
+  /// template alias for number_of_items
+  template <typename Page>
+  static constexpr bool number_of_items_v = number_of_items<Page>::value;
+  template <typename Page>
+  struct is_page : std::false_type {};
+  template <size_t LineWidth, typename CharT, typename... Items>
+  struct is_page<Page_t<LineWidth, CharT, Items...>> : std::true_type {};
+  template <typename Page>
+  static constexpr bool is_page_v = is_page<Page>::value;
+  ///@endcond
 } // namespace sgl
 #endif

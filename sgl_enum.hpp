@@ -9,15 +9,16 @@ namespace sgl {
   };
 
   /**
-   * @addtogroup item_types Item Types
-   * @{
    * @brief This class implements a enumerated item, i.e. a item with only a
    * limited amount of possible values.
-   *
+   *  @details see sgl::make_enum or an easy way to instantiate a Enum_t item.
+   * 
    * @tparam EnumT the enumeration type
    * @tparam NumEnumerators number of enumerated values
    * @tparam LineWidth number of characters per line in the menu
    * @tparam CharT character type of the item
+   * @addtogroup item_types Item Types
+   * @{
    */
   template <typename EnumT,
             size_t NumEnumerators,
@@ -135,10 +136,8 @@ namespace sgl {
   /// @}
 
   /**
-   * @brief helper function to create an Enum_t instance. Despite the
-   * complicated looking template arguments, they are all be deduced
-   * @example 
-   * @code 
+   * @brief helper function to create an Enum_t instance.
+   * @code
    * #include "sgl.hpp"
    * using namespace sgl::string_view_literals;
    * enum class test_enum { _0, _1, _2, _3, _4 };
@@ -148,7 +147,7 @@ namespace sgl {
    *                        {test_enum::_2, "two"},
    *                        {test_enum::_3, "three"},
    *                        {test_enum::_4, "four"}});
-   * @endcode 
+   * @endcode
    * @tparam EnumT enumeration type
    * @tparam NumEnumerators number of enumerated values
    * @tparam LineWidth line width of the menu
