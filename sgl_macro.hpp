@@ -5,7 +5,7 @@
   using Button = sgl::Button_t<line_width, char_type>;         \
   using Text = sgl::Text_t<line_width, char_type>;             \
   using ConstText = sgl::ConstText_t<line_width, char_type>;   \
-  using Number = sgl::Integer_t<int, line_width, char_type>;   \
+  using Number = sgl::Numeric_t<int, line_width, char_type>;   \
   template <typename E, size_t N>                              \
   using Enum = sgl::Enum_t<E, N, line_width, char_type>;       \
   using PageLink = sgl::PageLink_t<line_width, char_type>;     \

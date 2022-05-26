@@ -13,7 +13,7 @@ namespace sgl {
   template <typename, size_t, size_t, typename>
   class Enum_t;
   template <typename, size_t, typename>
-  class Integer_t;
+  class Numeric_t;
   template <size_t, typename, typename...>
   class Menu_t;
   template <size_t, typename, typename...>

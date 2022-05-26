@@ -43,7 +43,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T, size_t LineWidth, typename CharT>
-  struct is_item<Integer_t<T, LineWidth, CharT>> : std::true_type {};
+  struct is_item<Numeric_t<T, LineWidth, CharT>> : std::true_type {};
 
   template <size_t LineWidth, typename CharT>
   struct is_item<PageLink_t<LineWidth, CharT>> : std::true_type {};
