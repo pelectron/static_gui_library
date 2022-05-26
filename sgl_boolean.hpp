@@ -74,7 +74,8 @@ namespace sgl {
                   sgl::Button_t<LineWidth, CharT>& b) {
                 return handle(
                     static_cast<sgl::Boolean_t<LineWidth, CharT>&>(b));
-              }) {}
+              }),
+          value_(value) {}
 
     bool       get_value() const { return value_; }
     sgl::error set_value(bool value) {
