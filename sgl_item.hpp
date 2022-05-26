@@ -28,7 +28,7 @@ namespace sgl {
   class Item_t {
   public:
     /// string_view type used by this item.
-    using string_view_t = sgl::string_view<CharT>;
+    using StringView = sgl::string_view<CharT>;
 
     /// text field type of this item.
     using TextField_t = StaticString<CharT, LineWidth>;
@@ -55,13 +55,13 @@ namespace sgl {
      * @param name name of the item
      * @param text text of the item
      */
-    Item_t(string_view_t name, string_view_t text) : name_(name), text_(text) {}
+    Item_t(StringView name, StringView text) : name_(name), text_(text) {}
 
     /**
      * @brief Construct an item with it's name and text set to name_and_text.
      * @param name_and_text name and text of item.
      */
-    Item_t(string_view_t name_and_text)
+    Item_t(StringView name_and_text)
         : name_(name_and_text), text_(name_and_text) {}
 
     /**
@@ -73,7 +73,7 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Item_t(string_view_t name, string_view_t text, InputHandler&& handler)
+    Item_t(StringView name, StringView text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)), name_(name),
           text_(text) {}
 
@@ -85,7 +85,7 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Item_t(string_view_t name_and_text, InputHandler&& handler)
+    Item_t(StringView name_and_text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)),
           name_(name_and_text), text_{name_and_text} {}
 
@@ -112,7 +112,7 @@ namespace sgl {
      * @param new_text new text
      * @return sgl::error
      */
-    sgl::error set_text(string_view_t new_text) {
+    sgl::error set_text(StringView new_text) {
       text_ = new_text;
       return sgl::error::no_error;
     }
@@ -131,9 +131,9 @@ namespace sgl {
 
     /**
      * @brief get the name of the item
-     * @return string_view_t
+     * @return StringView
      */
-    string_view_t get_name() const { return name_; }
+    StringView get_name() const { return name_; }
 
     /**
      * @brief clear the text field.
@@ -167,7 +167,7 @@ namespace sgl {
     }
 
     InputHandler_t handler{&default_handle_input}; ///< input handler
-    string_view_t  name_{};                        ///< name
+    StringView     name_{};                        ///< name
     TextField_t    text_{};                        ///< text field
   };
   /// @}

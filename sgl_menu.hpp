@@ -37,7 +37,7 @@ namespace sgl {
     template <size_t P, size_t I>
     using item_at_t = typename page_at_t<P>::template item_at_t<I>;
 
-    using string_view_t = typename sgl::string_view<CharT>;
+    using StringView = typename sgl::string_view<CharT>;
 
     // constructors
     /**
@@ -46,7 +46,7 @@ namespace sgl {
      * @param menu_name
      * @param pages
      */
-    Menu_t(string_view_t menu_name, Pages&&... pages)
+    Menu_t(StringView menu_name, Pages&&... pages)
         : pages_(std::forward<Pages>(pages)...), name_(menu_name) {
       set_menu_impl(sgl::index_sequence_for<Pages...>{});
     }
@@ -80,15 +80,15 @@ namespace sgl {
      * @param page_name name of the page
      * @return sgl::error
      */
-    sgl::error set_active_page(string_view_t page_name) {
+    sgl::error set_active_page(StringView page_name) {
       return set_active_page_impl<0>(page_name);
     }
 
     /**
      * @brief Set the active page by index
-     * 
-     * @param page_index 
-     * @return sgl::error 
+     *
+     * @param page_index
+     * @return sgl::error
      */
     sgl::error set_active_page(size_t page_index) {
       if (page_index < num_pages) {
@@ -106,8 +106,8 @@ namespace sgl {
 
     /**
      * @brief get current item
-     * 
-     * @return const ItemBase& 
+     *
+     * @return const ItemBase&
      */
     const ItemBase& current_item() const noexcept {
       return const_current_item_impl<0>();
@@ -115,40 +115,30 @@ namespace sgl {
 
     /**
      * @brief get menu_name of the current page
-     * @return string_view_t
+     * @return StringView
      */
-    string_view_t current_page_name() const noexcept {
+    StringView current_page_name() const noexcept {
       return current_page_name_impl<0>();
     }
 
     /**
      * @brief Get a page by index
-     *
      * @tparam I index
      * @return page_at_t<I>&
      */
-    template <size_t                                           I,
-              typename = std::enable_if_t<I<sizeof...(Pages)>> page_at_t<I>&
-                  get_page() noexcept {
-      if constexpr (I < sizeof...(Pages))
-        return pages_.template get<I>();
-      else
-        static_assert(I < sizeof...(Pages), "index out of range");
+    template <size_t I>
+    page_at_t<I>& get_page() noexcept {
+      return pages_.template get<I>();
     }
 
     /**
      * @brief Get the page object
-     *
      * @tparam I
      * @return const page_at_t<I>&
      */
-    template <size_t I,
-              typename = std::enable_if_t<I<sizeof...(Pages)>> const
-                  page_at_t<I>& get_page() const noexcept {
-      if constexpr (I < sizeof...(Pages))
-        return pages_.template get<I>();
-      else
-        static_assert(I < sizeof...(Pages), "index out of range");
+    template <size_t I>
+    const page_at_t<I>& get_page() const noexcept {
+      return pages_.template get<I>();
     }
 
     /**
@@ -167,10 +157,10 @@ namespace sgl {
 
     /**
      * @brief get reference to item at ItemIndex from page at PageIndex
-     * 
+     *
      * @tparam PageIndex page index in menu
      * @tparam ItemIndex item index in page
-     * @return item_at_t<PageIndex, ItemIndex>& 
+     * @return item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
     item_at_t<PageIndex, ItemIndex>& get_item() {
@@ -179,22 +169,21 @@ namespace sgl {
 
     /**
      * @brief get reference to item at ItemIndex from page at PageIndex
-     * 
+     *
      * @tparam PageIndex page index in menu
      * @tparam ItemIndex item index in page
-     * @return const item_at_t<PageIndex, ItemIndex>& 
+     * @return const item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
-    const item_at_t<PageIndex, ItemIndex>& get_item() const{
+    const item_at_t<PageIndex, ItemIndex>& get_item() const {
       return pages_.template get<PageIndex>().template get_item<ItemIndex>();
     }
 
     friend Menu_t<LineWidth, CharT, Pages...>
-        make_menu<LineWidth, CharT, Pages...>(string_view_t menu_name,
-                                              sgl::Input    start_edit,
-                                              sgl::Input    stop_edit,
+        make_menu<LineWidth, CharT, Pages...>(StringView menu_name,
+                                              sgl::Input start_edit,
+                                              sgl::Input stop_edit,
                                               Pages&&... pages);
-
 
   private:
     static error default_handle_input(Menu_t<LineWidth, CharT, Pages...>& menu,
@@ -218,11 +207,11 @@ namespace sgl {
     }
 
     template <size_t I>
-    sgl::error set_active_page_impl(string_view_t page_name) noexcept {
+    sgl::error set_active_page_impl(StringView page_name) noexcept {
       if constexpr (I == num_pages) {
         return sgl::error::page_not_found;
       } else {
-        if (page_name == string_view_t(pages_.template get<I>().get_name())) {
+        if (page_name == StringView(pages_.template get<I>().get_name())) {
           index_ = I;
           return error::no_error;
         } else {
@@ -232,7 +221,7 @@ namespace sgl {
     }
 
     template <size_t I>
-    string_view_t current_page_name_impl() const noexcept {
+    StringView current_page_name_impl() const noexcept {
       if constexpr (I == (num_pages - 1)) {
         return pages_.template get<I>().get_name();
       } else {
@@ -294,7 +283,7 @@ namespace sgl {
 
     tuple<Pages...> pages_;
     InputHandler_t  input_handler_{&default_handle_input};
-    string_view_t   name_;
+    StringView      name_;
     size_t          index_{0};
   };
 

@@ -12,7 +12,7 @@ namespace sgl {
    * @brief This class implements a enumerated item, i.e. a item with only a
    * limited amount of possible values.
    *  @details see sgl::make_enum or an easy way to instantiate a Enum_t item.
-   * 
+   *
    * @tparam EnumT the enumeration type
    * @tparam NumEnumerators number of enumerated values
    * @tparam LineWidth number of characters per line in the menu
@@ -26,7 +26,7 @@ namespace sgl {
             typename CharT>
   class Enum_t : public sgl::Item_t<LineWidth, CharT> {
   public:
-    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
     template <typename T>
     using enum_handler_check = std::enable_if_t<
         std::is_invocable_r_v<sgl::error,
@@ -42,11 +42,11 @@ namespace sgl {
      * without naming types explicitly.
      *
      * @param item_name name of the item
-     * @param map  map EnumT values and corresponding string_views. See nested
-     * Pair class.
+     * @param map  map EnumT values and corresponding string_views. See
+     * sgl::Pair and sgl::make_enum for an example.
      * @param start_index
      */
-    Enum_t(string_view_t item_name,
+    Enum_t(StringView item_name,
            const Pair (&map)[NumEnumerators],
            size_t start_index = 0)
         : Enum_t(item_name, map, default_handle_input, start_index) {}
@@ -61,7 +61,7 @@ namespace sgl {
      */
     template <typename EnumInputHandler,
               enum_handler_check<EnumInputHandler>* = nullptr>
-    Enum_t(string_view_t item_name,
+    Enum_t(StringView item_name,
            const Pair (&map)[NumEnumerators],
            EnumInputHandler&& handler,
            size_t             start_index = 0)
@@ -82,7 +82,7 @@ namespace sgl {
     /// get number of enumerated values
     constexpr size_t num_values() const { return NumEnumerators; }
     /// get string of current value
-    string_view_t current_string() const noexcept { return map_[index_].str; }
+    StringView current_string() const noexcept { return map_[index_].str; }
     /// get index of current value
     constexpr size_t index() const { return index_; }
     /// set current value by index
@@ -142,11 +142,11 @@ namespace sgl {
    * using namespace sgl::string_view_literals;
    * enum class test_enum { _0, _1, _2, _3, _4 };
    * auto e = sgl::make_enum<test_enum,40>("item name"_sv,
-   *                       {{test_enum::_1, "one"},
-   *                        {test_enum::_0, "zero"},
-   *                        {test_enum::_2, "two"},
-   *                        {test_enum::_3, "three"},
-   *                        {test_enum::_4, "four"}});
+   *                                      {{test_enum::_1, "one"},
+   *                                       {test_enum::_0, "zero"},
+   *                                       {test_enum::_2, "two"},
+   *                                       {test_enum::_3, "three"},
+   *                                       {test_enum::_4, "four"}});
    * @endcode
    * @tparam EnumT enumeration type
    * @tparam NumEnumerators number of enumerated values
@@ -156,6 +156,7 @@ namespace sgl {
    * map type, i.e. array of struct with EnumT value and string_view.
    * @param item_name name of the item
    * @param start_index index of the value in map to first show.
+   * @param enum_map maps EnumT to string_views. See above for an example.
    * @return sgl::Enum_t<EnumT, NumEnumerators, LineWidth, CharT>
    */
   template <typename EnumT,
