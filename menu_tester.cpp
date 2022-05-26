@@ -7,7 +7,7 @@
 DEFINE_SGL_TYPES(40, char);
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 using namespace sgl::string_view_literals;
-auto button_cb = [](Element& b) -> sgl::error {
+auto button_cb = [](Item& b) -> sgl::error {
   std::cout << b.get_name().data() << " pressed\n";
   return sgl::error::no_error;
 };
@@ -34,15 +34,15 @@ int main() {
                               return sgl::error::no_error;
                             }),
                     Boolean("boolean 2", false),
-                    Number("number1"_sv, 42, 1),
+                    Integer("number1"_sv, 42, 1),
                     Text("t1", "this a text"),
                     PageLink("page2link", "page 2 link", "page2"),
-                    Element("elem1", "Element 1"),
+                    Item("elem1", "Item 1"),
                     Button("b1", "button1", button_cb),
                     Button("b3", "button3", button_cb),
                     ConstText("ct1"),
                     Enum<test_enum, 5>("enum 1",
-                                       {{test_enum::_0, {"zero"}},
+                                       {{test_enum::_0, "zero"},
                                         {test_enum::_1, "one"},
                                         {test_enum::_2, "two"},
                                         {test_enum::_3, "three"},
@@ -51,12 +51,12 @@ int main() {
                     "PAGE2",
                     sgl::Input::enter,
                     sgl::Input::enter,
-                    Element("elem2", "elem2"),
+                    Item("elem2", "elem2"),
                     Button("b4", "button4", button_cb),
                     Text("t2", "Text 2"),
                     ConstText("ct2", "ConstText 2"),
                     Enum<test_enum, 5>("enum 2",
-                                       {{test_enum::_0, {"zero"}},
+                                       {{test_enum::_0, "zero"},
                                         {test_enum::_1, "one"},
                                         {test_enum::_2, "two"},
                                         {test_enum::_3, "three"},
