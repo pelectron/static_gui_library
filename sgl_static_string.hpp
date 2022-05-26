@@ -26,7 +26,7 @@ namespace sgl {
       overwrite(string, size_);
     }
 
-    template <size_t N, typename = std::enable_if_t<(N <= (Capacity + 1))>>
+    template <size_t N, std::enable_if_t<(N <= (Capacity + 1))>* = nullptr>
     constexpr StaticString(const CharT (&string)[N]) : size_(N - 1) {
       overwrite(string, size_);
     }
