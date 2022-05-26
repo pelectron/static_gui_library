@@ -24,7 +24,10 @@ namespace sgl {
   public:
     using string_view_t =
         typename sgl::Button_t<LineWidth, CharT>::string_view_t;
-
+    template <typename T>
+    using boolean_click_handler_check = std::enable_if_t<
+        std::
+            is_invocable_r_v<sgl::error, T, sgl::Boolean_t<LineWidth, CharT>&>>;
     /**
      * @brief Construct a boolean item, which toggles its text between "TRUE"
      * and "FALSE" when clicked.
@@ -52,22 +55,32 @@ namespace sgl {
     /**
      * @brief Construct a boolean item with custom click handler.
      *
-     * @tparam ClickHandler
-     * @param item_name
-     * @param initial_value
-     * @param click_handler
+     * @tparam ClickHandler see boolean_click_handler_check for details.
+     * @param item_name name of boolean item
+     * @param text inital text of boolean item
+     * @param value initial value of boolean item
+     * @param click_handler click handler
      */
-    template <typename ClickHandler>
+    template <typename ClickHandler,
+              boolean_click_handler_check<ClickHandler>* = nullptr>
     Boolean_t(string_view_t  item_name,
-              string_view_t  initial_value,
+              string_view_t  text,
+              bool           value,
               ClickHandler&& click_handler)
         : Button_t<LineWidth, CharT>(
               item_name,
-              initial_value,
-              std::forward<ClickHandler>(click_handler)) {}
+              text,
+              [handle = std::move(click_handler)](
+                  sgl::Button_t<LineWidth, CharT>& b) {
+                return handle(
+                    static_cast<sgl::Boolean_t<LineWidth, CharT>&>(b));
+              }) {}
 
-    bool get_value() const { return value_; }
-    void set_value(bool value) { value_ = value; }
+    bool       get_value() const { return value_; }
+    sgl::error set_value(bool value) {
+      value_ = value;
+      return sgl::error::no_error;
+    }
 
   private:
     bool value_;
