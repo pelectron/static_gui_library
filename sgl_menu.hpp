@@ -29,11 +29,14 @@ namespace sgl {
                               T,
                               Menu_t<LineWidth, CharT, Pages...>&,
                               Input>>;
+
     /// returns type at index I of Pages...
     template <size_t I>
     using page_at_t = type_at_t<I, type_list<Pages...>>;
+    /// get item index I from page with index P
     template <size_t P, size_t I>
-    using item_at_t = typename page_at_t<I>::template item_at_t<I>;
+    using item_at_t = typename page_at_t<P>::template item_at_t<I>;
+
     using string_view_t = typename sgl::string_view<CharT>;
 
     // constructors
@@ -98,6 +101,7 @@ namespace sgl {
     const ItemBase& current_item() const noexcept {
       return const_current_item_impl<0>();
     }
+
     /**
      * @brief get menu_name of the current page
      * @return string_view_t
@@ -150,11 +154,36 @@ namespace sgl {
       return number_of_pages_v<Menu_t<LineWidth, CharT, Pages...>>;
     }
 
+    /**
+     * @brief get reference to item at ItemIndex from page at PageIndex
+     * 
+     * @tparam PageIndex page index in menu
+     * @tparam ItemIndex item index in page
+     * @return item_at_t<PageIndex, ItemIndex>& 
+     */
+    template <size_t PageIndex, size_t ItemIndex>
+    item_at_t<PageIndex, ItemIndex>& get_item() {
+      return pages_.template get<PageIndex>().template get_item<ItemIndex>();
+    }
+    
+    /**
+     * @brief get reference to item at ItemIndex from page at PageIndex
+     * 
+     * @tparam PageIndex page index in menu
+     * @tparam ItemIndex item index in page
+     * @return const item_at_t<PageIndex, ItemIndex>& 
+     */
+    template <size_t PageIndex, size_t ItemIndex>
+    const item_at_t<PageIndex, ItemIndex>& get_item() const{
+      return pages_.template get<PageIndex>().template get_item<ItemIndex>();
+    }
+
     friend Menu_t<LineWidth, CharT, Pages...>
         make_menu<LineWidth, CharT, Pages...>(string_view_t menu_name,
                                               sgl::Input    start_edit,
                                               sgl::Input    stop_edit,
                                               Pages&&... pages);
+
 
   private:
     static error default_handle_input(Menu_t<LineWidth, CharT, Pages...>& menu,

@@ -99,6 +99,9 @@ int main() {
   menu.current_page_name();
   menu.get_page<0>();
   menu.set_active_page("home");
+  menu.get_item<0, 0>();
+  auto& a = menu.get_item<1, 4>();
+  std::cout << a.get_name().data() << std::endl;
   char c;
   print_menu(menu);
   bool keep_looping = true;
@@ -169,7 +172,6 @@ int main() {
                                          {test_enum::_2, "two"},
                                          {test_enum::_3, "three"},
                                          {test_enum::_4, "four"}})));
-  std::cout << menu2.size();
   menu2.get_page<0>();
   menu2.get_page<1>();
 
