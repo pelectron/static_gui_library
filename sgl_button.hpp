@@ -3,10 +3,10 @@
 #include "sgl_item.hpp"
 namespace sgl {
   /**
-   * @brief
+   * @brief This class implements a basic button item.
    *
-   * @tparam LineWidth
-   * @tparam CharT
+   * @tparam LineWidth number of characters per line in the menu
+   * @tparam CharT character type of the item
    */
   template <size_t LineWidth, typename CharT>
   class Button_t : public Item_t<LineWidth, CharT> {
@@ -18,21 +18,23 @@ namespace sgl {
     template <typename T>
     using input_handler_check =
         typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
+    using string_view_t =
+        typename sgl::Button_t<LineWidth, CharT>::string_view_t;
 
-    Button_t(string_view<CharT> name_and_text)
+    Button_t(string_view_t name_and_text)
         : Item_t(name_and_text,
                  &Button_t<LineWidth, CharT>::default_handle_input) {}
 
-    Button_t(string_view<CharT> item_name, string_view<CharT> text)
+    Button_t(string_view_t item_name, string_view_t text)
         : Item_t<LineWidth, CharT>(
               item_name,
               text,
               &Button_t<LineWidth, CharT>::default_handle_input) {}
 
     template <typename ClickHandler>
-    Button_t(string_view<CharT> item_name,
-             string_view<CharT> text,
-             ClickHandler&&     click_handler)
+    Button_t(string_view_t  item_name,
+             string_view_t  text,
+             ClickHandler&& click_handler)
         : Item_t<LineWidth, CharT>(
               item_name,
               text,
@@ -49,10 +51,10 @@ namespace sgl {
               typename InputHandler,
               typename = click_handler_check<ClickHandler>,
               typename = input_handler_check<InputHandler>>
-    Button_t(string_view<CharT> item_name,
-             string_view<CharT> text,
-             ClickHandler&&     click_handler,
-             InputHandler&&     input_handler)
+    Button_t(string_view_t  item_name,
+             string_view_t  text,
+             ClickHandler&& click_handler,
+             InputHandler&& input_handler)
         : Item_t<LineWidth, CharT>(item_name,
                                    text,
                                    std::forward<InputHandler>(input_handler)),
@@ -94,7 +96,5 @@ namespace sgl {
     ClickHandler_t click_handler_{&default_handle_click};
   };
 
-  template <size_t LineWidth, typename CharT>
-  struct is_item<Button_t<LineWidth, CharT>> : std::true_type {};
 } // namespace sgl
 #endif

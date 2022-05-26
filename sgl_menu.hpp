@@ -34,6 +34,8 @@ namespace sgl {
     using page_at_t = type_at_t<I, type_list<Pages...>>;
     template <size_t P, size_t I>
     using item_at_t = typename page_at_t<I>::template item_at_t<I>;
+    using string_view_t = typename sgl::string_view<CharT>;
+
     // constructors
     /**
      * @brief Construct a new Menu_t object
@@ -41,7 +43,7 @@ namespace sgl {
      * @param menu_name
      * @param pages
      */
-    Menu_t(string_view<CharT> menu_name, Pages&&... pages)
+    Menu_t(string_view_t menu_name, Pages&&... pages)
         : pages_(std::forward<Pages>(pages)...), name_(menu_name) {
       set_menu_impl(sgl::index_sequence_for<Pages...>{});
     }
@@ -75,7 +77,7 @@ namespace sgl {
      * @param page_name
      * @return error
      */
-    sgl::error set_active_page(sgl::string_view<CharT> page_name) {
+    sgl::error set_active_page(string_view_t page_name) {
       return set_active_page_impl<0>(page_name);
     }
 
@@ -98,9 +100,9 @@ namespace sgl {
     }
     /**
      * @brief get menu_name of the current page
-     * @return string_view<CharT>
+     * @return string_view_t
      */
-    string_view<CharT> current_page_name() const noexcept {
+    string_view_t current_page_name() const noexcept {
       return current_page_name_impl<0>();
     }
 
@@ -149,9 +151,9 @@ namespace sgl {
     }
 
     friend Menu_t<LineWidth, CharT, Pages...>
-        make_menu<LineWidth, CharT, Pages...>(string_view<CharT> menu_name,
-                                              sgl::Input         start_edit,
-                                              sgl::Input         stop_edit,
+        make_menu<LineWidth, CharT, Pages...>(string_view_t menu_name,
+                                              sgl::Input    start_edit,
+                                              sgl::Input    stop_edit,
                                               Pages&&... pages);
 
   private:
@@ -176,13 +178,11 @@ namespace sgl {
     }
 
     template <size_t I>
-    sgl::error
-        set_active_page_impl(sgl::string_view<CharT> page_name) noexcept {
+    sgl::error set_active_page_impl(string_view_t page_name) noexcept {
       if constexpr (I == num_pages) {
         return sgl::error::page_not_found;
       } else {
-        if (page_name ==
-            string_view<CharT>(pages_.template get<I>().get_name())) {
+        if (page_name == string_view_t(pages_.template get<I>().get_name())) {
           index_ = I;
           return error::no_error;
         } else {
@@ -192,7 +192,7 @@ namespace sgl {
     }
 
     template <size_t I>
-    string_view<CharT> current_page_name_impl() const noexcept {
+    string_view_t current_page_name_impl() const noexcept {
       if constexpr (I == (num_pages - 1)) {
         return pages_.template get<I>().get_name();
       } else {
@@ -252,10 +252,10 @@ namespace sgl {
       (get_page<I>().set_stop_edit(stop_edit), ...);
     }
 
-    tuple<Pages...>    pages_;
-    InputHandler_t     input_handler_{&default_handle_input};
-    string_view<CharT> name_;
-    size_t             index_{0};
+    tuple<Pages...> pages_;
+    InputHandler_t  input_handler_{&default_handle_input};
+    string_view_t   name_;
+    size_t          index_{0};
   };
 
   template <size_t LineWidth, typename CharT, typename... Pages>

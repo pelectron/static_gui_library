@@ -2,6 +2,7 @@
 #define CLIP_TYPE_LIST_HPP
 #include <type_traits>
 namespace sgl {
+  ///@cond
   template <typename... Ts>
   struct type_list {};
 
@@ -229,5 +230,6 @@ namespace sgl {
 
   template <template <typename> typename F, typename List>
   using for_each_t = typename for_each<F, List>::type;
+  ///@endcond
 } // namespace sgl
 #endif

@@ -2,14 +2,11 @@
 #define STRING_VIEW_HPP
 #include <cstddef>
 namespace sgl {
-  template <typename CharT>
-  constexpr size_t str_len(const CharT* str) {
-    size_t i = 0;
-    while (str[i] != CharT{0}) {
-      ++i;
-    }
-    return i;
-  }
+  /**
+   * @brief A 'view' of CharT elements. See std::string_view
+   *
+   * @tparam CharT character type of the string_view
+   */
   template <typename CharT>
   class string_view {
   public:

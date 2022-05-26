@@ -86,6 +86,8 @@
     "cget",
     "CHARCONV",
     "cmfn",
-    "declval"
+    "declval",
+    "subpage",
+    "subpages"
   ]
 }

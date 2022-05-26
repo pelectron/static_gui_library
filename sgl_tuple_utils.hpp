@@ -1,6 +1,7 @@
 #ifndef SGL_TUPLE_UTILS_HPP
 #define SGL_TUPLE_UTILS_HPP
 namespace sgl {
+  ///@cond
   constexpr size_t sgt_mod(size_t v, size_t mod) {
     size_t m = v % mod;
 
@@ -58,5 +59,6 @@ namespace sgl {
     return buffer_index_impl<I, Ts...>(0);
   }
   static_assert(buffer_index<0, int, char, int>() == 0, "");
+  ///@endcond
 } // namespace sgl
 #endif

@@ -8,11 +8,22 @@
 #include <type_traits>
 
 namespace sgl {
+  /**
+   * @addtogroup item_types Item Types
+   * @{
+   * @brief
+   *
+   * @tparam LineWidth number of characters per line in the menu
+   * @tparam CharT character type of the item
+   */
   template <size_t LineWidth, typename CharT>
   class Item_t {
   public:
+    using string_view_t = sgl::string_view<CharT>;
+
     using InputHandler_t =
         Callable<sgl::error(Item_t<LineWidth, CharT>&, sgl::Input)>;
+    /// SFINAE alias to check input handler types
     template <typename T>
     using input_handler_check =
         std::enable_if_t<std::is_invocable_r_v<sgl::error,
@@ -20,23 +31,33 @@ namespace sgl {
                                                Item_t<LineWidth, CharT>&,
                                                sgl::Input>>;
 
-    Item_t(string_view<CharT> item_name, string_view<CharT> text)
+    /**
+     * @brief Construct a Item_t with a name and text.
+     *
+     * @param item_name name of the item
+     * @param text text of the item
+     */
+    Item_t(string_view_t item_name, string_view_t text)
         : name_(item_name), text_(text) {}
 
-    Item_t(string_view<CharT> name_and_text)
+    /**
+     * @brief Construct a new Item_t which has the same text for its name and
+     * value.
+     *
+     * @param name_and_text name and text of item.
+     */
+    Item_t(string_view_t name_and_text)
         : name_(name_and_text), text_(name_and_text) {}
 
     template <typename InputHandler,
               typename = input_handler_check<InputHandler>>
-    Item_t(string_view<CharT> item_name,
-           string_view<CharT> text,
-           InputHandler&&     handler)
+    Item_t(string_view_t item_name, string_view_t text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)), name_(item_name),
           text_(text) {}
 
     template <typename InputHandler,
-              input_handler_check<InputHandler>* = nullptr>
-    Item_t(string_view<CharT> name_and_text, InputHandler&& handler)
+              typename = input_handler_check<InputHandler>>
+    Item_t(string_view_t name_and_text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)),
           name_(name_and_text), text_{name_and_text} {}
 
@@ -45,19 +66,23 @@ namespace sgl {
 
     sgl::error handle_input(sgl::Input input) { return handler(*this, input); }
 
-    sgl::error set_text(sgl::string_view<CharT> new_text) {
+    sgl::error set_text(string_view_t new_text) {
       text_ = new_text;
       return sgl::error::no_error;
     }
 
     const StaticString<CharT, LineWidth>& get_text() const { return text_; }
     StaticString<CharT, LineWidth>&       get_text() { return text_; }
-    string_view<CharT>                    get_name() const { return name_; }
+    string_view_t                         get_name() const { return name_; }
     void                                  clear_text() { text_.reset(); }
 
-    template <typename InputHandler,
-              typename = input_handler_check<InputHandler>>
+    template <typename InputHandler>
     void set_input_handler(InputHandler&& handler) {
+      static_assert(std::is_invocable_r_v<sgl::error,
+                                          T,
+                                          Item_t<LineWidth, CharT>&,
+                                          sgl::Input>,
+                    "the provided handler is not a valid input handler");
       if constexpr (std::is_same_v<InputHandler, decltype(handler)>) {
         this->handler = handler;
       } else {
@@ -72,15 +97,10 @@ namespace sgl {
     }
 
     InputHandler_t                 handler{&default_handle_input};
-    string_view<CharT>             name_{};
+    string_view_t                  name_{};
     StaticString<CharT, LineWidth> text_{};
   };
+  /// @}
 
-  template <typename Item>
-  struct is_item : std::false_type {};
-  template <size_t LineWidth, typename CharT>
-  struct is_item<Item_t<LineWidth, CharT>> : std::true_type {};
-  template <typename Item>
-  static constexpr bool is_item_v = is_item<Item>::value;
 } // namespace sgl
 #endif

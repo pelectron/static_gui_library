@@ -24,7 +24,16 @@ namespace sgl {
     return sgl::error::no_error;
   }
 #endif
-
+  /**
+   * @addtogroup item_types Item Types
+   * @{
+   * @brief
+   *
+   *
+   * @tparam T
+   * @tparam LineWidth
+   * @tparam CharT
+   */
   template <typename T, size_t LineWidth, typename CharT>
   class Integer_t : public sgl::Item_t<LineWidth, CharT> {
   public:
@@ -33,12 +42,12 @@ namespace sgl {
                   "T must not be bool. Use Boolean_t for a boolean item.");
     using Formatter_t =
         Callable<sgl::error(StaticString<CharT, LineWidth>&, T)>;
-
+    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
     template <typename Formatter>
-    Integer_t(string_view<CharT> item_name,
-              T                  initial_value,
-              T                  delta,
-              Formatter&&        formatter)
+    Integer_t(string_view_t item_name,
+              T             initial_value,
+              T             delta,
+              Formatter&&   formatter)
         : sgl::Item_t<LineWidth, CharT>(item_name, &default_handle_input),
           format_(std::forward<Formatter>(formatter)), value_(initial_value),
           delta_(delta) {
@@ -49,7 +58,7 @@ namespace sgl {
       format_buffer_.reset();
     }
 
-    Integer_t(string_view<CharT> item_name, T initial_value, T delta)
+    Integer_t(string_view_t item_name, T initial_value, T delta)
         : sgl::Item_t<LineWidth, CharT>(item_name, &default_handle_input),
           value_(initial_value), delta_(delta) {
       this->clear_text();
@@ -104,8 +113,6 @@ namespace sgl {
     T                              delta_{1};
     StaticString<CharT, LineWidth> format_buffer_;
   };
-
-  template <typename T, size_t LineWidth, typename CharT>
-  struct is_item<Integer_t<T, LineWidth, CharT>> : std::true_type {};
+  /// @}
 } // namespace sgl
 #endif

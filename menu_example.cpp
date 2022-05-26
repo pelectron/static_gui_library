@@ -3,7 +3,6 @@ using namespace sgl;
 #include <iostream>
 static constexpr size_t L = 40;
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
-using Pair_t = Pair<test_enum, char>;
 using sv = string_view<char>;
 
 using Element = Item_t<L, char>;

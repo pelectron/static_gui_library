@@ -4,6 +4,8 @@
 namespace sgl {
 
   /**
+   * @addtogroup item_types Item Types
+   * @{
    * @brief
    *
    * @tparam LineWidth
@@ -12,9 +14,11 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class PageLink_t : public Button_t<LineWidth, CharT> {
   public:
-    PageLink_t(string_view<CharT> item_name,
-               string_view<CharT> text,
-               string_view<CharT> page_to_link)
+    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+
+    PageLink_t(string_view_t item_name,
+               string_view_t text,
+               string_view_t page_to_link)
         : Button_t<LineWidth, CharT>(item_name, text),
           page_name_(page_to_link) {}
     // static overload of Item_t::set_menu
@@ -29,14 +33,12 @@ namespace sgl {
           });
     }
 
-    constexpr string_view<CharT> page_name() const { return page_name_; }
+    constexpr string_view_t page_name() const { return page_name_; }
 
   private:
-    string_view<CharT> page_name_;
+    string_view_t page_name_;
   };
-
-  template <size_t LineWidth, typename CharT>
-  struct is_item<PageLink_t<LineWidth, CharT>> : std::true_type {};
+  /// @}
 
 } // namespace sgl
 #endif

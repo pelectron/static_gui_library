@@ -1,6 +1,7 @@
 #ifndef SGL_INDEX_SEQUENCE_HPP
 #define SGL_INDEX_SEQUENCE_HPP
 namespace sgl {
+  ///@cond
   template <size_t... I>
   struct index_seq_t {};
 
@@ -23,5 +24,6 @@ namespace sgl {
 
   template <typename... Ts>
   using index_sequence_for = typename make_index_seq<sizeof...(Ts) - 1>::type;
+  /// @endcond
 } // namespace sgl
 #endif

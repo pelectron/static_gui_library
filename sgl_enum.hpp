@@ -2,18 +2,16 @@
 #define SGL_ENUM_HPP
 #include "sgl_item.hpp"
 namespace sgl {
-  template <typename T, typename CharT>
-  struct Pair {
-    T                  val{};
-    string_view<CharT> str{};
-  };
+
   /**
-   * @brief
+   * @addtogroup item_types Item Types
+   * @{
+   * @brief This class implements a enumerated item, i.e. a item with only a limited amount of values.
    *
-   * @tparam EnumT
-   * @tparam NumEnumerators
-   * @tparam LineWidth
-   * @tparam CharT
+   * @tparam EnumT the enum type
+   * @tparam NumEnumerators number of enumerated values
+   * @tparam LineWidth number of characters per line in the menu
+   * @tparam CharT character type of the item
    */
   template <typename EnumT,
             size_t NumEnumerators,
@@ -21,8 +19,22 @@ namespace sgl {
             typename CharT>
   class Enum_t : public sgl::Item_t<LineWidth, CharT> {
   public:
-    Enum_t(string_view<CharT> item_name,
-           const Pair<EnumT, char> (&array)[NumEnumerators],
+    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    struct Pair {
+      EnumT         val;
+      string_view_t str;
+    };
+
+    /**
+     * @brief Construct a Enum_t item. See the example of how to construct without naming types explicitly.
+     *
+     * @param item_name name of the item
+     * @param array  array of pairs of EnumT values and corresponding
+     * string_view_t
+     * @param start_index
+     */
+    Enum_t(string_view_t item_name,
+           const Pair (&array)[NumEnumerators],
            size_t start_index = 0)
         : sgl::Item_t<LineWidth, CharT>(
               item_name,
@@ -37,9 +49,7 @@ namespace sgl {
 
     constexpr size_t size() const { return NumEnumerators; }
 
-    string_view<CharT> current_string() const noexcept {
-      return map[index_].str;
-    }
+    string_view_t    current_string() const noexcept { return map[index_].str; }
     constexpr size_t index() const { return index_; }
     constexpr void set_index(size_t index) { index_ = index % NumEnumerators; }
 
@@ -68,15 +78,9 @@ namespace sgl {
       return error::no_error;
     }
 
-    Pair<EnumT, CharT> map[NumEnumerators]{};
-    size_t             index_{0};
+    Pair   map[NumEnumerators]{};
+    size_t index_{0};
   };
-
-  template <typename EnumT,
-            size_t NumEnumerators,
-            size_t LineWidth,
-            typename CharT>
-  struct is_item<Enum_t<EnumT, NumEnumerators, LineWidth, CharT>>
-      : std::true_type {};
+  /// @}
 } // namespace sgl
 #endif

@@ -1,8 +1,7 @@
 #ifndef SGL_PAGE_HPP
 #define SGL_PAGE_HPP
-#include "sgl_input.hpp"
 #include "sgl_item.hpp"
-#include "sgl_string_view.hpp"
+#include "sgl_traits.hpp"
 #include "sgl_tuple.hpp"
 
 namespace sgl {
@@ -67,6 +66,8 @@ namespace sgl {
   public:
     // type aliases and typedefs
     using ItemBase = sgl::Item_t<LineWidth, CharT>;
+    using string_view_t = typename ItemBase::string_view_t;
+
     using InputHandler_t =
         Callable<error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)>;
     template <typename T>
@@ -104,11 +105,11 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Page_t(string_view<CharT> page_name,
-           string_view<CharT> page_title,
-           sgl::Input         start_edit,
-           sgl::Input         stop_edit,
-           InputHandler&&     input_handler,
+    Page_t(string_view_t  page_name,
+           string_view_t  page_title,
+           sgl::Input     start_edit,
+           sgl::Input     stop_edit,
+           InputHandler&& input_handler,
            Items&&... items)
         : items_(std::forward<Items>(items)...),
           input_handler_(std::forward<InputHandler>(input_handler)),
@@ -124,17 +125,15 @@ namespace sgl {
      * @param stop_edit Input that signals to stop editing
      * @param items page items
      */
-    Page_t(string_view<CharT> page_name,
-           string_view<CharT> page_title,
-           sgl::Input         start_edit,
-           sgl::Input         stop_edit,
+    Page_t(string_view_t page_name,
+           string_view_t page_title,
+           sgl::Input    start_edit,
+           sgl::Input    stop_edit,
            Items&&... items)
         : items_(std::forward<Items>(items)...), name_(page_name),
           title_(page_title), start_edit_(start_edit), stop_edit_(stop_edit) {}
 
-    Page_t(string_view<CharT> page_name,
-           string_view<CharT> page_title,
-           Items&&... items)
+    Page_t(string_view_t page_name, string_view_t page_title, Items&&... items)
         : items_(std::forward<Items>(items)...), name_(page_name),
           title_(page_title) {}
 
@@ -200,10 +199,10 @@ namespace sgl {
     void set_stop_edit(sgl::Input stop_edit) { stop_edit_ = stop_edit; }
 
     /// get the name of the page.
-    string_view<CharT> get_name() const { return name_; }
+    string_view_t get_name() const { return name_; }
 
     /// get the page_title of the page.
-    string_view<CharT> get_title() const { return title_; }
+    string_view_t get_title() const { return title_; }
 
     /**
      * @brief Set the menu for items which need it, i.e. page links
@@ -287,14 +286,14 @@ namespace sgl {
       (items_.template get<I>().template set_menu<Menu>(menu), ...);
     }
 
-    tuple<Items...>    items_;
-    InputHandler_t     input_handler_{&default_handle_input};
-    string_view<CharT> name_;
-    string_view<CharT> title_;
-    sgl::Input         start_edit_{sgl::Input::enter};
-    sgl::Input         stop_edit_{sgl::Input::enter};
-    size_t             index_{0};
-    bool               elem_in_edit_{false};
+    tuple<Items...> items_;
+    InputHandler_t  input_handler_{&default_handle_input};
+    string_view_t   name_;
+    string_view_t   title_;
+    sgl::Input      start_edit_{sgl::Input::enter};
+    sgl::Input      stop_edit_{sgl::Input::enter};
+    size_t          index_{0};
+    bool            elem_in_edit_{false};
   };
 
   /// template alias for number_of_items
