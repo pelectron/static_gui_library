@@ -1,0 +1,5 @@
+#ifndef SGL_MACRO_UNDEF_HPP
+#define SGL_MACRO_UNDEF_HPP
+#undef DEFINE_SGL_TYPES
+#undef DEFINE_SGL_TYPES_IN_NS
+#endif
