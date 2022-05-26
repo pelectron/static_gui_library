@@ -53,17 +53,18 @@ namespace sgl {
     }
     return true;
   }
-
+  namespace string_view_literals{
   constexpr sgl::string_view<char> operator"" _sv(const char* str, size_t n) {
     return string_view<char>(str, n);
   }
-  constexpr sgl::string_view<char16_t> operator"" _sv(const char16_t* str,
+  constexpr sgl::string_view<char16_t> operator"" _sv16(const char16_t* str,
                                                       size_t          n) {
     return string_view<char16_t>(str, n);
   }
-  constexpr sgl::string_view<char32_t> operator"" _sv(const char32_t* str,
+  constexpr sgl::string_view<char32_t> operator"" _sv32(const char32_t* str,
                                                       size_t          n) {
     return string_view<char32_t>(str, n);
+  }
   }
 } // namespace sgl
 #endif
