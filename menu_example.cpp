@@ -9,11 +9,10 @@ using Element = Item_t<L, char>;
 using Button = Button_t<L, char>;
 using Text = Text_t<L, char>;
 using ConstText = ConstText_t<L, char>;
-using Number = Integer_t<int, L, char>;
+using Number = Numeric_t<int, L, char>;
 using Enum = Enum_t<test_enum, 5, L, char>;
 using PageLink = PageLink_t<L, char>;
 
-auto sv_i = "hello"_sv;
 template <typename Page>
 void print_page(const Page& page) {
   std::cout << "Title : " << page.get_title().data() << std::endl;
