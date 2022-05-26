@@ -19,22 +19,22 @@ namespace sgl {
   class Text_t : public sgl::Item_t<LineWidth, CharT> {
   public:
     using Validator_t = Callable<sgl::error(string_view<CharT>)>;
-    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
 
     template <typename T>
     using validator_check =
-        std::enable_if_t<std::is_invocable_r_v<sgl::error, T, string_view_t>>;
+        std::enable_if_t<std::is_invocable_r_v<sgl::error, T, StringView>>;
 
     template <typename T>
     using input_handler_check =
         typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
 
-    Text_t(string_view_t item_name, string_view_t text)
+    Text_t(StringView item_name, StringView text)
         : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
           cursor_(text.size() - 1) {}
 
     template <typename Validator, typename = validator_check<Validator>>
-    Text_t(string_view_t item_name, string_view_t text, Validator&& validate)
+    Text_t(StringView item_name, StringView text, Validator&& validate)
         : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
@@ -43,8 +43,8 @@ namespace sgl {
               typename InputHandler,
               typename = validator_check<Validator>,
               typename = input_handler_check<InputHandler>>
-    Text_t(string_view_t  item_name,
-           string_view_t  text,
+    Text_t(StringView     item_name,
+           StringView     text,
            Validator&&    validate,
            InputHandler&& input_handler)
         : Item_t<LineWidth, CharT>(item_name,
@@ -52,7 +52,7 @@ namespace sgl {
                                    std::forward<InputHandler>(input_handler)),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
-    error          validate(string_view_t str) { return validate_(str); }
+    error          validate(StringView str) { return validate_(str); }
     constexpr void increment_cursor() {
       cursor_ = (cursor_ == this->get_text().size()) ? cursor_ : cursor_ + 1;
     }
@@ -109,7 +109,7 @@ namespace sgl {
       return ec;
     }
 
-    static sgl::error default_validate(string_view_t) {
+    static sgl::error default_validate(StringView) {
       return sgl::error::no_error;
     };
 
@@ -129,12 +129,12 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class ConstText_t : public Item_t<LineWidth, CharT> {
   public:
-    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
 
-    ConstText_t(string_view_t item_name, string_view_t text)
+    ConstText_t(StringView item_name, StringView text)
         : Item_t<LineWidth, CharT>(item_name, text) {}
 
-    ConstText_t(string_view_t name_and_text)
+    ConstText_t(StringView name_and_text)
         : Item_t<LineWidth, CharT>(name_and_text) {}
   };
   /// @}

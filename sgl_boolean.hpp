@@ -22,8 +22,7 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class Boolean_t : public sgl::Button_t<LineWidth, CharT> {
   public:
-    using string_view_t =
-        typename sgl::Button_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Button_t<LineWidth, CharT>::StringView;
     template <typename T>
     using boolean_click_handler_check = std::enable_if_t<
         std::
@@ -35,11 +34,11 @@ namespace sgl {
      * @param item_name name of the boolean item
      * @param initial_value initial value of the item
      */
-    Boolean_t(string_view_t item_name, bool initial_value)
+    Boolean_t(StringView item_name, bool initial_value)
         : Button_t<LineWidth, CharT>(
               item_name,
-              initial_value ? string_view_t(impl::True<CharT>)
-                            : string_view_t(impl::False<CharT>),
+              initial_value ? StringView(impl::True<CharT>)
+                            : StringView(impl::False<CharT>),
               [](Button_t<LineWidth, CharT>& button) {
                 auto& b = static_cast<Boolean_t<LineWidth, CharT>&>(button);
                 if (b.get_value()) {
@@ -63,8 +62,8 @@ namespace sgl {
      */
     template <typename ClickHandler,
               boolean_click_handler_check<ClickHandler>* = nullptr>
-    Boolean_t(string_view_t  item_name,
-              string_view_t  text,
+    Boolean_t(StringView     item_name,
+              StringView     text,
               bool           value,
               ClickHandler&& click_handler)
         : Button_t<LineWidth, CharT>(

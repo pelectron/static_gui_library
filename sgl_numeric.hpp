@@ -45,7 +45,7 @@ namespace sgl {
     using Formatter_t =
         Callable<sgl::error(StaticString<CharT, LineWidth>&, T)>;
 
-    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
 
     /**
      * @brief check if F is a valid formatter. An instance of F must have the
@@ -82,7 +82,7 @@ namespace sgl {
      * @param initial_value initial value
      * @param delta delta value
      */
-    Numeric_t(string_view_t item_name, T initial_value, T delta)
+    Numeric_t(StringView item_name, T initial_value, T delta)
         : sgl::Item_t<LineWidth, CharT>(
               item_name,
               [](sgl::Item_t<LineWidth, CharT>& item, sgl::Input i) {
@@ -110,10 +110,10 @@ namespace sgl {
      * @param formatter formatter instance
      */
     template <typename Formatter, formatter_check<Formatter>* = nullptr>
-    Numeric_t(string_view_t item_name,
-              T             initial_value,
-              T             delta,
-              Formatter&&   formatter)
+    Numeric_t(StringView  item_name,
+              T           initial_value,
+              T           delta,
+              Formatter&& formatter)
         : sgl::Item_t<LineWidth, CharT>(
               item_name,
               [](sgl::Item_t<LineWidth, CharT>& item, sgl::Input i) {
@@ -147,7 +147,7 @@ namespace sgl {
               typename IntegerInputHandler,
               formatter_check<Formatter>* = nullptr,
               integer_handler_check<IntegerInputHandler>* = nullptr>
-    Numeric_t(string_view_t         item_name,
+    Numeric_t(StringView            item_name,
               T                     initial_value,
               T                     delta,
               Formatter&&           formatter,
@@ -220,9 +220,9 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    Formatter_t                    format_{&default_format<CharT, LineWidth,T>};
-    T                              value_{0};
-    T                              delta_{1};
+    Formatter_t format_{&default_format<CharT, LineWidth, T>};
+    T           value_{0};
+    T           delta_{1};
     StaticString<CharT, LineWidth> format_buffer_;
   };
   /// @}

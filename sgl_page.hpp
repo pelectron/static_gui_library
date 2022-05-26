@@ -66,7 +66,7 @@ namespace sgl {
   public:
     // type aliases and typedefs
     using ItemBase = sgl::Item_t<LineWidth, CharT>;
-    using string_view_t = typename ItemBase::string_view_t;
+    using StringView = typename ItemBase::StringView;
 
     using InputHandler_t =
         Callable<error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)>;
@@ -105,8 +105,8 @@ namespace sgl {
      */
     template <typename InputHandler,
               input_handler_check<InputHandler>* = nullptr>
-    Page_t(string_view_t  page_name,
-           string_view_t  page_title,
+    Page_t(StringView     page_name,
+           StringView     page_title,
            sgl::Input     start_edit,
            sgl::Input     stop_edit,
            InputHandler&& input_handler,
@@ -125,15 +125,15 @@ namespace sgl {
      * @param stop_edit Input that signals to stop editing
      * @param items page items
      */
-    Page_t(string_view_t page_name,
-           string_view_t page_title,
-           sgl::Input    start_edit,
-           sgl::Input    stop_edit,
+    Page_t(StringView page_name,
+           StringView page_title,
+           sgl::Input start_edit,
+           sgl::Input stop_edit,
            Items&&... items)
         : items_(std::forward<Items>(items)...), name_(page_name),
           title_(page_title), start_edit_(start_edit), stop_edit_(stop_edit) {}
 
-    Page_t(string_view_t page_name, string_view_t page_title, Items&&... items)
+    Page_t(StringView page_name, StringView page_title, Items&&... items)
         : items_(std::forward<Items>(items)...), name_(page_name),
           title_(page_title) {}
 
@@ -199,10 +199,10 @@ namespace sgl {
     void set_stop_edit(sgl::Input stop_edit) { stop_edit_ = stop_edit; }
 
     /// get the name of the page.
-    string_view_t get_name() const { return name_; }
+    StringView get_name() const { return name_; }
 
     /// get the page_title of the page.
-    string_view_t get_title() const { return title_; }
+    StringView get_title() const { return title_; }
 
     /**
      * @brief Set the menu for items which need it, i.e. page links
@@ -288,8 +288,8 @@ namespace sgl {
 
     tuple<Items...> items_;
     InputHandler_t  input_handler_{&default_handle_input};
-    string_view_t   name_;
-    string_view_t   title_;
+    StringView      name_;
+    StringView      title_;
     sgl::Input      start_edit_{sgl::Input::enter};
     sgl::Input      stop_edit_{sgl::Input::enter};
     size_t          index_{0};

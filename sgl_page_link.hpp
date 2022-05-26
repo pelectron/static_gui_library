@@ -14,17 +14,15 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class PageLink_t : public Button_t<LineWidth, CharT> {
   public:
-    using string_view_t = typename sgl::Item_t<LineWidth, CharT>::string_view_t;
+    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
     /**
      * @brief Construct a new PageLink_t
-     * 
+     *
      * @param item_name name of the link
      * @param text text of the link
      * @param page_to_link name of the page to link to
      */
-    PageLink_t(string_view_t item_name,
-               string_view_t text,
-               string_view_t page_to_link)
+    PageLink_t(StringView item_name, StringView text, StringView page_to_link)
         : Button_t<LineWidth, CharT>(item_name, text),
           page_name_(page_to_link) {}
 
@@ -40,10 +38,10 @@ namespace sgl {
           });
     }
 
-    constexpr string_view_t page_name() const { return page_name_; }
+    constexpr StringView page_name() const { return page_name_; }
 
   private:
-    string_view_t page_name_;
+    StringView page_name_;
   };
   /// @}
 
