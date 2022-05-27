@@ -215,6 +215,15 @@ namespace sgl {
       set_menu_impl(menu, sgl::index_sequence_for<Items...>{});
     }
 
+    template <typename F>
+    void for_each_item(F&& f) {
+      items_.for_each(std::forward<F>(f));
+    }
+    template <typename F>
+    void for_each_item(F&& f) const {
+      items_.for_each(std::forward<F>(f));
+    }
+
   private:
     /// default page input handler.
     static error default_handle_input(Page_t<LineWidth, CharT, Items...>& page,
