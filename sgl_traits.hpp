@@ -57,12 +57,21 @@ namespace sgl {
   /// template alias for number_of_items
   template <typename Page>
   static constexpr bool number_of_items_v = number_of_items<Page>::value;
+
   template <typename Page>
   struct is_page : std::false_type {};
   template <size_t LineWidth, typename CharT, typename... Items>
   struct is_page<Page_t<LineWidth, CharT, Items...>> : std::true_type {};
   template <typename Page>
   static constexpr bool is_page_v = is_page<Page>::value;
+
+  template <typename Menu>
+  struct is_menu : std::false_type {};
+  template <size_t L, typename C, typename... I>
+  struct is_menu<Menu_t<L, C, I...>> : std::true_type {};
+  template <typename Menu>
+  static constexpr bool is_menu_v = is_menu<Menu>::value;
+
   ///@endcond
 } // namespace sgl
 #endif
