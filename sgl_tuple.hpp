@@ -46,7 +46,37 @@ namespace sgl {
           type_at<I>(std::forward<Args>(args)...);
     }
 
+    /**
+     * @brief applies f for each element in the tuple.
+     *
+     * @tparam F functor type
+     * @param f functor instance
+     */
+    template <typename F>
+    void for_each(F&& f) {
+      for_each_impl(std::forward<F>(f), sgl::index_sequence_for<Types...>{});
+    }
+
+    template <typename F>
+    void for_each(F&& f) const {
+      for_each_impl(std::forward<F>(f), sgl::index_sequence_for<Types...>{});
+    }
+
   private:
+    template <typename F, size_t... I>
+    void for_each_impl(F&& f, sgl::index_seq_t<I...>) {
+      static_assert(std::is_invocable_v < F, type_at<I>&);
+      static_assert(((I < sizeof...(Types)) && ...), "index out of range");
+      (f(this->get<I>()), ...);
+    }
+
+    template <typename F, size_t... I>
+    void for_each_impl(F&& f, sgl::index_seq_t<I...>) const {
+      static_assert(std::is_invocable_v < F, const type_at<I>&);
+      static_assert(((I < sizeof...(Types)) && ...), "index out of range");
+      (f(this->get<I>()), ...);
+    }
+
     template <size_t... I>
     void copy_impl(const tuple& t, sgl::index_seq_t<I...>) {
       static_assert(((I < sizeof...(Types)) && ...), "index out of range");
