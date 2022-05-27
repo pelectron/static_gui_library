@@ -115,7 +115,9 @@ namespace sgl {
      * @tparam F functor type
      * @param f functor instance
      */
-    template <typename F>
+    template <typename F,
+              std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
+                  nullptr>
     void bind(F&& f) {
       static_assert(std::is_invocable_r_v<Ret, F, Args...>, "");
       static_assert(sizeof(F) <= sizeof(buffer), "");
