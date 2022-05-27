@@ -12,12 +12,13 @@ namespace sgl {
   /// @endcond
 
   /**
-   * @addtogroup item_types Item Types
-   * @{
    * @brief This class implements a basic boolean item.
    *
    * @tparam LineWidth number of characters per line in the menu
    * @tparam CharT character type of the item
+   *
+   * @addtogroup item_types Item Types
+   * @{
    */
   template <size_t LineWidth, typename CharT>
   class Boolean_t : public sgl::Button_t<LineWidth, CharT> {
@@ -27,7 +28,7 @@ namespace sgl {
     using boolean_click_handler_check = std::enable_if_t<
         std::
             is_invocable_r_v<sgl::error, T, sgl::Boolean_t<LineWidth, CharT>&>>;
-    
+
     /**
      * @brief Construct a boolean item, which toggles its text between "TRUE"
      * and "FALSE" when clicked.

@@ -90,13 +90,16 @@ namespace sgl {
           name_(name_and_text), text_{name_and_text} {}
 
     /**
-     * @brief overriden statically in derived classes. Can be used to get access
-     * to the menu from an item. See PageLink_t for an example of how it is
-     * used.
+     * @brief Can be used to give access to the menu from an item. Menu_t will
+     * call this function for all items it contains with its declared type, i.e.
+     * this function can be statically overridden in derived classes.See
+     * PageLink_t for an example of how it is used.
      * @tparam Menu menu type
      */
     template <typename Menu>
-    void set_menu(Menu*) {}
+    void set_menu(Menu*) {
+      static_assert(sgl::is_menu_v<Menu>, "Menu type must be a menu");
+    }
 
     /**
      * @brief calls the items input handler.

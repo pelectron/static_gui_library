@@ -124,7 +124,7 @@ namespace sgl {
     /**
      * @brief Get a page by index
      * @tparam I index
-     * @return page_at_t<I>&
+     * @return reference to page at index I
      */
     template <size_t I>
     page_at_t<I>& get_page() noexcept {
@@ -134,7 +134,7 @@ namespace sgl {
     /**
      * @brief Get the page object
      * @tparam I
-     * @return const page_at_t<I>&
+     * @return const reference to page at index I
      */
     template <size_t I>
     const page_at_t<I>& get_page() const noexcept {
@@ -177,6 +177,11 @@ namespace sgl {
     template <size_t PageIndex, size_t ItemIndex>
     const item_at_t<PageIndex, ItemIndex>& get_item() const {
       return pages_.template get<PageIndex>().template get_item<ItemIndex>();
+    }
+
+    template <typename F>
+    void for_each_page(F&& f) {
+      pages_.template for_each(std::forward<F>(f));
     }
 
     friend Menu_t<LineWidth, CharT, Pages...>

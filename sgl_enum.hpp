@@ -55,9 +55,11 @@ namespace sgl {
      * @brief Construct a new Enum_t object
      *
      * @tparam EnumInputHandler
-     * @param item_name
-     * @param handler
-     * @param start_index
+     * @param item_name name of item
+     * @param map maps array of pair of EnumT and StringViews. See
+     * sgl::make_enum for an example
+     * @param handler enum input handler
+     * @param start_index which value to show first
      */
     template <typename EnumInputHandler,
               enum_handler_check<EnumInputHandler>* = nullptr>
