@@ -12,8 +12,6 @@ namespace sgl {
    *
    * @tparam LineWidth display width
    * @tparam CharT character type
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <size_t LineWidth, typename CharT>
   class Text_t : public sgl::Item_t<LineWidth, CharT> {
@@ -116,15 +114,12 @@ namespace sgl {
     Validator_t validate_{&default_validate};
     size_t      cursor_{0};
   };
-  /// @}
 
   /**
    * @brief
    *
    * @tparam LineWidth display width
    * @tparam CharT character type
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <size_t LineWidth, typename CharT>
   class ConstText_t : public Item_t<LineWidth, CharT> {
@@ -137,6 +132,5 @@ namespace sgl {
     ConstText_t(StringView name_and_text)
         : Item_t<LineWidth, CharT>(name_and_text) {}
   };
-  /// @}
 } // namespace sgl
 #endif

@@ -163,7 +163,7 @@ namespace sgl {
      * @return item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
-    item_at_t<PageIndex, ItemIndex>& get_item() {
+    item_at_t<PageIndex, ItemIndex>& get_item() noexcept {
       return pages_.template get<PageIndex>().template get_item<ItemIndex>();
     }
 
@@ -175,12 +175,29 @@ namespace sgl {
      * @return const item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
-    const item_at_t<PageIndex, ItemIndex>& get_item() const {
+    const item_at_t<PageIndex, ItemIndex>& get_item() const noexcept {
       return pages_.template get<PageIndex>().template get_item<ItemIndex>();
     }
 
+    /**
+     * @brief apply f on each page in menu.
+     *
+     * @tparam F functor type
+     * @param f functor instance
+     */
     template <typename F>
-    void for_each_page(F&& f) {
+    void for_each_page(F&& f) noexcept(noexcept(f)) {
+      pages_.template for_each(std::forward<F>(f));
+    }
+
+    /**
+     * @brief apply f on each page in menu.
+     *
+     * @tparam F functor type
+     * @param f functor instance
+     */
+    template <typename F>
+    void for_each_page(F&& f) const noexcept(noexcept(f)) {
       pages_.template for_each(std::forward<F>(f));
     }
 

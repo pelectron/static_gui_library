@@ -11,8 +11,6 @@ namespace sgl {
    *
    * @tparam LineWidth display width
    * @tparam CharT character type
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <size_t LineWidth, typename CharT>
   class PageLink_t : public sgl::Button_t<LineWidth, CharT> {
@@ -68,7 +66,6 @@ namespace sgl {
   private:
     StringView page_name_; /// name of the page to link to.
   };
-  /// @}
 
 } // namespace sgl
 #endif

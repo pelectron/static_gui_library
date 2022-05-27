@@ -18,11 +18,8 @@ namespace sgl {
    * The input handlers concrete type is aliased as InputHandler_t, which is a
    * sgl::Callable with the signature sgl::error(Item_t<LineWidth, CharT>&,
    * sgl::Input).
-   * @see input handling
    * @tparam LineWidth display width
    * @tparam CharT character type
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <size_t LineWidth, typename CharT>
   class Item_t {
@@ -173,7 +170,6 @@ namespace sgl {
     StringView     name_{};                        ///< name
     TextField_t    text_{};                        ///< text field
   };
-  /// @}
 
 } // namespace sgl
 #endif

@@ -31,8 +31,6 @@ namespace sgl {
    * @tparam T value type
    * @tparam LineWidth display width
    * @tparam CharT character type
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <typename T, size_t LineWidth, typename CharT>
   class Numeric_t : public sgl::Item_t<LineWidth, CharT> {
@@ -220,11 +218,10 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    Formatter_t format_{&default_format<CharT, LineWidth, T>};
-    T           value_{0};
-    T           delta_{1};
-    StaticString<CharT, LineWidth> format_buffer_;
+    Formatter_t format_{&default_format<CharT, LineWidth, T>}; //< formatter
+    T           value_{0};                                     //< value
+    T           delta_{1};                                     //< delta value
+    StaticString<CharT, LineWidth> format_buffer_;             //< format buffer
   };
-  /// @}
 } // namespace sgl
 #endif

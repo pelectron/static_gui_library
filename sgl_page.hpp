@@ -146,7 +146,7 @@ namespace sgl {
     /// handle input. Delegates to input handler.
     error handle_input(sgl::Input i) { return input_handler_(*this, i); }
 
-    /// get reference to current item as ElementBase, a.k.a.
+    /// get reference to current item as ItemBase, a.k.a.
     /// sgl::Item_t<LineWidth, CharT>.
     ItemBase& current_item() noexcept { return get_impl<0>(index_); }
 

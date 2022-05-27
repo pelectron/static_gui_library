@@ -16,9 +16,6 @@ namespace sgl {
    *
    * @tparam LineWidth number of characters per line in the menu
    * @tparam CharT character type of the item
-   *
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <size_t LineWidth, typename CharT>
   class Boolean_t : public sgl::Button_t<LineWidth, CharT> {
@@ -87,7 +84,6 @@ namespace sgl {
   private:
     bool value_;
   };
-  /// @}
 
 } // namespace sgl
 #endif

@@ -17,8 +17,6 @@ namespace sgl {
    * @tparam NumEnumerators number of enumerated values
    * @tparam LineWidth number of characters per line in the menu
    * @tparam CharT character type of the item
-   * @addtogroup item_types Item Types
-   * @{
    */
   template <typename EnumT,
             size_t NumEnumerators,
@@ -135,7 +133,6 @@ namespace sgl {
     Map_t  map_{};
     size_t index_{0};
   };
-  /// @}
 
   /**
    * @brief helper function to create an Enum_t instance.
