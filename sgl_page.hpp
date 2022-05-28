@@ -184,7 +184,7 @@ namespace sgl {
     void set_edit_mode() { elem_in_edit_ = true; }
 
     /// set the page into navigation mode.
-    void unset_edit_mode() { elem_in_edit_ = false; }
+    void set_navigation_mode() { elem_in_edit_ = false; }
 
     /// get the start edit input value.
     sgl::Input get_start_edit() const { return start_edit_; }
@@ -231,14 +231,14 @@ namespace sgl {
       if ((i == page.get_start_edit() and not page.is_in_edit_mode())) {
         page.set_edit_mode();
       } else if ((i == page.get_stop_edit()) and page.is_in_edit_mode()) {
-        page.unset_edit_mode();
+        page.set_navigation_mode();
       }
       if (page.is_in_edit_mode()) {
         // edit mode-> delegate input to current item
         error ec = page.current_item().handle_input(i);
         switch (ec) {
           case error::edit_finished:
-            page.unset_edit_mode();
+            page.set_navigation_mode();
             return error::no_error;
           default:
             return ec;

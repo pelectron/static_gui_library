@@ -218,10 +218,10 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    Formatter_t format_{&default_format<CharT, LineWidth, T>}; //< formatter
-    T           value_{0};                                     //< value
-    T           delta_{1};                                     //< delta value
-    StaticString<CharT, LineWidth> format_buffer_;             //< format buffer
+    Formatter_t format_{&default_format<CharT, LineWidth, T>}; ///< formatter
+    T           value_{0};                                     ///< value
+    T           delta_{1};                                     ///< delta value
+    StaticString<CharT, LineWidth> format_buffer_; ///< format buffer
   };
 } // namespace sgl
 #endif

@@ -149,8 +149,8 @@ namespace sgl {
                 uint16_t,
                 std::conditional_t<N<4294967296, uint32_t, uint64_t>>>;
 
-    CharT                     data_[Capacity + 1]{0}; //< holds the characters.
-    smallest_type_t<Capacity> size_{0};               //< size of the string.
+    CharT                     data_[Capacity + 1]{0}; ///< holds the characters.
+    smallest_type_t<Capacity> size_{0};               ///< size of the string.
   };
 
   /// static string comparison operator.

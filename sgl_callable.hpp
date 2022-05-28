@@ -5,13 +5,17 @@
 #include <type_traits>
 namespace sgl {
   /// @cond
-  template <typename>
+  // intentional forward declaration only. specialization follows below.
+  template <typename Signature>
   class Callable;
   /// @endcond
+
   /**
    * @brief This class implements a callable with the guarantee that it does not
    * heap allocate.
-   * @details See std::function, google search for delegates, etc. if the
+   * @details This class can bind and execute function objects/functors/lambdas,
+   * free functions and member functions with a return type of Ret and arguments
+   * Args... . See std::function, google search for delegates, etc. if the
    * concept is not clear.
    *
    * @tparam Ret return type of the delegate

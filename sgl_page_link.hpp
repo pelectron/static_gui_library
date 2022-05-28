@@ -7,7 +7,15 @@ namespace sgl {
    * @brief This class models a page link. Clicking a page link item will change
    * the menus active page to the page referenced in the page_to_link parameter
    * in the constructors. Pages are linked by name, as to keep everything index
-   * and type free(but still typesafe, see set_menu() for details).
+   * and type free for the user(but still typesafe, see set_menu() for details).
+   * Below is an example of how to construct a page link. Of course, the 'link'
+   * variable below is useless and does not really link to anything, as it does
+   * not belong to a page yet, which further belongs to a menu.
+   * @code {.cpp}
+   * // constructs a page link for a display width of 25 and character type char
+   * auto link = PageLink_t<25,char>("LinkName", "back", "HomePage");
+   * @endcode
+   *
    *
    * @tparam LineWidth display width
    * @tparam CharT character type

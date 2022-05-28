@@ -9,13 +9,14 @@
 
 namespace sgl {
   /**
-   * @brief This class models a basic item.
+   * @brief Base class of all items.
    * It has a name, a text field, and an input handler. The name can be set only
    * once during the lifetime of an item and can be accessed with the get_name()
    * function.
    * The text field is a StaticString with a capacity of LineWidth. Access it
    * with the get_text() functions.
-   * The input handlers concrete type is aliased as InputHandler_t, which is a
+   * 
+   * The input handlers concrete type is the alias InputHandler_t, which is a
    * sgl::Callable with the signature sgl::error(Item_t<LineWidth, CharT>&,
    * sgl::Input).
    * @tparam LineWidth display width
