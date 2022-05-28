@@ -89,5 +89,16 @@
     "declval",
     "subpage",
     "subpages"
-  ]
+  ],
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "storage.type.class.doxygen.cpp",
+        "settings": {
+          "foreground": "#6bef66",
+          "fontStyle": "italic"
+        }
+      }
+    ]
+  }
 }
