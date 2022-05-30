@@ -15,7 +15,7 @@ namespace sgl {
    * function.
    * The text field is a StaticString with a capacity of LineWidth. Access it
    * with the get_text() functions.
-   * 
+   *
    * The input handlers concrete type is the alias InputHandler_t, which is a
    * sgl::Callable with the signature sgl::error(Item_t<LineWidth, CharT>&,
    * sgl::Input).

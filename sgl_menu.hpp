@@ -47,21 +47,24 @@ namespace sgl {
      * @param pages
      */
     Menu_t(StringView menu_name, Pages&&... pages)
-        : pages_(std::forward<Pages>(pages)...), name_(menu_name) {
-      set_menu_impl(sgl::index_sequence_for<Pages...>{});
+        : pages_(Pages(this, std::forward<Pages>(pages))...), name_(menu_name) {
     }
 
     Menu_t(const Menu_t& other)
         : pages_(other.pages_), input_handler_(other.input_handler_),
           name_(other.name_), index_(other.index_) {
-      set_menu_impl(sgl::index_sequence_for<Pages...>{});
+      pages_.for_each([this](auto& page) {
+        page.for_each_item([this](auto& item) { item.set_menu(this); });
+      });
     }
 
     Menu_t(Menu_t&& other)
         : pages_(std::move(other.pages_)),
           input_handler_(std::move(other.input_handler_)),
           name_(std::move(other.name_)), index_(other.index_) {
-      set_menu_impl(sgl::index_sequence_for<Pages...>{});
+      pages_.for_each([this](auto& page) {
+        page.for_each_item([this](auto& item) { item.set_menu(this); });
+      });
     }
 
     /**
@@ -92,7 +95,9 @@ namespace sgl {
      */
     sgl::error set_active_page(size_t page_index) {
       if (page_index < num_pages) {
+        for_current_page([](auto& page) { page.on_exit(); });
         index_ = page_index;
+        for_current_page([](auto& page) { page.on_enter(); });
         return sgl::error::no_error;
       } else
         return sgl::error::invalid_page_index;
@@ -102,7 +107,11 @@ namespace sgl {
      * @brief get current item
      * @return ItemBase&
      */
-    ItemBase& current_item() noexcept { return current_item_impl<0>(); }
+    ItemBase& current_item() noexcept {
+      ItemBase* ret;
+      for_current_page([&ret](auto& page) { ret = &page.current_item(); });
+      return *ret;
+    }
 
     /**
      * @brief get current item
@@ -110,7 +119,10 @@ namespace sgl {
      * @return const ItemBase&
      */
     const ItemBase& current_item() const noexcept {
-      return const_current_item_impl<0>();
+      const ItemBase* ret;
+      for_current_page(
+          [&ret](const auto& page) { ret = &page.current_item(); });
+      return *ret;
     }
 
     /**
@@ -118,7 +130,9 @@ namespace sgl {
      * @return StringView
      */
     StringView current_page_name() const noexcept {
-      return current_page_name_impl<0>();
+      StringView ret;
+      for_current_page([&ret](auto& page) { ret = page.get_name(); });
+      return ret;
     }
 
     /**
@@ -201,6 +215,14 @@ namespace sgl {
       pages_.template for_each(std::forward<F>(f));
     }
 
+    template <typename F>
+    void for_current_page(F&& f) {
+      for_current_page_impl<0>(std::forward<F>(f));
+    }
+    template <typename F>
+    void for_current_page(F&& f) const {
+      for_current_page_impl<0>(std::forward<F>(f));
+    }
     friend Menu_t<LineWidth, CharT, Pages...>
         make_menu<LineWidth, CharT, Pages...>(StringView menu_name,
                                               sgl::Input start_edit,
@@ -210,22 +232,10 @@ namespace sgl {
   private:
     static error default_handle_input(Menu_t<LineWidth, CharT, Pages...>& menu,
                                       Input input) noexcept {
-      return default_handle_input_impl<0>(menu, input);
-    }
-
-    template <size_t I>
-    static sgl::error
-        default_handle_input_impl(Menu_t<LineWidth, CharT, Pages...>& menu,
-                                  Input input) noexcept {
-      if constexpr (I == sizeof...(Pages)) {
-        // if this is reached, index_ has an invalid value.
-        return sgl::error::invalid_page_index;
-      } else {
-        if (menu.index() == I)
-          return menu.get_page<I>().handle_input(input);
-        else
-          return default_handle_input_impl<I + 1>(menu, input);
-      }
+      sgl::error ret;
+      menu.for_current_page(
+          [&ret, i = input](auto& page) { ret = page.handle_input(i); });
+      return ret;
     }
 
     template <size_t I>
@@ -234,53 +244,13 @@ namespace sgl {
         return sgl::error::page_not_found;
       } else {
         if (page_name == StringView(pages_.template get<I>().get_name())) {
+          for_current_page([](auto& page) { page.on_exit(); });
           index_ = I;
+          for_current_page([](auto& page) { page.on_enter(); });
           return error::no_error;
         } else {
           return set_active_page_impl<I + 1>(page_name);
         }
-      }
-    }
-
-    template <size_t I>
-    StringView current_page_name_impl() const noexcept {
-      if constexpr (I == (num_pages - 1)) {
-        return pages_.template get<I>().get_name();
-      } else {
-        if (I == index_)
-          return pages_.template get<I>().get_name();
-        else
-          return current_page_name_impl<I + 1>();
-      }
-    }
-
-    template <size_t... I>
-    void set_menu_impl(sgl::index_seq_t<I...>) {
-      // static overload of set_menu called!
-      (pages_.template get<I>().set_menu(this), ...);
-    }
-
-    template <size_t I>
-    ItemBase& current_item_impl() noexcept {
-      if constexpr (I == (num_pages - 1))
-        return get_page<I>().current_item();
-      else {
-        if (I == index_)
-          return get_page<I>().current_item();
-        else
-          return current_item_impl<I + 1>();
-      }
-    }
-
-    template <size_t I>
-    const ItemBase& const_current_item_impl() const noexcept {
-      if constexpr (I == (num_pages - 1))
-        return get_page<I>().current_item();
-      else {
-        if (I == index_)
-          return get_page<I>().current_item();
-        else
-          return const_current_item_impl<I + 1>();
       }
     }
 
@@ -301,6 +271,31 @@ namespace sgl {
     template <size_t... I>
     void set_stop_edit_for_pages(sgl::Input stop_edit, sgl::index_seq_t<I...>) {
       (get_page<I>().set_stop_edit(stop_edit), ...);
+    }
+
+    template <size_t I, typename F>
+    void for_current_page_impl(F&& f) {
+      if constexpr (I == num_pages) {
+        return;
+      } else {
+        if (I == index_) {
+          f(this->get_page<I>());
+        } else {
+          for_current_page_impl<I + 1>(std::forward<F>(f));
+        }
+      }
+    }
+    template <size_t I, typename F>
+    void for_current_page_impl(F&& f) const {
+      if constexpr (I == num_pages) {
+        return;
+      } else {
+        if (I == index_) {
+          f(this->get_page<I>());
+        } else {
+          for_current_page_impl<I + 1>(std::forward<F>(f));
+        }
+      }
     }
 
     tuple<Pages...> pages_;

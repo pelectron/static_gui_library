@@ -8,7 +8,7 @@ namespace sgl {
   }
 
   /**
-   * @brief
+   * @brief This class models a item with editable text.
    *
    * @tparam LineWidth display width
    * @tparam CharT character type
@@ -27,25 +27,46 @@ namespace sgl {
     using input_handler_check =
         typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
 
-    Text_t(StringView item_name, StringView text)
-        : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
+    /**
+     * @brief Construct a new Text_t object
+     * @param name name of item.
+     * @param text text of item.
+     */
+    Text_t(StringView name, StringView text)
+        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
           cursor_(text.size() - 1) {}
 
+    /**
+     * @brief Construct a new Text_t object with custom validator.
+     * @tparam Validator validator type. See validator_check and Validator_t for more info.
+     * @param name name of item.
+     * @param text text of item.
+     * @param validate validator instance.
+     */
     template <typename Validator, typename = validator_check<Validator>>
-    Text_t(StringView item_name, StringView text, Validator&& validate)
-        : Item_t<LineWidth, CharT>(item_name, text, &default_handle_input),
+    Text_t(StringView name, StringView text, Validator&& validate)
+        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
 
+    /**
+     * @brief Construct a new Text_t object with custom validator and input handler.
+     * @tparam Validator validator type. See validator_check and Validator_t.
+     * @tparam InputHandler input handler type. See input_handler_check and InputHandler_t.
+     * @param name name of item.
+     * @param text text of item.
+     * @param validate custom validator.
+     * @param input_handler custom input handler.
+     */
     template <typename Validator,
               typename InputHandler,
               typename = validator_check<Validator>,
               typename = input_handler_check<InputHandler>>
-    Text_t(StringView     item_name,
+    Text_t(StringView     name,
            StringView     text,
            Validator&&    validate,
            InputHandler&& input_handler)
-        : Item_t<LineWidth, CharT>(item_name,
+        : Item_t<LineWidth, CharT>(name,
                                    text,
                                    std::forward<InputHandler>(input_handler)),
           validate_(std::forward<Validator>(validate)),
@@ -116,7 +137,7 @@ namespace sgl {
   };
 
   /**
-   * @brief
+   * @brief This class models an item with immutable text.
    *
    * @tparam LineWidth display width
    * @tparam CharT character type
@@ -126,9 +147,18 @@ namespace sgl {
   public:
     using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
 
-    ConstText_t(StringView item_name, StringView text)
-        : Item_t<LineWidth, CharT>(item_name, text) {}
+    /**
+     * @brief Construct a ConstText_t with name and text.
+     * @param name name of item.
+     * @param text text of item.
+     */
+    ConstText_t(StringView name, StringView text)
+        : Item_t<LineWidth, CharT>(name, text) {}
 
+    /**
+     * @brief Construct a new ConstText_t with identical name and text.
+     * @param name_and_text name and text of item.
+     */
     ConstText_t(StringView name_and_text)
         : Item_t<LineWidth, CharT>(name_and_text) {}
   };
