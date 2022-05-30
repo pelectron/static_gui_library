@@ -7,13 +7,13 @@
 namespace sgl {
 
   /**
-   * @brief This class encapsulates a page. A page is simply a list of
-   * items/items.
+   * @brief This class encapsulates a page.
+   * @details
    * Data:
    * A page consists of the following data:
-   *  - a page_name, which is primarily used for switching between different
+   *  - a name, which is primarily used for switching between different
    * pages without using a index. Must be unique for all pages in a menu.
-   *  - a page_title
+   *  - a title
    *  - a 'start_edit' Input value, which tells the input handler when to start
    * editing.
    *  - a 'stop_edit' Input value, which tells the input handler when to stop
@@ -21,6 +21,10 @@ namespace sgl {
    *  - a boolean to keep track of the navigation/edit mode (true=>edit mode).
    *  - a index to keep track of the current item, i.e. a cursor.
    *  - a input handler to handle inputs.
+   *  - a page enter action. This action will be called when a page becomes
+   * active.
+   *  - a page exit action. This action will be called when a page becomes
+   * inactive.
    *  - a tuple of items/items.
    *
    * A page has two modes: navigation mode and edit mode. In the
@@ -68,74 +72,369 @@ namespace sgl {
     using ItemBase = sgl::Item_t<LineWidth, CharT>;
     using StringView = typename ItemBase::StringView;
 
+    /**
+     * @brief Concrete input handler type.
+     */
     using InputHandler_t =
         Callable<error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)>;
-    template <typename T>
+
+    /**
+     * @brief Concrete page action type.
+     */
+    using PageAction_t =
+        Callable<sgl::error(Page_t<LineWidth, CharT, Items...>&)>;
+
+    /**
+     * @brief SFINAE check if F is a page action. An instance of F must be invocable
+     * with a reference to Page_t<LineWidth, CharT, Items...> and return a
+     * sgl::error.
+     * @tparam F invocable type
+     */
+    template <typename F>
+    using page_action_check = std::enable_if_t<
+        std::is_invocable_r_v<sgl::error,
+                              F,
+                              Page_t<LineWidth, CharT, Items...>&>>;
+
+    /**
+     * @brief SFINAE check if F is a page input handler. F must be invocable with
+     Page_t<LineWidth, CharT, Items...>& and sgl::Input, and return sgl::error.
+     * @tparam F invocable type
+     */
+    template <typename F>
     using input_handler_check = std::enable_if_t<
         std::is_invocable_r_v<error,
-                              T,
+                              F,
                               Page_t<LineWidth, CharT, Items...>&,
                               sgl::Input>>;
+    
+    template <typename... T>
+    using item_check = std::enable_if_t<(sgl::is_item_v<T> && ...)>;
+
+    /**
+     * @brief SFINAE check if Menu is a menu type.
+     * @tparam Menu menu type.
+     */
+    template <typename Menu>
+    using menu_check = std::enable_if_t<sgl::is_menu_v<Menu>>;
+
+    /**
+     * @brief get item type at index I
+     * @tparam I index
+     */
     template <size_t I>
     using item_at_t = type_at_t<I, type_list<Items...>>;
 
+    /// copy constructor
     Page_t(const Page_t& other)
         : items_(other.items_), input_handler_(other.input_handler_),
+          on_enter_(other.on_enter_), on_exit_(other.on_exit_),
           name_(other.name_), title_(other.title_),
           start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
           index_(other.index_), elem_in_edit_(other.elem_in_edit_) {}
 
+    /// move constructor
     Page_t(Page_t&& other)
         : items_(std::move(other.items_)),
           input_handler_(std::move(other.input_handler_)),
-          name_(std::move(other.name_)), title_(std::move(other.title_)),
-          start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
-          index_(other.index_), elem_in_edit_(other.elem_in_edit_) {}
+          on_enter_(std::move(other.on_enter_)),
+          on_exit_(std::move(other.on_exit_)), name_(std::move(other.name_)),
+          title_(std::move(other.title_)), start_edit_(other.start_edit_),
+          stop_edit_(other.stop_edit_), index_(other.index_),
+          elem_in_edit_(other.elem_in_edit_) {}
 
     /**
-     * @brief Construct a new Page_t object
-     *
-     * @tparam InputHandler
-     * @param page_name page_name of the page. Must be unique per menu.
-     * @param page_title page_title of the page
-     * @param start_edit Input that signals to start editing
-     * @param stop_edit Input that signals to stop editing
-     * @param input_handler custom input handler
-     * @param items page items
+     * @brief Page constructor with all options.
+     * @tparam InputHandler Input handler type, see InputHandler_t and
+     * input_handler_check.
+     * @tparam EnterHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @tparam ExitHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param start_index current item index.
+     * @param on_enter action to execute on entering a page.
+     * @param on_exit action to execute on exiting a page.
+     * @param input_handler input handler. See Page Input Handling for more
+     * info.
+     * @param items items of the page.
      */
     template <typename InputHandler,
-              input_handler_check<InputHandler>* = nullptr>
-    Page_t(StringView     page_name,
-           StringView     page_title,
+              typename EnterHandler,
+              typename ExitHandler,
+              input_handler_check<InputHandler>* = nullptr,
+              page_action_check<EnterHandler>* = nullptr,
+              page_action_check<ExitHandler>* = nullptr>
+    Page_t(StringView     name,
+           StringView     title,
            sgl::Input     start_edit,
            sgl::Input     stop_edit,
+           size_t         start_index,
+           EnterHandler&& on_enter,
+           ExitHandler&&  on_exit,
            InputHandler&& input_handler,
            Items&&... items)
         : items_(std::forward<Items>(items)...),
           input_handler_(std::forward<InputHandler>(input_handler)),
-          name_(page_name), title_(page_title), start_edit_(start_edit),
-          stop_edit_(stop_edit) {}
+          on_enter_(std::forward<EnterHandler>(on_enter)),
+          on_exit_(std::forward<ExitHandler>(on_exit)), name_(name),
+          title_(title), start_edit_(start_edit), stop_edit_(stop_edit),
+          index_(start_index) {}
 
     /**
-     * @brief Construct a new Page_t with default input handling.
-     *
-     * @param page_name name of the page. Must be unique per menu.
-     * @param page_title page_title of the page.
-     * @param start_edit Input that signals to start editing
-     * @param stop_edit Input that signals to stop editing
-     * @param items page items
+     * @brief Construct a page with custom input handling.
+     * @tparam InputHandler Input handler type, see InputHandler_t and
+     * input_handler_check.
+     * @tparam EnterHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @tparam ExitHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param start_index current item index.
+     * @param input_handler input handler. See Page Input Handling for more
+     * info.
+     * @param items items of the page.
      */
-    Page_t(StringView page_name,
-           StringView page_title,
+    template <typename InputHandler,
+              input_handler_check<InputHandler>* = nullptr>
+    Page_t(StringView     name,
+           StringView     title,
+           sgl::Input     start_edit,
+           sgl::Input     stop_edit,
+           size_t         start_index,
+           InputHandler&& input_handler,
+           Items&&... items)
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 start_index,
+                 &default_page_action,
+                 &default_page_action,
+                 std::forward<InputHandler>(input_handler),
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with custom input handling.
+     * @tparam InputHandler Input handler type, see InputHandler_t and
+     * input_handler_check.
+     * @tparam EnterHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @tparam ExitHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param input_handler input handler. See Page Input Handling for more
+     * info.
+     * @param items items of the page.
+     */
+    template <typename InputHandler,
+              input_handler_check<InputHandler>* = nullptr>
+    Page_t(StringView     name,
+           StringView     title,
+           sgl::Input     start_edit,
+           sgl::Input     stop_edit,
+           InputHandler&& input_handler,
+           Items&&... items)
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 0,
+                 &default_page_action,
+                 &default_page_action,
+                 std::forward<InputHandler>(input_handler),
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with default input handling but custom enter and
+     * exit actions and custom start_index.
+     * @tparam EnterHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @tparam ExitHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param start_index current item index.
+     * @param on_enter action to execute on entering a page.
+     * @param on_exit action to execute on exiting a page.
+     * @param items items of the page.
+     */
+    template <typename EnterHandler,
+              typename ExitHandler,
+              page_action_check<EnterHandler>* = nullptr,
+              page_action_check<ExitHandler>* = nullptr>
+    Page_t(StringView     name,
+           StringView     title,
+           sgl::Input     start_edit,
+           sgl::Input     stop_edit,
+           size_t         start_index,
+           EnterHandler&& on_enter,
+           ExitHandler&&  on_exit,
+           Items&&... items)
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 start_index,
+                 std::forward<EnterHandler>(on_enter),
+                 std::forward<ExitHandler>(on_exit),
+                 &default_handle_input,
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with default input handling but custom enter and
+     * exit actions. The starting index is 0.
+     * @tparam EnterHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @tparam ExitHandler Page action type, see PageAction_t and
+     * page_action_check.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param on_enter action to execute on entering a page.
+     * @param on_exit action to execute on exiting a page.
+     * @param items items of the page.
+     */
+    template <typename EnterHandler,
+              typename ExitHandler,
+              page_action_check<EnterHandler>* = nullptr,
+              page_action_check<ExitHandler>* = nullptr>
+    Page_t(StringView     name,
+           StringView     title,
+           sgl::Input     start_edit,
+           sgl::Input     stop_edit,
+           EnterHandler&& on_enter,
+           ExitHandler&&  on_exit,
+           Items&&... items)
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 0,
+                 std::forward<EnterHandler>(on_enter),
+                 std::forward<ExitHandler>(on_exit),
+                 &default_handle_input,
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with default input handling and default
+     * enter/exit action, but custom starting index.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param start_index current item index.
+     * @param items items of the page.
+     */
+    Page_t(StringView name,
+           StringView title,
+           sgl::Input start_edit,
+           sgl::Input stop_edit,
+           size_t     start_index,
+           Items&&... items)
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 start_index,
+                 &default_page_action,
+                 &default_page_action,
+                 &default_handle_input,
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with default input handling and default
+     * enter/exit action. The starting index is 0.
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param start_edit input to start edit mode on. See Page Input Handling
+     * for more info.
+     * @param stop_edit input to stop edit mode on. See Page Input Handling for
+     * more info.
+     * @param items items of the page.
+     */
+    Page_t(StringView name,
+           StringView title,
            sgl::Input start_edit,
            sgl::Input stop_edit,
            Items&&... items)
-        : items_(std::forward<Items>(items)...), name_(page_name),
-          title_(page_title), start_edit_(start_edit), stop_edit_(stop_edit) {}
+        : Page_t(name,
+                 title,
+                 start_edit,
+                 stop_edit,
+                 0,
+                 &default_page_action,
+                 &default_page_action,
+                 &default_handle_input,
+                 std::forward<Items>(items)...) {}
 
-    Page_t(StringView page_name, StringView page_title, Items&&... items)
-        : items_(std::forward<Items>(items)...), name_(page_name),
-          title_(page_title) {}
+    /**
+     * @brief Construct a page with default input handling, default enter/exit
+     * actions, default start/stop edit inputs (i.e. sgl::Input::enter).
+     *
+     * @code
+     * // creates a page with name 'page_name'', title 'Title' and three items
+     * ItemX, ItemY and ItemZ. auto page = Page_t("page_name","Page
+     * Title",ItemX(...),ItemY(...),ItemZ(...));
+     * @endcode
+     *
+     * @param name name of the page. Must be unique in a menu.
+     * @param title title of the page.
+     * @param items items of the page.
+     */
+    Page_t(StringView name, StringView title, Items&&... items)
+        : Page_t(name,
+                 title,
+                 sgl::Input::enter,
+                 sgl::Input::enter,
+                 0,
+                 &default_page_action,
+                 &default_page_action,
+                 &default_handle_input,
+                 std::forward<Items>(items)...) {}
+
+    /**
+     * @brief Construct a page with a pointer to menu that will contain that
+     * page. This will set the menu on all items in the page. This is used in
+     * the Menu_t constructors.
+     * @tparam Menu menu type
+     * @param menu pointer to menu instance.
+     * @param other original page
+     * @{
+     */
+    template <typename Menu, menu_check<Menu>* = nullptr>
+    Page_t(Menu* menu, const Page_t& other) : Page_t(other) {
+      for_each_item([m = menu](auto& item) { item.set_menu(m); });
+    }
+    template <typename Menu, menu_check<Menu>* = nullptr>
+    Page_t(Menu* menu, Page_t&& other) : Page_t(std::move(other)) {
+      for_each_item([m = menu](auto& item) { item.set_menu(m); });
+    }
+    /// @}
 
     /// get number of items in the page
     constexpr size_t size() const { return sizeof...(Items); }
@@ -201,7 +500,7 @@ namespace sgl {
     /// get the name of the page.
     StringView get_name() const { return name_; }
 
-    /// get the page_title of the page.
+    /// get the title of the page.
     StringView get_title() const { return title_; }
 
     /**
@@ -215,13 +514,82 @@ namespace sgl {
       set_menu_impl(menu, sgl::index_sequence_for<Items...>{});
     }
 
+    /**
+     * @brief apply f on all items in the page with the items' **declared
+     * type**.
+     *
+     * @note f must be a generic lambda like in the example below or some kind
+     * of template.
+     *
+     * @code
+     * auto page_var = make_page(...);
+     * page_var.for_current_item([](auto& page){...});
+     * @endcode
+     *
+     * @tparam F invocable type
+     * @param f callable
+     * @{
+     */
     template <typename F>
     void for_each_item(F&& f) {
       items_.for_each(std::forward<F>(f));
     }
+
     template <typename F>
     void for_each_item(F&& f) const {
       items_.for_each(std::forward<F>(f));
+    }
+    /// @}
+
+    /**
+     * @brief apply f on current item with it's **declared type**. An example
+     * below.
+     *
+     * @note f must be a generic lambda like in the example below or some kind
+     * of template.
+     *
+     * @code
+     * auto page_var = make_page(...);
+     * page_var.for_current_item([](auto& page){...});
+     * @endcode
+     *
+     * @tparam F invocable type
+     * @param f callable
+     * @{
+     */
+    template <typename F>
+    void for_current_item(F&& f) {
+      for_current_item<0>(std::forward<F>(f));
+    }
+
+    template <typename F>
+    void for_current_item(F&& f) const {
+      for_current_item<0>(std::forward<F>(f));
+    }
+    /// @}
+
+    /// execute enter handler
+    sgl::error on_enter() { return on_enter_(*this); }
+
+    /// execute exit handler
+    sgl::error on_exit() { return on_exit_(*this); }
+
+    template <typename PageAction, page_action_check<PageAction>* = nullptr>
+    void set_on_enter(PageAction&& action) {
+      if constexpr (std::is_same_v<PageAction, PageAction_t>) {
+        on_enter_ = std::forward<PageAction>(action);
+      } else {
+        on_enter_.bind(std::forward<PageAction>(action));
+      }
+    }
+
+    template <typename PageAction, page_action_check<PageAction>* = nullptr>
+    void set_on_exit(PageAction&& action) {
+      if constexpr (std::is_same_v<PageAction, PageAction_t>) {
+        on_exit_ = std::forward<PageAction>(action);
+      } else {
+        on_exit_.bind(std::forward<PageAction>(action));
+      }
     }
 
   private:
@@ -289,14 +657,45 @@ namespace sgl {
         return cget_impl<I + 1>(i);
       }
     }
-
+    template <size_t I, typename F>
+    void for_current_item_impl(F&& f) {
+      if constexpr (I ==
+                    number_of_items_v<Page_t<LineWidth, CharT, Items...>>) {
+        return;
+      } else {
+        if (index_ == I) {
+          f(this->get_item<I>());
+        } else {
+          for_current_item_impl<I + 1>(std::forward<F>(f));
+        }
+      }
+    }
+    template <size_t I, typename F>
+    void for_current_item_impl(F&& f) const {
+      if constexpr (I ==
+                    number_of_items_v<Page_t<LineWidth, CharT, Items...>>) {
+        return;
+      } else {
+        if (index_ == I) {
+          f(this->get_item<I>());
+        } else {
+          for_current_item_impl<I + 1>(std::forward<F>(f));
+        }
+      }
+    }
     template <typename Menu, size_t... I>
     void set_menu_impl(Menu* menu, index_seq_t<I...>) {
       (items_.template get<I>().template set_menu<Menu>(menu), ...);
     }
 
+    static sgl::error default_page_action(Page_t<LineWidth, CharT, Items...>&) {
+      return sgl::error::no_error;
+    }
+
     tuple<Items...> items_;
     InputHandler_t  input_handler_{&default_handle_input};
+    PageAction_t    on_enter_{&default_page_action};
+    PageAction_t    on_exit_{&default_page_action};
     StringView      name_;
     StringView      title_;
     sgl::Input      start_edit_{sgl::Input::enter};
@@ -314,15 +713,15 @@ namespace sgl {
                                       InputHandler,
                                       Page_t<LineWidth, CharT, Items...>&,
                                       Input>>>
-  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
-                                               string_view<CharT> page_title,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
                                                sgl::Input         start_edit,
                                                sgl::Input         stop_edit,
                                                InputHandler&&     input_handler,
                                                Items&&... items) {
     return Page_t<LineWidth, CharT, Items...>(
-        page_name,
-        page_title,
+        name,
+        title,
         start_edit,
         stop_edit,
         std::forward<InputHandler>(input_handler),
@@ -330,24 +729,24 @@ namespace sgl {
   }
 
   template <size_t LineWidth, typename CharT, typename... Items>
-  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
-                                               string_view<CharT> page_title,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
                                                sgl::Input         start_edit,
                                                sgl::Input         stop_edit,
                                                Items&&... items) {
-    return Page_t<LineWidth, CharT, Items...>(page_name,
-                                              page_title,
+    return Page_t<LineWidth, CharT, Items...>(name,
+                                              title,
                                               start_edit,
                                               stop_edit,
                                               std::forward<Items>(items)...);
   }
 
   template <size_t LineWidth, typename CharT, typename... Items>
-  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> page_name,
-                                               string_view<CharT> page_title,
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
                                                Items&&... items) {
-    return Page_t<LineWidth, CharT, Items...>(page_name,
-                                              page_title,
+    return Page_t<LineWidth, CharT, Items...>(name,
+                                              title,
                                               std::forward<Items>(items)...);
   }
 } // namespace sgl
