@@ -8,59 +8,63 @@ namespace sgl {
 
   /**
    * @brief This class encapsulates a page.
-   * @details
-   * Data:
-   * A page consists of the following data:
+   * @details A page consists of the following data:
    *  - a name, which is primarily used for switching between different
    * pages without using a index. Must be unique for all pages in a menu.
    *  - a title
-   *  - a 'start_edit' Input value, which tells the input handler when to start
+   *  - a 'start edit' Input value, which tells the input handler when to start
    * editing.
-   *  - a 'stop_edit' Input value, which tells the input handler when to stop
+   *  - a 'stop edit' Input value, which tells the input handler when to stop
    * editing.
    *  - a boolean to keep track of the navigation/edit mode (true=>edit mode).
-   *  - a index to keep track of the current item, i.e. a cursor.
-   *  - a input handler to handle inputs.
+   *  - an index to keep track of the current item, i.e. a cursor.
+   *  - an input handler to handle inputs.
    *  - a page enter action. This action will be called when a page becomes
    * active.
    *  - a page exit action. This action will be called when a page becomes
    * inactive.
-   *  - a tuple of items/items.
+   *  - a tuple of items.
    *
-   * A page has two modes: navigation mode and edit mode. In the
-   * navigation mode, the inputs are used to navigate a page. In edit mode, the
-   * inputs are delegated to the current item in order to edit it.
+   * ## Page Input Handling
+   * A page has two modes of operation. It can either be in
+   *  1. **navigation mode**, where the inputs are used to navigate/scroll
+   * through the items on the page.
+   *  2. Or **edit mode**, where the inputs are delegated through to the active
+   * item.
    *
-   * Default Input Handling:
-   * On construction, a page is in navigation mode. Input::up, Input::down,
-   * Input::left and Input::right are used to scroll through the items in
-   * navigation mode and set the active item accordingly.
-   * A change into edit mode can be achieved by giving the page the 'start_edit'
-   * input. Now all inputs are directly delegated to the active item.
-   * Changing back into navigation mode can happen in two ways:
-   *  1. if the page receives a 'stop_edit' input, the page will stop delegating
-   * to the active item. The page is now in navigation mode again.
-   *  2. if the active item returns an error value equal to error::edit_finished
-   * when handling the given input, the page will stop delegating and change
-   * back into navigation mode.
+   * A page is in navigation mode when constructed. Giving a page an input equal
+   * to it's start_edit input will set the page into edit mode. The page will
+   * now delegate all inputs to the current item, **including** the start_edit
+   * input just received by the page, by calling the current item's
+   * @ref Item_t::handle_input() "handle_input()" method.
    *
-   * The reason for stopping the edit mode in two ways is the following:
-   * Editable items work good with the first approach. For example: start
-   * editing with Input::enter, then input characters, then Input::enter again
-   * to stop editing. For items which can not be edited, i.e. immutable text, or
-   * which can only be activated, i.e. a button, this approach does not work. It
-   * would need two correct inputs to activate a button properly, or worse, two
-   * correct inputs to stop editing a item which cannot be edited in the first
-   * place. With the second approach, this is resolved.
+   * The page will continue delegating it's inputs until one of two conditions
+   * occur:
    *
+   *  1. When the page receives an input equal to it's stop_edit. The stop_edit
+   * input is **not** delegated to the current item.
+   *  2. When the current item's @ref Item_t::handle_input() "handle_input()"
+   * call returns sgl::error::edit_finished, the page will exit edit mode.
    *
-   * Custom Input Handling:
+   * The reason for having two ways for notifying should be obvious:
+   *
+   * The first approach is for items which can be edited with multiple inputs,
+   * for example a text field.
+   *
+   * The second one is useful for 'one and done' items, which have an action
+   * associated with them but cannot truly be edited, for example a button. A
+   * button you would need to press twice to de/activate would be considered
+   * broken. Also immutable items which have no action associated with them can
+   * just return sgl::error::edit_finished. The page's default input handler
+   * will return sgl::error::no_error in this case.
+   *
+   * ## Custom Input Handling
    * Input handling can be customized by the end user by providing a input
    * handler in the constructor. The input handler must have a calling signature
    * of 'error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)'. Keep in
    * mind that the convention of ending edit mode with a return value of
-   * error::edit_finished should be kept, else every item input handler needs to
-   * be adjusted.
+   * error::edit_finished should be kept, else **every** item input handler
+   * needs to be adjusted.
    * @tparam LineWidth line width of the page
    * @tparam CharT character type of the page
    * @tparam Items types of the items/items
@@ -73,21 +77,23 @@ namespace sgl {
     using StringView = typename ItemBase::StringView;
 
     /**
-     * @brief Concrete input handler type.
+     * @brief Concrete input handler type. A page input handler is a callable
+     * with a call signature equal to sgl::error(Page_t&, sgl::Input).
      */
     using InputHandler_t =
         Callable<error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)>;
 
     /**
-     * @brief Concrete page action type.
+     * @brief Concrete page action type. Actions are callables which can be
+     * invoked with a reference to a page and return sgl::error.
      */
     using PageAction_t =
         Callable<sgl::error(Page_t<LineWidth, CharT, Items...>&)>;
 
     /**
-     * @brief SFINAE check if F is a page action. An instance of F must be invocable
-     * with a reference to Page_t<LineWidth, CharT, Items...> and return a
-     * sgl::error.
+     * @brief SFINAE check if F is a page action. An instance of F must be
+     * invocable with a reference to Page_t<LineWidth, CharT, Items...> and
+     * return a sgl::error.
      * @tparam F invocable type
      */
     template <typename F>
@@ -97,8 +103,9 @@ namespace sgl {
                               Page_t<LineWidth, CharT, Items...>&>>;
 
     /**
-     * @brief SFINAE check if F is a page input handler. F must be invocable with
-     Page_t<LineWidth, CharT, Items...>& and sgl::Input, and return sgl::error.
+     * @brief SFINAE check if F is a page input handler. F must be invocable
+     with Page_t<LineWidth, CharT, Items...>& and sgl::Input, and return
+     sgl::error.
      * @tparam F invocable type
      */
     template <typename F>
@@ -107,7 +114,7 @@ namespace sgl {
                               F,
                               Page_t<LineWidth, CharT, Items...>&,
                               sgl::Input>>;
-    
+
     template <typename... T>
     using item_check = std::enable_if_t<(sgl::is_item_v<T> && ...)>;
 
@@ -504,13 +511,13 @@ namespace sgl {
     StringView get_title() const { return title_; }
 
     /**
-     * @brief Set the menu for items which need it, i.e. page links
-     *
-     * @tparam Menu
-     * @param menu
+     * @brief Set the menu for items which need it, i.e. page links.
+     * @tparam Menu menu type
+     * @param menu pointer to menu instance
      */
     template <typename Menu>
     void set_menu(Menu* menu) {
+      items_.for_each([menu](auto& item) { item.set_menu(menu); });
       set_menu_impl(menu, sgl::index_sequence_for<Items...>{});
     }
 
@@ -574,6 +581,11 @@ namespace sgl {
     /// execute exit handler
     sgl::error on_exit() { return on_exit_(*this); }
 
+    /**
+     * @brief Set enter action.
+     * @tparam PageAction action type. See PageAction_t for more info.
+     * @param action action instance
+     */
     template <typename PageAction, page_action_check<PageAction>* = nullptr>
     void set_on_enter(PageAction&& action) {
       if constexpr (std::is_same_v<PageAction, PageAction_t>) {
@@ -583,6 +595,11 @@ namespace sgl {
       }
     }
 
+    /**
+     * @brief Set exit action.
+     * @tparam PageAction action type. See PageAction_t for more info.
+     * @param action action instance
+     */
     template <typename PageAction, page_action_check<PageAction>* = nullptr>
     void set_on_exit(PageAction&& action) {
       if constexpr (std::is_same_v<PageAction, PageAction_t>) {
@@ -593,6 +610,7 @@ namespace sgl {
     }
 
   private:
+    /// @cond
     /// default page input handler.
     static error default_handle_input(Page_t<LineWidth, CharT, Items...>& page,
                                       sgl::Input                          i) {
@@ -657,6 +675,7 @@ namespace sgl {
         return cget_impl<I + 1>(i);
       }
     }
+
     template <size_t I, typename F>
     void for_current_item_impl(F&& f) {
       if constexpr (I ==
@@ -670,6 +689,7 @@ namespace sgl {
         }
       }
     }
+
     template <size_t I, typename F>
     void for_current_item_impl(F&& f) const {
       if constexpr (I ==
@@ -683,14 +703,11 @@ namespace sgl {
         }
       }
     }
-    template <typename Menu, size_t... I>
-    void set_menu_impl(Menu* menu, index_seq_t<I...>) {
-      (items_.template get<I>().template set_menu<Menu>(menu), ...);
-    }
 
     static sgl::error default_page_action(Page_t<LineWidth, CharT, Items...>&) {
       return sgl::error::no_error;
     }
+    /// @endcond 
 
     tuple<Items...> items_;
     InputHandler_t  input_handler_{&default_handle_input};
