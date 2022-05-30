@@ -121,7 +121,7 @@ namespace sgl {
   private:
     template <typename F, size_t... I>
     void for_each_impl(F&& f, sgl::index_seq_t<I...>) noexcept(noexcept(f)) {
-      static_assert(std::is_invocable_v < F, type_at<I>&);
+      static_assert((std::is_invocable_v<F, type_at<I>&> && ...), "");
       static_assert(((I < sizeof...(Types)) && ...), "index out of range");
       (f(this->get<I>()), ...);
     }
@@ -129,7 +129,7 @@ namespace sgl {
     template <typename F, size_t... I>
     void for_each_impl(F&& f, sgl::index_seq_t<I...>) const
         noexcept(noexcept(f)) {
-      static_assert(std::is_invocable_v < F, const type_at<I>&);
+      static_assert((std::is_invocable_v<F, type_at<I>&> && ...), "");
       static_assert(((I < sizeof...(Types)) && ...), "index out of range");
       (f(this->get<I>()), ...);
     }
