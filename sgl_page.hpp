@@ -58,16 +58,26 @@ namespace sgl {
    * just return sgl::error::edit_finished. The page's default input handler
    * will return sgl::error::no_error in this case.
    *
-   * ## Custom Input Handling
+   * @section page_input_handling "Custom Input Handling"
    * Input handling can be customized by the end user by providing a input
    * handler in the constructor. The input handler must have a calling signature
-   * of 'error(sgl::Page_t<LineWidth, CharT, Items...>&, sgl::Input)'. Keep in
+   * of **error(sgl::Page_t&, sgl::Input)**. Keep in
    * mind that the convention of ending edit mode with a return value of
    * error::edit_finished should be kept, else **every** item input handler
    * needs to be adjusted.
+   *
+   *
+   * ## Page Actions
+   * Pages can have actions associated with them. A page action is an invocable
+   * with a calling signature equal to **sgl::error(sgl::Page_t&)**. The two
+   * actions available now are the **enter** and **exit** action. The enter
+   * action of a page will be called whenever a menu changes to that page. The
+   * exit action will be called whenever the menu changes to another page.The
+   * default actions just return sgl::error::no_error.
+   *
    * @tparam LineWidth line width of the page
    * @tparam CharT character type of the page
-   * @tparam Items types of the items/items
+   * @tparam Items types of the items
    */
   template <size_t LineWidth, typename CharT, typename... Items>
   class Page_t {
@@ -707,7 +717,7 @@ namespace sgl {
     static sgl::error default_page_action(Page_t<LineWidth, CharT, Items...>&) {
       return sgl::error::no_error;
     }
-    /// @endcond 
+    /// @endcond
 
     tuple<Items...> items_;
     InputHandler_t  input_handler_{&default_handle_input};
@@ -720,6 +730,32 @@ namespace sgl {
     size_t          index_{0};
     bool            elem_in_edit_{false};
   };
+
+  template <size_t LineWidth,
+            typename CharT,
+            typename InputHandler,
+            typename EnterHandler,
+            typename ExitHandler,
+            typename... Items>
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
+                                               sgl::Input         start_edit,
+                                               sgl::Input         stop_edit,
+                                               size_t             start_index,
+                                               EnterHandler&&     on_enter,
+                                               ExitHandler&&      on_exit,
+                                               InputHandler&&     input_handler,
+                                               Items&&... items) {
+    return Page_t<LineWidth, CharT, Items...>(
+        title,
+        start_edit,
+        stop_edit,
+        start_index,
+        std::forward<EnterHandler>(on_enter),
+        std::forward<ExitHandler>(on_exit),
+        std::forward<InputHandler>(input_handler),
+        std::forward<Items>(items)...);
+  }
 
   template <size_t LineWidth,
             typename CharT,

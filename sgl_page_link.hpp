@@ -4,15 +4,19 @@
 namespace sgl {
 
   /**
-   * @brief This class models a page link. Clicking a page link item will change
-   * the menus active page to the page referenced in the page_to_link parameter
-   * in the constructors. Pages are linked by name, as to keep everything index
-   * and type free for the user(but still typesafe, see set_menu() for details).
-   * Below is an example of how to construct a page link. Of course, the 'link'
-   * variable below is useless and does not really link to anything, as it does
-   * not belong to a page yet, which further belongs to a menu.
+   * @brief This class models a page link item, i.e. an  item, which when
+   * clicked, causes the menu to switch to a different page.
+   * @details Clicking a page link item will change the menus active page to the
+   * page referenced in the page_to_link parameter in the constructors. Pages
+   * are linked by name, as to keep everything index and type free for the
+   * user(but still typesafe, see @ref PageLink_t::set_menu() "set_menu()" for details). Below is an example
+   * of how to construct a page link. Of course, the 'link' variable in the
+   * example below is useless and does not really link to anything, as it does
+   * not belong to a page yet.
    * @code {.cpp}
    * // constructs a page link for a display width of 25 and character type char
+   * // the links name is 'LinkName', it's text is 'back', and the page it links
+   * // to is a page with the name 'HomePage'.
    * auto link = PageLink_t<25,char>("LinkName", "back", "HomePage");
    * @endcode
    *
@@ -72,7 +76,7 @@ namespace sgl {
     constexpr StringView page_name() const { return page_name_; }
 
   private:
-    StringView page_name_; /// name of the page to link to.
+    StringView page_name_; ///< name of the page to link to.
   };
 
 } // namespace sgl

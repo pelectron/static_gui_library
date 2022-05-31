@@ -16,7 +16,15 @@ namespace sgl {
    * @defgroup item_types Item Types
    * @{
    * Items are the things stored by pages. They all share the same base, i.e
-   * Item_t.
+   * sgl::Item_t.
+   * The following items are implemented right now:
+   * 
+   *  - @ref Boolean_t "Boolean items": have a boolean value and act like a button, i.e. toggles it's value on click.
+   *  - @ref Enum_t "Enumerated items": have a limited number of possible values.
+   *  - @ref Text_t "Basic Text items": items with editable text.
+   *  - @ref ConstText_t "Immutable Text items": items with non-editable text.
+   *  - @ref PageLink_t "Page Link items": items, which when clicked, switch the menu to a different page.
+   *  - @ref Numeric_t "Basic Numeric items": items, which can hold a value and have editable text.
    */
 
   template <size_t, typename>
@@ -152,7 +160,45 @@ namespace sgl {
   /// @defgroup page_factories Page Factory Functions
   /// page factory functions needed for (partial) type deduction
   /// @{
-
+  /**
+   * @brief Page factory function with all options.
+   * @tparam LineWidth display width
+   * @tparam CharT character type
+   * @tparam InputHandler Input handler type, see @ref Page_t::InputHandler_t "InputHandler_t" and
+   * @ref Page_t::input_handler_check "input_handler_check".
+   * @tparam EnterHandler Page action type, see @ref Page_t::PageAction_t
+   * "PageAction_t" and @ref Page_t::page_action_check "page_action_check".
+   * @tparam ExitHandler Page action type, see @ref Page_t::PageAction_t
+   * "PageAction_t" and @ref Page_t::page_action_check "page_action_check".
+   * @param name name of the page. Must be unique in a menu.
+   * @param title title of the page.
+   * @param start_edit input to start edit mode on. See Page Input Handling
+   * for more info.
+   * @param stop_edit input to stop edit mode on. See Page Input Handling for
+   * more info.
+   * @param start_index current item index.
+   * @param on_enter action to execute on entering a page.
+   * @param on_exit action to execute on exiting a page.
+   * @param input_handler input handler. See Page Input Handling for more
+   * info.
+   * @param items items of the page.
+   * @{
+   */
+  template <size_t LineWidth,
+            typename CharT,
+            typename InputHandler,
+            typename EnterHandler,
+            typename ExitHandler,
+            typename... Items>
+  Page_t<LineWidth, CharT, Items...> make_page(string_view<CharT> name,
+                                               string_view<CharT> title,
+                                               sgl::Input         start_edit,
+                                               sgl::Input         stop_edit,
+                                               size_t             start_index,
+                                               EnterHandler&&     on_enter,
+                                               ExitHandler&&      on_exit,
+                                               InputHandler&&     input_handler,
+                                               Items&&... items);
   /**
    * @brief create page with custom input handler.
    *
