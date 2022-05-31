@@ -26,15 +26,15 @@ namespace sgl {
   private:
     template <typename T>
     struct mfn {
-      T& t;
+      T* t;
       Ret (T::*member)(Args...);
-      Ret operator()(Args... args) { return (t.(*member))(args...); }
+      Ret operator()(Args... args) { return static_cast<Ret>((t->*member)(args...)); }
     };
     template <typename T>
     struct cmfn {
-      T& t;
+      T* t;
       Ret (T::*member)(Args...) const;
-      Ret operator()(Args... args) { return (t.(*member))(args...); }
+      Ret operator()(Args... args) { return static_cast<Ret>((t->*member)(args...)); }
     };
 
     static Ret null_invoke(void*, Args...) {
@@ -95,7 +95,7 @@ namespace sgl {
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...)) {
       static_assert(sizeof(mfn<T>) <= sizeof(buffer), "");
-      new (buffer) mfn<T>(obj, member_function);
+      new (buffer) mfn<T>{&obj, member_function};
       invoke = &inline_invoke<mfn<T>>;
     }
 
@@ -109,7 +109,7 @@ namespace sgl {
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...) const) {
       static_assert(sizeof(cmfn<T>) <= sizeof(buffer), "");
-      new (buffer) cmfn<T>(obj, member_function);
+      new (buffer) cmfn<T>{&obj, member_function};
       invoke = &inline_invoke<cmfn<T>>;
     }
 
