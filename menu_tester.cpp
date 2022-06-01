@@ -1,12 +1,13 @@
-#include "sgl_macro.hpp"
+
 #include "sgl_menu_tester.hpp"
 
 #include <iostream>
 #include <string>
-
-DEFINE_SGL_TYPES(40, char);
-enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 using namespace sgl::string_view_literals;
+using namespace sgl;
+
+enum class test_enum { _0 = 0, _1, _2, _3, _4 };
+
 auto button_cb = [](Item& b) -> sgl::error {
   std::cout << b.get_name().data() << " pressed\n";
   return sgl::error::no_error;
@@ -20,20 +21,8 @@ int main() {
                     "PAGE1",
                     sgl::Input::enter,
                     sgl::Input::enter,
-                    Boolean("boolean 1",
-                            "true",
-                            true,
-                            [](auto& b) {
-                              if (b.get_value()) {
-                                b.set_text("false");
-                                b.set_value(false);
-                              } else {
-                                b.set_text("true");
-                                b.set_value(true);
-                              }
-                              return sgl::error::no_error;
-                            }),
-                    Boolean("boolean 2", false),
+                    Boolean("boolean 1", true),
+                    Boolean("boolean 2", false, "true", "false"),
                     Integer("number1"_sv, 42, 1),
                     Text("t1", "this a text"),
                     PageLink("page2link", "page 2 link", "page2"),

@@ -1,41 +1,28 @@
 #ifndef SGL_MENU_TESTER_HPP
 #define SGL_MENU_TESTER_HPP
+#define SGL_INSTANTIATE 1
+#define SGL_CHAR_TYPE char
+#define SGL_LINE_WIDTH 40
 #include "sgl.hpp"
 
 #include <iostream>
 namespace sgl {
-  /// @cond
-  template <typename Page>
-  void print_page(const Page& page) {
-    std::cout << "Title : " << page.get_title().data() << std::endl;
-    for (size_t i = 0; i < page.size(); ++i) {
-      if (i == page.index()) {
-        std::cout << "--> " << i << ". " << page[i].get_text().data()
-                  << std::endl;
-      } else
-        std::cout << "    " << i << ". " << page[i].get_text().data()
-                  << std::endl;
-    }
-  }
-
-  template <typename Menu, size_t I>
-  void print_menu_impl(const Menu& menu) {
-    if constexpr ((Menu::num_pages - 1) > I) {
-      if (I == menu.index())
-        print_page(menu.template get_page<I>());
-      else
-        print_menu_impl<Menu, I + 1>(menu);
-    } else {
-      if (I == menu.index()) {
-        print_page(menu.template get_page<I>());
-      }
-    }
-  }
   template <typename Menu>
-  void print_menu(const Menu& m) {
-    std::cout << "------------\n";
-    print_menu_impl<Menu, 0>(m);
-    std::cout << "------------\n";
+  void print_menu(const Menu& menu) {
+    std::cout << "\n---------------\n";
+    menu.for_current_page([](const auto& page) {
+      std::cout << page.get_title().data() << std::endl;
+      for (size_t i = 0; i < page.size(); ++i) {
+        if (i == page.index()) {
+          // current item of page
+          std::cout << "--> ";
+        } else {
+          std::cout << "    ";
+        }
+        std::cout << page[i].get_text().data() << std::endl;
+      }
+    });
+    std::cout << "---------------\n";
   }
 
   template <typename CharT>
