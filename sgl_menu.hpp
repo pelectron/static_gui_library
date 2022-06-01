@@ -68,10 +68,10 @@ namespace sgl {
     }
 
     /**
-     * @brief
+     * @brief process input
      *
-     * @param input
-     * @return error
+     * @param input user input
+     * @return sgl::error
      */
     sgl::error handle_input(Input input) {
       return input_handler_(*this, input);
@@ -214,6 +214,12 @@ namespace sgl {
       pages_.template for_each(std::forward<F>(f));
     }
 
+    /**
+     * @brief apply f on the current page.
+     * @tparam F functor type
+     * @param f functor instance
+     * @{
+     */
     template <typename F>
     void for_current_page(F&& f) {
       for_current_page_impl<0>(std::forward<F>(f));
@@ -223,6 +229,8 @@ namespace sgl {
     void for_current_page(F&& f) const {
       for_current_page_impl<0>(std::forward<F>(f));
     }
+    /// @}
+
     friend Menu_t<LineWidth, CharT, Pages...>
         make_menu<LineWidth, CharT, Pages...>(StringView menu_name,
                                               sgl::Input start_edit,
@@ -285,6 +293,7 @@ namespace sgl {
         }
       }
     }
+    
     template <size_t I, typename F>
     void for_current_page_impl(F&& f) const {
       if constexpr (I == num_pages) {

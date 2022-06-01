@@ -1,4 +1,18 @@
+/**
+ * @file menu_tester.cpp
+ * @example menu_tester_example "MenuTester example"
+ * @author Pelé Constam (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2022-06-01
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
+#define SGL_INSTANTIATE 1
+#define SGL_CHAR_TYPE   char
+#define SGL_LINE_WIDTH  40
 #include "sgl_menu_tester.hpp"
 
 #include <iostream>
@@ -52,16 +66,15 @@ int main() {
                                         {test_enum::_4, "four"}}),
                     PageLink("home page link", "home page link", "home"))),
 
-      sgl::InputMap<char, 5>{{{sgl::Input::up, "up"},
-                              {sgl::Input::down, "down"},
-                              {sgl::Input::left, "left"},
-                              {sgl::Input::right, "right"},
-                              {sgl::Input::enter, "enter"}}});
+      {{sgl::Input::up, "up"},
+        {sgl::Input::down, "down"},
+        {sgl::Input::left, "left"},
+        {sgl::Input::right, "right"},
+        {sgl::Input::enter, "enter"}});
 
   std::string s;
   while (1) {
     menu_tester.print();
-
     std::getline(std::cin, s);
     if (s == "quit")
       break;
