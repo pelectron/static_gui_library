@@ -1,11 +1,11 @@
+#define SGL_INSTANTIATE 1
+#define SGL_CHAR_TYPE char
+#define SGL_LINE_WIDTH 25
+
 #include "sgl.hpp"
-#include "sgl_macro.hpp"
-
 #include <iostream>
+using namespace sgl;
 
-// defining type aliases for sgl types with LineWidth=25, CharT=char in
-// namespace test.
-DEFINE_SGL_TYPES(25, char);
 template <typename Page>
 void print_page(const Page& page) {
   std::cout << "Title : " << page.get_title().data() << std::endl;
@@ -39,17 +39,7 @@ void print_menu(const Menu& m) {
   print_menu_impl<Menu, 0>(m);
   std::cout << "------------\n";
 }
-/// custom boolean input handler, copied default implementation
-auto boolean_handler = [](Boolean& b) {
-  if (b.get_value()) {
-    b.set_value(false);
-    b.set_text("false");
-  } else {
-    b.set_value(true);
-    b.set_text("true");
-  }
-  return sgl::error::edit_finished;
-};
+
 /// button click handler
 auto button_click_handler = [](Button& b) {
   std::cout << b.get_name().data() << " pressed\n";
@@ -112,7 +102,7 @@ auto numeric_input_handler = [](auto& item, sgl::Input input) {
 };
 
 /// text validator
-auto text_validator = [](string_view sv) { return sgl::error::no_error; };
+auto text_validator = [](StringView sv) { return sgl::error::no_error; };
 /// text input handler, copied default implementation
 auto text_input_handler = [](auto& element, sgl::Input input) {
   auto& text_elem = static_cast<Text&>(element);
@@ -176,7 +166,7 @@ int main() {
               [](Item& item, sgl::Input) { return sgl::error::edit_finished; }),
           /// boolean ctors
           Boolean("Boolean1", true),
-          Boolean("Boolean2", "false", false, boolean_handler),
+          Boolean("Boolean2",false,"true","false"),
           /// button ctors
           Button("Button1"),
           Button("Button2", "button 2"),
@@ -236,7 +226,7 @@ int main() {
               [](Item& item, sgl::Input) { return sgl::error::edit_finished; }),
           /// boolean ctors
           Boolean("Boolean1", true),
-          Boolean("Boolean2", "false", false, boolean_handler),
+          Boolean("Boolean2", false, "true","false"),
           /// button ctors
           Button("Button1"),
           Button("Button2", "button 2"),
@@ -314,5 +304,3 @@ int main() {
   }
   return 0;
 }
-
-#include "sgl_macro_undef.hpp"

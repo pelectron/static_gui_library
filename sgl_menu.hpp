@@ -119,7 +119,7 @@ namespace sgl {
      * @return const ItemBase&
      */
     const ItemBase& current_item() const noexcept {
-      const ItemBase* ret;
+      const ItemBase* ret{nullptr};
       for_current_page(
           [&ret](const auto& page) { ret = &page.current_item(); });
       return *ret;
