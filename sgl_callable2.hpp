@@ -137,7 +137,7 @@ namespace sgl {
     void bind(F&& f) {
       static_assert(std::is_invocable_r_v<Ret, F, Args...>, "");
       static_assert(sizeof(F) <= sizeof(buffer_), "");
-      static_assert(std::is_trivially_destructible_v<F>, "");
+      static_assert(std::is_trivially_destructible_v<std::decay_t<F>>, "");
       if constexpr (is_const_invocable_v<Ret,
                                          std::remove_reference_t<F>,
                                          Args...>) {
