@@ -108,14 +108,13 @@ namespace sgl {
      * @return ItemBase&
      */
     ItemBase& current_item() noexcept {
-      ItemBase* ret;
+      ItemBase* ret{nullptr};
       for_current_page([&ret](auto& page) { ret = &page.current_item(); });
       return *ret;
     }
 
     /**
      * @brief get current item
-     *
      * @return const ItemBase&
      */
     const ItemBase& current_item() const noexcept {
@@ -219,6 +218,7 @@ namespace sgl {
     void for_current_page(F&& f) {
       for_current_page_impl<0>(std::forward<F>(f));
     }
+
     template <typename F>
     void for_current_page(F&& f) const {
       for_current_page_impl<0>(std::forward<F>(f));
@@ -301,7 +301,7 @@ namespace sgl {
     tuple<Pages...> pages_;
     InputHandler_t  input_handler_{&default_handle_input};
     StringView      name_;
-    size_t          index_{0};
+    sgl::smallest_type_t<sizeof...(Pages)> index_{0};
   };
 
   template <size_t LineWidth, typename CharT, typename... Pages>

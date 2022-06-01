@@ -1,8 +1,10 @@
 #ifndef STATIC_STRING_HPP
 #define STATIC_STRING_HPP
+#include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
 
 #include <type_traits>
+
 namespace sgl {
 
   template <typename CharT, size_t Capacity>
@@ -140,17 +142,9 @@ namespace sgl {
         ++size_;
       }
     }
-    /// type trait alias to get smallest type needed to store a value of N
-    template <size_t N>
-    using smallest_type_t = std::conditional_t < N < 256,
-          uint8_t,
-          std::conditional_t <
-              N<65536,
-                uint16_t,
-                std::conditional_t<N<4294967296, uint32_t, uint64_t>>>;
 
-    CharT                     data_[Capacity + 1]{0}; ///< holds the characters.
-    smallest_type_t<Capacity> size_{0};               ///< size of the string.
+    CharT data_[Capacity + 1]{0};            ///< holds the characters.
+    sgl::smallest_type_t<Capacity> size_{0}; ///< size of the string.
   };
 
   /// static string comparison operator.

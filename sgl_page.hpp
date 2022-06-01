@@ -1,6 +1,7 @@
 #ifndef SGL_PAGE_HPP
 #define SGL_PAGE_HPP
 #include "sgl_item.hpp"
+#include "sgl_smallest_type.hpp"
 #include "sgl_traits.hpp"
 #include "sgl_tuple.hpp"
 
@@ -727,8 +728,8 @@ namespace sgl {
     StringView      title_;
     sgl::Input      start_edit_{sgl::Input::enter};
     sgl::Input      stop_edit_{sgl::Input::enter};
-    size_t          index_{0};
-    bool            elem_in_edit_{false};
+    sgl::smallest_type_t<sizeof...(Items)> index_{0};
+    bool                                   elem_in_edit_{false};
   };
 
   template <size_t LineWidth,
