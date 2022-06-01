@@ -8,7 +8,8 @@
 namespace sgl {
 #if ENABLE_CHARCONV
   template <typename CharT, size_t LineWidth, typename T>
-  static sgl::error default_format(StaticString<CharT, LineWidth>& str, T val) {
+  static constexpr sgl::error
+      default_format(StaticString<CharT, LineWidth>& str, T val) {
     str.resize(LineWidth);
     auto write_res =
         std::to_chars(str.begin(), str.begin() + LineWidth - 1, val);
@@ -39,11 +40,12 @@ namespace sgl {
                   "T must be an integral type");
     static_assert(!std::is_same_v<bool, T>,
                   "T must not be bool. Use Boolean_t for a boolean item.");
+    using Base = sgl::Item_t<LineWidth, CharT>;
     /// concrete formatter type
     using Formatter_t =
         Callable<sgl::error(StaticString<CharT, LineWidth>&, T)>;
 
-    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
+    using StringView = typename Base::StringView;
 
     /**
      * @brief check if F is a valid formatter. An instance of F must have the
@@ -66,28 +68,21 @@ namespace sgl {
      * @tparam H handler type
      */
     template <typename H>
-    using integer_handler_check =
+    using numeric_handler_check =
         std::enable_if_t<std::is_invocable_r_v<sgl::error,
                                                H,
                                                Numeric_t<T, LineWidth, CharT>&,
                                                sgl::Input>>;
 
     /**
-     * @brief Construct a new Numeric_t with default formatter and input
+     * @brief Construct a new Numeric_t with default formatter and default input
      * handling.
-     *
      * @param item_name name of item
      * @param initial_value initial value
      * @param delta delta value
      */
     Numeric_t(StringView item_name, T initial_value, T delta)
-        : sgl::Item_t<LineWidth, CharT>(
-              item_name,
-              [](sgl::Item_t<LineWidth, CharT>& item, sgl::Input i) {
-                return default_handle_input(
-                    static_cast<Numeric_t<T, LineWidth, CharT>&>(item),
-                    i);
-              }),
+        : Base(item_name, &default_handle_input),
           format_(&default_format<CharT, LineWidth>), value_(initial_value),
           delta_(delta) {
       this->clear_text();
@@ -112,13 +107,7 @@ namespace sgl {
               T           initial_value,
               T           delta,
               Formatter&& formatter)
-        : sgl::Item_t<LineWidth, CharT>(
-              item_name,
-              [](sgl::Item_t<LineWidth, CharT>& item, sgl::Input i) {
-                return default_handle_input(
-                    static_cast<Numeric_t<T, LineWidth, CharT>&>(item),
-                    i);
-              }),
+        : Base(item_name, &default_handle_input),
           format_(std::forward<Formatter>(formatter)), value_(initial_value),
           delta_(delta) {
       this->clear_text();
@@ -133,7 +122,7 @@ namespace sgl {
      * handler.
      *
      * @tparam Formatter formatter type, see formatter_check for more details.
-     * @tparam IntegerInputHandler Input handler type, see integer_handler_check
+     * @tparam IntegerInputHandler Input handler type, see numeric_handler_check
      * for more details.
      * @param item_name name of item
      * @param initial_value initial value
@@ -144,20 +133,18 @@ namespace sgl {
     template <typename Formatter,
               typename IntegerInputHandler,
               formatter_check<Formatter>* = nullptr,
-              integer_handler_check<IntegerInputHandler>* = nullptr>
+              numeric_handler_check<IntegerInputHandler>* = nullptr>
     Numeric_t(StringView            item_name,
               T                     initial_value,
               T                     delta,
               Formatter&&           formatter,
               IntegerInputHandler&& handler)
-        : sgl::Item_t<LineWidth, CharT>(
-              item_name,
-              [handle = std::move(handler)](sgl::Item_t<LineWidth, CharT>& item,
-                                            sgl::Input                     i) {
-                return handle(
-                    static_cast<Numeric_t<T, LineWidth, CharT>&>(item),
-                    i);
-              }),
+        : Base(item_name,
+               [handle = std::move(handler)](Base& item, sgl::Input i) {
+                 return handle(
+                     static_cast<Numeric_t<T, LineWidth, CharT>&>(item),
+                     i);
+               }),
           format_(std::forward<Formatter>(formatter)), value_(initial_value),
           delta_(delta) {
       this->clear_text();
@@ -197,19 +184,19 @@ namespace sgl {
 
   private:
     /// default input handler
-    static sgl::error default_handle_input(Numeric_t<T, LineWidth, CharT>& item,
-                                           sgl::Input input) {
+    static sgl::error default_handle_input(Base& item, sgl::Input input) {
+      auto& num = static_cast<Numeric_t<T, LineWidth, CharT>&>(item);
       if (!is_keyboard_input(input)) {
         switch (input) {
           case sgl::Input::up:
             [[fallthrough]];
           case sgl::Input::right:
-            item.set_value(item.get_value() + item.get_delta());
+            num.set_value(num.get_value() + num.get_delta());
             break;
           case sgl::Input::down:
             [[fallthrough]];
           case sgl::Input::left:
-            item.set_value(item.get_value() - item.get_delta());
+            num.set_value(num.get_value() - num.get_delta());
             break;
           default:
             break;

@@ -16,43 +16,57 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class Text_t : public sgl::Item_t<LineWidth, CharT> {
   public:
+    using Base = sgl::Item_t<LineWidth, CharT>;
     using Validator_t = Callable<sgl::error(string_view<CharT>)>;
-    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
+    using StringView = typename Base::StringView;
 
     template <typename T>
     using validator_check =
         std::enable_if_t<std::is_invocable_r_v<sgl::error, T, StringView>>;
 
     template <typename T>
-    using input_handler_check =
-        typename Item_t<LineWidth, CharT>::template input_handler_check<T>;
+    using input_handler_check = typename Base::template input_handler_check<T>;
 
     /**
      * @brief Construct a new Text_t object
      * @param name name of item.
      * @param text text of item.
      */
-    Text_t(StringView name, StringView text)
-        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
-          cursor_(text.size() - 1) {}
+    constexpr Text_t(StringView name, StringView text)
+        : Base(name, text, &default_handle_input), cursor_(text.size() - 1) {}
 
     /**
      * @brief Construct a new Text_t object with custom validator.
-     * @tparam Validator validator type. See validator_check and Validator_t for more info.
+     * @tparam Validator validator type. See validator_check and Validator_t for
+     * more info.
      * @param name name of item.
      * @param text text of item.
      * @param validate validator instance.
      */
     template <typename Validator, typename = validator_check<Validator>>
     Text_t(StringView name, StringView text, Validator&& validate)
-        : Item_t<LineWidth, CharT>(name, text, &default_handle_input),
+        : Base(name, text, &default_handle_input),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
 
     /**
-     * @brief Construct a new Text_t object with custom validator and input handler.
+     * @brief Construct a new Text_t object with custom validator.
+     * @param name name of item.
+     * @param text text of item.
+     * @param validate validator instance.
+     */
+    constexpr Text_t(StringView name,
+                     StringView text,
+                     sgl::error (*validate)(string_view<CharT>))
+        : Base(name, text, &default_handle_input), validate_(validate),
+          cursor_(text.size() - 1) {}
+
+    /**
+     * @brief Construct a new Text_t object with custom validator and input
+     * handler.
      * @tparam Validator validator type. See validator_check and Validator_t.
-     * @tparam InputHandler input handler type. See input_handler_check and InputHandler_t.
+     * @tparam InputHandler input handler type. See input_handler_check and
+     * InputHandler_t.
      * @param name name of item.
      * @param text text of item.
      * @param validate custom validator.
@@ -66,12 +80,28 @@ namespace sgl {
            StringView     text,
            Validator&&    validate,
            InputHandler&& input_handler)
-        : Item_t<LineWidth, CharT>(name,
-                                   text,
-                                   std::forward<InputHandler>(input_handler)),
+        : Base(name, text, std::forward<InputHandler>(input_handler)),
           validate_(std::forward<Validator>(validate)),
           cursor_(text.size() - 1) {}
-    error          validate(StringView str) { return validate_(str); }
+    /**
+     * @brief Construct a new Text_t object with custom validator and input
+     * handler.
+     * @param name name of item.
+     * @param text text of item.
+     * @param validate custom validator.
+     * @param input_handler custom input handler.
+     */
+    constexpr Text_t(StringView name,
+                     StringView text,
+                     sgl::error (*validate)(string_view<CharT>),
+                     sgl::error (*input_handler)(Item_t<LineWidth, CharT>&,
+                                                 sgl::Input))
+        : Base(name, text, input_handler), validate_(validate),
+          cursor_(text.size() - 1) {}
+
+    // invoke validator. A return value of sgl::error::no_error means the text in str is valid.
+    error validate(StringView str) { return validate_(str); }
+
     constexpr void increment_cursor() {
       cursor_ = (cursor_ == this->get_text().size()) ? cursor_ : cursor_ + 1;
     }
@@ -83,8 +113,7 @@ namespace sgl {
     constexpr size_t cursor() const { return cursor_; }
 
   private:
-    static sgl::error default_handle_input(Item_t<LineWidth, CharT>& element,
-                                           sgl::Input                input) {
+    static sgl::error default_handle_input(Base& element, sgl::Input input) {
       auto& text_elem = static_cast<Text_t<LineWidth, CharT>&>(element);
       StaticString<CharT, LineWidth> buffer =
           text_elem.get_text(); // copy of item text!
@@ -128,7 +157,7 @@ namespace sgl {
       return ec;
     }
 
-    static sgl::error default_validate(StringView) {
+    constexpr static sgl::error default_validate(StringView) {
       return sgl::error::no_error;
     };
 
@@ -145,22 +174,21 @@ namespace sgl {
   template <size_t LineWidth, typename CharT>
   class ConstText_t : public Item_t<LineWidth, CharT> {
   public:
-    using StringView = typename sgl::Item_t<LineWidth, CharT>::StringView;
+    using Base = sgl::Item_t<LineWidth, CharT>;
+    using StringView = typename Base::StringView;
 
     /**
      * @brief Construct a ConstText_t with name and text.
      * @param name name of item.
      * @param text text of item.
      */
-    ConstText_t(StringView name, StringView text)
-        : Item_t<LineWidth, CharT>(name, text) {}
+    constexpr ConstText_t(StringView name, StringView text) : Base(name, text) {}
 
     /**
      * @brief Construct a new ConstText_t with identical name and text.
      * @param name_and_text name and text of item.
      */
-    ConstText_t(StringView name_and_text)
-        : Item_t<LineWidth, CharT>(name_and_text) {}
+    constexpr ConstText_t(StringView name_and_text) : Base(name_and_text) {}
   };
 } // namespace sgl
 #endif

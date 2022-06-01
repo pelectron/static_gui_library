@@ -38,7 +38,7 @@ namespace sgl {
      * @param name name of the boolean item
      * @param initial_value initial value of the item
      */
-    Boolean_t(StringView name, bool initial_value)
+    constexpr Boolean_t(StringView name, bool initial_value)
         : Button_t<LineWidth, CharT>(name,
                                      initial_value ? StringView(impl::True<CharT>)
                                                    : StringView(impl::False<CharT>),
@@ -52,7 +52,7 @@ namespace sgl {
      * @param true_text text to set when value is true
      * @param false_text text to set when value is false
      */
-    Boolean_t(StringView name,
+    constexpr Boolean_t(StringView name,
               bool       value,
               StringView true_text,
               StringView false_text)

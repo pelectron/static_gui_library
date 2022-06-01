@@ -7,7 +7,7 @@ namespace sgl {
   /// @cond
   // intentional forward declaration only. specialization follows below.
   template <typename Signature>
-  class Callable2;
+  class Callable;
   /// @endcond
 
   /**
@@ -17,18 +17,18 @@ namespace sgl {
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See std::function, google search for delegates, etc. if the
    * concept is not clear.
-   *
+   * @note mutable lambdas do not work, so don't use them here!
    * @tparam Ret return type of the delegate
    * @tparam Args argument types
    */
   template <typename Ret, typename... Args>
-  class Callable2<Ret(Args...)> {
+  class Callable<Ret(Args...)> {
   private:
     template <typename T>
     struct mfn {
       T* t;
       Ret (T::*member)(Args...);
-      Ret operator()(Args... args) const{
+      Ret operator()(Args... args) const {
         return static_cast<Ret>((t->*member)(args...));
       }
     };
@@ -36,7 +36,7 @@ namespace sgl {
     struct cmfn {
       T* t;
       Ret (T::*member)(Args...) const;
-      Ret operator()(Args... args) const{
+      Ret operator()(Args... args) const {
         return static_cast<Ret>((t->*member)(args...));
       }
     };
@@ -56,36 +56,36 @@ namespace sgl {
 
     template <typename T>
     static Ret inline_invoke(const Storage* storage, Args... args) {
-      return static_cast<Ret>((*static_cast<const T*>(static_cast<const void*>(storage->buffer)))(args...));
+      return static_cast<Ret>((*static_cast<const T*>(
+          static_cast<const void*>(storage->buffer)))(args...));
     }
-
     // data members
     Ret (*invoke_)(const Storage*, Args...){&null_invoke};
     Storage buffer_;
 
   public:
     /// default constructor
-    constexpr Callable2():buffer_{.func = nullptr} {}
+    constexpr Callable() : buffer_{.func = nullptr} {}
 
-    constexpr Callable2(Ret (*f)(Args...))
-        : invoke_(&free_function_invoke), buffer_{.func=f} {}
-    constexpr Callable2(Ret (&f)(Args...))
-        : invoke_(&free_function_invoke), buffer_{.func=&f} {}
+    constexpr Callable(Ret (*f)(Args...))
+        : invoke_(&free_function_invoke), buffer_{.func = f} {}
+    constexpr Callable(Ret (&f)(Args...))
+        : invoke_(&free_function_invoke), buffer_{.func = &f} {}
 
     template <typename T>
-    Callable2(T& obj, Ret (T::*member_function)(Args...)) {
+    Callable(T& obj, Ret (T::*member_function)(Args...)) {
       bind(obj, member_function);
     }
 
     template <typename T>
-    Callable2(T& obj, Ret (T::*member_function)(Args...) const) {
+    Callable(T& obj, Ret (T::*member_function)(Args...) const) {
       bind(obj, member_function);
     }
 
-    template <
-        typename F,
-        std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* = nullptr>
-    Callable2(F&& f) {
+    template <typename F,
+              std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
+                  nullptr>
+    Callable(F&& f) {
       bind(std::forward<F>(f));
     }
 
@@ -130,10 +130,10 @@ namespace sgl {
     }
 
     /**
-     * @brief bind functor
+     * @brief bind invocable
      *
-     * @tparam F functor type
-     * @param f functor instance
+     * @tparam F invocable type
+     * @param f invocable instance
      */
     template <typename F,
               std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
@@ -141,14 +141,12 @@ namespace sgl {
     void bind(F&& f) {
       static_assert(std::is_invocable_r_v<Ret, F, Args...>, "");
       static_assert(sizeof(F) <= sizeof(buffer_), "");
-      static_assert(std::is_trivially_destructible_v<F>,"");
+      static_assert(std::is_trivially_destructible_v<F>, "");
       new (buffer_.buffer) std::decay_t<F>(std::forward<F>(f));
       invoke_ = &inline_invoke<std::decay_t<F>>;
     }
 
-    void reset(){
-      invoke_ = &null_invoke;
-    }
+    void reset() { invoke_ = &null_invoke; }
   };
 } // namespace sgl
 #endif

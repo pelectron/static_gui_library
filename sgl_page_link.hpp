@@ -36,7 +36,7 @@ namespace sgl {
      * @param text text of the link
      * @param page_to_link name of the page to link to
      */
-    PageLink_t(StringView item_name, StringView text, StringView page_to_link)
+    constexpr PageLink_t(StringView item_name, StringView text, StringView page_to_link)
         : Button_t<LineWidth, CharT>(item_name, text),
           page_name_(page_to_link) {}
 
@@ -45,7 +45,7 @@ namespace sgl {
      * @param name_and_text
      * @param page_to_link
      */
-    PageLink_t(StringView name_and_text, StringView page_to_link)
+    constexpr PageLink_t(StringView name_and_text, StringView page_to_link)
         : Button_t<LineWidth, CharT>(name_and_text), page_name_(page_to_link) {}
 
     /**

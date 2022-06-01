@@ -1,6 +1,6 @@
 #ifndef SGL_ITEM_HPP
 #define SGL_ITEM_HPP
-#include "sgl_callable.hpp"
+#include "sgl_callable2.hpp"
 #include "sgl_error.hpp"
 #include "sgl_input.hpp"
 #include "sgl_static_string.hpp"
@@ -53,15 +53,27 @@ namespace sgl {
      * @param name name of the item
      * @param text text of the item
      */
-    Item_t(StringView name, StringView text) : name_(name), text_(text) {}
+    constexpr Item_t(StringView name, StringView text)
+        : name_(name), text_(text) {}
 
     /**
      * @brief Construct an item with it's name and text set to name_and_text.
      * @param name_and_text name and text of item.
      */
-    Item_t(StringView name_and_text)
+    constexpr Item_t(StringView name_and_text)
         : name_(name_and_text), text_(name_and_text) {}
 
+    /**
+     * @brief Construct an item with name, text and input handler.
+     * @param name name of the item
+     * @param text text of the item
+     * @param handler input handler
+     */
+    constexpr Item_t(StringView name,
+                     StringView text,
+                     sgl::error (*handler)(Item_t<LineWidth, CharT>&,
+                                           sgl::Input))
+        : handler(handler), name_(name), text_(text) {}
     /**
      * @brief Construct an item with name, text and input handler.
      * @tparam InputHandler input handler type
@@ -74,6 +86,16 @@ namespace sgl {
     Item_t(StringView name, StringView text, InputHandler&& handler)
         : handler(std::forward<InputHandler>(handler)), name_(name),
           text_(text) {}
+
+    /**
+     * @brief Construct an item with name, text and input handler.
+     * @param name_and_text name and text of item
+     * @param handler input handler
+     */
+    constexpr Item_t(StringView name_and_text,
+                     sgl::error (*handler)(Item_t<LineWidth, CharT>&,
+                                           sgl::Input))
+        : handler(handler), name_(name_and_text), text_(name_and_text) {}
 
     /**
      * @brief Construct an item with name, text and input handler.
@@ -113,7 +135,7 @@ namespace sgl {
      * @param new_text new text
      * @return sgl::error
      */
-    sgl::error set_text(StringView new_text) {
+    constexpr sgl::error set_text(StringView new_text) {
       text_ = new_text;
       return sgl::error::no_error;
     }
@@ -122,24 +144,24 @@ namespace sgl {
      * @brief get const reference to text field
      * @return const TextField_t&
      */
-    const TextField_t& get_text() const { return text_; }
+    constexpr const TextField_t& get_text() const { return text_; }
 
     /**
      * @brief get reference to text field
      * @return TextField_t&
      */
-    TextField_t& get_text() { return text_; }
+    constexpr TextField_t& get_text() { return text_; }
 
     /**
      * @brief get the name of the item
      * @return StringView
      */
-    StringView get_name() const { return name_; }
+    constexpr StringView get_name() const { return name_; }
 
     /**
      * @brief clear the text field.
      */
-    void clear_text() { text_.reset(); }
+    constexpr void clear_text() { text_.reset(); }
 
     /**
      * @brief Set the input handler

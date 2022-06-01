@@ -67,7 +67,7 @@ namespace sgl {
     constexpr const CharT* end() const noexcept { return data_ + size_; }
 
     /// append str to this. Characters from str which do not fit are discarded.
-    constexpr void append(const CharT* str, size_t n) {
+    constexpr void append(const CharT* str, size_t n) noexcept {
       for (size_t i = size_; (i < Capacity) and (n != 0); ++i, --n) {
         data_[i] = str[i];
         ++size_;
@@ -76,7 +76,7 @@ namespace sgl {
 
     /// append string_view to this. Characters from str which do not fit are
     /// discarded.
-    constexpr void append(string_view<CharT> str) {
+    constexpr void append(string_view<CharT> str) noexcept {
       append(str.data(), str.size());
     }
 
