@@ -17,57 +17,53 @@ namespace sgl {
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See std::function, google search for delegates, etc. if the
    * concept is not clear.
+   * @warning mutable lambdas have a quirk because they are mutable. When
+   * invoking a Callable storing a mutable lambda, there is undefined behaviour
+   * if the Callable's type is const! Below is a quick code example of what is
+   * ok and what is not.
+   * ```cpp
+   * #include "sgl_callable2.hpp"
+   * using Call_t = sgl::Callable<int(void)>;
    *
-   * @tparam Ret return type of the delegate
+   * int main(){
+   *   int a = 5,b=10;
+   *   auto lambda = [=]() mutable { return (++a) + (--b);};
+   *   Call_t callable(lambda);
+   *   int ret = callable(); // ok, callable is not const.
+   *
+   *   const Call_t c2(lambda);
+   *   ret = c2() // will result in undefined behaviour, since c2's type is
+   *              // const.
+   *  return 0;
+   * }
+   * ```
+   * This also means, that invoking the callable in a const method of a
+   * class/struct with a callable as a member or bound to a const reference in a
+   * free function, will result in undefined behaviour. See
+   * https://en.cppreference.com/w/cpp/language/const_cast for more info.
+   * @tparam Ret return type of the callable
    * @tparam Args argument types
    */
   template <typename Ret, typename... Args>
   class Callable<Ret(Args...)> {
-  private:
-    template <typename T>
-    struct mfn {
-      T* t;
-      Ret (T::*member)(Args...);
-      Ret operator()(Args... args) { return static_cast<Ret>((t->*member)(args...)); }
-    };
-    template <typename T>
-    struct cmfn {
-      T* t;
-      Ret (T::*member)(Args...) const;
-      Ret operator()(Args... args) { return static_cast<Ret>((t->*member)(args...)); }
-    };
-
-    static Ret null_invoke(void*, Args...) {
-      static Ret r{};
-      return r;
-    }
-    static Ret free_function_invoke(void* buf, Args... args) {
-      using type = Ret (*)(Args...);
-      return static_cast<Ret>((*static_cast<type*>(buf))(args...));
-    }
-    template <typename T>
-    static Ret inline_invoke(void* buf, Args... args) {
-      return static_cast<Ret>((*static_cast<T*>(buf))(args...));
-    }
-
-    // data members
-    Ret (*invoke)(void*, Args...){null_invoke};
-    char buffer[16]{0};
-
   public:
     /// default constructor
     constexpr Callable() {}
 
     Callable(Ret (*f)(Args...)) { bind(f); }
+
     Callable(Ret (&f)(Args...)) { bind(f); }
+    
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...)) {
       bind(obj, member_function);
     }
+
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) const) {
       bind(obj, member_function);
     }
+    
     template <typename F>
     Callable(F&& f) {
       bind(std::forward<F>(f));
@@ -129,6 +125,42 @@ namespace sgl {
       new (buffer) std::decay_t<F>(std::forward<F>(f));
       invoke = &inline_invoke<std::decay_t<F>>;
     }
+
+  private:
+    template <typename T>
+    struct mfn {
+      T* t;
+      Ret (T::*member)(Args...);
+      Ret operator()(Args... args) {
+        return static_cast<Ret>((t->*member)(args...));
+      }
+    };
+
+    template <typename T>
+    struct cmfn {
+      T* t;
+      Ret (T::*member)(Args...) const;
+      Ret operator()(Args... args) {
+        return static_cast<Ret>((t->*member)(args...));
+      }
+    };
+
+    static Ret null_invoke(void*, Args...) {
+      static Ret r{};
+      return r;
+    }
+    static Ret free_function_invoke(void* buf, Args... args) {
+      using type = Ret (*)(Args...);
+      return static_cast<Ret>((*static_cast<type*>(buf))(args...));
+    }
+    template <typename T>
+    static Ret inline_invoke(void* buf, Args... args) {
+      return static_cast<Ret>((*static_cast<T*>(buf))(args...));
+    }
+
+    // data members
+    Ret (*invoke)(void*, Args...){null_invoke};
+    char buffer[16]{0};
   };
 } // namespace sgl
 #endif

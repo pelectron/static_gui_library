@@ -10,7 +10,7 @@ struct Struct {
 const auto lambda = [](int a) { return a; };
 int        main() {
   Struct     a, c;
-  auto capture_lambda = [&a, &c](int k) { return (a.b++) + c.b + k; };
+  auto capture_lambda = [=](int k) mutable{ return (a.b++) + c.b + k; };
   Struct     s{10};
   Call       call1([](int a) { return 2 * a; });
   Call       call2(&free_func);
