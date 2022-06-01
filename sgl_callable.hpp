@@ -63,7 +63,7 @@ namespace sgl {
     Callable(T& obj, Ret (T::*member_function)(Args...) const) {
       bind(obj, member_function);
     }
-    
+
     template <typename F>
     Callable(F&& f) {
       bind(std::forward<F>(f));
@@ -149,10 +149,12 @@ namespace sgl {
       static Ret r{};
       return r;
     }
+
     static Ret free_function_invoke(void* buf, Args... args) {
       using type = Ret (*)(Args...);
       return static_cast<Ret>((*static_cast<type*>(buf))(args...));
     }
+    
     template <typename T>
     static Ret inline_invoke(void* buf, Args... args) {
       return static_cast<Ret>((*static_cast<T*>(buf))(args...));
