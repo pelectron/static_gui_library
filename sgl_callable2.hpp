@@ -44,7 +44,7 @@ namespace sgl {
    *   int ret = callable(); // ok, callable is not const.
    *
    *   const Call_t c2(lambda);
-   *   ret = c2() // will result in undefined behaviour, since c2's type is
+   *   ret = c2(); // will result in undefined behaviour, since c2's type is
    *              // const.
    *  return 0;
    * }
