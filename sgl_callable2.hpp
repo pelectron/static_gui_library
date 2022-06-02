@@ -44,7 +44,7 @@ namespace sgl {
    *   int ret = callable(); // ok, callable is not const.
    *
    *   const Call_t c2(lambda);
-   *   ret = c2() // will result in undefined behaviour, since c2's type is
+   *   ret = c2(); // will result in undefined behaviour, since c2's type is
    *              // const.
    *  return 0;
    * }
@@ -59,25 +59,43 @@ namespace sgl {
   template <typename Ret, typename... Args>
   class Callable<Ret(Args...)> {
   public:
-    /// default constructor
-    constexpr Callable() : buffer_{.func = nullptr} {}
+    /// Default constructor
+    constexpr Callable() = default;
 
+    /// Construct callable from free function pointer
     constexpr Callable(Ret (*f)(Args...))
         : invoke_(&free_function_invoke), buffer_{.func = f} {}
 
+    /// Construct callable from free function reference
     constexpr Callable(Ret (&f)(Args...))
         : invoke_(&free_function_invoke), buffer_{.func = &f} {}
 
+    /**
+     * @brief Construct a new callable from object and member function
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function pointer to member function
+     */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...)) {
       bind(obj, member_function);
     }
 
+    /**
+     * @brief Construct a new callable from object and const member function
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function pointer to member function
+     */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) const) {
       bind(obj, member_function);
     }
-
+    /**
+     * @brief Construct a callable with a function object/functor
+     * @tparam F function object type
+     * @param f function object instance
+     */
     template <typename F,
               std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
                   nullptr>
@@ -172,7 +190,7 @@ namespace sgl {
 
     union Storage {
       Ret (*func)(Args...);
-      char buffer[16];
+      char buffer[2 * sizeof(void*)];
     };
 
     static Ret null_invoke(const Storage*, Args...) {

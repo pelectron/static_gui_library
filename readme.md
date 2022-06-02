@@ -8,11 +8,14 @@ There are three important points for me:
 I also wanted a pure software solution, i.e. no dependency on a certain display controller type, mcu etc. This way, it's up to the end user on how to actually print to a screen.
 
 # An small example to show the benefits
-```cpp
+```cpp  
+#define SGL_CHAR_TYPE char
+#define SGL_LINE_WIDTH 40
+#define SGL_INSTANTIATE 1
 #include "sgl.hpp"
 #include <iostream>
-using namespace sgl::string_view_literals;
 using namespace sgl;
+// an example enum
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 auto button_cb = [](Button& b) -> sgl::error {
