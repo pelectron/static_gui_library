@@ -1,4 +1,4 @@
-project('static gui',['cpp','c'],default_options:['buildtype=release','cpp_std=c++17','cpp_eh=none','cpp_rtti=false','cpp_debugstl=false','c_std=c11','b_sanitize=false'])
+project('static gui',['cpp','c'],default_options:['buildtype=release','cpp_std=c++17','cpp_eh=none','cpp_rtti=false','cpp_debugstl=false','c_std=c11','b_sanitize=none'])
 
 ryu_dep = dependency('ryu', fallback:['ryu','ryu_dep'])
 add_project_arguments('-ferror-limit=1',language:'cpp')
