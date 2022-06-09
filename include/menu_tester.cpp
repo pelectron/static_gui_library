@@ -17,13 +17,13 @@
 
 #include <iostream>
 #include <string>
-using namespace sgl::string_view_literals;
-using namespace sgl;
+using namespace sgl2::string_view_literals;
+using namespace sgl2;
 
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 auto button_cb = [](Item& b) -> sgl::error {
-  std::cout << b.get_name().data() << " pressed\n";
+  std::cout << b.name().data() << " pressed\n";
   return sgl::error::no_error;
 };
 

@@ -13,6 +13,9 @@ namespace sgl {
     format_error,
     page_not_found,
     invalid_page_index,
+    invalid_format,
+    null_format
+    
   };
 }
 #endif

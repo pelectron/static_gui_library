@@ -47,6 +47,17 @@
       "cwd": "${fileDirname}",
       "environment": [],
       "console": "externalTerminal"
-    }
+    },
+    {
+      "name": "item_base.exe",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/item_base.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "externalTerminal"
+    },
   ]
 }

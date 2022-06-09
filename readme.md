@@ -14,7 +14,7 @@ I also wanted a pure software solution, i.e. no dependency on a certain display 
 #define SGL_INSTANTIATE 1
 #include "sgl.hpp"
 #include <iostream>
-using namespace sgl;
+using namespace sgl2;
 // an example enum
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 

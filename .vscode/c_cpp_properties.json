@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${default}"
+                "${default}",
+                "${workspaceFolder}/subprojects/ryu/**"
             ],
             "defines": [
                 "_DEBUG",

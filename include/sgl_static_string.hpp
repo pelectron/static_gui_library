@@ -1,42 +1,46 @@
-#ifndef STATIC_STRING_HPP
-#define STATIC_STRING_HPP
+#ifndef SGL_STATIC_STRING_HPP
+#define SGL_STATIC_STRING_HPP
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
 
-#include <type_traits>
+#include "sgl_traits.hpp"
 
 namespace sgl {
 
   template <typename CharT, size_t Capacity>
-  class StaticString {
+  class static_string {
   public:
     /// create empty static string
-    constexpr StaticString() noexcept = default;
-
+    constexpr static_string() noexcept = default;
+    constexpr explicit static_string(size_t size, CharT val) noexcept : size_(size) {
+      for(size_t i = 0; (i < size)and (i < Capacity);++i){
+        data_[i]=val;
+      }
+    }
     /// copy ctor
-    constexpr StaticString(const StaticString& other) noexcept
+    constexpr static_string(const static_string& other) noexcept
         : size_(other.size_) {
       overwrite(other.data_, size_);
     }
 
     /// construct from array
-    constexpr StaticString(const CharT (&string)[Capacity + 1]) noexcept
+    constexpr static_string(const CharT (&string)[Capacity + 1]) noexcept
         : size_(Capacity) {
       overwrite(string, size_);
     }
 
     /// construct from array which is smaller than declared types capacity
-    template <size_t N, std::enable_if_t<(N <= (Capacity + 1))>* = nullptr>
-    constexpr StaticString(const CharT (&string)[N]) noexcept : size_(N - 1) {
+    template <size_t N, enable_if_t<(N <= (Capacity + 1))>* = nullptr>
+    constexpr static_string(const CharT (&string)[N]) noexcept : size_(N - 1) {
       overwrite(string, size_);
     }
 
     /// construct from sgl::string_view
-    constexpr StaticString(const string_view<CharT> sv) noexcept
-        : StaticString(sv.data(), sv.size()) {}
+    constexpr static_string(const string_view<CharT> sv) noexcept
+        : static_string(sv.data(), sv.size()) {}
 
     /// construct from pointer ans size
-    constexpr StaticString(const CharT* str, size_t size) noexcept {
+    constexpr static_string(const CharT* str, size_t size) noexcept {
       overwrite(str, size);
     }
 
@@ -92,7 +96,7 @@ namespace sgl {
     constexpr bool is_empty() const noexcept { return size_ == 0; }
 
     /// copy assignment operator
-    constexpr StaticString& operator=(const StaticString& other) noexcept {
+    constexpr static_string& operator=(const static_string& other) noexcept {
       this->overwrite(other.data_, other.size_);
       for (int i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
@@ -101,7 +105,7 @@ namespace sgl {
     }
 
     /// assign from string_view
-    constexpr StaticString& operator=(const string_view<CharT> str) noexcept {
+    constexpr static_string& operator=(const string_view<CharT> str) noexcept {
       this->overwrite(str.data(), str.size());
       for (int i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
@@ -119,10 +123,14 @@ namespace sgl {
 
     /// resize the string.
     constexpr void resize(size_t new_size) noexcept {
-      size_ = new_size;
+      if (size_ == 0) {
+        size_ = new_size;
+        return;
+      }
       for (size_t i = size_ - 1; i >= new_size; --i) {
         data_[i] = 0;
       }
+      size_ = new_size;
     }
 
     /// access to i-th character. Undefined behaviour if i > Capacity.
@@ -149,8 +157,8 @@ namespace sgl {
 
   /// static string comparison operator.
   template <typename CharT, size_t N>
-  constexpr bool operator==(const StaticString<CharT, N> s1,
-                            const StaticString<CharT, N> s2) noexcept {
+  constexpr bool operator==(const static_string<CharT, N> s1,
+                            const static_string<CharT, N> s2) noexcept {
     if (s1.size() != s2.size())
       return false;
     for (size_t i = 0; i < s1.size(); ++i) {

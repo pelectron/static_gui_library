@@ -27,7 +27,10 @@ namespace sgl {
   constexpr size_t max_align() {
     return max_align_impl<Ts...>(0);
   }
-
+  template<typename T>
+  constexpr size_t tuple_size_impl(size_t s, size_t max_align){
+    return sizeof(T);
+  }
   template <typename T1, typename T2, typename... Ts>
   constexpr size_t tuple_size_impl(size_t s, size_t max_align) {
     if constexpr (sizeof...(Ts) == 0) {
@@ -41,6 +44,11 @@ namespace sgl {
   template <typename... Ts>
   constexpr size_t tuple_size() {
     return tuple_size_impl<Ts...>(0, max_align<Ts...>());
+  }
+  
+  template<size_t,typename T>
+  constexpr size_t buffer_index_impl(size_t){
+    return 0;
   }
 
   template <size_t I, typename T1, typename T2, typename... Ts>

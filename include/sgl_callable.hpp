@@ -1,20 +1,11 @@
 #ifndef CALLABLE2_HPP
 #define CALLABLE2_HPP
+#include "sgl_traits.hpp"
+
 #include <cstring>
 #include <new>
-#include <type_traits>
+
 namespace sgl {
-  template <typename Ret, typename F, typename = void, typename... Args>
-  struct is_const_invocable : std::false_type {};
-  template <typename Ret, typename F, typename... Args>
-  struct is_const_invocable<
-      Ret,
-      F,
-      std::enable_if_t<std::is_invocable_r_v<Ret, const F, Args...>>,
-      Args...> : std::true_type {};
-  template <typename Ret, typename F, typename... Args>
-  static constexpr bool is_const_invocable_v =
-      is_const_invocable<Ret, F, void, Args...>::value;
   /// @cond
   // intentional forward declaration only. specialization follows below.
 
@@ -27,7 +18,7 @@ namespace sgl {
    * heap allocate.
    * @details This class can bind and execute function objects/functors/lambdas,
    * free functions and member functions with a return type of Ret and arguments
-   * Args... . See std::function, google search for delegates, etc. if the
+   * Args... . See function, google search for delegates, etc. if the
    * concept is not clear.
    * @warning mutable lambdas have a quirk because they are mutable. When
    * invoking a Callable storing a mutable lambda, there is undefined behaviour
@@ -60,14 +51,14 @@ namespace sgl {
   class Callable<Ret(Args...)> {
   public:
     /// Default constructor
-    constexpr Callable() = default;
+    constexpr Callable() noexcept = default;
 
     /// Construct callable from free function pointer
-    constexpr Callable(Ret (*f)(Args...))
+    constexpr Callable(Ret (*f)(Args...)) noexcept
         : invoke_(&free_function_invoke), buffer_{.func = f} {}
 
     /// Construct callable from free function reference
-    constexpr Callable(Ret (&f)(Args...))
+    constexpr Callable(Ret (&f)(Args...)) noexcept
         : invoke_(&free_function_invoke), buffer_{.func = &f} {}
 
     /**
@@ -77,7 +68,7 @@ namespace sgl {
      * @param member_function pointer to member function
      */
     template <typename T>
-    Callable(T& obj, Ret (T::*member_function)(Args...)) {
+    Callable(T& obj, Ret (T::*member_function)(Args...)) noexcept {
       bind(obj, member_function);
     }
 
@@ -88,7 +79,7 @@ namespace sgl {
      * @param member_function pointer to member function
      */
     template <typename T>
-    Callable(T& obj, Ret (T::*member_function)(Args...) const) {
+    Callable(T& obj, Ret (T::*member_function)(Args...) const) noexcept {
       bind(obj, member_function);
     }
     /**
@@ -96,24 +87,40 @@ namespace sgl {
      * @tparam F function object type
      * @param f function object instance
      */
-    template <typename F,
-              std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
-                  nullptr>
-    Callable(F&& f) {
-      bind(std::forward<F>(f));
+    template <typename F, enable_if_t<!is_same_v<F, Callable<Ret(Args...)>>>* = nullptr>
+    Callable(F&& f) noexcept {
+      bind(forward<F>(f));
+    }
+
+    Callable& operator=(Ret (*func)(Args...)) noexcept {
+      buffer_.func = func;
+      invoke_ = &free_function_invoke;
+      return *this;
+    }
+    Callable& operator=(Ret (&func)(Args...)) noexcept { return *this = &func; }
+
+    template <typename F>
+    Callable& operator=(F&& f) noexcept {
+      if constexpr (is_same_v<F, Callable<Ret(Args...)>>) {
+        buffer_ = other.buffer_;
+        invoke_ = other.invoke_;
+      } else {
+        this->bind(forward<F>(f));
+        return *this;
+      }
     }
 
     /// invoke delegate
-    Ret operator()(Args... args) const { return invoke_(&buffer_, args...); }
+    constexpr Ret operator()(Args... args) const { return invoke_(&buffer_, args...); }
 
     /// bind free function
-    void bind(Ret (*free_function)(Args...)) {
+    constexpr void bind(Ret (*free_function)(Args...)) noexcept {
       buffer_.func = free_function;
       invoke_ = &free_function_invoke;
     }
 
     /// bind free function
-    void bind(Ret (&free_function)(Args...)) { bind(&free_function); }
+    constexpr void bind(Ret (&free_function)(Args...)) noexcept { bind(&free_function); }
 
     /**
      * @brief bind object and member function
@@ -123,7 +130,7 @@ namespace sgl {
      * @param member_function member function pointer
      */
     template <typename T>
-    void bind(T& obj, Ret (T::*member_function)(Args...)) {
+    void bind(T& obj, Ret (T::*member_function)(Args...)) noexcept {
       static_assert(sizeof(mfn<T>) <= sizeof(buffer_), "");
       new (buffer_.buffer) mfn<T>{&obj, member_function};
       invoke_ = &inline_invoke<mfn<T>>;
@@ -137,7 +144,7 @@ namespace sgl {
      * @param member_function pointer to const qualified member function
      */
     template <typename T>
-    void bind(T& obj, Ret (T::*member_function)(Args...) const) {
+    void bind(T& obj, Ret (T::*member_function)(Args...) const) noexcept {
       static_assert(sizeof(cmfn<T>) <= sizeof(buffer_), "");
       new (buffer_.buffer) cmfn<T>{&obj, member_function};
       invoke_ = &inline_invoke<cmfn<T>>;
@@ -149,43 +156,39 @@ namespace sgl {
      * @tparam F invocable type
      * @param f invocable instance
      */
-    template <typename F,
-              std::enable_if_t<!std::is_convertible_v<F, Ret (*)(Args...)>>* =
-                  nullptr>
-    void bind(F&& f) {
-      static_assert(std::is_invocable_r_v<Ret, F, Args...>, "");
-      static_assert(sizeof(F) <= sizeof(buffer_), "");
-      static_assert(std::is_trivially_destructible_v<std::decay_t<F>>, "");
-      if constexpr (is_const_invocable_v<Ret,
-                                         std::remove_reference_t<F>,
-                                         Args...>) {
-        new (buffer_.buffer) std::decay_t<F>(std::forward<F>(f));
-        invoke_ = &inline_invoke<std::decay_t<F>>;
+    template <typename F>
+    void bind(F&& f) noexcept {
+      static_assert(is_invocable_r_v<Ret, F, Args...>, "");
+      static_assert(sizeof(decay_t<F>) <= sizeof(buffer_), "");
+      // static_assert(is_trivially_destructible_v<decay_t<F>>, "");
+      static_assert(is_trivially_move_constructible_v<decay_t<F>>, "");
+      static_assert(is_trivially_copy_constructible_v<decay_t<F>>, "");
+      if constexpr (is_constructible_v<F, Ret (*)(Args...)>) {
+        bind(static_cast<Ret (*)(Args...)>(f));
+      } else if constexpr (is_const_invocable_v<Ret, remove_reference_t<F>, Args...>) {
+        new (buffer_.buffer) decay_t<F>(forward<F>(f));
+        invoke_ = &inline_invoke<decay_t<F>>;
       } else {
-        new (buffer_.buffer) std::decay_t<F>(std::forward<F>(f));
-        invoke_ = &const_inline_invoke<std::decay_t<F>>;
+        new (buffer_.buffer) decay_t<F>(forward<F>(f));
+        invoke_ = &const_inline_invoke<decay_t<F>>;
       }
     }
 
-    void reset() { invoke_ = &null_invoke; }
+    void reset() noexcept { invoke_ = &null_invoke; }
 
   private:
     template <typename T>
     struct mfn {
       T* t;
       Ret (T::*member)(Args...);
-      Ret operator()(Args... args) const {
-        return static_cast<Ret>((t->*member)(args...));
-      }
+      Ret operator()(Args... args) const { return static_cast<Ret>((t->*member)(args...)); }
     };
 
     template <typename T>
     struct cmfn {
       T* t;
       Ret (T::*member)(Args...) const;
-      Ret operator()(Args... args) const {
-        return static_cast<Ret>((t->*member)(args...));
-      }
+      Ret operator()(Args... args) const { return static_cast<Ret>((t->*member)(args...)); }
     };
 
     union Storage {
@@ -193,25 +196,24 @@ namespace sgl {
       char buffer[2 * sizeof(void*)];
     };
 
-    static Ret null_invoke(const Storage*, Args...) {
+    static Ret null_invoke(const Storage*, Args...) noexcept {
       static Ret r{};
       return r;
     }
 
-    static Ret free_function_invoke(const Storage* storage, Args... args) {
+    constexpr static Ret free_function_invoke(const Storage* storage, Args... args) {
       return static_cast<Ret>((*(storage->func))(args...));
     }
 
     template <typename T>
     static Ret inline_invoke(const Storage* storage, Args... args) {
-      return static_cast<Ret>((*static_cast<const T*>(
-          static_cast<const void*>(storage->buffer)))(args...));
+      return static_cast<Ret>(
+          (*static_cast<const T*>(static_cast<const void*>(storage->buffer)))(args...));
     }
 
     template <typename F>
     static Ret const_inline_invoke(const Storage* storage, Args... args) {
-      return static_cast<Ret>(
-          (*reinterpret_cast<F*>(const_cast<char*>(storage->buffer)))(args...));
+      return static_cast<Ret>((*reinterpret_cast<F*>(const_cast<char*>(storage->buffer)))(args...));
     }
 
     // data members

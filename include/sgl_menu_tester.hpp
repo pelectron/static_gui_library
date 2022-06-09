@@ -1,9 +1,9 @@
 #ifndef SGL_MENU_TESTER_HPP
 #define SGL_MENU_TESTER_HPP
-#include "sgl.hpp"
+#include "sgl_menu.hpp"
 
 #include <iostream>
-namespace sgl {
+namespace sgl2 {
 
   /**
    * @brief pair of sgl::Input and sgl::string_view<CharT>
@@ -46,7 +46,7 @@ namespace sgl {
   template <size_t N, size_t LineWidth, typename CharT, typename... Pages>
   class MenuTester {
   public:
-    using Menu = sgl::Menu_t<LineWidth, CharT, Pages...>;
+    using Menu = sgl::Menu<CharT, Pages...>;
 
     using char_type = typename Menu::char_type;
     /**
@@ -120,5 +120,5 @@ namespace sgl {
     InputMap<char_type, N> map;
   };
 
-} // namespace sgl
+} // namespace sgl2
 #endif
