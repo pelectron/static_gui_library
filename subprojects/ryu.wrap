@@ -1,0 +1,6 @@
+[wrap-git]
+url=https://github.com/ulfjack/ryu.git
+revision=master
+patch_directory=ryu
+[provide]
+dependency_names=ryu
