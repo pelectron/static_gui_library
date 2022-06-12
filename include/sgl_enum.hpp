@@ -94,7 +94,7 @@ namespace sgl {
     const Map_t& get_map() const noexcept;
 
   private:
-    static sgl::error default_handle_input(item_type& enum_item, sgl::Input input) noexcept;
+    constexpr static sgl::error default_handle_input(item_type& enum_item, sgl::Input input) noexcept;
     Map_t             map_;
     size_t            index_{0};
   };
@@ -176,7 +176,7 @@ namespace sgl {
   }
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  sgl::error Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
+  constexpr sgl::error Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
                                                                                   sgl::Input input) noexcept {
     switch (input) {
       case sgl::Input::right:

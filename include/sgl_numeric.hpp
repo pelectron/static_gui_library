@@ -75,26 +75,26 @@ namespace sgl {
                   InputHandler&& handler) noexcept;
 
     /// execute the formatter
-    sgl::error format(static_string<CharT, TextSize>& str, T val) noexcept;
+    constexpr sgl::error format(static_string<CharT, TextSize>& str, T val) noexcept;
 
     /// get delta value.
-    T get_delta() const noexcept;
+    constexpr T get_delta() const noexcept;
 
     /// set delta value.
-    sgl::error set_delta(T delta) noexcept;
+    constexpr sgl::error set_delta(T delta) noexcept;
 
     /// get value stored.
-    T get_value() const noexcept;
+    constexpr T get_value() const noexcept;
 
     /// set value
-    sgl::error set_value(T value) noexcept;
+    constexpr sgl::error set_value(T value) noexcept;
 
     /// get format buffer
-    static_string<CharT, TextSize>& get_buffer() noexcept;
+    constexpr static_string<CharT, TextSize>& get_buffer() noexcept;
 
   private:
     /// default input handler
-    static sgl::error default_handle_input(item_type& numeric_item, sgl::Input input) noexcept;
+    constexpr static sgl::error default_handle_input(item_type& numeric_item, sgl::Input input) noexcept;
 
     static sgl::error default_format(static_string<CharT, TextSize>& text, T value) noexcept;
 
@@ -141,28 +141,29 @@ namespace sgl {
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  sgl::error Numeric<T, TextSize, CharT>::format(static_string<CharT, TextSize>& str,
+  constexpr sgl::error Numeric<T, TextSize, CharT>::format(static_string<CharT, TextSize>& str,
                                                        T val) noexcept {
     return format_(str, val);
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  T Numeric<T, TextSize, CharT>::get_delta() const noexcept {
+  constexpr T Numeric<T, TextSize, CharT>::get_delta() const noexcept {
     return delta_;
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  sgl::error Numeric<T, TextSize, CharT>::set_delta(T delta) noexcept {
+  constexpr sgl::error Numeric<T, TextSize, CharT>::set_delta(T delta) noexcept {
     delta_ = delta;
+    return sgl::error::no_error;
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  T Numeric<T, TextSize, CharT>::get_value() const noexcept {
+  constexpr T Numeric<T, TextSize, CharT>::get_value() const noexcept {
     return value_;
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  sgl::error Numeric<T, TextSize, CharT>::set_value(T value) noexcept {
+  constexpr sgl::error Numeric<T, TextSize, CharT>::set_value(T value) noexcept {
     format_buffer_.resize(TextSize);
     sgl::error ec = format_(format_buffer_, value);
     if (ec == sgl::error::no_error) {
@@ -174,12 +175,12 @@ namespace sgl {
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  static_string<CharT, TextSize>& Numeric<T, TextSize, CharT>::get_buffer() noexcept {
+  constexpr static_string<CharT, TextSize>& Numeric<T, TextSize, CharT>::get_buffer() noexcept {
     return format_buffer_;
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  sgl::error Numeric<T, TextSize, CharT>::default_handle_input(
+  constexpr sgl::error Numeric<T, TextSize, CharT>::default_handle_input(
       Numeric<T, TextSize, CharT>& numeric_item,
       sgl::Input                         input) noexcept {
     if (!is_keyboard_input(input)) {

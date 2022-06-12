@@ -1,9 +1,10 @@
 #ifndef SGL_TUPLE_HPP
 #define SGL_TUPLE_HPP
 #include "sgl_index_sequence.hpp"
+#include "sgl_traits.hpp"
 #include "sgl_tuple_utils.hpp"
 #include "sgl_type_list.hpp"
-#include "sgl_traits.hpp"
+
 namespace sgl {
   template <size_t I, typename T>
   class tuple_element {
@@ -93,38 +94,67 @@ namespace sgl {
     constexpr tuple(Ts&&... ts) noexcept(nothrow_move_constructible) : Base(sgl::move(ts)...) {}
 
     template <size_t I>
-    constexpr type_at_t<I>& get() {
+    constexpr type_at_t<I>& get() noexcept {
       return this->template get_elem<I>().get();
     };
 
     template <size_t I>
-    constexpr const type_at_t<I>& get() const {
+    constexpr const type_at_t<I>& get() const noexcept{
       return this->template get_elem<I>().get();
     };
 
     template <typename F>
-    constexpr void for_each(F&& f) {
+    constexpr void for_each(F&& f)noexcept(noexcept(f)) {
       for_each_impl(sgl::forward<F>(f), indices_t{});
     }
 
     template <typename F>
-    constexpr void for_each(F&& f) const {
+    constexpr void for_each(F&& f) const noexcept(noexcept(f)){
       for_each_impl(sgl::forward<F>(f), indices_t{});
     }
 
   private:
     template <typename F, size_t... I>
-    constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) {
+    constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) noexcept(noexcept(f)){
       (f(this->get<I>()), ...);
     }
     template <typename F, size_t... I>
-    constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) const {
+    constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) const noexcept(noexcept(f)){
       (f(this->get<I>()), ...);
     }
   };
-
   /// deduction guide for tuple
   template <typename... Ts>
   tuple(Ts&&...) -> tuple<sgl::decay_t<Ts>...>;
+
+  template <size_t I, typename tuple>
+  struct tuple_element_type;
+  template <size_t I, typename... Ts>
+  struct tuple_element_type<I, sgl::tuple<Ts...>> {
+    using type = sgl::type_at_t<I, sgl::type_list<Ts...>>;
+  };
+  /// get i-th type of tuple
+  template <size_t I, typename tuple>
+  using tuple_element_t = typename tuple_element_type<I, tuple>::type;
+
+  template <size_t I, typename... Ts>
+  constexpr tuple_element_t<I, tuple<Ts...>>& get(tuple<Ts...>& t) noexcept{
+    return t.template get<I>();
+  }
+
+  template <size_t I, typename... Ts>
+  constexpr const tuple_element_t<I, tuple<Ts...>>& get(const tuple<Ts...>& t) noexcept{
+    return t.template get<I>();
+  }
+
+  template <typename F, typename... Ts>
+  constexpr void for_each(tuple<Ts...>& t, F&& f) noexcept{
+    t.template for_each(sgl::forward<F>(f));
+  }
+
+  template <typename F, typename... Ts>
+  constexpr void for_each(const tuple<Ts...>& t, F&& f) noexcept{
+    t.template for_each(sgl::forward<F>(f));
+  }
 } // namespace sgl
 #endif

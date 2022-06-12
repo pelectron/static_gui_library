@@ -221,15 +221,15 @@ namespace sgl {
   };
 
   template <template <typename> typename F, typename List>
-  struct for_each;
+  struct for_each_in_list;
 
   template <template <typename> typename F, typename... Ts>
-  struct for_each<F, type_list<Ts...>> {
+  struct for_each_in_list<F, type_list<Ts...>> {
     using type = type_list<apply_t<F, type_list<Ts>>...>;
   };
 
   template <template <typename> typename F, typename List>
-  using for_each_t = typename for_each<F, List>::type;
+  using for_each_t = typename for_each_in_list<F, List>::type;
   ///@endcond
 } // namespace sgl
 #endif

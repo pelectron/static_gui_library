@@ -2,10 +2,7 @@
 #define SGL_CHAR_TYPE   char
 #define SGL_LINE_WIDTH  25
 #define SGL_USE_RYU     1
-#include "sgl_items.hpp"
-#include "sgl_menu.hpp"
-#include "sgl_traits.hpp"
-#include "sgl_page.hpp"
+#include "sgl.hpp"
 #include <iostream>
 
 using namespace sgl::string_view_literals;
@@ -40,7 +37,7 @@ struct M {
   error set_active_page(string_view<char>) { return error::no_error; }
 };
 constexpr int func() { return 2; }
-static_assert(Callable<int()>(+[]() { return 2; })() == 2, "");
+static_assert(Callable<int()>([]() noexcept{ return 2; })() == 2, "");
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 int main() {
@@ -49,7 +46,6 @@ int main() {
     a = k_;
     return error::no_error;
   };
-  auto                      lambda2{lambda1};
   M                         menu;
   PageLink<40, char>        link("hi", "world", "link");
   Numeric<int, 40, char>    integer("int", 1, 2);

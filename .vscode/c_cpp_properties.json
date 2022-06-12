@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/subprojects/ryu/**"
+                "${workspaceFolder}/subprojects/ryu/ryu/**"
             ],
             "defines": [
                 "_DEBUG",

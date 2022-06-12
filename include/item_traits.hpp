@@ -84,9 +84,9 @@ namespace sgl {
   /// page traits
   /// @{
   namespace detail {
-    auto pf = [](auto& item) {};
-    auto pcf = [](const auto& item) {};
-    auto set_menu = [](auto* m) {};
+    [[maybe_unused]]auto pf = [](auto& item) {};
+    [[maybe_unused]]auto pcf = [](const auto& item) {};
+    [[maybe_unused]]auto set_menu = [](auto* m) {};
     // dummy menu type
     struct M {};
   } // namespace detail

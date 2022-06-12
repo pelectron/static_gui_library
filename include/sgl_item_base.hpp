@@ -121,7 +121,7 @@ namespace sgl {
      * @tparam Menu menu type
      */
     template <typename Menu>
-    void set_menu(Menu*) noexcept;
+    constexpr void set_menu(Menu*) noexcept;
 
     /**
      * @brief calls the items input handler.
@@ -130,7 +130,7 @@ namespace sgl {
      * @return sgl::error::edit_finished in case the item is done being edited.
      * See input handling for more details.
      */
-    sgl::error handle_input(sgl::Input input) noexcept;
+    constexpr sgl::error handle_input(sgl::Input input) noexcept;
 
     /**
      * @brief set the text field
@@ -212,10 +212,10 @@ namespace sgl {
 
   template <typename Traits>
   template <typename Menu>
-  void ItemBase<Traits>::set_menu(Menu*) noexcept {}
+  constexpr void ItemBase<Traits>::set_menu(Menu*) noexcept {}
 
   template <typename Traits>
-  sgl::error ItemBase<Traits>::handle_input(sgl::Input input) noexcept {
+  constexpr sgl::error ItemBase<Traits>::handle_input(sgl::Input input) noexcept {
     return handler_(*static_cast<item_type*>(this), input);
   }
 

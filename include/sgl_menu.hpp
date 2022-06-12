@@ -6,6 +6,7 @@
 #include "sgl_input.hpp"
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
+#include "sgl_traits.hpp"
 #include "sgl_tuple.hpp"
 
 namespace sgl {
@@ -26,7 +27,9 @@ namespace sgl {
     using item_at_t = typename page_at_t<P>::template item_at_t<I>;
 
     using StringView = sgl::string_view<CharT>;
-
+    template <typename... P>
+    static constexpr bool
+        nothrow_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, P> && ...);
     // constructors
     /**
      * @brief Construct a new Menu object
@@ -34,25 +37,27 @@ namespace sgl {
      * @param menu_name
      * @param pages
      */
-    Menu(StringView menu_name, Pages&&... pages)
+    constexpr Menu(StringView menu_name,
+                   Pages&&... pages) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(forward<Pages>(pages)...), name_(menu_name) {
-      pages_.for_each([this](auto& page) { page.set_menu(this); });
+      sgl::for_each(pages_, [this](auto& page) { page.set_menu(this); });
     }
 
     template <size_t N>
-    Menu(const CharT (&name)[N], Pages&&... pages)
+    constexpr Menu(const CharT (&name)[N],
+                   Pages&&... pages) noexcept(nothrow_constructible_v<Pages...>)
         : Menu(StringView(name), forward<Pages>(pages)...) {}
 
-    Menu(const Menu& other)
+    constexpr Menu(const Menu& other) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(other.pages_), input_handler_(other.input_handler_), name_(other.name_),
           index_(other.index_) {
-      pages_.for_each([this](auto& page) { page.set_menu(this); });
+      sgl::for_each(pages_, [this](auto& page) { page.set_menu(this); });
     }
 
-    Menu(Menu&& other)
+    constexpr Menu(Menu&& other) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(move(other.pages_)), input_handler_(move(other.input_handler_)),
           name_(move(other.name_)), index_(move(other.index_)) {
-      pages_.for_each([this](auto& page) { page.set_menu(this); });
+      sgl::for_each(pages_, [this](auto& page) noexcept { page.set_menu(this); });
     }
 
     /**
@@ -60,26 +65,31 @@ namespace sgl {
      * @param input user input
      * @return sgl::error
      */
-    sgl::error handle_input(Input input) { return input_handler_(*this, input); }
+    constexpr sgl::error handle_input(Input input) noexcept { return input_handler_(*this, input); }
 
     /**
      * @brief Set the active page by name
      * @param page_name name of the page
      * @return sgl::error
      */
-    sgl::error set_active_page(StringView page_name) { return set_active_page_impl<0>(page_name); }
+    constexpr sgl::error set_active_page(StringView page_name) noexcept {
+      return set_active_page_impl<0>(page_name);
+    }
 
     /**
      * @brief Set the active page by index
      * @param page_index page index
      * @return sgl::error::invalid_page_index
      */
-    sgl::error set_active_page(size_t page_index) {
+    constexpr sgl::error set_active_page(size_t page_index) noexcept {
       if (page_index < num_pages) {
-        for_current_page([](auto& page) { page.on_exit(); });
+        sgl::error ec{sgl::error::no_error};
+        for_current_page([&ec](auto& page) noexcept { ec = page.on_exit(); });
+        if (ec != sgl::error::no_error)
+          return ec;
         index_ = page_index;
-        for_current_page([](auto& page) { page.on_enter(); });
-        return sgl::error::no_error;
+        for_current_page([&ec](auto& page) noexcept { ec = page.on_enter(); });
+        return ec;
       } else
         return sgl::error::invalid_page_index;
     }
@@ -89,8 +99,8 @@ namespace sgl {
      * @tparam I page index
      */
     template <size_t I>
-    page_at_t<I>& get_page() noexcept {
-      return pages_.template get<I>();
+    constexpr page_at_t<I>& get_page() noexcept {
+      return sgl::get<I>(pages_);
     }
 
     /**
@@ -98,8 +108,8 @@ namespace sgl {
      * @tparam I page index
      */
     template <size_t I>
-    const page_at_t<I>& get_page() const noexcept {
-      return pages_.template get<I>();
+    constexpr const page_at_t<I>& get_page() const noexcept {
+      return sgl::get<I>(pages_);
     }
 
     /// get the index of the currently active page
@@ -121,8 +131,8 @@ namespace sgl {
      * @return reference to item at ItemIndex from page at PageIndex.
      */
     template <size_t PageIndex, size_t ItemIndex>
-    item_at_t<PageIndex, ItemIndex>& get_item() noexcept {
-      return pages_.template get<PageIndex>().template get_item<ItemIndex>();
+    constexpr item_at_t<PageIndex, ItemIndex>& get_item() noexcept {
+      return sgl::get<ItemIndex>(sgl::get<PageIndex>(pages_));
     }
 
     /**
@@ -138,8 +148,8 @@ namespace sgl {
      * @return const item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
-    const item_at_t<PageIndex, ItemIndex>& get_item() const noexcept {
-      return pages_.template get<PageIndex>().template get_item<ItemIndex>();
+    constexpr const item_at_t<PageIndex, ItemIndex>& get_item() const noexcept {
+      return sgl::get<ItemIndex>(sgl::get<PageIndex>(pages_));
     }
 
     /**
@@ -161,8 +171,8 @@ namespace sgl {
      * @param f function template
      */
     template <typename F>
-    void for_each_page(F&& f) noexcept(noexcept(f)) {
-      pages_.for_each(forward<F>(f));
+    constexpr void for_each_page(F&& f) noexcept(noexcept(f)) {
+      sgl::for_each(pages_, forward<F>(f));
     }
 
     /**
@@ -183,8 +193,8 @@ namespace sgl {
      * @param f functor instance
      */
     template <typename F>
-    void for_each_page(F&& f) const noexcept(noexcept(f)) {
-      pages_.for_each(forward<F>(f));
+    constexpr void for_each_page(F&& f) const noexcept(noexcept(f)) {
+      sgl::for_each(pages_, forward<F>(f));
     }
 
     /**
@@ -194,32 +204,33 @@ namespace sgl {
      * @{
      */
     template <typename F>
-    void for_current_page(F&& f) noexcept(noexcept(f)) {
+    constexpr void for_current_page(F&& f) noexcept(noexcept(f)) {
       for_current_page_impl<0>(forward<F>(f));
     }
 
     template <typename F>
-    void for_current_page(F&& f) const noexcept(noexcept(f)) {
+    constexpr void for_current_page(F&& f) const noexcept(noexcept(f)) {
       for_current_page_impl<0>(forward<F>(f));
     }
     /// @}
 
   private:
-    static sgl::error default_handle_input(Menu<CharT, Pages...>& menu, Input input) noexcept {
-      sgl::error ret;
+    constexpr static sgl::error default_handle_input(Menu<CharT, Pages...>& menu,
+                                                     Input                  input) noexcept {
+      sgl::error ret{sgl::error::invalid_page_index};
       menu.for_current_page([&ret, i = input](auto& page) { ret = page.handle_input(i); });
       return ret;
     }
 
     template <size_t I>
-    sgl::error set_active_page_impl(StringView page_name) noexcept {
+    constexpr sgl::error set_active_page_impl(StringView page_name) noexcept {
       if constexpr (I == num_pages) {
         return sgl::error::page_not_found;
       } else {
         if (page_name == StringView(pages_.template get<I>().name())) {
-          for_current_page([](auto& page) { page.on_exit(); });
+          for_current_page([](auto& page) noexcept { page.on_exit(); });
           index_ = I;
-          for_current_page([](auto& page) { page.on_enter(); });
+          for_current_page([](auto& page) noexcept { page.on_enter(); });
           return error::no_error;
         } else {
           return set_active_page_impl<I + 1>(page_name);
@@ -227,26 +238,16 @@ namespace sgl {
       }
     }
 
-    void set_start_edit_for_pages(sgl::Input start_edit) {
-      set_start_edit_for_pages(start_edit, sgl::index_sequence_for<Pages...>{});
+    constexpr void set_start_edit_for_pages(sgl::Input start_edit) noexcept {
+      sgl::for_each(pages_, [start_edit](auto& page) noexcept { page.set_start_edit(start_edit); });
     }
 
-    template <size_t... I>
-    void set_start_edit_for_pages(sgl::Input start_edit, sgl::index_seq_t<I...>) {
-      (get_page<I>().set_start_edit(start_edit), ...);
-    }
-
-    void set_stop_edit_for_pages(sgl::Input stop_edit) {
-      set_stop_edit_for_pages(stop_edit, sgl::index_sequence_for<Pages...>{});
-    }
-
-    template <size_t... I>
-    void set_stop_edit_for_pages(sgl::Input stop_edit, sgl::index_seq_t<I...>) {
-      (get_page<I>().set_stop_edit(stop_edit), ...);
+    constexpr void set_stop_edit_for_pages(sgl::Input stop_edit) noexcept {
+      sgl::for_each(pages_, [stop_edit](auto& page) noexcept { page.set_stop_edit(stop_edit); });
     }
 
     template <size_t I, typename F>
-    void for_current_page_impl(F&& f) noexcept(noexcept(f)) {
+    constexpr void for_current_page_impl(F&& f) noexcept(noexcept(f)) {
       if constexpr (I == num_pages) {
         return;
       } else {
@@ -259,7 +260,7 @@ namespace sgl {
     }
 
     template <size_t I, typename F>
-    void for_current_page_impl(F&& f) const noexcept(noexcept(f)) {
+    constexpr void for_current_page_impl(F&& f) const noexcept(noexcept(f)) {
       if constexpr (I == num_pages) {
         return;
       } else {
@@ -277,5 +278,24 @@ namespace sgl {
     sgl::smallest_type_t<sizeof...(Pages)> index_{0};
   };
 
+  template <size_t I, typename CharT, typename... Pages>
+  constexpr auto& get(Menu<CharT, Pages...>& menu) noexcept {
+    return menu.template get_page<I>();
+  }
+
+  template <size_t I, typename CharT, typename... Pages>
+  constexpr const auto& get(const Menu<CharT, Pages...>& menu) noexcept {
+    return menu.template get_page<I>();
+  }
+
+  template <typename F, typename CharT, typename... Pages>
+  constexpr void for_each(Menu<CharT, Pages...>& menu, F&& f) noexcept(noexcept(f)) {
+    menu.template for_each_page(std::forward<F>(f));
+  }
+
+  template <typename F, typename CharT, typename... Pages>
+  constexpr void for_each(const Menu<CharT, Pages...>& menu, F&& f) noexcept(noexcept(f)) {
+    menu.template for_each_page(std::forward<F>(f));
+  }
 } // namespace sgl
 #endif
