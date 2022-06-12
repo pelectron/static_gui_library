@@ -3,7 +3,9 @@
 #define SGL_LINE_WIDTH  25
 #define SGL_USE_RYU     1
 #include "sgl.hpp"
+
 #include <iostream>
+
 
 using namespace sgl::string_view_literals;
 using namespace sgl;
@@ -37,7 +39,7 @@ struct M {
   error set_active_page(string_view<char>) { return error::no_error; }
 };
 constexpr int func() { return 2; }
-static_assert(Callable<int()>([]() noexcept{ return 2; })() == 2, "");
+static_assert(Callable<int()>([]() noexcept { return 2; })() == 2, "");
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 int main() {
@@ -57,7 +59,7 @@ int main() {
                                 {test_enum::_2, "two"},
                                 {test_enum::_3, "three"},
                                 {test_enum::_4, "four"}});
-  static_assert(is_item_v<std::decay_t<decltype(link)>>, "");
+  static_assert(is_item_v<decay_t<decltype(link)>>, "");
   link.set_menu(&menu);
   link.clear_text();
   Button<40, char> button("b1", "Button 1");
@@ -96,7 +98,7 @@ int main() {
                       Numeric<float, 40, char>("float", 1.0f, 2.0f),
                       Numeric<unsigned, 40, char>("int", 1, 1),
                       PageLink<40, char>("p1l", "page 1 link", "page1")));
-  static_assert(has_for_current_page_v<decltype(mn)>, "");
+  static_assert(is_menu_v<decltype(mn)>, "");
   auto p = Page("page2"_sv,
                 "Page 2"_sv,
                 Boolean("bool1", true),

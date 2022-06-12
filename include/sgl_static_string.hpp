@@ -2,8 +2,8 @@
 #define SGL_STATIC_STRING_HPP
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
-
 #include "sgl_traits.hpp"
+
 
 namespace sgl {
 
@@ -13,19 +13,17 @@ namespace sgl {
     /// create empty static string
     constexpr static_string() noexcept = default;
     constexpr explicit static_string(size_t size, CharT val) noexcept : size_(size) {
-      for(size_t i = 0; (i < size)and (i < Capacity);++i){
-        data_[i]=val;
+      for (size_t i = 0; (i < size) and (i < Capacity); ++i) {
+        data_[i] = val;
       }
     }
     /// copy ctor
-    constexpr static_string(const static_string& other) noexcept
-        : size_(other.size_) {
+    constexpr static_string(const static_string& other) noexcept : size_(other.size_) {
       overwrite(other.data_, size_);
     }
 
     /// construct from array
-    constexpr static_string(const CharT (&string)[Capacity + 1]) noexcept
-        : size_(Capacity) {
+    constexpr static_string(const CharT (&string)[Capacity + 1]) noexcept : size_(Capacity) {
       overwrite(string, size_);
     }
 
@@ -40,14 +38,10 @@ namespace sgl {
         : static_string(sv.data(), sv.size()) {}
 
     /// construct from pointer ans size
-    constexpr static_string(const CharT* str, size_t size) noexcept {
-      overwrite(str, size);
-    }
+    constexpr static_string(const CharT* str, size_t size) noexcept { overwrite(str, size); }
 
     /// conversion operator to string_view
-    constexpr operator string_view<CharT>() noexcept {
-      return string_view<CharT>{data_, size_};
-    }
+    constexpr operator string_view<CharT>() noexcept { return string_view<CharT>{data_, size_}; }
 
     /// get size of static string, i.e. number of characters.
     constexpr size_t size() const noexcept { return size_; }
@@ -80,9 +74,7 @@ namespace sgl {
 
     /// append string_view to this. Characters from str which do not fit are
     /// discarded.
-    constexpr void append(string_view<CharT> str) noexcept {
-      append(str.data(), str.size());
-    }
+    constexpr void append(string_view<CharT> str) noexcept { append(str.data(), str.size()); }
 
     /// append char to this, if there is capacity left.
     constexpr void append(CharT c) noexcept {
@@ -137,9 +129,7 @@ namespace sgl {
     constexpr CharT& operator[](size_t i) noexcept { return data_[i]; }
 
     /// const access to i-th character. Undefined behaviour if i > Capacity.
-    constexpr const CharT& operator[](size_t i) const noexcept {
-      return data_[i];
-    }
+    constexpr const CharT& operator[](size_t i) const noexcept { return data_[i]; }
 
   private:
     constexpr void overwrite(const CharT* str, size_t n) noexcept {
@@ -151,8 +141,8 @@ namespace sgl {
       }
     }
 
-    CharT data_[Capacity + 1]{0};            ///< holds the characters.
-    sgl::smallest_type_t<Capacity> size_{0}; ///< size of the string.
+    CharT                          data_[Capacity + 1]{0}; ///< holds the characters.
+    sgl::smallest_type_t<Capacity> size_{0};               ///< size of the string.
   };
 
   /// static string comparison operator.

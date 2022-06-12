@@ -1,9 +1,10 @@
 #ifndef SGL_BASIC_ITEM_HPP
 #define SGL_BASIC_ITEM_HPP
-#include "sgl_callable.hpp"
-#include "sgl_static_string.hpp"
 #include "item_fwd.hpp"
 #include "item_traits.hpp"
+#include "sgl_callable.hpp"
+#include "sgl_static_string.hpp"
+
 
 namespace sgl {
   /// item_traits
@@ -83,8 +84,8 @@ namespace sgl {
      * @param handler input handler
      */
     constexpr ItemBase(StringView name,
-                        StringView text,
-                        sgl::error (*handler)(item_type&, sgl::Input)) noexcept;
+                       StringView text,
+                       sgl::error (*handler)(item_type&, sgl::Input)) noexcept;
 
     /**
      * @brief Construct an item with name, text and input handler.
@@ -102,7 +103,7 @@ namespace sgl {
      * @param handler input handler
      */
     constexpr ItemBase(StringView name_and_text,
-                        sgl::error (*handler)(item_type&, sgl::Input)) noexcept;
+                       sgl::error (*handler)(item_type&, sgl::Input)) noexcept;
 
     /**
      * @brief Construct an item with name, text and input handler.
@@ -189,13 +190,13 @@ namespace sgl {
 
   template <typename Traits>
   constexpr ItemBase<Traits>::ItemBase(StringView name_and_text,
-                                         sgl::error (*handler)(item_type&, sgl::Input)) noexcept
+                                       sgl::error (*handler)(item_type&, sgl::Input)) noexcept
       : handler_(handler), name_(name_and_text), text_(name_and_text) {}
 
   template <typename Traits>
   constexpr ItemBase<Traits>::ItemBase(StringView name,
-                                         StringView text,
-                                         sgl::error (*handler)(item_type&, sgl::Input)) noexcept
+                                       StringView text,
+                                       sgl::error (*handler)(item_type&, sgl::Input)) noexcept
       : handler_(handler), name_(name), text_(text) {}
 
   template <typename Traits>

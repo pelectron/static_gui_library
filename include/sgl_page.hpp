@@ -68,8 +68,8 @@ namespace sgl {
         nothrow_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, P> && ...);
 
     template <typename... P>
-    static constexpr bool
-        nothrow_copy_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>,const P&> && ...);
+    static constexpr bool nothrow_copy_constructible_v =
+        (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, const P&> && ...);
     /// copy constructor
     constexpr Page(const Page& other) noexcept(nothrow_constructible_v<Items...>)
         : items_(other.items_), input_handler_(other.input_handler_), on_enter_(other.on_enter_),
@@ -345,10 +345,14 @@ namespace sgl {
      * @param items items of the page.
      * @{
      */
-    constexpr Page(StringView name, StringView title, Items&&... items) noexcept(nothrow_constructible_v<Items...>)
+    constexpr Page(StringView name,
+                   StringView title,
+                   Items&&... items) noexcept(nothrow_constructible_v<Items...>)
         : items_(move(items)...), name_(name), title_(title) {}
 
-    constexpr Page(StringView name, StringView title, const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
+    constexpr Page(StringView name,
+                   StringView title,
+                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
         : items_(items...), name_(name), title_(title) {}
     /// @}
     /// @}
@@ -551,7 +555,7 @@ namespace sgl {
     }
 
     template <size_t I, typename F>
-    constexpr void for_current_item_impl(F&& f) const noexcept(noexcept(f)){
+    constexpr void for_current_item_impl(F&& f) const noexcept(noexcept(f)) {
       if constexpr (I == (sizeof...(Items) - 1)) {
         f(this->get_item<I>());
       } else {

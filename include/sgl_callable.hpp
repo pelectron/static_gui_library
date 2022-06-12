@@ -15,8 +15,8 @@ namespace sgl {
 
   /**
    * @brief This class implements a callable with the guarantee that it does not
-   * heap allocate or throw. Additionally, constexpr fee functions and non capturing lambdas can be executed at
-   * compile time, i.e. the following will successfully compile:
+   * heap allocate or throw. Additionally, constexpr fee functions and non capturing lambdas can be
+   * executed at compile time, i.e. the following will successfully compile:
    * ```
    * static_assert(Callable<int()>([]() noexcept { return 0;})() == 0,"");
    * ```

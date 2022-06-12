@@ -46,7 +46,10 @@ namespace sgl {
      * @param true_text text to set when value is true
      * @param false_text text to set when value is false
      */
-    constexpr Boolean(StringView name, bool value, StringView true_text, StringView false_text) noexcept;
+    constexpr Boolean(StringView name,
+                      bool       value,
+                      StringView true_text,
+                      StringView false_text) noexcept;
 
     constexpr bool get_value() const noexcept;
 
@@ -73,15 +76,16 @@ namespace sgl {
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(StringView name, bool initial_value) noexcept
       : Base(name,
-             initial_value ? StringView(sgl::impl::True<CharT>) : StringView(sgl::impl::False<CharT>),
+             initial_value ? StringView(sgl::impl::True<CharT>)
+                           : StringView(sgl::impl::False<CharT>),
              &default_handle_input),
         value_(initial_value) {}
 
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(StringView name,
-                                                          bool       value,
-                                                          StringView true_text,
-                                                          StringView false_text) noexcept
+                                              bool       value,
+                                              StringView true_text,
+                                              StringView false_text) noexcept
       : Base(name, value ? true_text : false_text, &default_handle_input), true_string_(true_text),
         false_string_(false_text), value_(value) {}
 
@@ -113,7 +117,8 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT>
-  constexpr sgl::error Boolean<TextSize, CharT>::default_handle_input(item_type& Boolean, sgl::Input) noexcept {
+  constexpr sgl::error Boolean<TextSize, CharT>::default_handle_input(item_type& Boolean,
+                                                                      sgl::Input) noexcept {
     if (Boolean.get_value()) {
       Boolean.set_value(false);
     } else {

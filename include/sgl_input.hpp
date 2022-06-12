@@ -3,7 +3,6 @@
 #include <cstdint>
 namespace sgl {
 
-
   enum class Input : uint64_t {
     none = 0,                                ///< invalid input
     keyboard_type_mask = 0x8000000000000000, ///< mask for keyboard type inputs
@@ -19,13 +18,11 @@ namespace sgl {
   };
 
   constexpr Input operator&(Input a, Input b) {
-    return static_cast<Input>(static_cast<uint64_t>(a) &
-                              static_cast<uint64_t>(b));
+    return static_cast<Input>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
   }
 
   constexpr Input operator|(Input a, Input b) {
-    return static_cast<Input>(static_cast<uint64_t>(a) |
-                              static_cast<uint64_t>(b));
+    return static_cast<Input>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
   }
 
   /// @defgroup input_keypad_conversion input to keypad conversion
@@ -69,34 +66,22 @@ namespace sgl {
   /// @{
 
   /// convert char to Input
-  constexpr Input to_input(char c) {
-    return static_cast<Input>(c) | Input::keyboard_type_mask;
-  }
+  constexpr Input to_input(char c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
 
   /// convert char16_t to Input
-  constexpr Input to_input(char16_t c) {
-    return static_cast<Input>(c) | Input::keyboard_type_mask;
-  }
+  constexpr Input to_input(char16_t c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
 
   /// convert char32_t to Input
-  constexpr Input to_input(char32_t c) {
-    return static_cast<Input>(c) | Input::keyboard_type_mask;
-  }
+  constexpr Input to_input(char32_t c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
 
   /// convert Input to char
-  constexpr char get_char8(Input i) {
-    return static_cast<char>(i & Input::char8_mask);
-  }
+  constexpr char get_char8(Input i) { return static_cast<char>(i & Input::char8_mask); }
 
   /// convert Input to char16_t
-  constexpr char16_t get_char16(Input i) {
-    return static_cast<char16_t>(i & Input::char16_mask);
-  }
+  constexpr char16_t get_char16(Input i) { return static_cast<char16_t>(i & Input::char16_mask); }
 
   /// convert Input to char32_t
-  constexpr char32_t get_char32(Input i) {
-    return static_cast<char32_t>(i & Input::char32_mask);
-  }
+  constexpr char32_t get_char32(Input i) { return static_cast<char32_t>(i & Input::char32_mask); }
 
   template <typename CharT>
   constexpr CharT get_char(Input i) {

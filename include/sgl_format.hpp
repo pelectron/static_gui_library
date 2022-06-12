@@ -3,10 +3,11 @@
 #include "sgl_config.h"
 #include "sgl_error.hpp"
 #include "sgl_static_string.hpp"
+#include "sgl_traits.hpp"
 
 #include <cstdint>
 #include <limits>
-#include "sgl_traits.hpp"
+
 
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
@@ -81,7 +82,7 @@ namespace sgl {
     else
       return 1;
   }
-  
+
   template <typename T>
   struct max_buf_size;
   template <>

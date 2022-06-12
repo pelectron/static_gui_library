@@ -48,13 +48,13 @@ namespace sgl {
 
   template <size_t TextSize, typename CharT>
   constexpr PageLink<TextSize, CharT>::PageLink(StringView name,
-                                                              StringView text,
-                                                              StringView page_to_link) noexcept
+                                                StringView text,
+                                                StringView page_to_link) noexcept
       : Base(name, text), page_name_(page_to_link) {}
 
   template <size_t TextSize, typename CharT>
   constexpr PageLink<TextSize, CharT>::PageLink(StringView name_and_text,
-                                                              StringView page_to_link) noexcept
+                                                StringView page_to_link) noexcept
       : Base(name_and_text), page_name_(page_to_link) {}
 
   template <size_t TextSize, typename CharT>

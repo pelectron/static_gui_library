@@ -15,7 +15,7 @@ namespace sgl {
     constexpr Pair(const Pair&) noexcept = default;
     constexpr Pair(Pair&&) noexcept = default;
 
-    T                  value;
+    T                       value;
     sgl::string_view<CharT> string;
   };
 
@@ -48,7 +48,9 @@ namespace sgl {
      * sgl::Pair and sgl::make_enum for an example.
      * @param start_index
      */
-    constexpr Enum(StringView name, const Pair (&map)[NumEnumerators], size_t start_index = 0) noexcept;
+    constexpr Enum(StringView name,
+                   const Pair (&map)[NumEnumerators],
+                   size_t start_index = 0) noexcept;
 
     /**
      * @brief Construct a new Enum object
@@ -61,14 +63,14 @@ namespace sgl {
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     Enum(StringView name,
-               const Pair (&map)[NumEnumerators],
-               InputHandler&& handler,
-               size_t         start_index = 0) noexcept;
+         const Pair (&map)[NumEnumerators],
+         InputHandler&& handler,
+         size_t         start_index = 0) noexcept;
 
     constexpr Enum(StringView name,
-                         const Pair (&map)[NumEnumerators],
-                         sgl::error (*handler)(item_type&, sgl::Input) noexcept,
-                         size_t start_index = 0) noexcept;
+                   const Pair (&map)[NumEnumerators],
+                   sgl::error (*handler)(item_type&, sgl::Input) noexcept,
+                   size_t start_index = 0) noexcept;
 
     /// get number of enumerated values
     constexpr size_t num_values() const noexcept;
@@ -94,38 +96,40 @@ namespace sgl {
     const Map_t& get_map() const noexcept;
 
   private:
-    constexpr static sgl::error default_handle_input(item_type& enum_item, sgl::Input input) noexcept;
-    Map_t             map_;
-    size_t            index_{0};
+    constexpr static sgl::error default_handle_input(item_type& enum_item,
+                                                     sgl::Input input) noexcept;
+    Map_t                       map_;
+    size_t                      index_{0};
   };
 
-    template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
+  template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
-                                                                       const Pair (&map)[NumEnumerators],
-                                                                       size_t start_index) noexcept
+                                                           const Pair (&map)[NumEnumerators],
+                                                           size_t start_index) noexcept
       : Enum<T, NumEnumerators, TextSize, CharT>(name, map, &default_handle_input, start_index) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   template <typename InputHandler,
             enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>>>
   Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
-                                                             const Pair (&map)[NumEnumerators],
-                                                             InputHandler&& handler,
-                                                             size_t         start_index) noexcept
-      : Base(name, map[start_index % NumEnumerators].string, forward<InputHandler>(handler)), map_{},
-        index_(start_index % NumEnumerators) {
+                                                 const Pair (&map)[NumEnumerators],
+                                                 InputHandler&& handler,
+                                                 size_t         start_index) noexcept
+      : Base(name, map[start_index % NumEnumerators].string, forward<InputHandler>(handler)),
+        map_{}, index_(start_index % NumEnumerators) {
     for (size_t i = 0; i < NumEnumerators; ++i) {
       map_[i] = map[i];
     }
   }
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
-                                                                       const Pair (&map)[NumEnumerators],
-                                                                       sgl::error (*handler)(item_type&,
-                                                                                             sgl::Input) noexcept,
-                                                                       size_t start_index) noexcept
-      : Base(name, map[start_index % NumEnumerators].string, handler), index_(start_index % NumEnumerators) {
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(
+      StringView name,
+      const Pair (&map)[NumEnumerators],
+      sgl::error (*handler)(item_type&, sgl::Input) noexcept,
+      size_t start_index) noexcept
+      : Base(name, map[start_index % NumEnumerators].string, handler),
+        index_(start_index % NumEnumerators) {
     for (size_t i = 0; i < NumEnumerators; ++i) {
       map_[i] = map[i];
     }
@@ -176,8 +180,9 @@ namespace sgl {
   }
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  constexpr sgl::error Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
-                                                                                  sgl::Input input) noexcept {
+  constexpr sgl::error
+      Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
+                                                                     sgl::Input input) noexcept {
     switch (input) {
       case sgl::Input::right:
         [[fallthrough]];
@@ -187,7 +192,8 @@ namespace sgl {
       case sgl::Input::left:
         [[fallthrough]];
       case sgl::Input::down:
-        enum_item.set_index(enum_item.index() == 0 ? enum_item.num_values() - 1 : enum_item.index() - 1);
+        enum_item.set_index(enum_item.index() == 0 ? enum_item.num_values() - 1
+                                                   : enum_item.index() - 1);
         break;
       default:
         break;

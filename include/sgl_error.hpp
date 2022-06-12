@@ -15,7 +15,7 @@ namespace sgl {
     invalid_page_index,
     invalid_format,
     null_format
-    
+
   };
 }
 #endif

@@ -80,10 +80,10 @@ namespace sgl {
     constexpr void set_click_handler(sgl::error (*click_handler)(item_type&) noexcept) noexcept;
 
     // execute click handler
-    sgl::error click() noexcept;
+    constexpr sgl::error click() noexcept;
 
   private:
-    static sgl::error default_handle_click(item_type&) noexcept { return sgl::error::no_error; }
+    constexpr static sgl::error default_handle_click(item_type&) noexcept { return sgl::error::no_error; }
 
     ClickHandler_t click_handler_{&default_handle_click};
   };
@@ -152,7 +152,7 @@ namespace sgl {
   }
 
   template <typename Traits>
-  sgl::error PassThroughButton<Traits>::click() noexcept {
+  constexpr sgl::error PassThroughButton<Traits>::click() noexcept {
     return click_handler_(*static_cast<typename Traits::item_type*>(this));
   }
 } // namespace sgl

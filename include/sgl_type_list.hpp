@@ -90,9 +90,7 @@ namespace sgl {
 
   template <typename List>
   using pop_front_t = typename pop_front<List>::type;
-  static_assert(is_same_v<type_list<char, double>,
-                               pop_front_t<type_list<int, char, double>>>,
-                "");
+  static_assert(is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>, "");
 
   /**
    * @brief get N-th type in type_list List
@@ -127,14 +125,9 @@ namespace sgl {
   template <size_t N, typename List>
   using type_at_t = typename type_at<N, List>::type;
 
-  static_assert(is_same_v<type_at_t<0, type_list<int, double, char>>, int>,
-                "");
-  static_assert(
-      is_same_v<type_at_t<1, type_list<int, double, char>>, double>,
-      "");
-  static_assert(
-      is_same_v<type_at_t<2, type_list<int, double, char>>, char>,
-      "");
+  static_assert(is_same_v<type_at_t<0, type_list<int, double, char>>, int>, "");
+  static_assert(is_same_v<type_at_t<1, type_list<int, double, char>>, double>, "");
+  static_assert(is_same_v<type_at_t<2, type_list<int, double, char>>, char>, "");
   template <typename List>
   using first_t = head_t<List>;
   template <typename List>
@@ -163,8 +156,7 @@ namespace sgl {
   template <typename T, typename List>
   using push_back_t = typename push_back<T, List>::type;
 
-  static_assert(is_same_v<push_back_t<double, type_list<int, char>>,
-                               type_list<int, char, double>>,
+  static_assert(is_same_v<push_back_t<double, type_list<int, char>>, type_list<int, char, double>>,
                 "");
 
   template <typename List, size_t I>
@@ -172,8 +164,7 @@ namespace sgl {
 
   template <typename T, typename... Ts, size_t I>
   struct pop_back_impl<type_list<T, Ts...>, I> {
-    using type =
-        push_front_t<T, typename pop_back_impl<type_list<Ts...>, I - 1>::type>;
+    using type = push_front_t<T, typename pop_back_impl<type_list<Ts...>, I - 1>::type>;
   };
 
   template <typename T>

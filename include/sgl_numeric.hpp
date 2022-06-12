@@ -1,8 +1,9 @@
 #ifndef SGL_BASIC_NUMERIC_HPP
 #define SGL_BASIC_NUMERIC_HPP
+#include "item_traits.hpp"
 #include "sgl_format.hpp"
 #include "sgl_item_base.hpp"
-#include "item_traits.hpp"
+
 namespace sgl {
   /**
    * @brief This class models a numeric item. It consists of a value of type T,
@@ -69,10 +70,10 @@ namespace sgl {
               enable_if_is_value_formatter<Formatter, item_type> = true,
               enable_if_is_input_handler<InputHandler, Numeric<T, TextSize, CharT>> = true>
     Numeric(StringView     name,
-                  T              initial_value,
-                  T              delta,
-                  Formatter&&    formatter,
-                  InputHandler&& handler) noexcept;
+            T              initial_value,
+            T              delta,
+            Formatter&&    formatter,
+            InputHandler&& handler) noexcept;
 
     /// execute the formatter
     constexpr sgl::error format(static_string<CharT, TextSize>& str, T val) noexcept;
@@ -94,20 +95,19 @@ namespace sgl {
 
   private:
     /// default input handler
-    constexpr static sgl::error default_handle_input(item_type& numeric_item, sgl::Input input) noexcept;
+    constexpr static sgl::error default_handle_input(item_type& numeric_item,
+                                                     sgl::Input input) noexcept;
 
     static sgl::error default_format(static_string<CharT, TextSize>& text, T value) noexcept;
 
-    Formatter_t                   format_{&default_format}; ///< formatter
-    T                             value_{0};                ///< value
-    T                             delta_{1};                ///< delta value
+    Formatter_t                    format_{&default_format}; ///< formatter
+    T                              value_{0};                ///< value
+    T                              delta_{1};                ///< delta value
     static_string<CharT, TextSize> format_buffer_;           ///< format buffer
   };
 
   template <typename T, size_t TextSize, typename CharT>
-  Numeric<T, TextSize, CharT>::Numeric(StringView name,
-                                                   T          initial_value,
-                                                   T          delta) noexcept
+  Numeric<T, TextSize, CharT>::Numeric(StringView name, T initial_value, T delta) noexcept
       : Base(name, &default_handle_input), format_(&default_format), value_(initial_value),
         delta_(delta) {
     set_value(initial_value);
@@ -117,9 +117,9 @@ namespace sgl {
   template <typename Formatter,
             enable_if_is_value_formatter<Formatter, Numeric<T, TextSize, CharT>>>
   Numeric<T, TextSize, CharT>::Numeric(StringView  name,
-                                                   T           initial_value,
-                                                   T           delta,
-                                                   Formatter&& formatter) noexcept
+                                       T           initial_value,
+                                       T           delta,
+                                       Formatter&& formatter) noexcept
       : Base(name, &default_handle_input), format_(std::forward<Formatter>(formatter)),
         value_(initial_value), delta_(delta) {
     set_value(initial_value);
@@ -131,10 +131,10 @@ namespace sgl {
             enable_if_is_value_formatter<Formatter, Numeric<T, TextSize, CharT>>,
             enable_if_is_input_handler<InputHandler, Numeric<T, TextSize, CharT>>>
   Numeric<T, TextSize, CharT>::Numeric(StringView     name,
-                                                   T              initial_value,
-                                                   T              delta,
-                                                   Formatter&&    formatter,
-                                                   InputHandler&& handler) noexcept
+                                       T              initial_value,
+                                       T              delta,
+                                       Formatter&&    formatter,
+                                       InputHandler&& handler) noexcept
       : Base(name, std::forward<InputHandler>(handler)),
         format_(std::forward<Formatter>(formatter)), value_(initial_value), delta_(delta) {
     set_value(initial_value);
@@ -142,7 +142,7 @@ namespace sgl {
 
   template <typename T, size_t TextSize, typename CharT>
   constexpr sgl::error Numeric<T, TextSize, CharT>::format(static_string<CharT, TextSize>& str,
-                                                       T val) noexcept {
+                                                           T val) noexcept {
     return format_(str, val);
   }
 
@@ -180,9 +180,9 @@ namespace sgl {
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  constexpr sgl::error Numeric<T, TextSize, CharT>::default_handle_input(
-      Numeric<T, TextSize, CharT>& numeric_item,
-      sgl::Input                         input) noexcept {
+  constexpr sgl::error
+      Numeric<T, TextSize, CharT>::default_handle_input(Numeric<T, TextSize, CharT>& numeric_item,
+                                                        sgl::Input input) noexcept {
     if (!is_keyboard_input(input)) {
       switch (input) {
         case sgl::Input::up:
@@ -204,7 +204,7 @@ namespace sgl {
 
   template <typename T, size_t TextSize, typename CharT>
   sgl::error Numeric<T, TextSize, CharT>::default_format(static_string<CharT, TextSize>& text,
-                                                               T value) noexcept {
+                                                         T value) noexcept {
     return sgl::format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
   }
 } // namespace sgl

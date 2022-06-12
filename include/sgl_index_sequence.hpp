@@ -15,12 +15,11 @@ namespace sgl {
   struct push_front_seq;
   template <size_t I, size_t... Is>
   struct push_front_seq<I, index_seq_t<Is...>> {
-    using type = index_seq_t<I,Is...>;
+    using type = index_seq_t<I, Is...>;
   };
   template <size_t I>
   struct make_index_seq : make_index_seq<I - 1> {
-    using type =
-        typename push_back_seq<I, typename make_index_seq<I - 1>::type>::type;
+    using type = typename push_back_seq<I, typename make_index_seq<I - 1>::type>::type;
   };
   template <>
   struct make_index_seq<0> {

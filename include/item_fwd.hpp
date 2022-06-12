@@ -1,6 +1,6 @@
 #ifndef SGL_ITEM_FWD_HPP
 #define SGL_ITEM_FWD_HPP
-namespace sgl{
+namespace sgl {
   template <typename Traits>
   class ItemBase;
   template <size_t TextSize, typename CharT>
@@ -15,5 +15,5 @@ namespace sgl{
   struct Pair;
   template <typename T, size_t TextSize, typename CharT>
   class Numeric;
-}
+} // namespace sgl
 #endif

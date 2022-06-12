@@ -24,8 +24,8 @@ namespace sgl2 {
   template <typename CharT, size_t N>
   struct InputMap {
     InputMap(const InputPair<CharT> (&inp_map)[N]) {
-      for(size_t i = 0; i < N; ++i)
-      map[i]=inp_map[i];
+      for (size_t i = 0; i < N; ++i)
+        map[i] = inp_map[i];
     }
     InputPair<CharT> map[N];
     sgl::Input       get(sgl::string_view<CharT> string) {
@@ -69,7 +69,6 @@ namespace sgl2 {
      */
     MenuTester(const Menu& menu, const InputPair<CharT> (&input_map)[N])
         : menu_(menu), map(input_map) {}
-
 
     MenuTester(Menu&& menu, const InputPair<CharT> (&input_map)[N])
         : menu_(std::move(menu)), map(input_map) {}

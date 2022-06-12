@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <limits>
 
-
 namespace sgl {
   /// type trait alias to get smallest type needed to store a value of N
   template <size_t N>
