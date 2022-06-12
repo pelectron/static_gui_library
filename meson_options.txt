@@ -1,0 +1,6 @@
+option('use_charconv', type: 'boolean', value: false)
+option('use_ryu', type: 'boolean', value: false)
+option('optimize_size', type: 'boolean', value: false)
+option('char_type', type : 'combo', choices : ['char', 'char16_t', 'char32_t'], value : 'char')
+option('line_width', type:'integer', value: 0)
+option('instantiate', type:'boolean', value: false)
