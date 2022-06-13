@@ -42,6 +42,20 @@ namespace sgl {
     constexpr void* get_menu() noexcept;
 
   private:
+    template <typename T, typename = void>
+    struct validate_menu : false_type {};
+    template <typename T>
+    struct validate_menu<T,
+                         void_t<decltype(declval<T>().set_active_page(size_t{0})),
+                                decltype(declval<T>().set_active_page(declval<StringView>()))>> {
+      static constexpr bool value =
+          is_same_v<sgl::error, decltype(declval<T>().set_active_page(size_t{0}))> and
+          is_same_v<sgl::error, decltype(declval<T>().set_active_page(declval<StringView>()))>;
+    };
+
+    template <typename T>
+    static constexpr bool validate_menu_v = validate_menu<T>::value;
+
     StringView page_name_; ///< name of the page to link to.
     void*      menu_{nullptr};
   };
@@ -62,6 +76,9 @@ namespace sgl {
   constexpr void PageLink<TextSize, CharT>::set_menu(Menu* menu) noexcept {
     // simply set the button click handler as a lambda which captures the Menu
     // pointer by value.
+    static_assert(
+        PageLink<TextSize, CharT>::template validate_menu_v<Menu>,
+        "The menu's set_active_page method cannot be invoked with this item's StringView type");
     menu_ = static_cast<void*>(menu);
     this->set_click_handler(+[](PageLink<TextSize, CharT>& page_link) noexcept {
       return static_cast<Menu*>(page_link.get_menu())
