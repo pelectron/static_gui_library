@@ -12,7 +12,7 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.19041.0",
-            "compileCommands": "${workspaceFolder}\\build\\compile_commands.json",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "cppStandard": "c++17",
             "compilerPath": "C:/Program Files/LLVM/bin/clang++.exe"
         }
