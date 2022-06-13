@@ -116,11 +116,11 @@ namespace sgl {
   private:
     template <typename F, size_t... I>
     constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) noexcept(noexcept(f)) {
-      (f(this->get<I>()), ...);
+      (forward<F>(f)(this->get<I>()), ...);
     }
     template <typename F, size_t... I>
     constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) const noexcept(noexcept(f)) {
-      (f(this->get<I>()), ...);
+      (forward<F>(f)(this->get<I>()), ...);
     }
   };
   /// deduction guide for tuple

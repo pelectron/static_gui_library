@@ -15,7 +15,6 @@ namespace sgl {
   class Menu {
   public:
     static_assert((sgl::is_page_v<Pages> && ...), "");
-    static constexpr size_t num_pages = sizeof...(Pages);
     using InputHandler_t = Callable<error(Menu<Pages...>&, Input)>;
 
     /// returns type at index I of Pages...
@@ -30,23 +29,33 @@ namespace sgl {
         nothrow_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, P> && ...);
     // constructors
     /**
-     * @brief Construct a new Menu object
-     *
-     * @param menu_name
-     * @param pages
+     * @brief Construct a Menu with pages. The active page will be the first parameter passed to the constructor.
+     * @param pages page of the menu
+     * @{
      */
     constexpr Menu(Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
 
     constexpr Menu(const Pages&... pages) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
+    /// @}
 
+    /**
+     * @brief Construct a Menu with pages and custom input handler. The active page will be the first parameter passed to the constructor.
+     * @tparam InputHandler input handler type
+     * @param handler input handler instance.
+     * @param pages pages of the menu
+     * @{
+     */
     template <typename InputHandler,
               sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
     constexpr Menu(InputHandler&& handler,
                    Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+
     template <typename InputHandler,
               sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
     constexpr Menu(InputHandler&& handler,
                    const Pages&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+    /// @}
+
     /// copy ctor
     constexpr Menu(const Menu& other) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
 
@@ -74,6 +83,7 @@ namespace sgl {
      * @return sgl::error::invalid_page_index
      */
     constexpr sgl::error set_active_page(size_t page_index) noexcept;
+
     /**
      * @brief get reference to page at index I
      * @tparam I page index
@@ -108,6 +118,7 @@ namespace sgl {
      */
     template <size_t PageIndex, size_t ItemIndex>
     constexpr item_at_t<PageIndex, ItemIndex>& get_item() noexcept;
+
     /**
      * @brief get const reference to item at ItemIndex from page at PageIndex.
      * @details Works like multi array indexing.
@@ -196,6 +207,7 @@ namespace sgl {
     InputHandler_t                         input_handler_{&default_handle_input};
     sgl::smallest_type_t<sizeof...(Pages)> index_{0};
   };
+
   template <typename... Pages>
   constexpr Menu<Pages...>::Menu(Pages&&... pages) noexcept(
       (is_nothrow_move_constructible_v<Pages> && ...))
@@ -250,7 +262,7 @@ namespace sgl {
 
   template <typename... Pages>
   constexpr sgl::error Menu<Pages...>::set_active_page(size_t page_index) noexcept {
-    if (page_index < num_pages) {
+    if (page_index < sizeof...(Pages)) {
       sgl::error ec{sgl::error::no_error};
       for_current_page([&ec](auto& page) noexcept { ec = page.on_exit(); });
       if (ec != sgl::error::no_error)
@@ -335,7 +347,7 @@ namespace sgl {
   template <size_t I, typename CharT>
   constexpr sgl::error
       Menu<Pages...>::set_active_page_impl(sgl::string_view<CharT> page_name) noexcept {
-    if constexpr (I == num_pages) {
+    if constexpr (I == sizeof...(Pages)) {
       return sgl::error::page_not_found;
     } else if constexpr (!sgl::is_convertible_v<typename decay_t<decltype(sgl::get<I>(pages_))>::StringView,
                                                 sgl::string_view<CharT>>) {
@@ -369,7 +381,7 @@ namespace sgl {
   template <typename... Pages>
   template <size_t I, typename F>
   constexpr void Menu<Pages...>::for_current_page_impl(F&& f) noexcept(noexcept(f)) {
-    if constexpr (I == num_pages) {
+    if constexpr (I == sizeof...(Pages)) {
       return;
     } else {
       if (I == index_) {
@@ -383,7 +395,7 @@ namespace sgl {
   template <typename... Pages>
   template <size_t I, typename F>
   constexpr void Menu<Pages...>::for_current_page_impl(F&& f) const noexcept(noexcept(f)) {
-    if constexpr (I == num_pages) {
+    if constexpr (I == sizeof...(Pages)) {
       return;
     } else {
       if (I == index_) {

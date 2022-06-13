@@ -35,9 +35,20 @@ constexpr int func() { return 2; }
 static_assert(Callable<int()>([]() noexcept { return 2; })() == 2, "");
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
+  constexpr auto farg = 0.2_float;
+    constexpr auto farg2 = 0.2e2_float;
+  constexpr auto farg3 = .3_float;
+  constexpr auto farg4 = 2.e3_float;
+
+  static_assert(farg.value == 0.2f, "");
+  static_assert(farg2.value == 0.2e2f, "");
+  static_assert(farg3.value == 0.3f, "");
+  static_assert(farg4.value == 2e3f, "");
+
 int main() {
+  std::cout << (char*)farg.string << std::endl;
   static_assert(Menu(
-                     Page("page1"_sv,
+                     make_page("page1"_sv,
                           "Page 1"_sv,
                           Boolean("bool1", true),
                           Enum<test_enum, 5, 40, char>("enum 1",
@@ -46,11 +57,12 @@ int main() {
                                                         {test_enum::_2, "two"},
                                                         {test_enum::_3, "three"},
                                                         {test_enum::_4, "four"}}),
-                          PageLink<40, char>("p2l", "page 2 link", "page2")))
+                          PageLink<40, char>("p2l", "page 2 link", "page2"),
+                          Numeric<float,30,char>("num item",65.43_float,1.0f)))
                         .handle_input(sgl::Input::enter) == sgl::error::no_error,
                 "");
   auto mn = Menu(
-                 Page("page1"_sv,
+                 make_page("page1"_sv,
                       "Page 1"_sv,
                       Boolean("bool1", true),
                       Enum<test_enum, 5, 40, char>("enum 1",
@@ -63,7 +75,7 @@ int main() {
                       Numeric<float, 40, char>("float", 1.0f, 2.0f),
                       Numeric<int, 40, char>("int", 1, 2),
                       PageLink<40, char>("p2l", "page 2 link", "page2")),
-                 Page("page2"_sv,
+                 make_page("page2"_sv,
                       "Page 2"_sv,
                       Boolean("bool1", true),
                       Enum<test_enum, 5, 40, char>("enum 1",
@@ -77,20 +89,6 @@ int main() {
                       Numeric<unsigned, 40, char>("int", 1, 1),
                       PageLink<40, char>("p1l", "page 1 link", "page1")));
   static_assert(is_menu_v<decltype(mn)>, "");
-  auto p = Page("page2"_sv,
-                "Page 2"_sv,
-                Boolean("bool1", true),
-                Enum<test_enum, 5, 40, char>("enum 1",
-                                             {{test_enum::_0, "zero"},
-                                              {test_enum::_1, "one"},
-                                              {test_enum::_2, "two"},
-                                              {test_enum::_3, "three"},
-                                              {test_enum::_4, "four"}}),
-                Numeric<double, 40, char>("double", 1.0, 2.0),
-                Numeric<float, 40, char>("float", 1.0f, 2.0f),
-                Numeric<unsigned, 40, char>("int", 1, 1),
-                PageLink<40, char>("p1l", "page 1 link", "page1"));
-  static_assert(is_page_v<decltype(p)>, "");
   print(mn);
   mn.handle_input(Input::up);
   print(mn);

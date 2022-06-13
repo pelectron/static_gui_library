@@ -29,41 +29,17 @@ namespace sgl {
      */
     using PageAction_t = Callable<sgl::error(Page<CharT, Items...>&)>;
 
-    /**
-     * @brief SFINAE check if F is a page action. An instance of F must be
-     * invocable with a reference to Page<CharT, Items...> and
-     * return a sgl::error.
-     * @tparam F invocable type
-     */
-    template <typename F>
-    using page_action_check =
-        enable_if_t<is_nothrow_invocable_r_v<sgl::error, F, Page<CharT, Items...>&>>;
-
-    /// predicate that checks if F conforms to the PageAction concept
+    /// predicate that checks if F conforms to the PageAction concept, i.e. an instance of F must be
+    /// nothrow invocable with a reference to Page<CharT, Items...> and return an sgl::error value.
     template <typename F>
     using PageAction = sgl::nothrow_invocable_r<sgl::error, F, Page<CharT, Items...>&>;
 
-    /// predicate that checks if F conforms to the PageInputHandler concept
+    /// predicate that checks if F conforms to the PageInputHandler concept, i.e. an instance of F
+    /// must be nothrow invocable with a reference to Page<CharT, Items...> and an sgl::Input value
+    /// and return an sgl::error value.
     template <typename F>
     using PageInputHandler =
         sgl::nothrow_invocable_r<sgl::error, F, Page<CharT, Items...>&, sgl::Input>;
-
-    /**
-     * @brief SFINAE check if F is a page input handler. F must be invocable
-     with Page<CharT, Items...>& and sgl::Input, and return
-     sgl::error.
-     * @tparam F invocable type
-     */
-    template <typename F>
-    using input_handler_check =
-        enable_if_t<is_nothrow_invocable_r_v<error, F, Page<CharT, Items...>&, sgl::Input>>;
-
-    /**
-     * @brief SFINAE check if Menu is a menu type.
-     * @tparam Menu menu type.
-     */
-    template <typename Menu>
-    using menu_check = void;
 
     /**
      * @brief get item type at index I
@@ -74,7 +50,9 @@ namespace sgl {
 
     template <typename... P>
     static constexpr bool nothrow_move_constructible_v =
-        (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, sgl::add_rvalue_reference<P>> && ...);
+        (sgl::is_nothrow_constructible_v<sgl::decay_t<P>,
+                                         sgl::add_rvalue_reference<sgl::decay_t<P>>> &&
+         ...);
 
     template <typename... P>
     static constexpr bool nothrow_copy_constructible_v =
@@ -460,9 +438,9 @@ namespace sgl {
      * @tparam PageAction action type. See PageAction_t for more info.
      * @param action action instance
      */
-    template <typename PageAction, page_action_check<PageAction>* = nullptr>
-    constexpr void set_on_enter(PageAction&& action) noexcept {
-      on_enter_ = forward<PageAction>(action);
+    template <typename Action, sgl::constraint_t<PageAction, Action> = true>
+    constexpr void set_on_enter(Action&& action) noexcept {
+      on_enter_ = forward<Action>(action);
     }
 
     /**
@@ -470,9 +448,9 @@ namespace sgl {
      * @tparam PageAction action type. See PageAction_t for more info.
      * @param action action instance
      */
-    template <typename PageAction, page_action_check<PageAction>* = nullptr>
-    constexpr void set_on_exit(PageAction&& action) noexcept {
-      on_exit_ = forward<PageAction>(action);
+    template <typename Action, sgl::constraint_t<PageAction, Action> = true>
+    constexpr void set_on_exit(Action&& action) noexcept {
+      on_exit_ = forward<Action>(action);
     }
 
   private:
@@ -549,7 +527,7 @@ namespace sgl {
     }
     /// @endcond
 
-    sgl::tuple<Items...>                        items_;
+    sgl::tuple<Items...>                   items_;
     InputHandler_t                         input_handler_{&default_handle_input};
     PageAction_t                           on_enter_{&default_page_action};
     PageAction_t                           on_exit_{&default_page_action};
