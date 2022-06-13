@@ -36,7 +36,7 @@ static_assert(Callable<int()>([]() noexcept { return 2; })() == 2, "");
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 int main() {
-  static_assert(Menu("menu",
+  static_assert(Menu(
                      Page("page1"_sv,
                           "Page 1"_sv,
                           Boolean("bool1", true),
@@ -49,7 +49,7 @@ int main() {
                           PageLink<40, char>("p2l", "page 2 link", "page2")))
                         .handle_input(sgl::Input::enter) == sgl::error::no_error,
                 "");
-  auto mn = Menu("menu",
+  auto mn = Menu(
                  Page("page1"_sv,
                       "Page 1"_sv,
                       Boolean("bool1", true),
