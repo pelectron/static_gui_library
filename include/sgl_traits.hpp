@@ -447,5 +447,13 @@ namespace sgl {
   struct is_floating_point<double> : true_type {};
   template <typename T>
   static constexpr bool is_floating_point_v = is_floating_point<T>::value;
+
+  template <template <typename...> typename Pred, typename... Args>
+  struct constraint {
+    using type = sgl::enable_if_t<Pred<Args...>::value, bool>;
+  };
+
+  template <template <typename...> typename Pred, typename... Args>
+  using constraint_t = constraint<Pred, Args...>::value;
 } // namespace sgl
 #endif
