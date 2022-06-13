@@ -1,6 +1,7 @@
 #ifndef SGL_BASIC_NUMERIC_HPP
 #define SGL_BASIC_NUMERIC_HPP
 #include "item_traits.hpp"
+#include "sgl_cx_arg.hpp"
 #include "sgl_format.hpp"
 #include "sgl_item_base.hpp"
 
@@ -38,7 +39,21 @@ namespace sgl {
      * @param delta delta value
      */
     Numeric(StringView name, T initial_value, T delta) noexcept;
-
+    /**
+     * @brief create a Numeric item in constexpr with a sgl::cx_arg.
+     * @details If you don't need a constexpr Numeric, use the overload with an ordinary T as
+     * initial value. This is only needed for floating point numeric items. A quick example:
+     * @code
+     *    constexpr auto num = Numeric<float, 40, char>("num item", 64.534_float,0.1f);
+     * @endcode
+     *
+     * @tparam CxSize cx_arg string size.
+     * @param name name of item
+     * @param initial_value initial value as cx_arg
+     * @param delta delta value
+     */
+    template <size_t CxSize>
+    constexpr Numeric(StringView name, const cx_arg<T, CxSize>& initial_value, T delta) noexcept;
     /**
      * @brief Construct a new Numeric with custom formatter, but default
      * input handling.
@@ -98,7 +113,7 @@ namespace sgl {
     constexpr static sgl::error default_handle_input(item_type& numeric_item,
                                                      sgl::Input input) noexcept;
 
-    static sgl::error default_format(static_string<CharT, TextSize>& text, T value) noexcept;
+    constexpr static sgl::error default_format(static_string<CharT, TextSize>& text, T value) noexcept;
 
     Formatter_t                    format_{&default_format}; ///< formatter
     T                              value_{0};                ///< value
@@ -109,8 +124,18 @@ namespace sgl {
   template <typename T, size_t TextSize, typename CharT>
   Numeric<T, TextSize, CharT>::Numeric(StringView name, T initial_value, T delta) noexcept
       : Base(name, &default_handle_input), format_(&default_format), value_(initial_value),
-        delta_(delta) {
+        delta_(delta){
     set_value(initial_value);
+  }
+
+  template <typename T, size_t TextSize, typename CharT>
+  template <size_t CxSize>
+  constexpr Numeric<T, TextSize, CharT>::Numeric(StringView               name,
+                                                 const cx_arg<T, CxSize>& initial_value,
+                                                 T                        delta)noexcept
+      : Base(name, &default_handle_input), format_(&default_format), value_(initial_value.value),
+        delta_(delta)  {
+    this->set_text(sgl::string_view<CharT>(initial_value.string));
   }
 
   template <typename T, size_t TextSize, typename CharT>
@@ -203,9 +228,14 @@ namespace sgl {
   }
 
   template <typename T, size_t TextSize, typename CharT>
-  sgl::error Numeric<T, TextSize, CharT>::default_format(static_string<CharT, TextSize>& text,
-                                                         T value) noexcept {
-    return sgl::format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
+  constexpr sgl::error
+      Numeric<T, TextSize, CharT>::default_format(static_string<CharT, TextSize>& text,
+                                                  T                               value) noexcept {
+    if constexpr (!std::is_floating_point_v<T>) {
+      return integer_format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
+    } else
+      return sgl::format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
   }
+
 } // namespace sgl
 #endif

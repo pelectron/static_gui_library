@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <limits>
 
-
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
   #include "ryu/ryu_parse.h"
@@ -128,7 +127,37 @@ namespace sgl {
 
   template <typename T>
   static constexpr size_t max_buf_size_v = max_buf_size<T>::value;
-
+  template <typename CharT, typename T>
+  constexpr sgl::error integer_format(CharT*   str,
+                                      size_t   len,
+                                      T        value,
+                                      uint32_t precision,
+                                      format_t format) noexcept {
+    (void)precision;
+    (void)format;
+    (void)len;
+    if constexpr (std::is_integral_v<T>) {
+      static_string<CharT, max_buf_size_v<T>> buf;
+      static_assert(std::is_integral_v<T>, "");
+      if constexpr (std::is_signed_v<T>) {
+        if (value < 0) {
+          buf.append(CharT{'-'});
+          value = -value;
+        }
+      }
+      for (size_t pow10 = biggest_pow10(value); pow10 != 0; pow10 /= 10) {
+        buf.append(static_cast<CharT>(value / pow10 + '0'));
+        value = value % pow10;
+      }
+      for (const auto& ch : buf) {
+        *str = ch;
+        ++str;
+      }
+      *str = '\0';
+      return sgl::error::no_error;
+    }
+    return sgl::error::null_format;
+  }
 #if SGL_USE_RYU
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
@@ -175,6 +204,7 @@ namespace sgl {
       return sgl::error::no_error;
     }
   }
+  
   template <typename CharT, typename T>
   sgl::error format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
     if constexpr (is_floating_point_v<T>) {
@@ -291,29 +321,7 @@ namespace sgl {
   template <typename CharT, typename T>
   constexpr sgl::error
       format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
-    (void)precision;
-    (void)format;
-    if constexpr (std::is_integral_v<T>) {
-      static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(std::is_integral_v<T>, "");
-      if constexpr (std::is_signed_v<T>) {
-        if (value < 0) {
-          buf.append(CharT{'-'});
-          value = -value;
-        }
-      }
-      for (size_t pow10 = biggest_pow10(value); pow10 != 0; pow10 /= 10) {
-        buf.append(static_cast<CharT>(value / pow10 + '0'));
-        value = value % pow10;
-      }
-      for (const auto& ch : buf) {
-        *str = ch;
-        ++str;
-      }
-      *str = '\0';
-      return sgl::error::no_error;
-    }
-    return sgl::error::null_format;
+    return integer_format(str, len, value, precision, format);
   }
 #endif
 } // namespace sgl
