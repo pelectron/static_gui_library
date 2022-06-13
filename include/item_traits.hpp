@@ -86,7 +86,7 @@ namespace sgl {
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
-    [[maybe_unused]] auto set_menu = [](auto* ) {};
+    [[maybe_unused]] auto set_menu = [](auto*) {};
     // dummy menu type
     struct M {};
   } // namespace detail
@@ -374,9 +374,9 @@ namespace sgl {
 
   template <typename T>
   struct is_menu {
-    static constexpr bool value = has_set_active_page_v<T> and has_for_each_page_v<T> and
-                                  has_for_current_page_v<T> and has_get_page_v<T> and
-                                  has_get_item_at_page_v<T> and has_index_v<T> and has_size_v<T>;
+    static constexpr bool value = has_for_each_page_v<T> and has_for_current_page_v<T> and
+                                  has_get_page_v<T> and has_get_item_at_page_v<T> and
+                                  has_index_v<T> and has_size_v<T>;
   };
 
   template <typename T>
