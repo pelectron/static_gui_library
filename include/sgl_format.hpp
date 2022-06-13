@@ -61,23 +61,23 @@ namespace sgl {
 
   template <typename T>
   constexpr size_t biggest_pow10(T val) {
-    if ((val >= 1000000000ull) and (std::numeric_limits<T>::max() > 1000000000ull))
+    if ((val >= T{1000000000ull}) and (std::numeric_limits<T>::max() > 1000000000ull))
       return 1000000000;
-    else if ((val >= 100000000ull) and (std::numeric_limits<T>::max() > 100000000ull))
+    else if ((val >= T{100000000ull}) and (std::numeric_limits<T>::max() > 100000000ull))
       return 100000000;
-    else if ((val >= 10000000ull) and (std::numeric_limits<T>::max() > 10000000ull))
+    else if ((val >= T{10000000ull}) and (std::numeric_limits<T>::max() > 10000000ull))
       return 10000000;
-    else if ((val >= 1000000ull) and (std::numeric_limits<T>::max() > 1000000ull))
+    else if ((val >= T{1000000ull}) and (std::numeric_limits<T>::max() > 1000000ull))
       return 1000000;
-    else if ((val >= 100000ull) and (std::numeric_limits<T>::max() > 100000ull))
+    else if ((val >= T{100000ull}) and (std::numeric_limits<T>::max() > 100000ull))
       return 100000;
-    else if ((val >= 10000ull) and (std::numeric_limits<T>::max() > 10000ull))
+    else if ((val >= T{10000ull}) and (std::numeric_limits<T>::max() > 10000ull))
       return 10000;
-    else if ((val >= 1000ull) and (std::numeric_limits<T>::max() > 1000ull))
+    else if ((val >= T{1000ull}) and (std::numeric_limits<T>::max() > 1000ull))
       return 1000;
-    else if (val >= 100ull)
+    else if (val >= T{100ull})
       return 100;
-    else if (val >= 10ull)
+    else if (val >= T{10ull})
       return 10;
     else
       return 1;

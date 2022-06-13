@@ -159,7 +159,7 @@ namespace sgl {
   static constexpr bool is_nothrow_default_constructible_v =
       is_nothrow_default_constructible<T>::value;
   template <typename T>
-  remove_reference_t<T>&& move(T&& t) noexcept {
+  constexpr remove_reference_t<T>&& move(T&& t) noexcept {
     return static_cast<remove_reference_t<T>&&>(t);
   }
   template <typename T>

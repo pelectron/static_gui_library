@@ -11,12 +11,13 @@ namespace sgl {
     constexpr Pair& operator=(Pair&&) noexcept = default;
 
     template <size_t N>
-    constexpr Pair(const T& t, const CharT (&str)[N]) : value(t), string(str) {}
+    constexpr Pair(const T& t, const CharT (&str)[N]) noexcept: value(t), string(str) {}
+    constexpr Pair(const T&t, sgl::string_view<CharT> str)noexcept:value(t),string(str){}
     constexpr Pair(const Pair&) noexcept = default;
     constexpr Pair(Pair&&) noexcept = default;
 
-    T                       value;
-    sgl::string_view<CharT> string;
+    T                       value{};
+    sgl::string_view<CharT> string{};
   };
 
   /**
@@ -106,7 +107,7 @@ namespace sgl {
   constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
                                                            const Pair (&map)[NumEnumerators],
                                                            size_t start_index) noexcept
-      : Enum<T, NumEnumerators, TextSize, CharT>(name, map, &default_handle_input, start_index) {}
+      : Enum<T, NumEnumerators, TextSize, CharT>(name, map, &Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input, start_index) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   template <typename InputHandler,

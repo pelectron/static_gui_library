@@ -59,11 +59,11 @@ namespace sgl {
 
     /// Construct callable from free function pointer
     constexpr Callable(Ret (*f)(Args...) noexcept) noexcept
-        : invoke_(&free_function_invoke), buffer_{.func = f} {}
+        : invoke_(&free_function_invoke), buffer_{f} {}
 
     /// Construct callable from free function reference
     constexpr Callable(Ret (&f)(Args...) noexcept) noexcept
-        : invoke_(&free_function_invoke), buffer_{.func = &f} {}
+        : invoke_(&free_function_invoke), buffer_{&f} {}
 
     /**
      * @brief Construct a new callable from object and member function
@@ -107,8 +107,8 @@ namespace sgl {
     template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
     Callable& operator=(F&& f) noexcept {
       if constexpr (is_same_v<std::decay_t<F>, Callable<Ret(Args...)>>) {
-        buffer_ = other.buffer_;
-        invoke_ = other.invoke_;
+        buffer_ = f.buffer_;
+        invoke_ = f.invoke_;
       } else {
         this->bind(forward<F>(f));
         return *this;

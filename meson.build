@@ -1,4 +1,4 @@
-project('static gui',['cpp','c'],default_options:['buildtype=release','cpp_std=c++17','cpp_eh=none','cpp_rtti=false','cpp_debugstl=false','c_std=c11','b_sanitize=none'])
+project('static gui',['cpp','c'],default_options:['buildtype=release','cpp_std=c++17','cpp_eh=none','cpp_rtti=false','c_std=c11','warning_level=3'])
 
 use_ryu = get_option('use_ryu')
 optimize_size = get_option('optimize_size')

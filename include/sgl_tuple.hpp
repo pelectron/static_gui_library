@@ -149,12 +149,12 @@ namespace sgl {
 
   template <typename F, typename... Ts>
   constexpr void for_each(tuple<Ts...>& t, F&& f) noexcept {
-    t.template for_each(sgl::forward<F>(f));
+    t.for_each(sgl::forward<F>(f));
   }
 
   template <typename F, typename... Ts>
   constexpr void for_each(const tuple<Ts...>& t, F&& f) noexcept {
-    t.template for_each(sgl::forward<F>(f));
+    t.for_each(sgl::forward<F>(f));
   }
 } // namespace sgl
 #endif

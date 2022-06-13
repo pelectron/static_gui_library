@@ -90,7 +90,7 @@ namespace sgl {
     /// copy assignment operator
     constexpr static_string& operator=(const static_string& other) noexcept {
       this->overwrite(other.data_, other.size_);
-      for (int i = size_; i <= Capacity; ++i) {
+      for (size_t i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
       }
       return *this;
@@ -99,7 +99,7 @@ namespace sgl {
     /// assign from string_view
     constexpr static_string& operator=(const string_view<CharT> str) noexcept {
       this->overwrite(str.data(), str.size());
-      for (int i = size_; i <= Capacity; ++i) {
+      for (size_t i = size_; i <= Capacity; ++i) {
         data_[i] = 0;
       }
       return *this;

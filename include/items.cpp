@@ -6,7 +6,6 @@
 
 #include <iostream>
 
-
 using namespace sgl::string_view_literals;
 using namespace sgl;
 
@@ -31,46 +30,25 @@ void print(const Menu& menu) {
 }
 
 int   a{0};
-error button_cb(Button<40, char>& b) {
-  a = 1;
-  return error::no_error;
-}
-struct M {
-  error set_active_page(string_view<char>) { return error::no_error; }
-};
+
 constexpr int func() { return 2; }
 static_assert(Callable<int()>([]() noexcept { return 2; })() == 2, "");
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 
 int main() {
-  int  k = 1;
-  auto lambda1 = [k_ = k](Button<40, char>& b) noexcept {
-    a = k_;
-    return error::no_error;
-  };
-  M                         menu;
-  PageLink<40, char>        link("hi", "world", "link");
-  Numeric<int, 40, char>    integer("int", 1, 2);
-  Numeric<float, 40, char>  floating("float", 1.0f, 2.0f);
-  Numeric<double, 40, char> double_f("double", 1.0, 2.0);
-  Enum<test_enum, 5, 40, char>("enum 1",
-                               {{test_enum::_0, "zero"},
-                                {test_enum::_1, "one"},
-                                {test_enum::_2, "two"},
-                                {test_enum::_3, "three"},
-                                {test_enum::_4, "four"}});
-  static_assert(is_item_v<decay_t<decltype(link)>>, "");
-  link.set_menu(&menu);
-  link.clear_text();
-  Button<40, char> button("b1", "Button 1");
-  Button<40, char> button2("b2", "Button 2", [k_ = k](Button<40, char>& b) noexcept {
-    a = k_;
-    return error::no_error;
-  });
-  button2.click();
-  Boolean<40, char> bool1 = Boolean<40, char>("bool1", true);
-
-  auto page = Page("page1"_sv, "Page 1"_sv, Boolean<40, char>("bool1", true));
+  static_assert(Menu("menu",
+                     Page("page1"_sv,
+                          "Page 1"_sv,
+                          Boolean("bool1", true),
+                          Enum<test_enum, 5, 40, char>("enum 1",
+                                                       {{test_enum::_0, "zero"},
+                                                        {test_enum::_1, "one"},
+                                                        {test_enum::_2, "two"},
+                                                        {test_enum::_3, "three"},
+                                                        {test_enum::_4, "four"}}),
+                          PageLink<40, char>("p2l", "page 2 link", "page2")))
+                        .handle_input(sgl::Input::enter) == sgl::error::no_error,
+                "");
   auto mn = Menu("menu",
                  Page("page1"_sv,
                       "Page 1"_sv,
@@ -142,5 +120,5 @@ int main() {
   print(mn);
 
   // Numeric<int,40,char> numeric("numeric",3,1);
-  return a;
+  return 0;
 }

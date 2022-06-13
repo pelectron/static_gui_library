@@ -40,7 +40,7 @@ namespace sgl {
     constexpr Menu(StringView menu_name,
                    Pages&&... pages) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(forward<Pages>(pages)...), name_(menu_name) {
-      sgl::for_each(pages_, [this](auto& page) { page.set_menu(this); });
+      sgl::for_each(pages_, [this](auto& page)noexcept { page.set_menu(this); });
     }
 
     template <size_t N>
@@ -51,13 +51,13 @@ namespace sgl {
     constexpr Menu(const Menu& other) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(other.pages_), input_handler_(other.input_handler_), name_(other.name_),
           index_(other.index_) {
-      sgl::for_each(pages_, [this](auto& page) { page.set_menu(this); });
+      sgl::for_each(pages_, [this](auto& page)noexcept { page.set_menu(this); });
     }
 
     constexpr Menu(Menu&& other) noexcept(nothrow_constructible_v<Pages...>)
         : pages_(move(other.pages_)), input_handler_(move(other.input_handler_)),
           name_(move(other.name_)), index_(move(other.index_)) {
-      sgl::for_each(pages_, [this](auto& page) noexcept { page.set_menu(this); });
+      sgl::for_each(pages_,[this](auto& page) noexcept { page.set_menu(this); });
     }
 
     /**
