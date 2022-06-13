@@ -454,6 +454,30 @@ namespace sgl {
   };
 
   template <template <typename...> typename Pred, typename... Args>
-  using constraint_t = constraint<Pred, Args...>::value;
+  using constraint_t = typename constraint<Pred, Args...>::type;
+
+  template <template <typename> typename Pred, typename... Args>
+  struct constraint_for_all {
+    using type = sgl::enable_if_t<(Pred<Args>::value && ...), bool>;
+  };
+
+  template <template <typename> typename Pred, typename... Args>
+  using constraint_for_all_t = typename constraint_for_all<Pred, Args...>::type;
+
+  template <template <typename> typename Pred, typename... Args>
+  struct constraint_for_none {
+    using type = sgl::enable_if_t<((!Pred<Args>::value) && ...), bool>;
+  };
+
+  template <template <typename> typename Pred, typename... Args>
+  using constraint_for_none_t = typename constraint_for_none<Pred, Args...>::type;
+
+  template <template <typename> typename Pred, typename... Args>
+  struct constraint_for_some {
+    using type = sgl::enable_if_t<(Pred<Args>::value || ...), bool>;
+  };
+  
+  template <template <typename> typename Pred, typename... Args>
+  using constraint_for_some_t = typename constraint_for_some<Pred, Args...>::type;
 } // namespace sgl
 #endif
