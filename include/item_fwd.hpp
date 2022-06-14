@@ -13,7 +13,7 @@ namespace sgl {
   class PageLink;
   template <typename T, typename CharT>
   struct Pair;
-  template <typename T, size_t TextSize, typename CharT>
+  template <size_t TextSize, typename CharT, typename T>
   class Numeric;
 } // namespace sgl
 #endif
