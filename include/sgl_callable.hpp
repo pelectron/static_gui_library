@@ -104,7 +104,7 @@ namespace sgl {
 
     template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
     Callable& operator=(F&& f) noexcept {
-      if constexpr (is_same_v<std::decay_t<F>, Callable<Ret(Args...)>>) {
+      if constexpr (is_same_v<decay_t<F>, Callable<Ret(Args...)>>) {
         buffer_ = f.buffer_;
         invoke_ = f.invoke_;
       } else {
