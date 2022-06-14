@@ -558,12 +558,12 @@ namespace sgl {
   }
   template <typename F, typename CharT, typename... Items>
   constexpr void for_each(Page<CharT, Items...>& page, F&& f) {
-    page.template for_each_item(std::forward<F>(f));
+    page.template for_each_item(forward<F>(f));
   }
 
   template <typename F, typename CharT, typename... Items>
   constexpr void for_each(const Page<CharT, Items...>& page, F&& f) {
-    page.template for_each_item(std::forward<F>(f));
+    page.template for_each_item(forward<F>(f));
   }
 
   /// @addtogroup PageFactories "Page Factories"

@@ -418,12 +418,12 @@ namespace sgl {
 
   template <typename F, typename CharT, typename... Pages>
   constexpr void for_each(Menu<Pages...>& menu, F&& f) noexcept(noexcept(f)) {
-    menu.template for_each_page(std::forward<F>(f));
+    menu.template for_each_page(forward<F>(f));
   }
 
   template <typename F, typename CharT, typename... Pages>
   constexpr void for_each(const Menu<Pages...>& menu, F&& f) noexcept(noexcept(f)) {
-    menu.template for_each_page(std::forward<F>(f));
+    menu.template for_each_page(forward<F>(f));
   }
 
   template <typename... Pages, sgl::enable_if_t<(sgl::is_page_v<Pages> && ...), bool> = true>
