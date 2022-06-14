@@ -1,7 +1,21 @@
+/**
+ * @file sgl_traits.hpp
+ * @author Pelé Constam (you@domain.com)
+ * @brief This file implements some of the type traits found in the <type_traits> header.
+ * @version 0.1
+ * @date 2022-06-14
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #ifndef SGL_TRAITS_HPP
 #define SGL_TRAITS_HPP
-namespace sgl {
+#include <cfloat>
+#include <climits>
+#include <cstdint>
 
+namespace sgl {
+  /// @cond
   struct true_type {
     static constexpr bool value = true;
   };
@@ -36,19 +50,25 @@ namespace sgl {
   struct remove_reference<T&&> {
     using type = T;
   };
+
   template <typename T>
   using remove_reference_t = typename remove_reference<T>::type;
+
   template <typename T>
   struct is_const : false_type {};
+
   template <typename T>
   struct is_const<const T> : true_type {};
+
   template <typename T>
   static constexpr bool is_const_v = is_const<T>::value;
 
   template <typename T>
   struct is_lvalue_reference : false_type {};
+
   template <typename T>
   struct is_lvalue_reference<T&> : true_type {};
+
   template <typename T>
   static constexpr bool is_lvalue_reference_v = is_lvalue_reference<T>::value;
 
@@ -101,13 +121,16 @@ namespace sgl {
 
   template <typename T, typename = void, typename... Args>
   struct is_constructible : false_type {};
+
   template <typename T, typename... Args>
   struct is_constructible<T, void_t<decltype(T(declval<Args>()...))>, Args...> : true_type {};
 
   template <typename T, typename... Args>
   static constexpr bool is_constructible_v = is_constructible<T, void, Args...>::value;
+
   template <typename T>
   static constexpr bool is_copy_constructible_v = is_constructible_v<T, const T&>;
+
   template <typename T>
   static constexpr bool is_move_constructible_v = is_constructible_v<T, T&&>;
 
@@ -141,20 +164,25 @@ namespace sgl {
       is_trivially_constructible<T, Args...>::value;
   template <typename T, typename = void>
   struct is_trivially_copy_constructible : false_type {};
+
   template <typename T>
   struct is_trivially_copy_constructible<T, void_t<decltype(T{declval<const T>()})>> : true_type {};
+
   template <typename T>
   static constexpr bool is_trivially_copy_constructible_v =
       is_trivially_copy_constructible<T>::value;
 
   template <typename T, typename = void>
   struct is_trivially_move_constructible : false_type {};
+
   template <typename T, typename = void>
   struct is_nothrow_default_constructible : false_type {};
+
   template <typename T>
   struct is_nothrow_default_constructible<T, void_t<decltype(T{})>> {
     static constexpr bool value = noexcept(T{});
   };
+
   template <typename T>
   static constexpr bool is_nothrow_default_constructible_v =
       is_nothrow_default_constructible<T>::value;
@@ -162,11 +190,14 @@ namespace sgl {
   constexpr remove_reference_t<T>&& move(T&& t) noexcept {
     return static_cast<remove_reference_t<T>&&>(t);
   }
+
   template <typename T>
   struct is_trivially_move_constructible<T, void_t<decltype(T{move(declval<T>())})>> : true_type {};
+
   template <typename T>
   static constexpr bool is_trivially_move_constructible_v =
       is_trivially_move_constructible<T>::value;
+
   namespace detail {
     template <typename From, typename To>
     To convertible_test() {
@@ -178,15 +209,20 @@ namespace sgl {
       return declval<From>();
     }
   } // namespace detail
+
   template <typename From, typename To, typename = void>
   struct is_convertible : false_type {};
+
   template <typename From, typename To>
   struct is_convertible<From, To, void_t<decltype(detail::convertible_test<From, To>())>>
       : true_type {};
+
   template <typename From, typename To>
   static constexpr bool is_convertible_v = is_convertible<From, To>::value;
+
   template <typename From, typename To, typename = void>
   struct is_nothrow_convertible : false_type {};
+
   template <typename From, typename To>
   struct is_nothrow_convertible<To,
                                 From,
@@ -195,22 +231,28 @@ namespace sgl {
 
   template <typename From, typename To>
   static constexpr bool is_nothrow_convertible_v = is_nothrow_convertible<From, To>::value;
+
   template <typename T, typename = void>
   struct is_nothrow_destructible : false_type {};
+
   template <typename T>
   struct is_nothrow_destructible<T, void_t<decltype(declval<T>().~T())>> {
     static constexpr bool value = noexcept(declval<T>().~T());
   };
+
   template <typename T>
   static constexpr bool is_nothrow_destructible_v = is_nothrow_destructible<T>::value;
+
   template <bool, typename TTrue, typename TFalse>
   struct conditional {
     using type = TTrue;
   };
+
   template <typename TTrue, typename TFalse>
   struct conditional<false, TTrue, TFalse> {
     using type = TFalse;
   };
+
   template <bool b, typename TTrue, typename TFalse>
   using conditional_t = typename conditional<b, TTrue, TFalse>::type;
 
@@ -225,6 +267,7 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool is_array_v = is_array<T>::value;
+
   template <typename T>
   struct remove_extent {
     using type = T;
@@ -239,6 +282,7 @@ namespace sgl {
   struct remove_extent<T[N]> {
     using type = T;
   };
+
   template <typename T>
   using remove_extent_t = typename remove_extent<T>::type;
   // is function
@@ -376,19 +420,23 @@ namespace sgl {
   template <typename T>
   using add_pointer_t = typename add_pointer<T>::type;
   // add pointer end
+
   // remove cv
   template <typename T>
   struct remove_cv {
     using type = T;
   };
+
   template <typename T>
   struct remove_cv<const T> {
     using type = T;
   };
+
   template <typename T>
   struct remove_cv<volatile T> {
     using type = T;
   };
+
   template <typename T>
   struct remove_cv<const volatile T> {
     using type = T;
@@ -398,6 +446,7 @@ namespace sgl {
   struct remove_const {
     using type = T;
   };
+
   template <typename T>
   struct remove_const<const T> {
     using type = T;
@@ -407,17 +456,22 @@ namespace sgl {
   struct remove_volatile {
     using type = T;
   };
+
   template <typename T>
   struct remove_volatile<volatile T> {
     using type = T;
   };
+
   template <typename T>
   using remove_cv_t = typename remove_cv<T>::type;
+
   template <typename T>
   using remove_const_t = typename remove_const<T>::type;
+
   template <typename T>
   using remove_volatile_t = typename remove_volatile<T>::type;
   // remove cv end
+
   template <typename T>
   struct decay {
   private:
@@ -428,12 +482,15 @@ namespace sgl {
                                remove_extent_t<U>*,
                                conditional_t<is_function_v<U>, add_pointer_t<U>, remove_cv_t<U>>>;
   };
+
   template <typename T>
   using decay_t = typename decay<T>::type;
+
   template <typename T>
   constexpr T&& forward(remove_reference_t<T>& t) noexcept {
     return static_cast<T&&>(t);
   }
+
   template <typename T>
   constexpr T&& forward(remove_reference_t<T>&& t) noexcept {
     return static_cast<T&&>(t);
@@ -441,12 +498,62 @@ namespace sgl {
 
   template <typename T>
   struct is_floating_point : false_type {};
+
   template <>
   struct is_floating_point<float> : true_type {};
+
   template <>
   struct is_floating_point<double> : true_type {};
+
+  template <>
+  struct is_floating_point<long double> : true_type {};
+
   template <typename T>
   static constexpr bool is_floating_point_v = is_floating_point<T>::value;
+
+  template <typename T>
+  struct is_integral : false_type {};
+  template <>
+  struct is_integral<uint8_t> : true_type {};
+  template <>
+  struct is_integral<int8_t> : true_type {};
+  template <>
+  struct is_integral<uint16_t> : true_type {};
+  template <>
+  struct is_integral<int16_t> : true_type {};
+  template <>
+  struct is_integral<uint32_t> : true_type {};
+  template <>
+  struct is_integral<int32_t> : true_type {};
+  template <>
+  struct is_integral<uint64_t> : true_type {};
+  template <>
+  struct is_integral<int64_t> : true_type {};
+  template <>
+  struct is_integral<bool> : true_type {};
+  template <>
+  struct is_integral<char> : true_type {};
+
+  template <>
+  struct is_integral<char16_t> : true_type {};
+
+  template <>
+  struct is_integral<char32_t> : true_type {};
+
+  template <>
+  struct is_integral<wchar_t> : true_type {};
+  template <typename T>
+  static constexpr bool is_integral_v = is_integral<T>::value;
+
+  template <typename T>
+  struct is_unsigned {
+    static constexpr bool value = static_cast<T>(0) < static_cast<T>(-1);
+  };
+
+  template <typename T>
+  static constexpr bool is_unsigned_v = is_unsigned<T>::value;
+  template <typename T>
+  static constexpr bool is_signed_v = !is_unsigned<T>::value;
 
   template <template <typename...> typename Pred, typename... Args>
   struct constraint {
@@ -476,8 +583,10 @@ namespace sgl {
   struct constraint_for_some {
     using type = sgl::enable_if_t<(Pred<Args>::value || ...), bool>;
   };
-  
+
   template <template <typename> typename Pred, typename... Args>
   using constraint_for_some_t = typename constraint_for_some<Pred, Args...>::type;
+
+  /// @endcond
 } // namespace sgl
 #endif
