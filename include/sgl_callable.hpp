@@ -1,8 +1,6 @@
 #ifndef CALLABLE2_HPP
 #define CALLABLE2_HPP
 #include "sgl_traits.hpp"
-
-#include <cstring>
 #include <new>
 
 namespace sgl {
