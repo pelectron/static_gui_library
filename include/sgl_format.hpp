@@ -4,9 +4,8 @@
 #include "sgl_error.hpp"
 #include "sgl_static_string.hpp"
 #include "sgl_traits.hpp"
-
+#include "sgl_limits.hpp"
 #include <cstdint>
-#include <limits>
 
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
@@ -60,19 +59,19 @@ namespace sgl {
 
   template <typename T>
   constexpr size_t biggest_pow10(T val) {
-    if ((val >= T{1000000000ull}) and (std::numeric_limits<T>::max() > 1000000000ull))
+    if ((val >= T{1000000000ull}) and (numeric_limits<T>::max() > 1000000000ull))
       return 1000000000;
-    else if ((val >= T{100000000ull}) and (std::numeric_limits<T>::max() > 100000000ull))
+    else if ((val >= T{100000000ull}) and (numeric_limits<T>::max() > 100000000ull))
       return 100000000;
-    else if ((val >= T{10000000ull}) and (std::numeric_limits<T>::max() > 10000000ull))
+    else if ((val >= T{10000000ull}) and (numeric_limits<T>::max() > 10000000ull))
       return 10000000;
-    else if ((val >= T{1000000ull}) and (std::numeric_limits<T>::max() > 1000000ull))
+    else if ((val >= T{1000000ull}) and (numeric_limits<T>::max() > 1000000ull))
       return 1000000;
-    else if ((val >= T{100000ull}) and (std::numeric_limits<T>::max() > 100000ull))
+    else if ((val >= T{100000ull}) and (numeric_limits<T>::max() > 100000ull))
       return 100000;
-    else if ((val >= T{10000ull}) and (std::numeric_limits<T>::max() > 10000ull))
+    else if ((val >= T{10000ull}) and (numeric_limits<T>::max() > 10000ull))
       return 10000;
-    else if ((val >= T{1000ull}) and (std::numeric_limits<T>::max() > 1000ull))
+    else if ((val >= T{1000ull}) and (numeric_limits<T>::max() > 1000ull))
       return 1000;
     else if (val >= T{100ull})
       return 100;
@@ -136,10 +135,10 @@ namespace sgl {
     (void)precision;
     (void)format;
     (void)len;
-    if constexpr (std::is_integral_v<T>) {
+    if constexpr (is_integral_v<T>) {
       static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(std::is_integral_v<T>, "");
-      if constexpr (std::is_signed_v<T>) {
+      static_assert(is_integral_v<T>, "");
+      if constexpr (is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
           value = -value;
@@ -269,8 +268,8 @@ namespace sgl {
       (void)precision;
       (void)format;
       static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(std::is_integral_v<T>, "");
-      if constexpr (std::is_signed_v<T>) {
+      static_assert(is_integral_v<T>, "");
+      if constexpr (is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
           value = -value;
