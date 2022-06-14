@@ -2,11 +2,18 @@
 #define SGL_FLOAT_ARG
 #include <cstdint>
 namespace sgl {
-
+  /**
+   * @brief This struct is used for compile time formatting of floating point values, used in
+   * conjunction with the _double and _float operators defined in the sgl::cx_arg_literals
+   * namespace.
+   * @tparam T value type, i.e. float or double
+   * @tparam N of characters in the literal
+   */
   template <typename T, size_t N>
   struct cx_arg {
-    T                          value{};
-    char                       string[N + 1]{};
+    T    value{};         ///< parsed value
+    char string[N + 1]{}; ///< string containing characters plus null terminator
+    /// unary negation operator so that expressions like ```-3.25_float are valid constructs```
     constexpr cx_arg<T, N + 1> operator-() {
       cx_arg<T, N + 1> ret;
       ret.value = -value;
@@ -16,8 +23,12 @@ namespace sgl {
       }
       return ret;
     }
+    /// unary plus operator for same reason as negation operator, just that this time the value does
+    /// not change.
     constexpr cx_arg<T, N> operator+() { return *this; }
   };
+
+  /// @cond
   namespace impl {
     template <typename T>
     constexpr T pow10(int exp) {
@@ -47,56 +58,55 @@ namespace sgl {
     constexpr void fill_array(char (&arr)[sizeof...(chars) + 1]) {
       fill_array_impl<sizeof...(chars), 0, chars...>(arr);
     }
+    constexpr auto to_num(char c) -> int64_t { return (c - '0'); };
+    constexpr auto decimal(const char* begin, const char* end) -> int64_t {
+      if (begin == end)
+        return 0;
+      if (begin[0] == '-')
+        return -decimal(begin + 1, end);
+      if (begin[0] == '+')
+        return decimal(begin + 1, end);
+      int64_t         result{0};
+      const long long size{end - begin};
+
+      for (long long i = 0; i < size; ++i) {
+        result += to_num(begin[i]) * sgl::impl::pow10<int64_t>(size - i - 1);
+      }
+      return result;
+    };
+    constexpr auto get_num_dots(const char* str, size_t n) {
+      size_t count{0};
+      for (size_t i = 0; i < n; ++i) {
+        if (str[i] == '.')
+          ++count;
+      }
+      return count;
+    };
+
+    constexpr auto get_dot_index(const char* str, size_t n) {
+      for (size_t i = 0; i < n; ++i) {
+        if (str[i] == '.')
+          return i;
+      }
+      return sgl::impl::not_found;
+    };
+    constexpr auto get_e_index(const char* str, size_t n) {
+      for (size_t i = 0; i < n; ++i) {
+        if ((str[i] == 'e') || (str[i] == 'E'))
+          return i;
+      }
+      return sgl::impl::not_found;
+    };
+    constexpr auto get_num_es(const char* str, size_t n) {
+      size_t count{0};
+      for (size_t i = 0; i < n; ++i) {
+        if ((str[i] == 'e') || (str[i] == 'E'))
+          ++count;
+      }
+      return count;
+    };
 
     constexpr double convert(const char* str, size_t n) {
-      constexpr auto get_num_dots = [](const char* str, size_t n) {
-        size_t count{0};
-        for (size_t i = 0; i < n; ++i) {
-          if (str[i] == '.')
-            ++count;
-        }
-        return count;
-      };
-      constexpr auto get_dot_index = [](const char* str, size_t n) {
-        for (size_t i = 0; i < n; ++i) {
-          if (str[i] == '.')
-            return i;
-        }
-        return sgl::impl::not_found;
-      };
-      constexpr auto get_e_index = [](const char* str, size_t n) {
-        for (size_t i = 0; i < n; ++i) {
-          if ((str[i] == 'e') || (str[i] == 'E'))
-            return i;
-        }
-        return sgl::impl::not_found;
-      };
-      constexpr auto get_num_es = [](const char* str, size_t n) {
-        size_t count{0};
-        for (size_t i = 0; i < n; ++i) {
-          if ((str[i] == 'e') || (str[i] == 'E'))
-            ++count;
-        }
-        return count;
-      };
-      constexpr auto is_sign = [](char c) -> bool { return (c == '+') || (c == '-'); };
-      constexpr auto is_num = [](char c) -> bool { return (c >= '0') and (c <= '9'); };
-      constexpr auto to_num = [is_num](char c) -> int64_t { return is_num(c) ? (c - '0') : 0; };
-      constexpr auto decimal = [is_sign, to_num](const char* begin, const char* end) -> int64_t {
-        int64_t      result{0};
-        bool         is_negative{false};
-        size_t       start_idx{is_sign(begin[0]) ? 1u : 0u};
-        const size_t size{end - begin - start_idx};
-
-        if (begin[0] == '-') {
-          is_negative = true;
-        }
-        for (size_t i = 0; i < size; ++i) {
-          result += (is_negative ? -to_num(begin[i + start_idx]) : to_num(begin[i + start_idx])) *
-                    sgl::impl::pow10<int64_t>(size - i - 1);
-        }
-        return result;
-      };
       size_t dot_index{get_dot_index(str, n)};
       size_t e_index{get_e_index(str, n)};
       size_t num_es{get_num_es(str, n)};
@@ -108,11 +118,8 @@ namespace sgl {
         if (num_dots == 0) {
           // DEC
           return static_cast<double>(decimal(str, str + n));
-        } else if (dot_index == 0) {
-          //.FRAC
-          return static_cast<double>(decimal(str + 1, str + n));
         } else {
-          // DEC.FRAC
+          // [DEC].FRAC
           auto dec = decimal(str, str + dot_index);
           auto frac = static_cast<double>(decimal(str + dot_index + 1, str + n)) /
                       sgl::impl::pow10<double>(n - dot_index - 1);
@@ -126,15 +133,8 @@ namespace sgl {
           auto dec = decimal(str, str + e_index);
           auto exp = decimal(str + e_index + 1, str + n);
           return static_cast<double>(dec) * sgl::impl::pow10<double>(exp);
-        } else if (dot_index == 0) {
-          //.FRAC[ee][+-]EXP
-
-          auto frac = static_cast<double>(decimal(str + 1, str + e_index)) /
-                      sgl::impl::pow10<double>(e_index);
-          auto exp = decimal(str + e_index + 1, str + n);
-          return frac * sgl::impl::pow10<double>(exp);
         } else {
-          // DEC.FRAC[Ee][+-]EXP
+          // [DEC].FRAC[Ee][+-]EXP
           auto dec = decimal(str, str + dot_index);
           auto frac = static_cast<double>(decimal(str + dot_index + 1, str + e_index)) /
                       sgl::impl::pow10<double>(e_index - dot_index - 1);
@@ -145,18 +145,21 @@ namespace sgl {
     }
 
   } // namespace impl
-
   /// @endcond
+
   namespace cx_arg_literals {
 
-    
     /**
      * @brief create cx_arg double literal.
-     * @details An example fo how to use:
-     *
+     * @note This operator merely parses a double out of of the chars given and returns a cx_arg
+     * containing its value and a string of it **as it was declared**. Essentially, you, the
+     * programmer, are the compile time formatter. See the example for more info.
      * @code
      * #include "sgl_cx_arg.hpp"
+     * using namespace sgl::cx_arg_literals;
      * constexpr auto arg = 65.23_double; // arg.value = 65.23, arg.string = "65.23"
+     * constexpr auto arg2 = .1_double; // arg.value = 0.1, arg.string = ".1"
+     * constexpr auto arg3 = .100000_double; // arg.value = 0.1, arg.string = ".100000"
      * @endcode
      *
      * See https://en.cppreference.com/w/cpp/language/user_literal for more info.
@@ -172,8 +175,7 @@ namespace sgl {
     }
     /**
      * @brief create cx_arg float literal.
-     * @details This is not 100% exact(unlike ryu, charconv etc.), but good enough for compile
-     * time initialization. An example fo how to use:
+     * @details See _double udl operator.
      *
      * @code
      * #include "sgl_cx_arg.hpp"
