@@ -57,12 +57,12 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT>
-  constexpr sgl::error Boolean<TextSize, CharT>::default_handle_input(item_type& Boolean,
+  constexpr sgl::error Boolean<TextSize, CharT>::default_handle_input(item_type& boolean,
                                                                       sgl::Input) noexcept {
-    if (Boolean.get_value()) {
-      Boolean.set_value(false);
+    if (boolean.get_value()) {
+      boolean.set_value(false);
     } else {
-      Boolean.set_value(true);
+      boolean.set_value(true);
     }
     return sgl::error::no_error;
   }

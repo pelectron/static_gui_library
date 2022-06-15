@@ -24,20 +24,10 @@ namespace sgl {
      * @param name name of item
      * @param text text of item
      * @param click_handler click handler
-     */
-    constexpr PassThroughButton(StringView name,
-                                StringView text,
-                                sgl::error (*click_handler)(item_type&) noexcept) noexcept;
-
-    /**
-     * @brief Construct a Button with name, text, and click handler.
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
      * @tparam ClickHandler click handler type
      */
     template <typename ClickHandler, enable_if_is_click_handler<ClickHandler, item_type> = true>
-    PassThroughButton(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
+    constexpr PassThroughButton(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
 
     /**
      * @brief Construct a Button with name, text, and custom click and input
@@ -53,23 +43,11 @@ namespace sgl {
               typename InputHandler,
               enable_if_is_click_handler<ClickHandler, item_type> = true,
               enable_if_is_input_handler<InputHandler, item_type> = true>
-    PassThroughButton(StringView     name,
+    constexpr PassThroughButton(StringView     name,
                       StringView     text,
                       ClickHandler&& click_handler,
                       InputHandler&& input_handler) noexcept;
-    /**
-     * @brief Construct a Button with name, text, and custom click and input
-     * handler.
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
-     * @param input_handler input handler
-     */
-    constexpr PassThroughButton(StringView name,
-                                StringView text,
-                                sgl::error (*click_handler)(item_type&) noexcept,
-                                sgl::error (*input_handler)(item_type&,
-                                                            sgl::Input) noexcept) noexcept;
+                      
     /**
      * @brief Set the click handler
      * @tparam ClickHandler

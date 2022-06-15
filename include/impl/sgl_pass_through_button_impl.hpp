@@ -14,24 +14,9 @@ namespace sgl {
       : Base(name, text) {}
 
   template <typename ItemImpl, typename Traits>
-  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
-      StringView name,
-      StringView text,
-      sgl::error (*click_handler)(item_type&) noexcept) noexcept
-      : Base(name, text), click_handler_(click_handler) {}
-
-  template <typename ItemImpl, typename Traits>
-  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
-      StringView name,
-      StringView text,
-      sgl::error (*click_handler)(item_type&) noexcept,
-      sgl::error (*input_handler)(item_type&, sgl::Input) noexcept) noexcept
-      : Base(name, text, input_handler), click_handler_(click_handler) {}
-
-  template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
             enable_if_is_click_handler<ClickHandler, typename Traits::item_type>>
-  PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
+  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
                                                          StringView     text,
                                                          ClickHandler&& click_handler) noexcept
       : Base(name, text), click_handler_(forward<ClickHandler>(click_handler)) {}
@@ -41,7 +26,7 @@ namespace sgl {
             typename InputHandler,
             enable_if_is_click_handler<ClickHandler, typename Traits::item_type>,
             enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
-  PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
+  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
                                                          StringView     text,
                                                          ClickHandler&& click_handler,
                                                          InputHandler&& input_handler) noexcept

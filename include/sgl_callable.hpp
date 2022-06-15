@@ -102,8 +102,6 @@ namespace sgl {
       return *this;
     }
 
-    Callable& operator=(Ret (&func)(Args...) noexcept) noexcept { return *this = &func; }
-
     template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
     Callable& operator=(F&& f) noexcept {
       if constexpr (is_same_v<decay_t<F>, Callable<Ret(Args...)>>) {

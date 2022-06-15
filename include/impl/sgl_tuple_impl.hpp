@@ -1,9 +1,9 @@
 #ifndef SGL_TUPLE_UTILS_HPP
 #define SGL_TUPLE_UTILS_HPP
 
-#include "sgl_index_sequence.hpp"
-#include "sgl_type_traits.hpp"
-#include "sgl_type_list.hpp"
+#include "../sgl_index_sequence.hpp"
+#include "../sgl_type_traits.hpp"
+#include "../sgl_type_list.hpp"
 
 namespace sgl {
   /// @cond

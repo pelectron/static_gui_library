@@ -63,6 +63,12 @@ namespace sgl {
 
   template <typename CharT, size_t N>
   Boolean(const CharT (&name)[N], bool value) -> Boolean<5, CharT>;
+  
+  template <typename CharT, size_t N, size_t NTrue, size_t NFalse>
+  Boolean(const CharT (&name)[N],
+          const CharT (&true_string)[NTrue],
+          const CharT (&false_string)[NFalse],
+          bool value) -> Boolean<((NTrue > NFalse) ? NTrue : NFalse), CharT>;
 } // namespace sgl
 #include "impl/sgl_boolean_impl.hpp"
 #endif

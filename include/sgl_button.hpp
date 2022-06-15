@@ -23,16 +23,6 @@ namespace sgl {
     /// @}
 
     /**
-     * @brief Construct a Button with name, text, and custom click handler.
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
-     */
-    constexpr Button(StringView name,
-                     StringView text,
-                     sgl::error (*click_handler)(Button&) noexcept) noexcept;
-
-    /**
      * @brief Construct a Button with name, text, and click handler.
      * @param name name of item
      * @param text text of item
@@ -41,7 +31,7 @@ namespace sgl {
      */
     template <typename ClickHandler,
               enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>> = true>
-    Button(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
+    constexpr Button(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
 
     /**
      * @brief Construct a Button with name, text, and custom click and input
@@ -57,22 +47,10 @@ namespace sgl {
               typename InputHandler,
               enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>> = true,
               enable_if_is_input_handler<InputHandler, Button<TextSize, CharT>> = true>
-    Button(StringView     name,
+    constexpr Button(StringView     name,
            StringView     text,
            ClickHandler&& click_handler,
            InputHandler&& input_handler) noexcept;
-    /**
-     * @brief Construct a Button with name, text, and custom click and input
-     * handler.
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
-     * @param input_handler input handler
-     */
-    constexpr Button(StringView name,
-                     StringView text,
-                     sgl::error (*click_handler)(item_type&) noexcept,
-                     sgl::error (*input_handler)(item_type&, sgl::Input) noexcept) noexcept;
   };
 
 } // namespace sgl
