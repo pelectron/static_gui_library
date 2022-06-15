@@ -44,4 +44,5 @@ static_gui_dep = declare_dependency(include_directories: include_directories('in
 if get_option('test').enabled()
   catch_dep = dependency('catch2')
   subdir('tests')
+  subdir('example')
 endif
