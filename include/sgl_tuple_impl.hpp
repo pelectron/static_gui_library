@@ -6,10 +6,11 @@
 #include "sgl_type_list.hpp"
 
 namespace sgl {
-    /// @cond
+  /// @cond
   template <size_t I, typename T>
   class tuple_element {
   public:
+    using value_type = T;
     constexpr tuple_element() noexcept(sgl::is_nothrow_default_constructible_v<T>) = default;
     constexpr tuple_element(const T& arg) noexcept(sgl::is_nothrow_copy_constructible_v<T>)
         : value(arg) {}
@@ -45,7 +46,7 @@ namespace sgl {
         (sgl::is_nothrow_move_constructible_v<Ts> && ...);
 
     template <size_t I>
-    using elem_at_t = sgl::type_at_t<I, sgl::type_list<Ts...>>;
+    using elem_at_t = tuple_element<I, sgl::type_at_t<I, sgl::type_list<Ts...>>>;
     constexpr tuple_impl() noexcept(nothrow_default_constructible) = default;
     constexpr tuple_impl(const tuple_impl&) noexcept(nothrow_copy_constructible) = default;
     constexpr tuple_impl(tuple_impl&&) noexcept(nothrow_move_constructible) = default;
@@ -57,13 +58,13 @@ namespace sgl {
         : tuple_element<Ns, Ts>(sgl::move(ts))... {}
 
     template <size_t I>
-    constexpr elem_at_t<I>& get_elem() noexcept {
-      return *static_cast<elem_at_t<I>*>(this).get();
+    constexpr typename elem_at_t<I>::value_type& get_elem() noexcept {
+      return (*static_cast<elem_at_t<I>*>(this)).get();
     }
 
     template <size_t I>
-    constexpr const elem_at_t<I>& get_elem() const noexcept {
-      return *static_cast<const elem_at_t<I>*>(this).get();
+    constexpr const typename elem_at_t<I>::value_type& get_elem() const noexcept {
+      return (*static_cast<const elem_at_t<I>*>(this)).get();
     }
   };
   /// @endcond
