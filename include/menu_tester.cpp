@@ -17,8 +17,8 @@
 
 #include <iostream>
 #include <string>
-using namespace sgl2::string_view_literals;
-using namespace sgl2;
+using namespace sgl::string_view_literals;
+using namespace sgl;
 
 enum class test_enum { _0 = 0, _1, _2, _3, _4 };
 

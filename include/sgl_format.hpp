@@ -18,7 +18,7 @@
 namespace sgl {
 
   enum class format_t { integer, floating, exponential, fixed };
-
+  /// @cond
   template <typename T>
   struct biggest_pow10_t;
   template <>
@@ -126,6 +126,7 @@ namespace sgl {
 
   template <typename T>
   static constexpr size_t max_buf_size_v = max_buf_size<T>::value;
+  
   template <typename CharT, typename T>
   constexpr sgl::error integer_format(CharT*   str,
                                       size_t   len,
@@ -157,6 +158,7 @@ namespace sgl {
     }
     return sgl::error::null_format;
   }
+/// @endcond
 #if SGL_USE_RYU
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {

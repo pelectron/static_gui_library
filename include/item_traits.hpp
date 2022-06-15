@@ -6,7 +6,7 @@
 #include "sgl_traits.hpp"
 
 namespace sgl {
-
+  /// @cond
   template <typename F, typename Item>
   static constexpr bool is_input_handler_for_v =
       is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>;
@@ -383,5 +383,6 @@ namespace sgl {
   static constexpr bool is_menu_v = is_menu<T>::value;
 
   /// @}
+  /// @endcond
 } // namespace sgl
 #endif

@@ -1,55 +1,10 @@
 #ifndef SGL_BASIC_ITEM_HPP
 #define SGL_BASIC_ITEM_HPP
-#include "item_fwd.hpp"
-#include "item_traits.hpp"
+#include "sgl_item_base_detail.hpp"
 #include "sgl_callable.hpp"
 #include "sgl_static_string.hpp"
 
 namespace sgl {
-  /// @cond
-  /// item_traits
-  /// @{
-  /// class passed as template to ItemBase.
-  template <typename Item>
-  struct traits;
-  template <size_t TextSize, typename CharT>
-  struct traits<Button<TextSize, CharT>> {
-    using item_type = Button<TextSize, CharT>;
-    using char_type = CharT;
-    static constexpr size_t text_size = TextSize;
-    static constexpr bool   clickable = true;
-  };
-  template <size_t TextSize, typename CharT>
-  struct traits<Boolean<TextSize, CharT>> {
-    using item_type = Boolean<TextSize, CharT>;
-    using char_type = CharT;
-    static constexpr size_t text_size = TextSize;
-    static constexpr bool   clickable = true;
-  };
-  template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  struct traits<Enum<T, NumEnumerators, TextSize, CharT>> {
-    using item_type = Enum<T, NumEnumerators, TextSize, CharT>;
-    using char_type = CharT;
-    static constexpr size_t text_size = TextSize;
-    static constexpr bool   clickable = false;
-  };
-  template <size_t TextSize, typename CharT>
-  struct traits<PageLink<TextSize, CharT>> {
-    using item_type = PageLink<TextSize, CharT>;
-    using char_type = CharT;
-    static constexpr size_t text_size = TextSize;
-    static constexpr bool   clickable = true;
-  };
-  template <size_t TextSize, typename CharT, typename T>
-  struct traits<Numeric<TextSize, CharT, T>> {
-    using item_type = Numeric<TextSize, CharT, T>;
-    using char_type = CharT;
-    static constexpr size_t text_size = TextSize;
-    static constexpr bool   clickable = false;
-  };
-
-  /// @}
-  /// @endcond
 
   /**
    * @brief
@@ -58,11 +13,18 @@ namespace sgl {
   template <typename Traits>
   class ItemBase {
   public:
+    static_assert(sgl::has_item_type_typedef_v<Traits>,
+                  "Traits type needs an inner typename named 'item_type'.");
+    static_assert(sgl::has_char_type_typedef_v<Traits>,
+                  "Traits type needs an inner typename named 'char_type'.");
+    static_assert(sgl::has_text_size_v<Traits>,
+                  "Traits type needs a static constexpr member of type size_t called 'text_size'.");
+
     using traits_type = Traits;
     using item_type = typename Traits::item_type;
     using char_type = typename Traits::char_type;
     static constexpr size_t text_size = Traits::text_size;
-    static constexpr bool   clickable = Traits::clickable;
+    static constexpr bool   clickable = sgl::get_clickable_v<Traits>;
     using StringView = sgl::string_view<char_type>;
     using String = sgl::static_string<char_type, text_size>;
 

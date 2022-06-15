@@ -49,10 +49,10 @@
       "console": "externalTerminal"
     },
     {
-      "name": "item_base.exe",
+      "name": "items.exe",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/item_base.exe",
+      "program": "${workspaceFolder}/build/items.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",

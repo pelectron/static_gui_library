@@ -874,30 +874,8 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = sgl_boolean.hpp \
-                         sgl_button.hpp \
-                         sgl_callable2.hpp \
-                         sgl_config.h \
-                         sgl_enum.hpp \
-                         sgl_error.hpp \
-                         sgl_fwd.hpp \
-                         sgl_index_sequence.hpp \
-                         sgl_input.hpp \
-                         sgl_item.hpp \
-                         sgl_menu.hpp \
-                         sgl_numeric.hpp \
-                         sgl_page.hpp \
-                         sgl_page_link.hpp \
-                         sgl_static_string.hpp \
-                         sgl_string_view.hpp \
-                         sgl_text.hpp \
-                         sgl_traits.hpp \
-                         sgl_tuple.hpp \
-                         sgl_tuple_utils.hpp \
-                         sgl_type_list.hpp \
-                         readme.md \
-                         sgl.hpp \
-                         sgl_menu_tester.hpp
+INPUT                  = include \
+                         readme.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
