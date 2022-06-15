@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/subprojects/ryu/ryu/**"
+                "${workspaceFolder}/subprojects/ryu/ryu/**",
+                "${workspaceFolder}/subprojects/Catch2-2.13.8/single_include"
             ],
             "defines": [
                 "_DEBUG",
