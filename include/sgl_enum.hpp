@@ -21,15 +21,15 @@ namespace sgl {
   };
 
   /**
-   * @brief This class implements a enumerated enum_item, i.e. a enum_item with
+   * \brief This class implements a enumerated enum_item, i.e. a enum_item with
    * only a limited amount of possible values.
-   *  @details see sgl::make_enum or an easy way to instantiate a Enum
+   *  \details see sgl::make_enum or an easy way to instantiate a Enum
    * enum_item.
    *
-   * @tparam T the enumeration type
-   * @tparam NumEnumerators number of enumerated values
-   * @tparam TextSize number of characters per line in the menu
-   * @tparam CharT character type of the enum_item
+   * \tparam T the enumeration type
+   * \tparam NumEnumerators number of enumerated values
+   * \tparam TextSize number of characters per line in the menu
+   * \tparam CharT character type of the enum_item
    */
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   class Enum : public sgl::ItemBase<Enum<T, NumEnumerators, TextSize, CharT>> {
@@ -42,25 +42,25 @@ namespace sgl {
     using Map_t = Pair[NumEnumerators];
 
     /**
-     * @brief Construct a Enum enum_item. See the example of how to
+     * \brief Construct a Enum enum_item. See the example of how to
      * construct without naming types explicitly.
-     * @param name name of the enum_item
-     * @param map  maps T's to corresponding string_views. See
+     * \param name name of the enum_item
+     * \param map  maps T's to corresponding string_views. See
      * sgl::Pair and sgl::make_enum for an example.
-     * @param start_index
+     * \param start_index
      */
     constexpr Enum(StringView name,
                    const sgl::Pair<T, CharT> (&map)[NumEnumerators],
                    size_t start_index = 0) noexcept;
 
     /**
-     * @brief Construct a new Enum object
-     * @tparam InputHandler
-     * @param name name of enum_item
-     * @param map maps T's to corresponding string_views. See
+     * \brief Construct a new Enum object
+     * \tparam InputHandler
+     * \param name name of enum_item
+     * \param map maps T's to corresponding string_views. See
      * sgl::make_enum for an example
-     * @param handler enum input handler
-     * @param start_index which value to show first
+     * \param handler enum input handler
+     * \param start_index which value to show first
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr Enum(StringView name,

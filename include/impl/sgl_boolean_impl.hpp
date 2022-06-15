@@ -2,7 +2,7 @@
 #define SGL_BOOLEAN_IMPL_HPP
 #include "../sgl_boolean.hpp"
 namespace sgl {
-  
+
   /// @cond
   namespace detail {
     template <typename CharT>
@@ -18,8 +18,8 @@ namespace sgl {
              initial_value ? StringView(sgl::detail::True<CharT>)
                            : StringView(sgl::detail::False<CharT>),
              &default_handle_input),
-         true_string_(sgl::detail::True<CharT>),
-        false_string_(sgl::detail::False<CharT>),value_(initial_value) {}
+        true_string_(sgl::detail::True<CharT>), false_string_(sgl::detail::False<CharT>),
+        value_(initial_value) {}
 
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(StringView name,

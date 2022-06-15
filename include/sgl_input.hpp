@@ -30,8 +30,8 @@ namespace sgl {
   /// @{
 
   /**
-   * @brief get input as keypad input constant
-   * @param input input to convert
+   * \brief get input as keypad input constant
+   * \param input input to convert
    * @return either keypad constant or Input::none
    */
   constexpr Input get_keypad_input(Input input) {

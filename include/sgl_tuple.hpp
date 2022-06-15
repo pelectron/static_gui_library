@@ -4,9 +4,9 @@
 
 namespace sgl {
   /**
-   * @brief This class is a tuple, analogous to std::tuple.
-   * @details 
-   * @tparam Ts types of the tuple.
+   * \brief This class is a tuple, analogous to std::tuple.
+   * \details
+   * \tparam Ts types of the tuple.
    */
   template <typename... Ts>
   class tuple : private tuple_impl<sgl::type_list<Ts...>, sgl::index_sequence_for<Ts...>> {

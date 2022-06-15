@@ -1,7 +1,8 @@
 /**
  * @file sgl_limits.hpp
  * @author Pelé Constam (you@domain.com)
- * @brief This file defines a class template called numeric_limits, analogous to std::numeric_limits.
+ * \brief This file defines a class template called numeric_limits, analogous to
+ * std::numeric_limits.
  * @version 0.1
  * @date 2022-06-14
  *

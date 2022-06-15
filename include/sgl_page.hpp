@@ -8,7 +8,6 @@
 #include "sgl_string_view.hpp"
 #include "sgl_tuple.hpp"
 
-
 namespace sgl {
 
   template <typename CharT, typename... Items>
@@ -19,13 +18,13 @@ namespace sgl {
     using StringView = sgl::string_view<CharT>;
 
     /**
-     * @brief Concrete input handler type. A page input handler is a callable
+     * \brief Concrete input handler type. A page input handler is a callable
      * with a call signature equal to sgl::error(Page&, sgl::Input).
      */
     using InputHandler_t = Callable<error(sgl::Page<CharT, Items...>&, sgl::Input)>;
 
     /**
-     * @brief Concrete page action type. Actions are callables which can be
+     * \brief Concrete page action type. Actions are callables which can be
      * invoked with a reference to a page and return sgl::error.
      */
     using PageAction_t = Callable<sgl::error(Page<CharT, Items...>&)>;
@@ -43,8 +42,8 @@ namespace sgl {
         sgl::nothrow_invocable_r<sgl::error, F, Page<CharT, Items...>&, sgl::Input>;
 
     /**
-     * @brief get item type at index I
-     * @tparam I index
+     * \brief get item type at index I
+     * \tparam I index
      */
     template <size_t I>
     using item_at_t = type_at_t<I, type_list<Items...>>;
@@ -65,7 +64,7 @@ namespace sgl {
     constexpr Page(Page&& other) noexcept(nothrow_move_constructible_v<Items...>);
 
     /**
-     * @brief Construct a page with default input handling, default enter/exit
+     * \brief Construct a page with default input handling, default enter/exit
      * actions, default start/stop edit inputs (i.e. sgl::Input::enter).
      *
      * @code
@@ -74,9 +73,9 @@ namespace sgl {
      *  auto page = Page("page_name","Title",ItemX(...),ItemY(...),ItemZ(...));
      * @endcode
      *
-     * @param name name of the page. Must be unique in a menu.
-     * @param title title of the page.
-     * @param items items of the page.
+     * \param name name of the page. Must be unique in a menu.
+     * \param title title of the page.
+     * \param items items of the page.
      * @{
      */
     constexpr Page(StringView name,
@@ -248,15 +247,15 @@ namespace sgl {
     constexpr void set_stop_edit(sgl::Input stop_edit) noexcept;
 
     /**
-     * @brief Set the menu for items which need it, i.e. page links.
-     * @tparam Menu menu type
-     * @param menu pointer to menu instance
+     * \brief Set the menu for items which need it, i.e. page links.
+     * \tparam Menu menu type
+     * \param menu pointer to menu instance
      */
     template <typename Menu>
     constexpr void set_menu(Menu* menu) noexcept;
 
     /**
-     * @brief apply f on all items in the page with the items' **declared
+     * \brief apply f on all items in the page with the items' **declared
      * type**.
      *
      * @note f must be a generic lambda like in the example below or some kind
@@ -267,8 +266,8 @@ namespace sgl {
      * page_var.for_current_item([](auto& page){...});
      * @endcode
      *
-     * @tparam F invocable type
-     * @param f callable
+     * \tparam F invocable type
+     * \param f callable
      * @{
      */
     template <typename F>
@@ -279,7 +278,7 @@ namespace sgl {
     /// @}
 
     /**
-     * @brief apply f on current item with it's **declared type**. An example
+     * \brief apply f on current item with it's **declared type**. An example
      * below.
      *
      * @note f must be a generic lambda like in the example below or some kind
@@ -290,8 +289,8 @@ namespace sgl {
      * page_var.for_current_item([](auto& page){...});
      * @endcode
      *
-     * @tparam F invocable type
-     * @param f callable
+     * \tparam F invocable type
+     * \param f callable
      * @{
      */
     template <typename F>
@@ -308,17 +307,17 @@ namespace sgl {
     constexpr sgl::error on_exit() noexcept;
 
     /**
-     * @brief Set enter action.
-     * @tparam PageAction action type. See PageAction_t for more info.
-     * @param action action instance
+     * \brief Set enter action.
+     * \tparam PageAction action type. See PageAction_t for more info.
+     * \param action action instance
      */
     template <typename Action, constraint_t<PageAction, Action> = true>
     constexpr void set_on_enter(Action&& action) noexcept;
 
     /**
-     * @brief Set exit action.
-     * @tparam PageAction action type. See PageAction_t for more info.
-     * @param action action instance
+     * \brief Set exit action.
+     * \tparam PageAction action type. See PageAction_t for more info.
+     * \param action action instance
      */
     template <typename Action, constraint_t<PageAction, Action> = true>
     constexpr void set_on_exit(Action&& action) noexcept;
@@ -380,12 +379,12 @@ namespace sgl {
   /// @{
 
   /**
-   * @brief create page with a name, title and items. Everything else is set to default.
-   * @tparam CharT character type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param items items of the page
+   * \brief create page with a name, title and items. Everything else is set to default.
+   * \tparam CharT character type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param items items of the page
    * @return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
@@ -395,14 +394,14 @@ namespace sgl {
   }
 
   /**
-   * @brief create page with a custom start index, i.e. the index of the item
+   * \brief create page with a custom start index, i.e. the index of the item
    * that is considered current.
-   * @tparam CharT character type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_index active page index
-   * @param items items of the page
+   * \tparam CharT character type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_index active page index
+   * \param items items of the page
    * @return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
@@ -414,15 +413,15 @@ namespace sgl {
   }
 
   /**
-   * @brief create a page with custom start index and start and stop edit inputs.
-   * @tparam CharT character type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_edit input to start edit mode on
-   * @param stop_edit input to stop edit mode on
-   * @param start_index active page index
-   * @param items items of the page
+   * \brief create a page with custom start index and start and stop edit inputs.
+   * \tparam CharT character type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_edit input to start edit mode on
+   * \param stop_edit input to stop edit mode on
+   * \param start_index active page index
+   * \param items items of the page
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
   constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
@@ -440,14 +439,14 @@ namespace sgl {
   }
 
   /**
-   * @brief create a page with custom start and stop edit inputs.
-   * @tparam CharT character type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_edit input to start edit mode on
-   * @param stop_edit input to stop edit mode on
-   * @param items items of the page
+   * \brief create a page with custom start and stop edit inputs.
+   * \tparam CharT character type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_edit input to start edit mode on
+   * \param stop_edit input to stop edit mode on
+   * \param items items of the page
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
   constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
@@ -459,15 +458,15 @@ namespace sgl {
   }
 
   /**
-   * @brief create a page with custom input handler and start index
-   * @tparam CharT character types
-   * @tparam InputHandler input handler type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_index active page index
-   * @param handler input handler
-   * @param items items of the page
+   * \brief create a page with custom input handler and start index
+   * \tparam CharT character types
+   * \tparam InputHandler input handler type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_index active page index
+   * \param handler input handler
+   * \param items items of the page
    * @return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT,
@@ -488,17 +487,17 @@ namespace sgl {
   }
 
   /**
-   * @brief Create a page with default enter and exit action.
-   * @tparam CharT character type
-   * @tparam InputHandler input handler type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_edit input to start edit mode on
-   * @param stop_edit input to stop edit mode on
-   * @param start_index active page index
-   * @param handler input handler
-   * @param items items of the page
+   * \brief Create a page with default enter and exit action.
+   * \tparam CharT character type
+   * \tparam InputHandler input handler type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_edit input to start edit mode on
+   * \param stop_edit input to stop edit mode on
+   * \param start_index active page index
+   * \param handler input handler
+   * \param items items of the page
    */
   template <typename CharT,
             typename InputHandler,
@@ -522,16 +521,16 @@ namespace sgl {
   }
 
   /**
-   * @brief create a page with custom input handler and start/ stop edit tokens
-   * @tparam CharT character type
-   * @tparam InputHandler input handler type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_edit input to start edit mode on
-   * @param stop_edit input to stop edit mode on
-   * @param handler input handler
-   * @param items items of the page
+   * \brief create a page with custom input handler and start/ stop edit tokens
+   * \tparam CharT character type
+   * \tparam InputHandler input handler type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_edit input to start edit mode on
+   * \param stop_edit input to stop edit mode on
+   * \param handler input handler
+   * \param items items of the page
    */
   template <typename CharT,
             typename InputHandler,
@@ -553,14 +552,14 @@ namespace sgl {
   }
 
   /**
-   * @brief create a page with custom input handler.
-   * @tparam CharT
-   * @tparam InputHandler
-   * @tparam Items
-   * @param name
-   * @param title
-   * @param handler
-   * @param items
+   * \brief create a page with custom input handler.
+   * \tparam CharT
+   * \tparam InputHandler
+   * \tparam Items
+   * \param name
+   * \param title
+   * \param handler
+   * \param items
    * @return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT,
@@ -579,21 +578,21 @@ namespace sgl {
   }
 
   /**
-   * @brief Create a page with every customizable option.
-   * @tparam CharT character type
-   * @tparam InputHandler input handler type
-   * @tparam EnterAction enter action type
-   * @tparam ExitAction exit action type
-   * @tparam Items item types
-   * @param name name of the page. Used by the PageLink class to switch pages.
-   * @param title title of the page
-   * @param start_edit input to start edit mode on
-   * @param stop_edit input to stop edit mode on
-   * @param start_index active page index
-   * @param handler input handler
-   * @param on_enter action to invoke when the page is entered
-   * @param on_exit action to invoke when the page is exited
-   * @param items items of the page
+   * \brief Create a page with every customizable option.
+   * \tparam CharT character type
+   * \tparam InputHandler input handler type
+   * \tparam EnterAction enter action type
+   * \tparam ExitAction exit action type
+   * \tparam Items item types
+   * \param name name of the page. Used by the PageLink class to switch pages.
+   * \param title title of the page
+   * \param start_edit input to start edit mode on
+   * \param stop_edit input to stop edit mode on
+   * \param start_index active page index
+   * \param handler input handler
+   * \param on_enter action to invoke when the page is entered
+   * \param on_exit action to invoke when the page is exited
+   * \param items items of the page
    */
   template <
       typename CharT,

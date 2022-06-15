@@ -4,7 +4,6 @@
 #include "sgl_string_view.hpp"
 #include "sgl_type_traits.hpp"
 
-
 namespace sgl {
 
   template <typename CharT, size_t Capacity>

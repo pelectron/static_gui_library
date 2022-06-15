@@ -16,9 +16,10 @@ namespace sgl {
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
             enable_if_is_click_handler<ClickHandler, typename Traits::item_type>>
-  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
-                                                         StringView     text,
-                                                         ClickHandler&& click_handler) noexcept
+  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
+      StringView     name,
+      StringView     text,
+      ClickHandler&& click_handler) noexcept
       : Base(name, text), click_handler_(forward<ClickHandler>(click_handler)) {}
 
   template <typename ItemImpl, typename Traits>
@@ -26,10 +27,11 @@ namespace sgl {
             typename InputHandler,
             enable_if_is_click_handler<ClickHandler, typename Traits::item_type>,
             enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
-  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(StringView     name,
-                                                         StringView     text,
-                                                         ClickHandler&& click_handler,
-                                                         InputHandler&& input_handler) noexcept
+  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
+      StringView     name,
+      StringView     text,
+      ClickHandler&& click_handler,
+      InputHandler&& input_handler) noexcept
       : Base(name, text, forward<InputHandler>(input_handler)),
         click_handler_(forward<ClickHandler>(click_handler)) {}
 

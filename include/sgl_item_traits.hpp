@@ -53,7 +53,7 @@ namespace sgl {
   struct is_item_trait {
     static constexpr bool value = has_char_type_typedef_v<T> and has_text_size_v<T>;
   };
-  
+
   template <typename T>
   static constexpr bool is_item_trait_v = is_item_trait<T>::value;
 

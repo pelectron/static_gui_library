@@ -1,21 +1,25 @@
 #ifndef SGL_ENUM_IMPL_HPP
 #define SGL_ENUM_IMPL_HPP
 #include "../sgl_enum.hpp"
-namespace sgl{
+namespace sgl {
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
                                                            const Pair (&map)[NumEnumerators],
                                                            size_t start_index) noexcept
-      : Enum<T, NumEnumerators, TextSize, CharT>(name, map, &Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input, start_index) {}
+      : Enum<T, NumEnumerators, TextSize, CharT>(
+            name,
+            map,
+            &Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input,
+            start_index) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   template <typename InputHandler,
             enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>>>
   constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
-                                                 const Pair (&map)[NumEnumerators],
-                                                 InputHandler&& handler,
-                                                 size_t         start_index) noexcept
+                                                           const Pair (&map)[NumEnumerators],
+                                                           InputHandler&& handler,
+                                                           size_t         start_index) noexcept
       : Base(name, map[start_index % NumEnumerators].string, forward<InputHandler>(handler)),
         map_{}, index_(start_index % NumEnumerators) {
     for (size_t i = 0; i < NumEnumerators; ++i) {
@@ -90,7 +94,6 @@ namespace sgl{
     return error::no_error;
   }
 
-  
   template <size_t TextSize, typename CharT, typename T, size_t NumEnumerators>
   constexpr Enum<T, NumEnumerators, TextSize, CharT>
       make_enum(sgl::string_view<CharT> name,
@@ -141,5 +144,5 @@ namespace sgl{
     return make_enum(sgl::string_view(name), map, forward<InputHandler>(handler), start_index);
   }
 
-}
+} // namespace sgl
 #endif

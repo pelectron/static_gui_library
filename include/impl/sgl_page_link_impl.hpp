@@ -1,7 +1,7 @@
 #ifndef SGL_PAGE_LINK_IMPL_HPP
 #define SGL_PAGE_LINK_IMPL_HPP
 #include "../sgl_page_link.hpp"
-namespace sgl{
+namespace sgl {
   template <size_t TextSize, typename CharT>
   constexpr PageLink<TextSize, CharT>::PageLink(StringView name,
                                                 StringView text,
@@ -32,5 +32,5 @@ namespace sgl{
   constexpr void* PageLink<TextSize, CharT>::get_menu() noexcept {
     return menu_;
   }
-}
+} // namespace sgl
 #endif

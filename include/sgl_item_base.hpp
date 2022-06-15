@@ -4,12 +4,11 @@
 #include "sgl_item_traits.hpp"
 #include "sgl_static_string.hpp"
 
-
 namespace sgl {
 
   /**
-   * @brief
-   * @tparam Traits
+   * \brief
+   * \tparam Traits
    */
   template <typename ItemImpl, typename Traits = sgl::ItemTraits<ItemImpl>>
   class ItemBase {
@@ -33,50 +32,50 @@ namespace sgl {
     using InputHandler_t = sgl::Callable<sgl::error(item_type&, sgl::Input)>;
 
     /**
-     * @brief Construct an item with a name and text.
-     * @param name name of the item
-     * @param text text of the item
+     * \brief Construct an item with a name and text.
+     * \param name name of the item
+     * \param text text of the item
      */
     constexpr ItemBase(StringView name, StringView text) noexcept;
 
     /**
-     * @brief Construct an item with it's name and text set to name_and_text.
-     * @param name_and_text name and text of item.
+     * \brief Construct an item with it's name and text set to name_and_text.
+     * \param name_and_text name and text of item.
      */
     constexpr ItemBase(StringView name_and_text) noexcept;
 
     /**
-     * @brief Construct an item with name, text and input handler.
-     * @tparam InputHandler input handler type
-     * @param name name of the item
-     * @param text text of the item
-     * @param handler input handler
+     * \brief Construct an item with name, text and input handler.
+     * \tparam InputHandler input handler type
+     * \param name name of the item
+     * \param text text of the item
+     * \param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept;
 
     /**
-     * @brief Construct an item with name, text and input handler.
-     * @tparam InputHandler input handler type
-     * @param name_and_text name and text of item
-     * @param handler input handler
+     * \brief Construct an item with name, text and input handler.
+     * \tparam InputHandler input handler type
+     * \param name_and_text name and text of item
+     * \param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr ItemBase(StringView name_and_text, InputHandler&& handler) noexcept;
 
     /**
-     * @brief Can be used to give access to the menu from an item. Menu_t will
+     * \brief Can be used to give access to the menu from an item. Menu_t will
      * call this function for all items it contains with its declared type, i.e.
      * this function can be statically overridden in derived classes.See
      * basic_page_link for an example of how it is used.
-     * @tparam Menu menu type
+     * \tparam Menu menu type
      */
     template <typename Menu>
     constexpr void set_menu(Menu*) noexcept;
 
     /**
-     * @brief calls the items input handler.
-     * @param input input
+     * \brief calls the items input handler.
+     * \param input input
      * @return sgl::error::no_error in case of no error.
      * @return sgl::error::edit_finished in case the item is done being edited.
      * See input handling for more details.
@@ -84,39 +83,39 @@ namespace sgl {
     constexpr sgl::error handle_input(sgl::Input input) noexcept;
 
     /**
-     * @brief set the text field
-     * @param new_text new text
+     * \brief set the text field
+     * \param new_text new text
      * @return sgl::error
      */
     constexpr sgl::error set_text(StringView new_text) noexcept;
 
     /**
-     * @brief get const reference to text field
+     * \brief get const reference to text field
      * @return const String&
      */
     constexpr const String& get_text() const noexcept;
 
     /**
-     * @brief get reference to text field
+     * \brief get reference to text field
      * @return String&
      */
     constexpr String&    get_text() noexcept;
     constexpr StringView text() const noexcept { return text_; }
     /**
-     * @brief clear the text field.
+     * \brief clear the text field.
      */
     constexpr void clear_text() noexcept;
 
     /**
-     * @brief get the name of the item
+     * \brief get the name of the item
      * @return StringView
      */
     constexpr StringView name() const noexcept;
 
     /**
-     * @brief Set the input handler.
-     * @tparam InputHandler input handler type
-     * @param handler input handler
+     * \brief Set the input handler.
+     * \tparam InputHandler input handler type
+     * \param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     void set_input_handler(InputHandler&& handler) noexcept;

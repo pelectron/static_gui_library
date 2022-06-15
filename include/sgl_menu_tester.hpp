@@ -6,8 +6,8 @@
 namespace sgl2 {
 
   /**
-   * @brief pair of sgl::Input and sgl::string_view<CharT>
-   * @tparam CharT character type
+   * \brief pair of sgl::Input and sgl::string_view<CharT>
+   * \tparam CharT character type
    */
   template <typename CharT>
   struct InputPair {
@@ -16,10 +16,10 @@ namespace sgl2 {
   };
 
   /**
-   * @brief This class is used to map sgl::Input values to string_views. It is
+   * \brief This class is used to map sgl::Input values to string_views. It is
    * used by the MenuTester class.
-   * @tparam CharT character type
-   * @tparam N number of mapped values
+   * \tparam CharT character type
+   * \tparam N number of mapped values
    */
   template <typename CharT, size_t N>
   struct InputMap {
@@ -38,10 +38,10 @@ namespace sgl2 {
   };
 
   /**
-   * @brief This class provides an easy ways to test menus.
+   * \brief This class provides an easy ways to test menus.
    * @see menu_tester.cpp for a complete example on how to use this class.
-   * @tparam Menu menu type
-   * @tparam N number of inputs mapped
+   * \tparam Menu menu type
+   * \tparam N number of inputs mapped
    */
   template <size_t N, size_t LineWidth, typename CharT, typename... Pages>
   class MenuTester {
@@ -50,8 +50,8 @@ namespace sgl2 {
 
     using char_type = typename Menu::char_type;
     /**
-     * @brief Construct a new Menu Tester.
-     * @details Example of how to use:
+     * \brief Construct a new Menu Tester.
+     * \details Example of how to use:
      *
      * @code
      * auto tester = MenuTester(sgl::make_menu(...), // the menu to test
@@ -63,8 +63,8 @@ namespace sgl2 {
      *                           {sgl::Input::enter, "enter"}});
      * @endcode
      *
-     * @param menu menu to test
-     * @param input_map map of sgl::Input to sgl::string_view<CharT>
+     * \param menu menu to test
+     * \param input_map map of sgl::Input to sgl::string_view<CharT>
      * @{
      */
     MenuTester(const Menu& menu, const InputPair<CharT> (&input_map)[N])
@@ -75,8 +75,8 @@ namespace sgl2 {
     /// @}
 
     /**
-     * @brief handles input
-     * @param input user input as string
+     * \brief handles input
+     * \param input user input as string
      * @return sgl::error
      */
     sgl::error handle_input(sgl::string_view<char_type> input) {
@@ -95,7 +95,7 @@ namespace sgl2 {
     }
 
     /**
-     * @brief prints current page and its content to std::out
+     * \brief prints current page and its content to std::out
      */
     void print() const {
       std::cout << "\n---------------\n";

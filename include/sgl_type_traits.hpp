@@ -1,7 +1,7 @@
 /**
  * @file sgl_traits.hpp
  * @author Pelé Constam (you@domain.com)
- * @brief This file implements some of the type traits found in the <type_traits> header.
+ * \brief This file implements some of the type traits found in the <type_traits> header.
  * @version 0.1
  * @date 2022-06-14
  *
@@ -610,7 +610,7 @@ namespace sgl {
   struct is_trivially_destructible {
     static constexpr bool value = is_destructible_v<T> and is_destructible_v<remove_extent_t<T>>;
   };
-  
+
   template <typename T>
   static constexpr bool is_trivially_destructible_v = is_trivially_destructible<T>::value;
   /// @endcond

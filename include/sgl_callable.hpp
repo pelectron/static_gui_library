@@ -13,14 +13,14 @@ namespace sgl {
   /// @endcond
 
   /**
-   * @brief This class implements a callable with the guarantee that it does not
+   * \brief This class implements a callable with the guarantee that it does not
    * heap allocate or throw. Additionally, constexpr fee functions and non capturing lambdas can be
    * executed at compile time, i.e. the following will successfully compile:
    * ```
    * static_assert(Callable<int()>([]() noexcept { return 0;})() == 0,"");
    * ```
    *
-   * @details This class can bind and execute function objects/functors/lambdas,
+   * \details This class can bind and execute function objects/functors/lambdas,
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See function, google search for delegates, etc. if the
    * concept is not clear.
@@ -45,8 +45,8 @@ namespace sgl {
    * }
    * ```
    * https://en.cppreference.com/w/cpp/language/const_cast for more info.
-   * @tparam Ret return type of the callable
-   * @tparam Args argument types
+   * \tparam Ret return type of the callable
+   * \tparam Args argument types
    */
   template <typename Ret, typename... Args>
   class Callable<Ret(Args...)> {
@@ -64,10 +64,10 @@ namespace sgl {
         : invoke_(&free_function_invoke), buffer_{f} {}
 
     /**
-     * @brief Construct a new callable from object and member function
-     * @tparam T object type
-     * @param obj object instance
-     * @param member_function pointer to member function
+     * \brief Construct a new callable from object and member function
+     * \tparam T object type
+     * \param obj object instance
+     * \param member_function pointer to member function
      */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) noexcept) noexcept {
@@ -75,19 +75,19 @@ namespace sgl {
     }
 
     /**
-     * @brief Construct a new callable from object and const member function
-     * @tparam T object type
-     * @param obj object instance
-     * @param member_function pointer to member function
+     * \brief Construct a new callable from object and const member function
+     * \tparam T object type
+     * \param obj object instance
+     * \param member_function pointer to member function
      */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) const noexcept) noexcept {
       bind(obj, member_function);
     }
     /**
-     * @brief Construct a callable with a function object/functor
-     * @tparam F function object type
-     * @param f function object instance
+     * \brief Construct a callable with a function object/functor
+     * \tparam F function object type
+     * \param f function object instance
      */
     template <typename F,
               enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F> and
@@ -126,11 +126,11 @@ namespace sgl {
     constexpr void bind(Ret (&free_function)(Args...) noexcept) noexcept { bind(&free_function); }
 
     /**
-     * @brief bind object and member function
+     * \brief bind object and member function
      *
-     * @tparam T object type
-     * @param obj object instance
-     * @param member_function member function pointer
+     * \tparam T object type
+     * \param obj object instance
+     * \param member_function member function pointer
      */
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...) noexcept) noexcept {
@@ -140,11 +140,11 @@ namespace sgl {
     }
 
     /**
-     * @brief bind object and const member function
+     * \brief bind object and const member function
      *
-     * @tparam T object type
-     * @param obj object instance
-     * @param member_function pointer to const qualified member function
+     * \tparam T object type
+     * \param obj object instance
+     * \param member_function pointer to const qualified member function
      */
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...) const noexcept) noexcept {
@@ -154,10 +154,10 @@ namespace sgl {
     }
 
     /**
-     * @brief bind invocable
+     * \brief bind invocable
      *
-     * @tparam F invocable type
-     * @param f invocable instance
+     * \tparam F invocable type
+     * \param f invocable instance
      */
     template <typename F>
     void bind(F&& f) noexcept {

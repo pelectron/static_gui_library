@@ -2,10 +2,12 @@
 #define SGL_FORMAT_HPP
 #include "sgl_config.h"
 #include "sgl_error.hpp"
+#include "sgl_limits.hpp"
 #include "sgl_static_string.hpp"
 #include "sgl_type_traits.hpp"
-#include "sgl_limits.hpp"
+
 #include <cstdint>
+
 
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
@@ -126,7 +128,7 @@ namespace sgl {
 
   template <typename T>
   static constexpr size_t max_buf_size_v = max_buf_size<T>::value;
-  
+
   template <typename CharT, typename T>
   constexpr sgl::error integer_format(CharT*   str,
                                       size_t   len,
@@ -205,7 +207,7 @@ namespace sgl {
       return sgl::error::no_error;
     }
   }
-  
+
   template <typename CharT, typename T>
   sgl::error format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
     if constexpr (is_floating_point_v<T>) {

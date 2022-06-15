@@ -3,11 +3,11 @@
 #include <cstdint>
 namespace sgl {
   /**
-   * @brief This struct is used for compile time formatting of floating point values, used in
+   * \brief This struct is used for compile time formatting of floating point values, used in
    * conjunction with the _double and _float operators defined in the sgl::cx_arg_literals
    * namespace.
-   * @tparam T value type, i.e. float or double
-   * @tparam N of characters in the literal
+   * \tparam T value type, i.e. float or double
+   * \tparam N of characters in the literal
    */
   template <typename T, size_t N>
   struct cx_arg {
@@ -150,7 +150,7 @@ namespace sgl {
   namespace cx_arg_literals {
 
     /**
-     * @brief create cx_arg double literal.
+     * \brief create cx_arg double literal.
      * @note This operator merely parses a double out of of the chars given and returns a cx_arg
      * containing its value and a string of it **as it was declared**. Essentially, you, the
      * programmer, are the compile time formatter. See the example for more info.
@@ -164,7 +164,7 @@ namespace sgl {
      *
      * See https://en.cppreference.com/w/cpp/language/user_literal for more info.
      *
-     * @tparam chars literal value
+     * \tparam chars literal value
      */
     template <char... chars>
     constexpr cx_arg<double, sizeof...(chars)> operator"" _double() {
@@ -174,8 +174,8 @@ namespace sgl {
       return ret;
     }
     /**
-     * @brief create cx_arg float literal.
-     * @details See _double udl operator.
+     * \brief create cx_arg float literal.
+     * \details See _double udl operator.
      *
      * @code
      * #include "sgl_cx_arg.hpp"
@@ -184,7 +184,7 @@ namespace sgl {
      *
      * See https://en.cppreference.com/w/cpp/language/user_literal for more info.
      *
-     * @tparam chars literal value
+     * \tparam chars literal value
      */
     template <char... chars>
     constexpr cx_arg<float, sizeof...(chars)> operator"" _float() {

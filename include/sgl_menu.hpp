@@ -1,13 +1,14 @@
 #ifndef SGL_MENU_HPP
 #define SGL_MENU_HPP
-#include "sgl_item_concepts.hpp"
 #include "sgl_callable.hpp"
 #include "sgl_error.hpp"
 #include "sgl_input.hpp"
+#include "sgl_item_concepts.hpp"
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
-#include "sgl_type_traits.hpp"
 #include "sgl_tuple.hpp"
+#include "sgl_type_traits.hpp"
+
 
 namespace sgl {
 
@@ -29,8 +30,8 @@ namespace sgl {
         nothrow_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, P> && ...);
     // constructors
     /**
-     * @brief Construct a Menu with pages. The active page will be the first parameter passed to the constructor.
-     * @param pages page of the menu
+     * \brief Construct a Menu with pages. The active page will be the first parameter passed to the
+     * constructor. \param pages page of the menu
      * @{
      */
     constexpr Menu(Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
@@ -39,10 +40,9 @@ namespace sgl {
     /// @}
 
     /**
-     * @brief Construct a Menu with pages and custom input handler. The active page will be the first parameter passed to the constructor.
-     * @tparam InputHandler input handler type
-     * @param handler input handler instance.
-     * @param pages pages of the menu
+     * \brief Construct a Menu with pages and custom input handler. The active page will be the
+     * first parameter passed to the constructor. \tparam InputHandler input handler type \param
+     * handler input handler instance. \param pages pages of the menu
      * @{
      */
     template <typename InputHandler,
@@ -63,37 +63,37 @@ namespace sgl {
     constexpr Menu(Menu&& other) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
 
     /**
-     * @brief process input
-     * @param input user input
+     * \brief process input
+     * \param input user input
      * @return sgl::error
      */
     constexpr sgl::error handle_input(Input input) noexcept;
 
     /**
-     * @brief Set the active page by name
-     * @param page_name name of the page
+     * \brief Set the active page by name
+     * \param page_name name of the page
      * @return sgl::error
      */
     template <typename CharT>
     constexpr sgl::error set_active_page(sgl::string_view<CharT> page_name) noexcept;
 
     /**
-     * @brief Set the active page by index
-     * @param page_index page index
+     * \brief Set the active page by index
+     * \param page_index page index
      * @return sgl::error::invalid_page_index
      */
     constexpr sgl::error set_active_page(size_t page_index) noexcept;
 
     /**
-     * @brief get reference to page at index I
-     * @tparam I page index
+     * \brief get reference to page at index I
+     * \tparam I page index
      */
     template <size_t I>
     constexpr page_at_t<I>& get_page() noexcept;
 
     /**
-     * @brief get const reference to page at index I
-     * @tparam I page index
+     * \brief get const reference to page at index I
+     * \tparam I page index
      */
     template <size_t I>
     constexpr const page_at_t<I>& get_page() const noexcept;
@@ -105,38 +105,38 @@ namespace sgl {
     constexpr size_t size() const noexcept;
 
     /**
-     * @brief get reference to item at ItemIndex from page at PageIndex.
-     * @details Works like multi array indexing.
+     * \brief get reference to item at ItemIndex from page at PageIndex.
+     * \details Works like multi array indexing.
      * @code
      * // gets the third element in the first page.
      * auto& page = menu.get_page<0,2>();
      * @endcode
      *
-     * @tparam PageIndex page index in menu
-     * @tparam ItemIndex item index in page
+     * \tparam PageIndex page index in menu
+     * \tparam ItemIndex item index in page
      * @return reference to item at ItemIndex from page at PageIndex.
      */
     template <size_t PageIndex, size_t ItemIndex>
     constexpr item_at_t<PageIndex, ItemIndex>& get_item() noexcept;
 
     /**
-     * @brief get const reference to item at ItemIndex from page at PageIndex.
-     * @details Works like multi array indexing.
+     * \brief get const reference to item at ItemIndex from page at PageIndex.
+     * \details Works like multi array indexing.
      * @code
      * // gets the third element in the first page.
      * const auto& page = menu.get_page<0,2>();
      * @endcode
      *
-     * @tparam PageIndex page index in menu
-     * @tparam ItemIndex item index in page
+     * \tparam PageIndex page index in menu
+     * \tparam ItemIndex item index in page
      * @return const item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
     constexpr const item_at_t<PageIndex, ItemIndex>& get_item() const noexcept;
 
     /**
-     * @brief apply f on each page in menu.
-     * @details
+     * \brief apply f on each page in menu.
+     * \details
      * @code
      * // defined somewhere in a header
      * template<typename Page>
@@ -149,15 +149,15 @@ namespace sgl {
      *
      * @endcode
      *
-     * @tparam F functor type
-     * @param f function template
+     * \tparam F functor type
+     * \param f function template
      */
     template <typename F>
     constexpr void for_each_page(F&& f) noexcept(noexcept(f));
 
     /**
-     * @brief apply f on each page in menu.
-     * @details
+     * \brief apply f on each page in menu.
+     * \details
      * @code
      * // defined somewhere in a header
      * template<typename Page>
@@ -169,16 +169,16 @@ namespace sgl {
      * menu.for_each_page([](const auto& page){...});
      *
      * @endcode
-     * @tparam F functor type
-     * @param f functor instance
+     * \tparam F functor type
+     * \param f functor instance
      */
     template <typename F>
     constexpr void for_each_page(F&& f) const noexcept(noexcept(f));
 
     /**
-     * @brief apply f on the current page.
-     * @tparam F functor type
-     * @param f functor instance
+     * \brief apply f on the current page.
+     * \tparam F functor type
+     * \param f functor instance
      * @{
      */
     template <typename F>

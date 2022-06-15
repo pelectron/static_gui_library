@@ -1,8 +1,8 @@
 #ifndef SGL_ITEM_BASE_IMPL_HPP
 #define SGL_ITEM_BASE_IMPL_HPP
 #include "../sgl_item_base.hpp"
-namespace sgl{
-      template <typename ItemImpl, typename Traits>
+namespace sgl {
+  template <typename ItemImpl, typename Traits>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name, StringView text) noexcept
       : name_(name), text_(text) {}
 
@@ -10,20 +10,17 @@ namespace sgl{
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text) noexcept
       : name_(name_and_text), text_(name_and_text) {}
 
- 
-
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text, InputHandler&& handler) noexcept
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name_and_text,
+                                                 InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
-                                       StringView     text,
-                                       InputHandler&& handler) noexcept
+                                                 StringView     text,
+                                                 InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name), text_(text) {}
 
   template <typename ItemImpl, typename Traits>
@@ -65,8 +62,7 @@ namespace sgl{
   }
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   void ItemBase<ItemImpl, Traits>::set_input_handler(InputHandler&& handler) noexcept {
     static_assert(is_invocable_r_v<sgl::error, InputHandler, item_type&, sgl::Input>,
                   "the provided handler is not a valid input handler.");
@@ -92,5 +88,5 @@ namespace sgl{
       return sgl::error::edit_finished;
     }
   }
-}
+} // namespace sgl
 #endif

@@ -6,15 +6,15 @@
 
 namespace sgl {
   /**
-   * @brief This class models a numeric item. It consists of a value of type T,
+   * \brief This class models a numeric item. It consists of a value of type T,
    * a delta value of type T and a formatter to format T's into strings.
-   * @details The default behaviour of this item when it is edited is as follows: an input of
+   * \details The default behaviour of this item when it is edited is as follows: an input of
    * sgl::Input::up/right increases the item's value by it's delta value, i.e. value += delta. An
    * input equal to sgl::Input::down/left decreases the item's value by it's delta value, i.e. value
    * -= value.
-   * @tparam T value type
-   * @tparam TextSize display width
-   * @tparam CharT character type
+   * \tparam T value type
+   * \tparam TextSize display width
+   * \tparam CharT character type
    */
   template <size_t TextSize, typename CharT, typename T>
   class Numeric : public sgl::ItemBase<Numeric<TextSize, CharT, T>> {
@@ -33,54 +33,54 @@ namespace sgl {
     static constexpr size_t text_size = TextSize;
 
     /**
-     * @brief Construct a new Numeric with default formatter and default
+     * \brief Construct a new Numeric with default formatter and default
      * input handling. This constructor is constexpr if T is integral
-     * @param name name of item
-     * @param initial_value initial value
-     * @param delta delta value
+     * \param name name of item
+     * \param initial_value initial value
+     * \param delta delta value
      */
     constexpr Numeric(StringView name, T initial_value, T delta) noexcept;
 
     constexpr Numeric(StringView name, T initial_value, StringView initial_text, T delta) noexcept;
 
     /**
-     * @brief create a Numeric item in constexpr with a sgl::cx_arg.
-     * @details If you don't need a constexpr Numeric, use the overload with an ordinary T as
+     * \brief create a Numeric item in constexpr with a sgl::cx_arg.
+     * \details If you don't need a constexpr Numeric, use the overload with an ordinary T as
      * initial value. This is only needed for floating point numeric items.
      *
-     * @tparam CxSize cx_arg string size.
-     * @param name name of item
-     * @param initial_value initial value as cx_arg
-     * @param delta delta value
+     * \tparam CxSize cx_arg string size.
+     * \param name name of item
+     * \param initial_value initial value as cx_arg
+     * \param delta delta value
      */
     template <size_t CxSize>
     constexpr Numeric(StringView name, const cx_arg<T, CxSize>& initial_value, T delta) noexcept;
 
     /**
-     * @brief Construct a new Numeric with custom formatter, but default
+     * \brief Construct a new Numeric with custom formatter, but default
      * input handling.
      *
-     * @tparam Formatter formatter type, see formatter_check for more details.
-     * @param name name of item
-     * @param initial_value inital value
-     * @param delta delta value
-     * @param formatter formatter instance
+     * \tparam Formatter formatter type, see formatter_check for more details.
+     * \param name name of item
+     * \param initial_value inital value
+     * \param delta delta value
+     * \param formatter formatter instance
      */
     template <typename Formatter, enable_if_is_value_formatter<Formatter, item_type> = true>
     constexpr Numeric(StringView name, T initial_value, T delta, Formatter&& formatter) noexcept;
 
     /**
-     * @brief Construct a Numeric object with custom formatter and input
+     * \brief Construct a Numeric object with custom formatter and input
      * handler.
      *
-     * @tparam Formatter formatter type, see formatter_check for more details.
-     * @tparam InputHandler Input handler type, see input_handler_for_v
+     * \tparam Formatter formatter type, see formatter_check for more details.
+     * \tparam InputHandler Input handler type, see input_handler_for_v
      * for more details.
-     * @param name name of item
-     * @param initial_value initial value
-     * @param delta delta value
-     * @param formatter formatter instance
-     * @param handler handler instance
+     * \param name name of item
+     * \param initial_value initial value
+     * \param delta delta value
+     * \param formatter formatter instance
+     * \param handler handler instance
      */
     template <typename Formatter,
               typename InputHandler,
@@ -124,15 +124,14 @@ namespace sgl {
     static_string<CharT, TextSize> format_buffer_;           ///< format buffer
   };
 
-
   /**
-   * @brief
-   * @tparam TextSize
-   * @tparam CharT
-   * @tparam T
-   * @param name
-   * @param initial_value
-   * @param delta
+   * \brief
+   * \tparam TextSize
+   * \tparam CharT
+   * \tparam T
+   * \param name
+   * \param initial_value
+   * \param delta
    * @return Numeric<TextSize, CharT, T>
    * @{
    */
@@ -146,14 +145,14 @@ namespace sgl {
   /// @}
 
   /**
-   * @brief
-   * @tparam TextSize
-   * @tparam CharT
-   * @tparam T
-   * @param name
-   * @param initial_value
-   * @param initial_text
-   * @param delta
+   * \brief
+   * \tparam TextSize
+   * \tparam CharT
+   * \tparam T
+   * \param name
+   * \param initial_value
+   * \param initial_text
+   * \param delta
    * @return constexpr Numeric<TextSize, CharT, T>
    */
   template <size_t TextSize, typename CharT, typename T>
@@ -163,13 +162,13 @@ namespace sgl {
                                                      T                       delta) noexcept;
 
   /**
-   * @brief
-   * @tparam TextSize
-   * @tparam T
-   * @tparam CxSize
-   * @param name
-   * @param initial_value
-   * @param delta
+   * \brief
+   * \tparam TextSize
+   * \tparam T
+   * \tparam CxSize
+   * \param name
+   * \param initial_value
+   * \param delta
    * @return constexpr Numeric<TextSize, char, T>
    * @{
    */
@@ -184,15 +183,15 @@ namespace sgl {
   /// @}
 
   /**
-   * @brief
-   * @tparam TextSize
-   * @tparam CharT
-   * @tparam T
-   * @tparam Formatter
-   * @param name
-   * @param initial_value
-   * @param delta
-   * @param formatter
+   * \brief
+   * \tparam TextSize
+   * \tparam CharT
+   * \tparam T
+   * \tparam Formatter
+   * \param name
+   * \param initial_value
+   * \param delta
+   * \param formatter
    * @return Numeric<TextSize, CharT, T>
    */
   template <size_t TextSize,

@@ -10,28 +10,28 @@ namespace sgl {
     using StringView = typename Base::StringView;
 
     /**
-     * @brief Construct a page link with a name, text, and name of the page to
+     * \brief Construct a page link with a name, text, and name of the page to
      * link to
-     * @param name name of the link
-     * @param text text of the link
-     * @param page_to_link name of the page to link to
+     * \param name name of the link
+     * \param text text of the link
+     * \param page_to_link name of the page to link to
      */
     constexpr PageLink(StringView name, StringView text, StringView page_to_link) noexcept;
 
     /**
-     * @brief Construct a page link with name and text, and page to link to.
-     * @param name_and_text
-     * @param page_to_link
+     * \brief Construct a page link with name and text, and page to link to.
+     * \param name_and_text
+     * \param page_to_link
      */
     constexpr PageLink(StringView name_and_text, StringView page_to_link) noexcept;
 
     /**
-     * @brief static overload of item_type::set_menu. The Menu type cannot be a
+     * \brief static overload of item_type::set_menu. The Menu type cannot be a
      * part of the template parameters given to a page link on construction. As
      * such, the type and access to page changing functions can  made here.
      * Menu_t will call set_menu() on all items in it constructors.
-     * @tparam Menu menu type.
-     * @param menu pointer to menu instance.
+     * \tparam Menu menu type.
+     * \param menu pointer to menu instance.
      */
     template <typename Menu>
     constexpr void set_menu(Menu* menu) noexcept;
@@ -64,7 +64,7 @@ namespace sgl {
   template <typename CharT, size_t N1, size_t N2, size_t N3>
   PageLink(const CharT (&name)[N1], const CharT (&text)[N2], const CharT (&page_name)[N3])
       -> PageLink<N2, CharT>;
-      
+
   template <typename CharT, size_t N1, size_t N2>
   PageLink(const CharT (&name)[N1], const CharT (&page_name)[N2]) -> PageLink<N1, CharT>;
   /// @}

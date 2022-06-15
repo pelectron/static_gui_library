@@ -15,7 +15,7 @@ namespace sgl {
     using ClickHandler_t = Callable<sgl::error(item_type&)>;
 
     /**
-     * @brief create button with name and text
+     * \brief create button with name and text
      * @{
      */
     constexpr Button(StringView name_and_text) noexcept;
@@ -23,34 +23,34 @@ namespace sgl {
     /// @}
 
     /**
-     * @brief Construct a Button with name, text, and click handler.
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
-     * @tparam ClickHandler click handler type
+     * \brief Construct a Button with name, text, and click handler.
+     * \param name name of item
+     * \param text text of item
+     * \param click_handler click handler
+     * \tparam ClickHandler click handler type
      */
     template <typename ClickHandler,
               enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>> = true>
     constexpr Button(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
 
     /**
-     * @brief Construct a Button with name, text, and custom click and input
+     * \brief Construct a Button with name, text, and custom click and input
      * handler.
-     * @tparam ClickHandler click handler type
-     * @tparam InputHandler input handler type
-     * @param name name of item
-     * @param text text of item
-     * @param click_handler click handler
-     * @param input_handler input handler
+     * \tparam ClickHandler click handler type
+     * \tparam InputHandler input handler type
+     * \param name name of item
+     * \param text text of item
+     * \param click_handler click handler
+     * \param input_handler input handler
      */
     template <typename ClickHandler,
               typename InputHandler,
               enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>> = true,
               enable_if_is_input_handler<InputHandler, Button<TextSize, CharT>> = true>
     constexpr Button(StringView     name,
-           StringView     text,
-           ClickHandler&& click_handler,
-           InputHandler&& input_handler) noexcept;
+                     StringView     text,
+                     ClickHandler&& click_handler,
+                     InputHandler&& input_handler) noexcept;
   };
 
 } // namespace sgl

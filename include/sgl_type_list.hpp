@@ -72,9 +72,9 @@ namespace sgl {
   using push_front_t = typename push_front<T, List>::type;
 
   /**
-   * @brief pop the first type from the list and return the shortened list.
+   * \brief pop the first type from the list and return the shortened list.
    * @example pop_front<type_list<int,char>>::type == type_list<char>
-   * @tparam List list pop front of.
+   * \tparam List list pop front of.
    */
   template <typename List>
   struct pop_front;
@@ -93,10 +93,10 @@ namespace sgl {
   static_assert(is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>, "");
 
   /**
-   * @brief get N-th type in type_list List
+   * \brief get N-th type in type_list List
    *
-   * @tparam N index of type
-   * @tparam List
+   * \tparam N index of type
+   * \tparam List
    */
   template <size_t N, typename List>
   struct type_at;
@@ -134,10 +134,10 @@ namespace sgl {
   using last_t = type_at_t<list_size_v<List> - 1, List>;
 
   /**
-   * @brief add T to end of List
+   * \brief add T to end of List
    * @example push_back<double, type_list<int,char>>::type == type_list<int,
    * char, double>
-   * @tparam List list pop front of.
+   * \tparam List list pop front of.
    */
   template <typename T, typename List>
   struct push_back;
@@ -147,11 +147,11 @@ namespace sgl {
     using type = type_list<Ts..., T>;
   };
   /**
-   * @brief append T to List, like vector::push_back
+   * \brief append T to List, like vector::push_back
    * @example push_back_t<double, type_list<int,char>> ==
    * type_list<int,char,double>
-   * @tparam T
-   * @tparam List
+   * \tparam T
+   * \tparam List
    */
   template <typename T, typename List>
   using push_back_t = typename push_back<T, List>::type;
@@ -180,9 +180,9 @@ namespace sgl {
   };
 
   /**
-   * @brief pop last element of list and return the new list
+   * \brief pop last element of list and return the new list
    *
-   * @tparam List
+   * \tparam List
    */
   template <typename List>
   using pop_back_t = typename pop_back<List>::type;

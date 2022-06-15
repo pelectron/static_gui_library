@@ -3,7 +3,6 @@
 #include "sgl_limits.hpp"
 #include "sgl_type_traits.hpp"
 
-
 namespace sgl {
   /// type trait alias to get smallest type needed to store a value of N
   template <size_t N>

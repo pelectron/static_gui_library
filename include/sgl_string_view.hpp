@@ -3,9 +3,9 @@
 #include <cstddef>
 namespace sgl {
   /**
-   * @brief A 'view' of CharT elements. See std::string_view
+   * \brief A 'view' of CharT elements. See std::string_view
    *
-   * @tparam CharT character type of the string_view
+   * \tparam CharT character type of the string_view
    */
   template <typename CharT>
   class string_view {

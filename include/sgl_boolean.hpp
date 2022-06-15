@@ -3,15 +3,15 @@
 #include "sgl_item_base.hpp"
 namespace sgl {
   /**
-   * @brief This class implements a basic Boolean item. When clicked, it will
+   * \brief This class implements a basic Boolean item. When clicked, it will
    * toggle it's value and set it's text accordingly.
-   * @details Boolean consists of the following data:
+   * \details Boolean consists of the following data:
    * - Boolean value: the value of this item
    * - 'true' string: the text to show when value == true.
    * - 'false' string: the text to show when value == false.
    *
-   * @tparam TextSize number of characters per line in the menu
-   * @tparam CharT character type of the item
+   * \tparam TextSize number of characters per line in the menu
+   * \tparam CharT character type of the item
    */
   template <size_t TextSize, typename CharT>
   class Boolean : public sgl::ItemBase<Boolean<TextSize, CharT>> {
@@ -22,20 +22,20 @@ namespace sgl {
     using StringView = typename Base::StringView;
 
     /**
-     * @brief Construct a Boolean item, which toggles its text between "TRUE"
+     * \brief Construct a Boolean item, which toggles its text between "TRUE"
      * and "FALSE" when clicked.
      *
-     * @param name name of the Boolean item
-     * @param initial_value initial value of the item
+     * \param name name of the Boolean item
+     * \param initial_value initial value of the item
      */
     constexpr Boolean(StringView name, bool initial_value) noexcept;
 
     /**
-     * @brief Construct a Boolean item with custom true and false strings.
-     * @param name name of item
-     * @param value inital value of item
-     * @param true_text text to set when value is true
-     * @param false_text text to set when value is false
+     * \brief Construct a Boolean item with custom true and false strings.
+     * \param name name of item
+     * \param value inital value of item
+     * \param true_text text to set when value is true
+     * \param false_text text to set when value is false
      */
     constexpr Boolean(StringView name,
                       bool       value,
@@ -63,7 +63,7 @@ namespace sgl {
 
   template <typename CharT, size_t N>
   Boolean(const CharT (&name)[N], bool value) -> Boolean<5, CharT>;
-  
+
   template <typename CharT, size_t N, size_t NTrue, size_t NFalse>
   Boolean(const CharT (&name)[N],
           const CharT (&true_string)[NTrue],

@@ -1,8 +1,8 @@
 #ifndef SGL_MENU_IMPL_HPP
 #define SGL_MENU_IMPL_HPP
 #include "../sgl_menu.hpp"
-namespace sgl{
-      template <typename... Pages>
+namespace sgl {
+  template <typename... Pages>
   constexpr Menu<Pages...>::Menu(Pages&&... pages) noexcept(
       (is_nothrow_move_constructible_v<Pages> && ...))
       : pages_(move(pages)...) {
@@ -143,8 +143,9 @@ namespace sgl{
       Menu<Pages...>::set_active_page_impl(sgl::string_view<CharT> page_name) noexcept {
     if constexpr (I == sizeof...(Pages)) {
       return sgl::error::page_not_found;
-    } else if constexpr (!sgl::is_convertible_v<typename decay_t<decltype(sgl::get<I>(pages_))>::StringView,
-                                                sgl::string_view<CharT>>) {
+    } else if constexpr (!sgl::is_convertible_v<
+                             typename decay_t<decltype(sgl::get<I>(pages_))>::StringView,
+                             sgl::string_view<CharT>>) {
       static_assert(sgl::is_convertible_v<typename decltype(sgl::get<I>(pages_))::StringView,
                                           sgl::string_view<CharT>>,
                     "page_name's type is not compatible with the item's string_view type");
@@ -225,13 +226,13 @@ namespace sgl{
     return Menu<decay_t<Pages>...>(forward<Pages>(pages)...);
   }
 
-  template <typename InputHandler,
-            typename... Pages,
-            sgl::enable_if_t<
-                sgl::is_input_handler_for_v<InputHandler, Menu<decay_t<Pages>...>>> = true,
-            sgl::enable_if_t<(sgl::is_page_v<Pages> && ...), bool> = true>
+  template <
+      typename InputHandler,
+      typename... Pages,
+      sgl::enable_if_t<sgl::is_input_handler_for_v<InputHandler, Menu<decay_t<Pages>...>>> = true,
+      sgl::enable_if_t<(sgl::is_page_v<Pages> && ...), bool> = true>
   constexpr Menu<decay_t<Pages>...> make_menu(InputHandler&& handler, Pages&&... pages) {
     return Menu<decay_t<Pages>...>(forward<InputHandler>(handler), forward<Pages>(pages)...);
   }
-}
+} // namespace sgl
 #endif

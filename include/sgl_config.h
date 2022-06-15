@@ -30,10 +30,10 @@
   #define SGL_INSTANTIATE 0
 #endif
 #ifndef SGL_CHAR_TYPE
-#define SGL_CHAR_TYPE char
+  #define SGL_CHAR_TYPE char
 #endif
 #ifndef SGL_LINE_WIDTH
-#define SGL_LINE_WIDTH 40
+  #define SGL_LINE_WIDTH 40
 #endif
 #if SGL_INSTANTIATE && !defined(SGL_CHAR_TYPE) && !defined(SGL_LINE_WIDTH)
   #error SGL_CHAR_TYPE and SGL_LINE_WIDTH must be defined if SGL_INSTANTIATE is set to 1.
