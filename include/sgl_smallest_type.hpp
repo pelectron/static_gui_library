@@ -1,7 +1,7 @@
 #ifndef SGL_SMALLEST_TYPE_HPP
 #define SGL_SMALLEST_TYPE_HPP
 #include "sgl_limits.hpp"
-#include "sgl_traits.hpp"
+#include "sgl_type_traits.hpp"
 
 
 namespace sgl {

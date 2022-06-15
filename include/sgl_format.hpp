@@ -3,7 +3,7 @@
 #include "sgl_config.h"
 #include "sgl_error.hpp"
 #include "sgl_static_string.hpp"
-#include "sgl_traits.hpp"
+#include "sgl_type_traits.hpp"
 #include "sgl_limits.hpp"
 #include <cstdint>
 

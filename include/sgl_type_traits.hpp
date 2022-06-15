@@ -587,6 +587,32 @@ namespace sgl {
   template <template <typename> typename Pred, typename... Args>
   using constraint_for_some_t = typename constraint_for_some<Pred, Args...>::type;
 
+  template <class T, typename = void>
+  struct is_destructible : false_type {};
+
+  template <typename T>
+  struct is_destructible<T&, void> : true_type {};
+
+  template <typename T>
+  struct is_destructible<T, enable_if_t<is_function_v<T>>> : false_type {};
+
+  template <typename T>
+  struct is_destructible<T[], void> : false_type {};
+
+  template <typename T>
+  struct is_destructible<T, void_t<decltype(declval<remove_extent_t<T>&>().~remove_extent_t<T>())>>
+      : true_type {};
+
+  template <typename T>
+  static constexpr bool is_destructible_v = is_destructible<T>::value;
+
+  template <typename T>
+  struct is_trivially_destructible {
+    static constexpr bool value = is_destructible_v<T> and is_destructible_v<remove_extent_t<T>>;
+  };
+  
+  template <typename T>
+  static constexpr bool is_trivially_destructible_v = is_trivially_destructible<T>::value;
   /// @endcond
 } // namespace sgl
 #endif

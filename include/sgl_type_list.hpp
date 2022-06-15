@@ -1,6 +1,6 @@
 #ifndef CLIP_TYPE_LIST_HPP
 #define CLIP_TYPE_LIST_HPP
-#include "sgl_traits.hpp"
+#include "sgl_type_traits.hpp"
 namespace sgl {
   ///@cond
   template <typename... Ts>

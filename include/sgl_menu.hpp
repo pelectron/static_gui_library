@@ -6,7 +6,7 @@
 #include "sgl_input.hpp"
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
-#include "sgl_traits.hpp"
+#include "sgl_type_traits.hpp"
 #include "sgl_tuple.hpp"
 
 namespace sgl {

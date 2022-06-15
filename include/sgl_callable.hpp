@@ -1,6 +1,7 @@
 #ifndef CALLABLE2_HPP
 #define CALLABLE2_HPP
-#include "sgl_traits.hpp"
+#include "sgl_type_traits.hpp"
+
 #include <new>
 
 namespace sgl {
@@ -23,7 +24,7 @@ namespace sgl {
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See function, google search for delegates, etc. if the
    * concept is not clear.
-   * @warning mutable lambdas have a quirk because they are mutable. When
+   * @warning mutable lambdas have a issues because they are mutable. When
    * invoking a Callable storing a mutable lambda, there is undefined behaviour
    * if the Callable's type is const! Below is a quick code example of what is
    * ok and what is not.
@@ -52,16 +53,15 @@ namespace sgl {
   public:
     /// Default constructor
     constexpr Callable() noexcept = default;
-    constexpr Callable(Callable&&) noexcept = default;
-    constexpr Callable(const Callable&) noexcept = default;
+    constexpr Callable(Callable&& other) noexcept : invoke_(other.invoke_), buffer_(other.buffer_) {
+      other.reset();
+    }
+    constexpr Callable(const Callable& other) noexcept
+        : invoke_(other.invoke_), buffer_(other.buffer_) {}
 
     /// Construct callable from free function pointer
     constexpr Callable(Ret (*f)(Args...) noexcept) noexcept
         : invoke_(&free_function_invoke), buffer_{f} {}
-
-    /// Construct callable from free function reference
-    constexpr Callable(Ret (&f)(Args...) noexcept) noexcept
-        : invoke_(&free_function_invoke), buffer_{&f} {}
 
     /**
      * @brief Construct a new callable from object and member function
@@ -89,7 +89,9 @@ namespace sgl {
      * @tparam F function object type
      * @param f function object instance
      */
-    template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
+    template <typename F,
+              enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F> and
+                          !is_same_v<Callable<Ret(Args...)>, decay_t<F>>>* = nullptr>
     Callable(F&& f) noexcept {
       bind(forward<F>(f));
     }
@@ -109,8 +111,8 @@ namespace sgl {
         invoke_ = f.invoke_;
       } else {
         this->bind(forward<F>(f));
-        return *this;
       }
+      return *this;
     }
 
     /// invoke delegate
@@ -159,19 +161,27 @@ namespace sgl {
      * @tparam F invocable type
      * @param f invocable instance
      */
-    template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
+    template <typename F>
     void bind(F&& f) noexcept {
-      static_assert(is_nothrow_invocable_r_v<Ret, F, Args...>, "");
-      static_assert(sizeof(decay_t<F>) <= sizeof(buffer_), "");
-      // static_assert(is_trivially_destructible_v<decay_t<F>>, "");
-      static_assert(is_trivially_move_constructible_v<decay_t<F>>, "");
-      static_assert(is_trivially_copy_constructible_v<decay_t<F>>, "");
-      if constexpr (is_const_invocable_v<Ret, remove_reference_t<F>, Args...>) {
-        new (buffer_.buffer) decay_t<F>(forward<F>(f));
-        invoke_ = &inline_invoke<decay_t<F>>;
+      if constexpr (is_constructible_v<Ret (*)(Args...) noexcept, F>) {
+        using type = Ret (*)(Args...) noexcept;
+        bind(type{f});
       } else {
-        new (buffer_.buffer) decay_t<F>(forward<F>(f));
-        invoke_ = &const_inline_invoke<decay_t<F>>;
+        static_assert(is_nothrow_invocable_r_v<Ret, F, Args...>, "f must be noexcept invocable.");
+        static_assert(sizeof(decay_t<F>) <= sizeof(buffer_),
+                      "sizeof(f) must be smaller than the buffer size.");
+        static_assert(is_trivially_destructible_v<decay_t<F>>, "F must be trivially destructible.");
+        static_assert(is_trivially_move_constructible_v<decay_t<F>>,
+                      "F must be trivially move constructible.");
+        static_assert(is_trivially_copy_constructible_v<decay_t<F>>,
+                      "F must be trivially copy constructible.");
+        if constexpr (is_const_invocable_v<Ret, remove_reference_t<F>, Args...>) {
+          new (buffer_.buffer) decay_t<F>(forward<F>(f));
+          invoke_ = &inline_invoke<decay_t<F>>;
+        } else {
+          new (buffer_.buffer) decay_t<F>(forward<F>(f));
+          invoke_ = &const_inline_invoke<decay_t<F>>;
+        }
       }
     }
 
@@ -223,7 +233,7 @@ namespace sgl {
 
     // data members
     Ret (*invoke_)(const Storage*, Args...) noexcept {&null_invoke};
-    Storage buffer_;
+    Storage buffer_{nullptr};
   };
 } // namespace sgl
 #endif
