@@ -26,7 +26,7 @@ if instantiate
     defines += ['-DSGL_CHAR_TYPE=@0@'.format(char_type), '-DSGL_LINE_WIDTH=@0@'.format(line_width)]
 endif
 
-add_project_arguments('-ferror-limit=1',language:'cpp')
+add_project_arguments('-ferror-limit=2',language:'cpp')
 # executable('menu_ex','menu_example.cpp')
 # executable('menu_test','menu_tester.cpp')
 # executable('sgl_test','sgl_test.cpp')

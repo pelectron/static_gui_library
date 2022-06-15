@@ -1,11 +1,15 @@
-#include "../include/sgl.hpp"
 #include "../include/enum_map.hpp"
+//#include "../include/sgl.hpp"
+
 using namespace sgl;
 using namespace sgl::string_view_literals;
 enum class Setting { opt1, opt2, opt3 };
 enum class OtherSetting { Up, Down, Left, Right };
 int main() {
-  
+  auto elem = consume_map({Pair{OtherSetting::Up, "Up"_sv},
+                                         Pair{OtherSetting::Down, "Down"_sv},
+                                         Pair{OtherSetting::Left, "Left"_sv},
+                                         Pair{OtherSetting::Right, "Right"_sv}});
   // auto menu = Menu(make_page("page1",
   //                            "Page 1",
   //                            Boolean("bool 1", true),
