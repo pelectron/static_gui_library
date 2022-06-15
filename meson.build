@@ -42,3 +42,7 @@ static_gui_dep = declare_dependency(include_directories: include_directories('in
 
 # custom_target('m_test',depend_files:['menu_tester.cpp'], command:['clang++', '-O3','-std=c++17','-fno-exceptions','-fno-rtti','-o', meson.current_build_dir() + '/menu_tester.S', '-S', meson.current_source_dir() + '/menu_tester.cpp'], output:['menu_tester.S'])
 # custom_target('m_ex',depend_files:['menu_example.cpp'], command:['clang++','-Os','-std=c++17','-fno-exceptions','-fno-rtti','-o', meson.current_build_dir() + '/menu_example.S', '-S', meson.current_source_dir() + '/menu_example.cpp'], output:['menu_example.S'])
+if get_option('test').enabled()
+  catch_dep = dependency('catch2')
+  subdir('tests')
+endif

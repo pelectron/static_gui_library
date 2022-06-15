@@ -1,1 +1,3 @@
 docs/**
+subprojects/Catch2-2.13.8/**
+subprojects/packagecache/**
