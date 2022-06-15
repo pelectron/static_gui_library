@@ -1,6 +1,6 @@
 #ifndef SGL_BASIC_NUMERIC_HPP
 #define SGL_BASIC_NUMERIC_HPP
-#include "item_traits.hpp"
+#include "sgl_item_concepts.hpp"
 #include "sgl_cx_arg.hpp"
 #include "sgl_format.hpp"
 #include "sgl_item_base.hpp"

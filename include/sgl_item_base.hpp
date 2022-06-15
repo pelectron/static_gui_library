@@ -1,6 +1,6 @@
 #ifndef SGL_BASIC_ITEM_HPP
 #define SGL_BASIC_ITEM_HPP
-#include "sgl_item_base_detail.hpp"
+#include "sgl_item_traits.hpp"
 #include "sgl_callable.hpp"
 #include "sgl_static_string.hpp"
 

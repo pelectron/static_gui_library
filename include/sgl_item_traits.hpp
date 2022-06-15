@@ -1,6 +1,6 @@
 #ifndef SGL_ITEM_BASE_DETAIL_HPP
 #define SGL_ITEM_BASE_DETAIL_HPP
-#include "item_traits.hpp"
+#include "sgl_item_concepts.hpp"
 #include "item_fwd.hpp"
 namespace sgl{
   template <typename T, typename = void>
@@ -48,8 +48,10 @@ namespace sgl{
   template <typename T>
   static constexpr bool get_clickable_v = get_clickable<T, has_clickable_v<T>>::value;
   
+  
   template <typename Item>
   struct traits;
+
   template <size_t TextSize, typename CharT>
   struct traits<Button<TextSize, CharT>> {
     using item_type = Button<TextSize, CharT>;

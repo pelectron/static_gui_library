@@ -1,6 +1,6 @@
 #ifndef SGL_MENU_HPP
 #define SGL_MENU_HPP
-#include "item_traits.hpp"
+#include "sgl_item_concepts.hpp"
 #include "sgl_callable.hpp"
 #include "sgl_error.hpp"
 #include "sgl_input.hpp"
