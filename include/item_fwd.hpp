@@ -1,7 +1,7 @@
 #ifndef SGL_ITEM_FWD_HPP
 #define SGL_ITEM_FWD_HPP
 namespace sgl {
-  template <typename Traits>
+  template <typename Impl, typename Traits>
   class ItemBase;
   template <size_t TextSize, typename CharT>
   class Button;

@@ -3,10 +3,10 @@
 #include "sgl_pass_through_button.hpp"
 namespace sgl {
   template <size_t TextSize, typename CharT>
-  class PageLink : public sgl::PassThroughButton<traits<PageLink<TextSize, CharT>>> {
+  class PageLink : public sgl::PassThroughButton<PageLink<TextSize, CharT>> {
   public:
     static constexpr size_t text_size = TextSize;
-    using Base = sgl::PassThroughButton<traits<PageLink<TextSize, CharT>>>;
+    using Base = sgl::PassThroughButton<PageLink<TextSize, CharT>>;
     using StringView = typename Base::StringView;
 
     /**

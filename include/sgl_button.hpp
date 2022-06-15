@@ -4,10 +4,10 @@
 namespace sgl {
 
   template <size_t TextSize, typename CharT>
-  class Button : public sgl::PassThroughButton<traits<Button<TextSize, CharT>>> {
+  class Button : public sgl::PassThroughButton<Button<TextSize, CharT>> {
   public:
     using item_type = Button<TextSize, CharT>;
-    using Base = sgl::PassThroughButton<traits<Button<TextSize, CharT>>>;
+    using Base = sgl::PassThroughButton<item_type>;
     using char_type = CharT;
     static constexpr size_t text_size = TextSize;
     using StringView = typename Base::StringView;

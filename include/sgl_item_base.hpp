@@ -1,8 +1,9 @@
 #ifndef SGL_BASIC_ITEM_HPP
 #define SGL_BASIC_ITEM_HPP
-#include "sgl_item_traits.hpp"
 #include "sgl_callable.hpp"
+#include "sgl_item_traits.hpp"
 #include "sgl_static_string.hpp"
+
 
 namespace sgl {
 
@@ -10,7 +11,7 @@ namespace sgl {
    * @brief
    * @tparam Traits
    */
-  template <typename Traits>
+  template <typename ItemImpl, typename Traits = sgl::ItemTraits<ItemImpl>>
   class ItemBase {
   public:
     static_assert(sgl::has_item_type_typedef_v<Traits>,
@@ -21,10 +22,10 @@ namespace sgl {
                   "Traits type needs a static constexpr member of type size_t called 'text_size'.");
 
     using traits_type = Traits;
-    using item_type = typename Traits::item_type;
-    using char_type = typename Traits::char_type;
-    static constexpr size_t text_size = Traits::text_size;
-    static constexpr bool   clickable = sgl::get_clickable_v<Traits>;
+    using item_type = ItemImpl;
+    using char_type = typename traits_type::char_type;
+    static constexpr size_t text_size = traits_type::text_size;
+    static constexpr bool   clickable = sgl::get_clickable_v<traits_type>;
     using StringView = sgl::string_view<char_type>;
     using String = sgl::static_string<char_type, text_size>;
 
@@ -147,78 +148,83 @@ namespace sgl {
     String         text_{};                         ///< text field
   };
 
-  template <typename Traits>
-  constexpr ItemBase<Traits>::ItemBase(StringView name, StringView text) noexcept
+  template <typename ItemImpl, typename Traits>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name, StringView text) noexcept
       : name_(name), text_(text) {}
 
-  template <typename Traits>
-  constexpr ItemBase<Traits>::ItemBase(StringView name_and_text) noexcept
+  template <typename ItemImpl, typename Traits>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text) noexcept
       : name_(name_and_text), text_(name_and_text) {}
 
-  template <typename Traits>
-  constexpr ItemBase<Traits>::ItemBase(StringView name_and_text,
-                                       sgl::error (*handler)(item_type&,
-                                                             sgl::Input) noexcept) noexcept
+  template <typename ItemImpl, typename Traits>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(
+      StringView name_and_text,
+      sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept
       : handler_(handler), name_(name_and_text), text_(name_and_text) {}
 
-  template <typename Traits>
-  constexpr ItemBase<Traits>::ItemBase(StringView name,
-                                       StringView text,
-                                       sgl::error (*handler)(item_type&,
-                                                             sgl::Input) noexcept) noexcept
+  template <typename ItemImpl, typename Traits>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(
+      StringView name,
+      StringView text,
+      sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept
       : handler_(handler), name_(name), text_(text) {}
 
-  template <typename Traits>
+  template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
-  ItemBase<Traits>::ItemBase(StringView name_and_text, InputHandler&& handler) noexcept
+            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text, InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
 
-  template <typename Traits>
+  template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
-  ItemBase<Traits>::ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept
+            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
+                                       StringView     text,
+                                       InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name), text_(text) {}
 
-  template <typename Traits>
+  template <typename ItemImpl, typename Traits>
   template <typename Menu>
-  constexpr void ItemBase<Traits>::set_menu(Menu*) noexcept {}
+  constexpr void ItemBase<ItemImpl, Traits>::set_menu(Menu*) noexcept {}
 
-  template <typename Traits>
-  constexpr sgl::error ItemBase<Traits>::handle_input(sgl::Input input) noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr sgl::error ItemBase<ItemImpl, Traits>::handle_input(sgl::Input input) noexcept {
     return handler_(*static_cast<item_type*>(this), input);
   }
 
-  template <typename Traits>
-  constexpr sgl::error ItemBase<Traits>::set_text(StringView new_text) noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr sgl::error ItemBase<ItemImpl, Traits>::set_text(StringView new_text) noexcept {
     text_ = new_text;
     return sgl::error::no_error;
   }
 
-  template <typename Traits>
-  constexpr const typename ItemBase<Traits>::String& ItemBase<Traits>::get_text() const noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr const typename ItemBase<ItemImpl, Traits>::String&
+      ItemBase<ItemImpl, Traits>::get_text() const noexcept {
     return text_;
   }
 
-  template <typename Traits>
-  constexpr typename ItemBase<Traits>::String& ItemBase<Traits>::get_text() noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr typename ItemBase<ItemImpl, Traits>::String&
+      ItemBase<ItemImpl, Traits>::get_text() noexcept {
     return text_;
   }
 
-  template <typename Traits>
-  constexpr typename ItemBase<Traits>::StringView ItemBase<Traits>::name() const noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr typename ItemBase<ItemImpl, Traits>::StringView
+      ItemBase<ItemImpl, Traits>::name() const noexcept {
     return name_;
   }
 
-  template <typename Traits>
-  constexpr void ItemBase<Traits>::clear_text() noexcept {
+  template <typename ItemImpl, typename Traits>
+  constexpr void ItemBase<ItemImpl, Traits>::clear_text() noexcept {
     text_.reset();
   }
 
-  template <typename Traits>
+  template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
-  void ItemBase<Traits>::set_input_handler(InputHandler&& handler) noexcept {
+            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  void ItemBase<ItemImpl, Traits>::set_input_handler(InputHandler&& handler) noexcept {
     static_assert(is_invocable_r_v<sgl::error, InputHandler, item_type&, sgl::Input>,
                   "the provided handler is not a valid input handler.");
     if constexpr (is_same_v<InputHandler, InputHandler_t>) {
@@ -228,8 +234,9 @@ namespace sgl {
     }
   }
 
-  template <typename Traits>
-  sgl::error ItemBase<Traits>::default_handle_input(item_type& item, sgl::Input) noexcept {
+  template <typename ItemImpl, typename Traits>
+  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(item_type& item,
+                                                              sgl::Input) noexcept {
     if constexpr (clickable) {
       sgl::error ec = item.click();
       switch (ec) {

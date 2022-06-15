@@ -23,10 +23,10 @@ namespace sgl {
    * @tparam CharT character type of the item
    */
   template <size_t TextSize, typename CharT>
-  class Boolean : public sgl::ItemBase<traits<Boolean<TextSize, CharT>>> {
+  class Boolean : public sgl::ItemBase<Boolean<TextSize, CharT>> {
   public:
     using item_type = Boolean<TextSize, CharT>;
-    using Base = sgl::ItemBase<traits<Boolean<TextSize, CharT>>>;
+    using Base = sgl::ItemBase<Boolean<TextSize, CharT>>;
 
     using StringView = typename Base::StringView;
 

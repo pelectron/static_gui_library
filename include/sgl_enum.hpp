@@ -32,11 +32,11 @@ namespace sgl {
    * @tparam CharT character type of the enum_item
    */
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  class Enum : public sgl::ItemBase<traits<Enum<T, NumEnumerators, TextSize, CharT>>> {
+  class Enum : public sgl::ItemBase<Enum<T, NumEnumerators, TextSize, CharT>> {
   public:
     using value_type = T;
     using item_type = sgl::Enum<T, NumEnumerators, TextSize, CharT>;
-    using Base = sgl::ItemBase<traits<Enum<T, NumEnumerators, TextSize, CharT>>>;
+    using Base = sgl::ItemBase<item_type>;
     using StringView = typename Base::StringView;
     using Pair = sgl::Pair<T, CharT>;
     using Map_t = Pair[NumEnumerators];
