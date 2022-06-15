@@ -1,19 +1,54 @@
 #ifndef SGL_NUMERIC_IMPL_HPP
 #define SGL_NUMERIC_IMPL_HPP
-#include "../sgl_numeric.hpp"
 #include "../sgl_format.hpp"
+#include "../sgl_numeric.hpp"
 
-namespace sgl{
-  template <size_t TextSize, typename CharT, typename T>
-  template <typename T_, enable_if_t<is_floating_point_v<T_>, bool>>
-  Numeric<TextSize, CharT, T>::Numeric(StringView name, T initial_value, T delta) noexcept
-      : Base(name, &default_handle_input), format_(&default_format), value_(initial_value),
-        delta_(delta) {
-    set_value(initial_value);
-  }
+namespace sgl {
+  /// deduction guides for Numeric
+  /// @{
+  template <typename CharT, typename T>
+  Numeric(sgl::string_view<CharT> name, T initial_value, T delta)
+      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+
+  template <typename CharT, typename T, size_t N>
+  Numeric(const CharT (&name)[N], T initial_value, T delta)
+      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+
+  template <size_t TextSize, typename CharT, typename T, size_t N>
+  Numeric(const CharT (&name)[N], T initial_value, const CharT (&initial_text)[TextSize], T delta)
+      -> Numeric<TextSize, CharT, decay_t<T>>;
+
+  template <typename CharT, typename T, size_t CxSize>
+  Numeric(sgl::string_view<CharT> name, const cx_arg<T, CxSize>& initial_value, T delta)
+      -> Numeric<CxSize, CharT, decay_t<T>>;
+
+  template <typename CharT, typename T, size_t CxSize, size_t N>
+  Numeric(const CharT (&name)[N], const cx_arg<T, CxSize>& initial_value, T delta)
+      -> Numeric<CxSize, CharT, decay_t<T>>;
+
+  template <
+      typename CharT,
+      typename T,
+      typename Formatter,
+      enable_if_is_value_formatter<Formatter,
+                                   Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true>
+  Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&& formatter)
+      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+
+  template <
+      typename CharT,
+      typename T,
+      typename Formatter,
+      typename InputHandler,
+      enable_if_is_value_formatter<Formatter,
+                                   Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true,
+      enable_if_is_input_handler<InputHandler,
+                                 Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true>
+  Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&&, InputHandler&&)
+      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+  /// @}
 
   template <size_t TextSize, typename CharT, typename T>
-  template <typename T_, enable_if_t<is_integral_v<T_>, bool>>
   constexpr Numeric<TextSize, CharT, T>::Numeric(StringView name, T initial_value, T delta) noexcept
       : Base(name, &default_handle_input), format_(&default_format), value_(initial_value),
         delta_(delta) {
@@ -30,9 +65,7 @@ namespace sgl{
   }
 
   template <size_t TextSize, typename CharT, typename T>
-  template <size_t CxSize,
-            typename T_,
-            sgl::enable_if_t<sgl::is_same_v<CharT, char> and sgl::is_floating_point_v<T_>, bool>>
+  template <size_t CxSize>
   constexpr Numeric<TextSize, CharT, T>::Numeric(StringView               name,
                                                  const cx_arg<T, CxSize>& initial_value,
                                                  T                        delta) noexcept
@@ -44,10 +77,10 @@ namespace sgl{
   template <size_t TextSize, typename CharT, typename T>
   template <typename Formatter,
             enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>>
-  Numeric<TextSize, CharT, T>::Numeric(StringView  name,
-                                       T           initial_value,
-                                       T           delta,
-                                       Formatter&& formatter) noexcept
+  constexpr Numeric<TextSize, CharT, T>::Numeric(StringView  name,
+                                                 T           initial_value,
+                                                 T           delta,
+                                                 Formatter&& formatter) noexcept
       : Base(name, &default_handle_input), format_(sgl::forward<Formatter>(formatter)),
         value_(initial_value), delta_(delta) {
     set_value(initial_value);
@@ -58,11 +91,11 @@ namespace sgl{
             typename InputHandler,
             enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>,
             enable_if_is_input_handler<InputHandler, Numeric<TextSize, CharT, T>>>
-  Numeric<TextSize, CharT, T>::Numeric(StringView     name,
-                                       T              initial_value,
-                                       T              delta,
-                                       Formatter&&    formatter,
-                                       InputHandler&& handler) noexcept
+  constexpr Numeric<TextSize, CharT, T>::Numeric(StringView     name,
+                                                 T              initial_value,
+                                                 T              delta,
+                                                 Formatter&&    formatter,
+                                                 InputHandler&& handler) noexcept
       : Base(name, sgl::forward<InputHandler>(handler)),
         format_(sgl::forward<Formatter>(formatter)), value_(initial_value), delta_(delta) {
     set_value(initial_value);
@@ -139,5 +172,68 @@ namespace sgl{
     } else
       return sgl::format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
   }
-}
+
+  template <size_t TextSize, typename CharT, typename T>
+  Numeric<TextSize, CharT, T>
+      make_numeric(sgl::string_view<CharT> name, T initial_value, T delta) noexcept {
+    return Numeric<TextSize, CharT, T>(name, initial_value, delta);
+  }
+  template <size_t TextSize, typename CharT, typename T, size_t N>
+  Numeric<TextSize, CharT, T>
+      make_numeric(const CharT (&name)[N], T initial_value, T delta) noexcept {
+    return make_numeric<TextSize>(sgl::string_view<CharT>(name), initial_value, delta);
+  }
+  template <size_t TextSize, typename CharT, typename T>
+  constexpr Numeric<TextSize, CharT, T> make_numeric(sgl::string_view<CharT> name,
+                                                     T                       initial_value,
+                                                     sgl::string_view<CharT> initial_text,
+                                                     T                       delta) noexcept {
+    return Numeric<TextSize, CharT, T>(name, initial_value, initial_text, delta);
+  }
+
+  template <size_t TextSize, typename T, size_t CxSize>
+  constexpr Numeric<TextSize, char, T> make_numeric(sgl::string_view<char>   name,
+                                                    const cx_arg<T, CxSize>& initial_value,
+                                                    T                        delta) noexcept {
+    return Numeric<TextSize, char, T>(name, initial_value, delta);
+  }
+
+  template <size_t TextSize, typename T, size_t N, size_t CxSize>
+  constexpr Numeric<TextSize, char, T> make_numeric(const char (&name)[N],
+                                                    const cx_arg<T, CxSize>& initial_value,
+                                                    T                        delta) noexcept {
+    return make_numeric<TextSize>(sgl::string_view<char>(name), initial_value, delta);
+  }
+
+  template <size_t TextSize,
+            typename CharT,
+            typename T,
+            typename Formatter,
+            enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>>
+  constexpr Numeric<TextSize, CharT, T> make_numeric(sgl::string_view<CharT> name,
+                                                     T                       initial_value,
+                                                     T                       delta,
+                                                     Formatter&&             formatter) noexcept {
+    return Numeric<TextSize, CharT, T>(name, initial_value, delta, forward<Formatter>(formatter));
+  }
+
+  template <size_t TextSize,
+            typename CharT,
+            typename T,
+            typename Formatter,
+            typename InputHandler,
+            enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>,
+            enable_if_is_input_handler<InputHandler, Numeric<TextSize, CharT, T>>>
+  constexpr Numeric<TextSize, CharT, T> make_numeric(sgl::string_view<CharT> name,
+                                                     T                       initial_value,
+                                                     T                       delta,
+                                                     Formatter&&             formatter,
+                                                     InputHandler&&          handler) noexcept {
+    return Numeric<TextSize, CharT, T>(name,
+                                       initial_value,
+                                       delta,
+                                       forward<Formatter>(formatter),
+                                       forward<InputHandler>(handler));
+  }
+} // namespace sgl
 #endif

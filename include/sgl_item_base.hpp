@@ -47,31 +47,13 @@ namespace sgl {
 
     /**
      * @brief Construct an item with name, text and input handler.
-     * @param name name of the item
-     * @param text text of the item
-     * @param handler input handler
-     */
-    constexpr ItemBase(StringView name,
-                       StringView text,
-                       sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept;
-
-    /**
-     * @brief Construct an item with name, text and input handler.
      * @tparam InputHandler input handler type
      * @param name name of the item
      * @param text text of the item
      * @param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
-    ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept;
-
-    /**
-     * @brief Construct an item with name, text and input handler.
-     * @param name_and_text name and text of item
-     * @param handler input handler
-     */
-    constexpr ItemBase(StringView name_and_text,
-                       sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept;
+    constexpr ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept;
 
     /**
      * @brief Construct an item with name, text and input handler.
@@ -80,7 +62,7 @@ namespace sgl {
      * @param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
-    ItemBase(StringView name_and_text, InputHandler&& handler) noexcept;
+    constexpr ItemBase(StringView name_and_text, InputHandler&& handler) noexcept;
 
     /**
      * @brief Can be used to give access to the menu from an item. Menu_t will

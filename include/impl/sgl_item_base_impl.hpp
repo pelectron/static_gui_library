@@ -10,29 +10,18 @@ namespace sgl{
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text) noexcept
       : name_(name_and_text), text_(name_and_text) {}
 
-  template <typename ItemImpl, typename Traits>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(
-      StringView name_and_text,
-      sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept
-      : handler_(handler), name_(name_and_text), text_(name_and_text) {}
-
-  template <typename ItemImpl, typename Traits>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(
-      StringView name,
-      StringView text,
-      sgl::error (*handler)(item_type&, sgl::Input) noexcept) noexcept
-      : handler_(handler), name_(name), text_(text) {}
+ 
 
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
             enable_if_is_input_handler<InputHandler, ItemImpl>>
-  ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text, InputHandler&& handler) noexcept
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView name_and_text, InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
 
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
             enable_if_is_input_handler<InputHandler, ItemImpl>>
-  ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
                                        StringView     text,
                                        InputHandler&& handler) noexcept
       : handler_(forward<InputHandler>(handler)), name_(name), text_(text) {}

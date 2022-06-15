@@ -10,25 +10,11 @@ namespace sgl{
   constexpr Button<TextSize, CharT>::Button(StringView name, StringView text) noexcept
       : Base(name, text) {}
 
-  template <size_t TextSize, typename CharT>
-  constexpr Button<TextSize, CharT>::Button(
-      StringView name,
-      StringView text,
-      sgl::error (*click_handler)(item_type&) noexcept) noexcept
-      : Base(name, text, click_handler) {}
-
-  template <size_t TextSize, typename CharT>
-  constexpr Button<TextSize, CharT>::Button(
-      StringView name,
-      StringView text,
-      sgl::error (*click_handler)(item_type&) noexcept,
-      sgl::error (*input_handler)(item_type&, sgl::Input) noexcept) noexcept
-      : Base(name, text, click_handler, input_handler) {}
 
   template <size_t TextSize, typename CharT>
   template <typename ClickHandler,
             sgl::enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>>
-  Button<TextSize, CharT>::Button(StringView     name,
+  constexpr Button<TextSize, CharT>::Button(StringView     name,
                                   StringView     text,
                                   ClickHandler&& click_handler) noexcept
       : Base(name, text, forward<ClickHandler>(click_handler)) {}
@@ -38,7 +24,7 @@ namespace sgl{
             typename InputHandler,
             enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>,
             enable_if_is_input_handler<InputHandler, Button<TextSize, CharT>>>
-  Button<TextSize, CharT>::Button(StringView     name,
+  constexpr Button<TextSize, CharT>::Button(StringView     name,
                                   StringView     text,
                                   ClickHandler&& click_handler,
                                   InputHandler&& input_handler) noexcept

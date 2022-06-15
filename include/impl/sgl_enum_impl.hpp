@@ -12,25 +12,12 @@ namespace sgl{
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   template <typename InputHandler,
             enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>>>
-  Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(StringView name,
                                                  const Pair (&map)[NumEnumerators],
                                                  InputHandler&& handler,
                                                  size_t         start_index) noexcept
       : Base(name, map[start_index % NumEnumerators].string, forward<InputHandler>(handler)),
         map_{}, index_(start_index % NumEnumerators) {
-    for (size_t i = 0; i < NumEnumerators; ++i) {
-      map_[i] = map[i];
-    }
-  }
-
-  template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(
-      StringView name,
-      const Pair (&map)[NumEnumerators],
-      sgl::error (*handler)(item_type&, sgl::Input) noexcept,
-      size_t start_index) noexcept
-      : Base(name, map[start_index % NumEnumerators].string, handler),
-        index_(start_index % NumEnumerators) {
     for (size_t i = 0; i < NumEnumerators; ++i) {
       map_[i] = map[i];
     }
@@ -102,5 +89,57 @@ namespace sgl{
     enum_item.set_text(enum_item.current_string());
     return error::no_error;
   }
+
+  
+  template <size_t TextSize, typename CharT, typename T, size_t NumEnumerators>
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>
+      make_enum(sgl::string_view<CharT> name,
+                const sgl::Pair<T, CharT> (&map)[NumEnumerators],
+                size_t start_index) {
+    return Enum<T, NumEnumerators, TextSize, CharT>{name, map, start_index};
+  }
+
+  template <size_t TextSize, typename CharT, typename T, size_t NumEnumerators, size_t N>
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>
+      make_enum(const CharT (&name)[N],
+                const sgl::Pair<T, CharT> (&map)[NumEnumerators],
+                size_t start_index) {
+    return make_enum(sgl::string_view(name), map, start_index);
+  }
+
+  template <
+      size_t TextSize,
+      typename CharT,
+      typename T,
+      size_t NumEnumerators,
+      typename InputHandler,
+      enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>> = true>
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>
+      make_enum(sgl::string_view<CharT> name,
+                const sgl::Pair<T, CharT> (&map)[NumEnumerators],
+                InputHandler&& handler,
+                size_t         start_index) {
+    return Enum<T, NumEnumerators, TextSize, CharT>{name,
+                                                    map,
+                                                    forward<InputHandler>(handler),
+                                                    start_index};
+  }
+
+  template <
+      size_t TextSize,
+      typename CharT,
+      typename T,
+      size_t NumEnumerators,
+      size_t N,
+      typename InputHandler,
+      enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>> = true>
+  constexpr Enum<T, NumEnumerators, TextSize, CharT>
+      make_enum(const CharT (&name)[N],
+                const sgl::Pair<T, CharT> (&map)[NumEnumerators],
+                InputHandler&& handler,
+                size_t         start_index) {
+    return make_enum(sgl::string_view(name), map, forward<InputHandler>(handler), start_index);
+  }
+
 }
 #endif
