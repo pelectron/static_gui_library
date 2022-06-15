@@ -1,7 +1,3 @@
-#define SGL_INSTANTIATE 1
-#define SGL_CHAR_TYPE   char
-#define SGL_LINE_WIDTH  25
-#define SGL_USE_RYU     1
 #include "sgl.hpp"
 
 #include <iostream>

@@ -1,6 +1,6 @@
 #ifndef SGL_TUPLE_HPP
 #define SGL_TUPLE_HPP
-#include "sgl_tuple_impl.hpp"
+#include "impl/sgl_tuple_impl.hpp"
 
 namespace sgl {
   /**

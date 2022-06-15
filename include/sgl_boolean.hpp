@@ -2,15 +2,6 @@
 #define SGL_BOOLEAN_HPP
 #include "sgl_item_base.hpp"
 namespace sgl {
-  /// @cond
-  namespace impl {
-    template <typename CharT>
-    static constexpr CharT True[] = {'T', 'R', 'U', 'E', '\0'};
-    template <typename CharT>
-    static constexpr CharT False[] = {'F', 'A', 'L', 'S', 'E', '\0'};
-  }; // namespace impl
-  /// @endcond
-
   /**
    * @brief This class implements a basic Boolean item. When clicked, it will
    * toggle it's value and set it's text accordingly.
@@ -62,69 +53,16 @@ namespace sgl {
   private:
     static constexpr sgl::error default_handle_input(item_type& Boolean, sgl::Input) noexcept;
 
-    StringView true_string_{sgl::impl::True<CharT>};
-    StringView false_string_{sgl::impl::False<CharT>};
+    StringView true_string_{};
+    StringView false_string_{};
     bool       value_{false};
   };
 
   template <typename CharT>
   Boolean(string_view<CharT> name, bool value) -> Boolean<5, CharT>;
 
-  template <typename CharT>
-  Boolean(const CharT* name, bool value) -> Boolean<5, CharT>;
-
-  template <size_t TextSize, typename CharT>
-  constexpr Boolean<TextSize, CharT>::Boolean(StringView name, bool initial_value) noexcept
-      : Base(name,
-             initial_value ? StringView(sgl::impl::True<CharT>)
-                           : StringView(sgl::impl::False<CharT>),
-             &default_handle_input),
-        value_(initial_value) {}
-
-  template <size_t TextSize, typename CharT>
-  constexpr Boolean<TextSize, CharT>::Boolean(StringView name,
-                                              bool       value,
-                                              StringView true_text,
-                                              StringView false_text) noexcept
-      : Base(name, value ? true_text : false_text, &default_handle_input), true_string_(true_text),
-        false_string_(false_text), value_(value) {}
-
-  template <size_t TextSize, typename CharT>
-  constexpr bool Boolean<TextSize, CharT>::get_value() const noexcept {
-    return value_;
-  }
-
-  template <size_t TextSize, typename CharT>
-  constexpr sgl::error Boolean<TextSize, CharT>::set_value(bool value) noexcept {
-    value_ = value;
-    if (value)
-      this->set_text(true_string());
-    else
-      this->set_text(false_string());
-    return sgl::error::no_error;
-  }
-
-  template <size_t TextSize, typename CharT>
-  constexpr typename Boolean<TextSize, CharT>::StringView
-      Boolean<TextSize, CharT>::true_string() const noexcept {
-    return true_string_;
-  }
-
-  template <size_t TextSize, typename CharT>
-  constexpr typename Boolean<TextSize, CharT>::StringView
-      Boolean<TextSize, CharT>::false_string() const noexcept {
-    return false_string_;
-  }
-
-  template <size_t TextSize, typename CharT>
-  constexpr sgl::error Boolean<TextSize, CharT>::default_handle_input(item_type& Boolean,
-                                                                      sgl::Input) noexcept {
-    if (Boolean.get_value()) {
-      Boolean.set_value(false);
-    } else {
-      Boolean.set_value(true);
-    }
-    return sgl::error::no_error;
-  }
+  template <typename CharT, size_t N>
+  Boolean(const CharT (&name)[N], bool value) -> Boolean<5, CharT>;
 } // namespace sgl
+#include "impl/sgl_boolean_impl.hpp"
 #endif
