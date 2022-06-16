@@ -55,23 +55,23 @@ namespace sgl {
   /**
    * \brief This class maps values of type T to string_view<CharT>.
    * \details Internally, it just contains an sgl::array of Pair<E,sgl::String_view>charT>> and
-   * porvides a simple interface for it. To construct a EnumMap, either use the SGL_ENUM_MAP macro
+   * provides a simple interface for it. To construct a EnumMap, either use the SGL_ENUM_MAP macro
    * or do it like this:
    *
    * \code
-   *
-   * enum class myEnum{
-   *  val1,
-   *  val2,
-   *  // ...
-   * };
-   * static constexpr auto m = EnumMap(array{{Pair{myEnum::val1, "val1"}, {myEnum::val2,
-   * "val2"},...}});
-   *
-   * \endcode
+   *  enum class myEnum{
+   *   val1,
+   *   val2,
+   *   // ...
+   *  };
+   *  static constexpr auto m = EnumMap(array{{Pair{myEnum::val1, "val1"},
+   *                                               {myEnum::val2,"val2"},...}});
+   * 
+   *  \endcode
    *
    *  The curly braces and named types are necessary to deduce the enum type
-   * correctly. Alternitavely, use the SGL_ENUM_MAP macro like below:
+   * correctly, as braced initializer lists have no type. Alternatively, use the SGL_ENUM_MAP macro
+   * like below:
    *
    * \code
    *
@@ -85,97 +85,48 @@ namespace sgl {
    */
   template <typename E, size_t N, typename CharT>
   struct EnumMap {
-    constexpr EnumMap() = default;
-    constexpr EnumMap(const EnumMap& other) : data(other.data) {}
+    constexpr EnumMap(const EnumMap& other) noexcept;
 
-    constexpr EnumMap(EnumMap&& other) : data(move(other.data)) {}
+    constexpr EnumMap(EnumMap&& other) noexcept;
 
-    constexpr EnumMap(const array<Pair<E, sgl::string_view<CharT>>, N>& map) : data(map) {}
+    constexpr EnumMap(const array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept;
 
-    constexpr EnumMap(const array<Pair<E, const CharT*>, N>& map) {
-      for (size_t i = 0; i < N; ++i) {
-        data[i].first = map[i].first;
-        data[i].second = sgl::string_view<CharT>(map[i].second);
-      }
-    }
+    constexpr EnumMap(const array<Pair<E, const CharT*>, N>& map) noexcept;
 
-    constexpr E operator[](sgl::string_view<CharT> str) const {
-      for (const auto& elem : data) {
-        if (elem.second == str)
-          return elem.first;
-      }
-      return E{};
-    }
-
-    constexpr sgl::string_view<CharT> operator[](E value) const noexcept {
-      for (const auto& elem : data) {
-        if (elem.first == value)
-          return elem.second;
-      }
-      return sgl::string_view<CharT>{};
-    }
-    constexpr bool contains(E value) const {
-      for (const auto& elem : data) {
-        if (elem.first == value)
-          return true;
-      }
-      return false;
-    }
-    constexpr bool contains(sgl::string_view<CharT> string) const {
-      for (const auto& elem : data) {
-        if (elem.second == string)
-          return true;
-      }
-      return false;
-    }
-    constexpr size_t index_of(E value) {
-      size_t i{0};
-      for (const auto& elem : data) {
-        if (elem.first == value)
-          return i;
-        ++i;
-      }
-      return numeric_limits<size_t>::max();
-    }
-    constexpr size_t index_of(sgl::string_view<CharT> string) {
-      size_t i{0};
-      for (const auto& elem : data) {
-        if (elem.second == string)
-          return i;
-        ++i;
-      }
-      return numeric_limits<size_t>::max();
-    }
-    constexpr sgl::string_view<CharT> get_view(size_t i) const noexcept { return data[i].second; }
-    constexpr sgl::string_view<CharT> get_value(size_t i) const noexcept { return data[i].first; }
+    constexpr E                       operator[](sgl::string_view<CharT> str) const noexcept;
+    constexpr sgl::string_view<CharT> operator[](E value) const noexcept;
+    constexpr bool                    contains(E value) const noexcept;
+    constexpr bool                    contains(sgl::string_view<CharT> string) const noexcept;
+    constexpr size_t                  index_of(E value) const noexcept;
+    constexpr size_t                  index_of(sgl::string_view<CharT> string) const noexcept;
+    constexpr sgl::string_view<CharT> get_view(size_t i) const noexcept;
+    constexpr E                       get_value(size_t i) const noexcept;
 
   private:
     array<Pair<E, sgl::string_view<CharT>>, N> data{};
   };
 
-  template <typename E, size_t N, typename CharT>
-  constexpr auto Map(const array<Pair<E, sgl::string_view<CharT>>, N>& data) {
-    return EnumMap<E, N, CharT>(data);
-  }
+  /**
+   * \brief This macro can be used to construct an EnumMap declaratively.
+   * \details You can use this macro with at least one element, i.e a pair in curly braces. If your
+   * compiler does not support the GNU-extension of pasting a zero length variadic macro without
+   * printing a ',', use SGL_ENUM_MAP1 for defining ENumMaps with one element.
+   *
+   * \code
+   * enum class myEnum{
+   *  val1,
+   *  val2,
+   *  // ...
+   * };
+   * static constexpr auto m = SGL_ENUM_MAP({myEnum::val1, "val1"}, {myEnum::val2, "val2"}, ...);
+   *
+   * \endcode
+   * \note The curly braces must be place as above, else it will not work.
+   */
 
-/**
- * \brief This macro can be used to construct an EnumMap declaratively.
- * \details You can use this macro with at least one element, i.e a pair in curly braces. If your
- * compiler does not support the GNU-extension of pasting a zero length variadic macro without
- * printing a ',', use SGL_ENUM_MAP1 for defining ENumMaps with one element.
- *
- * \code
- * enum class myEnum{
- *  val1,
- *  val2,
- *  // ...
- * };
- * static constexpr auto m = SGL_ENUM_MAP({myEnum::val1, "val1"}, {myEnum::val2, "val2"}, ...);
- *
- * \endcode
- *
- */
-#define SGL_ENUM_MAP(element, ...) sgl::EnumMap(sgl::array{{sgl::Pair element, ##__VA_ARGS__}})
+#define SGL_ENUM_MAP(value, string, ...) \
+  sgl::EnumMap(sgl::array{{sgl::Pair value, string, ##__VA_ARGS__}})
+
 /**
  * \brief This macro can be used to construct an EnumMap with one element.
  *
@@ -189,8 +140,9 @@ namespace sgl {
  * };
  * static constexpr auto m = SGL_ENUM_MAP1({myEnum::val2, "val2"});
  * \endcode
- *
+ * \note The curly braces MUST be placed like above, i.e. '{value' and '"string"}'.
  */
 #define SGL_ENUM_MAP1(value, string) sgl::EnumMap(sgl::array{sgl::Pair{value, string}})
 } // namespace sgl
+#include "impl/sgl_enum_map_impl.hpp"
 #endif

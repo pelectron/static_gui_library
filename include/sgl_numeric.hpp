@@ -136,11 +136,11 @@ namespace sgl {
    * \{
    */
   template <size_t TextSize, typename CharT, typename T>
-  Numeric<TextSize, CharT, T>
+  constexpr Numeric<TextSize, CharT, T>
       make_numeric(sgl::string_view<CharT> name, T initial_value, T delta) noexcept;
 
   template <size_t TextSize, typename CharT, typename T, size_t N>
-  Numeric<TextSize, CharT, T>
+  constexpr Numeric<TextSize, CharT, T>
       make_numeric(const CharT (&name)[N], T initial_value, T delta) noexcept;
   /// \}
 

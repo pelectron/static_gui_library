@@ -174,13 +174,15 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT, typename T>
-  Numeric<TextSize, CharT, T>
-      make_numeric(sgl::string_view<CharT> name, T initial_value, T delta) noexcept {
+  constexpr Numeric<TextSize, CharT, T> make_numeric(sgl::string_view<CharT> name,
+                                                     T                       initial_value,
+                                                     T                       delta) noexcept {
     return Numeric<TextSize, CharT, T>(name, initial_value, delta);
   }
   template <size_t TextSize, typename CharT, typename T, size_t N>
-  Numeric<TextSize, CharT, T>
-      make_numeric(const CharT (&name)[N], T initial_value, T delta) noexcept {
+  constexpr Numeric<TextSize, CharT, T> make_numeric(const CharT (&name)[N],
+                                                     T initial_value,
+                                                     T delta) noexcept {
     return make_numeric<TextSize>(sgl::string_view<CharT>(name), initial_value, delta);
   }
   template <size_t TextSize, typename CharT, typename T>
