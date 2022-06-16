@@ -60,14 +60,14 @@ namespace sgl {
     void*      menu_{nullptr}; ///< pointer to menu containing this link
   };
   /// deduction guides for PageLink
-  /// @{
+  /// \{
   template <typename CharT, size_t N1, size_t N2, size_t N3>
   PageLink(const CharT (&name)[N1], const CharT (&text)[N2], const CharT (&page_name)[N3])
       -> PageLink<N2, CharT>;
 
   template <typename CharT, size_t N1, size_t N2>
   PageLink(const CharT (&name)[N1], const CharT (&page_name)[N2]) -> PageLink<N1, CharT>;
-  /// @}
+  /// \}
 } // namespace sgl
 #include "impl/sgl_page_link_impl.hpp"
 #endif

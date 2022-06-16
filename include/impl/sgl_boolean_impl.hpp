@@ -3,14 +3,14 @@
 #include "../sgl_boolean.hpp"
 namespace sgl {
 
-  /// @cond
+  /// \cond
   namespace detail {
     template <typename CharT>
     static constexpr CharT True[] = {'T', 'R', 'U', 'E', '\0'};
     template <typename CharT>
     static constexpr CharT False[] = {'F', 'A', 'L', 'S', 'E', '\0'};
   }; // namespace detail
-  /// @endcond
+  /// \endcond
 
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(StringView name, bool initial_value) noexcept

@@ -43,10 +43,46 @@ namespace sgl {
 
     T data[N];
   };
+  /// deduction guide for array
+  /// \{
   template <typename T, size_t N>
   array(const T (&)[N]) -> array<T, N>;
+
   template <class T, class... U>
   array(T, U...) -> array<T, 1 + sizeof...(U)>;
+  /// \}
+
+  /**
+   * \brief This class maps values of type T to string_view<CharT>.
+   * \details Internally, it just contains an sgl::array of Pair<E,sgl::String_view>charT>> and
+   * porvides a simple interface for it. To construct a EnumMap, either use the SGL_ENUM_MAP macro
+   * or do it like this:
+   *
+   * \code
+   *
+   * enum class myEnum{
+   *  val1,
+   *  val2,
+   *  // ...
+   * };
+   * static constexpr auto m = EnumMap(array{{Pair{myEnum::val1, "val1"}, {myEnum::val2,
+   * "val2"},...}});
+   *
+   * \endcode
+   *
+   *  The curly braces and named types are necessary to deduce the enum type
+   * correctly. Alternitavely, use the SGL_ENUM_MAP macro like below:
+   *
+   * \code
+   *
+   * static constexpr auto m = SGL_ENUM_MAP({myEnum::val1, "val1"}, {myEnum::val2, "val2"}, ...);
+   *
+   * \endcode
+   *
+   * \tparam E enum type
+   * \tparam N number of elements
+   * \tparam CharT character type
+   */
   template <typename E, size_t N, typename CharT>
   struct EnumMap {
     constexpr EnumMap() = default;
@@ -121,7 +157,40 @@ namespace sgl {
   constexpr auto Map(const array<Pair<E, sgl::string_view<CharT>>, N>& data) {
     return EnumMap<E, N, CharT>(data);
   }
-#define SGL_MAP(elem, ...) EnumMap(array{{Pair elem, ##__VA_ARGS__}})
 
+/**
+ * \brief This macro can be used to construct an EnumMap declaratively.
+ * \details You can use this macro with at least one element, i.e a pair in curly braces. If your
+ * compiler does not support the GNU-extension of pasting a zero length variadic macro without
+ * printing a ',', use SGL_ENUM_MAP1 for defining ENumMaps with one element.
+ *
+ * \code
+ * enum class myEnum{
+ *  val1,
+ *  val2,
+ *  // ...
+ * };
+ * static constexpr auto m = SGL_ENUM_MAP({myEnum::val1, "val1"}, {myEnum::val2, "val2"}, ...);
+ *
+ * \endcode
+ *
+ */
+#define SGL_ENUM_MAP(element, ...) sgl::EnumMap(sgl::array{{sgl::Pair element, ##__VA_ARGS__}})
+/**
+ * \brief This macro can be used to construct an EnumMap with one element.
+ *
+ * \details An example of it is below:
+ *
+ * \code
+ *    enum class myEnum{
+ *  val1,
+ *  val2,
+ *  // ...
+ * };
+ * static constexpr auto m = SGL_ENUM_MAP1({myEnum::val2, "val2"});
+ * \endcode
+ *
+ */
+#define SGL_ENUM_MAP1(value, string) sgl::EnumMap(sgl::array{sgl::Pair{value, string}})
 } // namespace sgl
 #endif

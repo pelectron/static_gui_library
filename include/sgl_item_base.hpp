@@ -76,8 +76,8 @@ namespace sgl {
     /**
      * \brief calls the items input handler.
      * \param input input
-     * @return sgl::error::no_error in case of no error.
-     * @return sgl::error::edit_finished in case the item is done being edited.
+     * \return sgl::error::no_error in case of no error.
+     * \return sgl::error::edit_finished in case the item is done being edited.
      * See input handling for more details.
      */
     constexpr sgl::error handle_input(sgl::Input input) noexcept;
@@ -85,19 +85,19 @@ namespace sgl {
     /**
      * \brief set the text field
      * \param new_text new text
-     * @return sgl::error
+     * \return sgl::error
      */
     constexpr sgl::error set_text(StringView new_text) noexcept;
 
     /**
      * \brief get const reference to text field
-     * @return const String&
+     * \return const String&
      */
     constexpr const String& get_text() const noexcept;
 
     /**
      * \brief get reference to text field
-     * @return String&
+     * \return String&
      */
     constexpr String&    get_text() noexcept;
     constexpr StringView text() const noexcept { return text_; }
@@ -108,7 +108,7 @@ namespace sgl {
 
     /**
      * \brief get the name of the item
-     * @return StringView
+     * \return StringView
      */
     constexpr StringView name() const noexcept;
 

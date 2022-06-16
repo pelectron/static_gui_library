@@ -1,11 +1,11 @@
 /**
- * @file sgl_traits.hpp
- * @author Pelé Constam (you@domain.com)
+ * \file sgl_traits.hpp
+ * \author Pelé Constam (you\domain.com)
  * \brief This file implements some of the type traits found in the <type_traits> header.
- * @version 0.1
- * @date 2022-06-14
+ * \version 0.1
+ * \date 2022-06-14
  *
- * @copyright Copyright (c) 2022
+ * \copyright Copyright (c) 2022
  *
  */
 #ifndef SGL_TRAITS_HPP
@@ -15,7 +15,7 @@
 #include <cstdint>
 
 namespace sgl {
-  /// @cond
+  /// \cond
   struct true_type {
     static constexpr bool value = true;
   };
@@ -613,6 +613,6 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool is_trivially_destructible_v = is_trivially_destructible<T>::value;
-  /// @endcond
+  /// \endcond
 } // namespace sgl
 #endif

@@ -39,7 +39,7 @@ namespace sgl2 {
 
   /**
    * \brief This class provides an easy ways to test menus.
-   * @see menu_tester.cpp for a complete example on how to use this class.
+   * \see menu_tester.cpp for a complete example on how to use this class.
    * \tparam Menu menu type
    * \tparam N number of inputs mapped
    */
@@ -53,7 +53,7 @@ namespace sgl2 {
      * \brief Construct a new Menu Tester.
      * \details Example of how to use:
      *
-     * @code
+     * \code
      * auto tester = MenuTester(sgl::make_menu(...), // the menu to test
      *                          // input map mapping sgl::Input to strings
      *                          {{sgl::Input::up, "up"},
@@ -61,23 +61,23 @@ namespace sgl2 {
      *                           {sgl::Input::left, "left"},
      *                           {sgl::Input::right, "right"},
      *                           {sgl::Input::enter, "enter"}});
-     * @endcode
+     * \endcode
      *
      * \param menu menu to test
      * \param input_map map of sgl::Input to sgl::string_view<CharT>
-     * @{
+     * \{
      */
     MenuTester(const Menu& menu, const InputPair<CharT> (&input_map)[N])
         : menu_(menu), map(input_map) {}
 
     MenuTester(Menu&& menu, const InputPair<CharT> (&input_map)[N])
         : menu_(std::move(menu)), map(input_map) {}
-    /// @}
+    /// \}
 
     /**
      * \brief handles input
      * \param input user input as string
-     * @return sgl::error
+     * \return sgl::error
      */
     sgl::error handle_input(sgl::string_view<char_type> input) {
       sgl::Input i = map.get(input);

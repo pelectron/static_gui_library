@@ -16,11 +16,11 @@ namespace sgl {
 
     /**
      * \brief create button with name and text
-     * @{
+     * \{
      */
     constexpr Button(StringView name_and_text) noexcept;
     constexpr Button(StringView name, StringView text) noexcept;
-    /// @}
+    /// \}
 
     /**
      * \brief Construct a Button with name, text, and click handler.

@@ -1,13 +1,13 @@
 /**
- * @file sgl_limits.hpp
- * @author Pelé Constam (you@domain.com)
+ * \file sgl_limits.hpp
+ * \author Pelé Constam (you\domain.com)
  * \brief This file defines a class template called numeric_limits, analogous to
  * std::numeric_limits.
- * @version 0.1
- * @date 2022-06-14
+ * \version 0.1
+ * \date 2022-06-14
  *
- * @copyright Copyright (c) 2022
- * @cond
+ * \copyright Copyright (c) 2022
+ * \cond
  */
 #ifndef SGL_LIMITS_HPP
   #define SGL_LIMITS_HPP
@@ -115,4 +115,4 @@ namespace sgl {
 } // namespace sgl
 
 #endif
-/// @endcond
+/// \endcond

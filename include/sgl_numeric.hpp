@@ -132,8 +132,8 @@ namespace sgl {
    * \param name
    * \param initial_value
    * \param delta
-   * @return Numeric<TextSize, CharT, T>
-   * @{
+   * \return Numeric<TextSize, CharT, T>
+   * \{
    */
   template <size_t TextSize, typename CharT, typename T>
   Numeric<TextSize, CharT, T>
@@ -142,7 +142,7 @@ namespace sgl {
   template <size_t TextSize, typename CharT, typename T, size_t N>
   Numeric<TextSize, CharT, T>
       make_numeric(const CharT (&name)[N], T initial_value, T delta) noexcept;
-  /// @}
+  /// \}
 
   /**
    * \brief
@@ -153,7 +153,7 @@ namespace sgl {
    * \param initial_value
    * \param initial_text
    * \param delta
-   * @return constexpr Numeric<TextSize, CharT, T>
+   * \return constexpr Numeric<TextSize, CharT, T>
    */
   template <size_t TextSize, typename CharT, typename T>
   constexpr Numeric<TextSize, CharT, T> make_numeric(sgl::string_view<CharT> name,
@@ -169,8 +169,8 @@ namespace sgl {
    * \param name
    * \param initial_value
    * \param delta
-   * @return constexpr Numeric<TextSize, char, T>
-   * @{
+   * \return constexpr Numeric<TextSize, char, T>
+   * \{
    */
   template <size_t TextSize, typename T, size_t CxSize>
   constexpr Numeric<TextSize, char, T> make_numeric(sgl::string_view<char>   name,
@@ -180,7 +180,7 @@ namespace sgl {
   template <size_t TextSize, typename T, size_t N, size_t CxSize>
   constexpr Numeric<TextSize, char, T>
       make_numeric(const char (&name)[N], const cx_arg<T, CxSize>& initial_value, T delta) noexcept;
-  /// @}
+  /// \}
 
   /**
    * \brief
@@ -192,7 +192,7 @@ namespace sgl {
    * \param initial_value
    * \param delta
    * \param formatter
-   * @return Numeric<TextSize, CharT, T>
+   * \return Numeric<TextSize, CharT, T>
    */
   template <size_t TextSize,
             typename CharT,

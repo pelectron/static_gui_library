@@ -28,7 +28,7 @@ namespace sgl {
     constexpr cx_arg<T, N> operator+() { return *this; }
   };
 
-  /// @cond
+  /// \cond
   namespace impl {
     template <typename T>
     constexpr T pow10(int exp) {
@@ -145,22 +145,22 @@ namespace sgl {
     }
 
   } // namespace impl
-  /// @endcond
+  /// \endcond
 
   namespace cx_arg_literals {
 
     /**
      * \brief create cx_arg double literal.
-     * @note This operator merely parses a double out of of the chars given and returns a cx_arg
+     * \note This operator merely parses a double out of of the chars given and returns a cx_arg
      * containing its value and a string of it **as it was declared**. Essentially, you, the
      * programmer, are the compile time formatter. See the example for more info.
-     * @code
+     * \code
      * #include "sgl_cx_arg.hpp"
      * using namespace sgl::cx_arg_literals;
      * constexpr auto arg = 65.23_double; // arg.value = 65.23, arg.string = "65.23"
      * constexpr auto arg2 = .1_double; // arg.value = 0.1, arg.string = ".1"
      * constexpr auto arg3 = .100000_double; // arg.value = 0.1, arg.string = ".100000"
-     * @endcode
+     * \endcode
      *
      * See https://en.cppreference.com/w/cpp/language/user_literal for more info.
      *
@@ -177,10 +177,10 @@ namespace sgl {
      * \brief create cx_arg float literal.
      * \details See _double udl operator.
      *
-     * @code
+     * \code
      * #include "sgl_cx_arg.hpp"
      * constexpr auto arg = 65.23_float; // arg.value = 65.23f, arg.string = "65.23"
-     * @endcode
+     * \endcode
      *
      * See https://en.cppreference.com/w/cpp/language/user_literal for more info.
      *

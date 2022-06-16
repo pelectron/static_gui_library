@@ -2,7 +2,7 @@
 #define CLIP_TYPE_LIST_HPP
 #include "sgl_type_traits.hpp"
 namespace sgl {
-  ///@cond
+  ///\cond
   template <typename... Ts>
   struct type_list {};
 
@@ -73,7 +73,7 @@ namespace sgl {
 
   /**
    * \brief pop the first type from the list and return the shortened list.
-   * @example pop_front<type_list<int,char>>::type == type_list<char>
+   * \example pop_front<type_list<int,char>>::type == type_list<char>
    * \tparam List list pop front of.
    */
   template <typename List>
@@ -135,7 +135,7 @@ namespace sgl {
 
   /**
    * \brief add T to end of List
-   * @example push_back<double, type_list<int,char>>::type == type_list<int,
+   * \example push_back<double, type_list<int,char>>::type == type_list<int,
    * char, double>
    * \tparam List list pop front of.
    */
@@ -148,7 +148,7 @@ namespace sgl {
   };
   /**
    * \brief append T to List, like vector::push_back
-   * @example push_back_t<double, type_list<int,char>> ==
+   * \example push_back_t<double, type_list<int,char>> ==
    * type_list<int,char,double>
    * \tparam T
    * \tparam List
@@ -221,6 +221,6 @@ namespace sgl {
 
   template <template <typename> typename F, typename List>
   using for_each_t = typename for_each_in_list<F, List>::type;
-  ///@endcond
+  ///\endcond
 } // namespace sgl
 #endif

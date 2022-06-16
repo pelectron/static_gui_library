@@ -25,14 +25,14 @@ namespace sgl {
     return static_cast<Input>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
   }
 
-  /// @defgroup input_keypad_conversion input to keypad conversion
-  /// @ingroup input_type
-  /// @{
+  /// \defgroup input_keypad_conversion input to keypad conversion
+  /// \ingroup input_type
+  /// \{
 
   /**
    * \brief get input as keypad input constant
    * \param input input to convert
-   * @return either keypad constant or Input::none
+   * \return either keypad constant or Input::none
    */
   constexpr Input get_keypad_input(Input input) {
     switch (Input::keypad_mask & input) {
@@ -46,10 +46,10 @@ namespace sgl {
         return Input::none;
     }
   }
-  /// @}
+  /// \}
 
-  /// @ingroup input_type
-  /// @{
+  /// \ingroup input_type
+  /// \{
 
   /// check if input is a keyboard input
   constexpr bool is_keyboard_input(Input input) {
@@ -60,10 +60,10 @@ namespace sgl {
   constexpr bool is_keypad_input(Input input) {
     return get_keypad_input(input) != sgl::Input::none;
   }
-  /// @}
+  /// \}
 
-  /// @addtogroup char_input_conversion
-  /// @{
+  /// \addtogroup char_input_conversion
+  /// \{
 
   /// convert char to Input
   constexpr Input to_input(char c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
@@ -100,7 +100,7 @@ namespace sgl {
   constexpr char32_t get_char<char32_t>(Input i) {
     return get_char32(i);
   }
-  /// @}
+  /// \}
 
 } // namespace sgl
 #endif

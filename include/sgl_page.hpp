@@ -67,16 +67,16 @@ namespace sgl {
      * \brief Construct a page with default input handling, default enter/exit
      * actions, default start/stop edit inputs (i.e. sgl::Input::enter).
      *
-     * @code
+     * \code
      *  // creates a page with name 'page_name'', title 'Title' and three items
      *  // ItemX, ItemY and ItemZ.
      *  auto page = Page("page_name","Title",ItemX(...),ItemY(...),ItemZ(...));
-     * @endcode
+     * \endcode
      *
      * \param name name of the page. Must be unique in a menu.
      * \param title title of the page.
      * \param items items of the page.
-     * @{
+     * \{
      */
     constexpr Page(StringView name,
                    StringView title,
@@ -85,9 +85,9 @@ namespace sgl {
     constexpr Page(StringView name,
                    StringView title,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
-    ///@{
+    ///\{
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
@@ -99,9 +99,9 @@ namespace sgl {
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
-    /// @{
+    /// \{
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
@@ -115,9 +115,9 @@ namespace sgl {
                    sgl::Input              stop_edit,
                    size_t                  start_index,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
-    /// @{
+    /// \{
     template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
@@ -133,9 +133,9 @@ namespace sgl {
                    sgl::Input              stop_edit,
                    InputHandler&&          handler,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
-    /// @{
+    /// \{
     template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
@@ -147,9 +147,9 @@ namespace sgl {
                    sgl::string_view<CharT> title,
                    InputHandler&&          handler,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
-    /// @{
+    /// \{
     template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
@@ -166,10 +166,10 @@ namespace sgl {
                    size_t                  start_index,
                    InputHandler&&          handler,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
     /// ctor with all options
-    /// @{
+    /// \{
     template <typename InputHandler,
               typename EnterAction,
               typename ExitAction,
@@ -201,7 +201,7 @@ namespace sgl {
                    EnterAction&&           on_enter,
                    ExitAction&&            on_exit,
                    const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
-    /// @}
+    /// \}
 
     /// get the name of the page.
     constexpr StringView name() const noexcept;
@@ -258,47 +258,47 @@ namespace sgl {
      * \brief apply f on all items in the page with the items' **declared
      * type**.
      *
-     * @note f must be a generic lambda like in the example below or some kind
+     * \note f must be a generic lambda like in the example below or some kind
      * of template function taking one parameter.
      *
-     * @code
+     * \code
      * auto page_var = make_page(...);
      * page_var.for_current_item([](auto& page){...});
-     * @endcode
+     * \endcode
      *
      * \tparam F invocable type
      * \param f callable
-     * @{
+     * \{
      */
     template <typename F>
     constexpr void for_each_item(F&& f) noexcept(noexcept(f));
 
     template <typename F>
     constexpr void for_each_item(F&& f) const noexcept(noexcept(f));
-    /// @}
+    /// \}
 
     /**
      * \brief apply f on current item with it's **declared type**. An example
      * below.
      *
-     * @note f must be a generic lambda like in the example below or some kind
+     * \note f must be a generic lambda like in the example below or some kind
      * of template.
      *
-     * @code
+     * \code
      * auto page_var = make_page(...);
      * page_var.for_current_item([](auto& page){...});
-     * @endcode
+     * \endcode
      *
      * \tparam F invocable type
      * \param f callable
-     * @{
+     * \{
      */
     template <typename F>
     constexpr void for_current_item(F&& f) noexcept(noexcept(f));
 
     template <typename F>
     constexpr void for_current_item(F&& f) const noexcept(noexcept(f));
-    /// @}
+    /// \}
 
     /// execute enter handler
     constexpr sgl::error on_enter() noexcept;
@@ -323,7 +323,7 @@ namespace sgl {
     constexpr void set_on_exit(Action&& action) noexcept;
 
   private:
-    /// @cond
+    /// \cond
     static constexpr sgl::error default_handle_input(Page<CharT, Items...>& page,
                                                      sgl::Input             i) noexcept;
 
@@ -334,7 +334,7 @@ namespace sgl {
     constexpr void for_current_item_impl(F&& f) const noexcept(noexcept(f));
 
     constexpr static sgl::error default_page_action(Page<CharT, Items...>&) noexcept;
-    /// @endcond
+    /// \endcond
 
     sgl::tuple<Items...>                   items_;
     InputHandler_t                         input_handler_{&default_handle_input};
@@ -375,8 +375,8 @@ namespace sgl {
     page.template for_each_item(forward<F>(f));
   }
 
-  /// @addtogroup PageFactories "Page Factories"
-  /// @{
+  /// \addtogroup PageFactories "Page Factories"
+  /// \{
 
   /**
    * \brief create page with a name, title and items. Everything else is set to default.
@@ -385,7 +385,7 @@ namespace sgl {
    * \param name name of the page. Used by the PageLink class to switch pages.
    * \param title title of the page
    * \param items items of the page
-   * @return constexpr Page<CharT, decay_t<Items>...>
+   * \return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
   constexpr Page<CharT, decay_t<Items>...>
@@ -402,7 +402,7 @@ namespace sgl {
    * \param title title of the page
    * \param start_index active page index
    * \param items items of the page
-   * @return constexpr Page<CharT, decay_t<Items>...>
+   * \return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
   constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
@@ -467,7 +467,7 @@ namespace sgl {
    * \param start_index active page index
    * \param handler input handler
    * \param items items of the page
-   * @return constexpr Page<CharT, decay_t<Items>...>
+   * \return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT,
             typename InputHandler,
@@ -560,7 +560,7 @@ namespace sgl {
    * \param title
    * \param handler
    * \param items
-   * @return constexpr Page<CharT, decay_t<Items>...>
+   * \return constexpr Page<CharT, decay_t<Items>...>
    */
   template <typename CharT,
             typename InputHandler,
@@ -627,7 +627,7 @@ namespace sgl {
                                           forward<ExitAction>(on_exit),
                                           forward<Items>(items)...);
   }
-  /// @}
+  /// \}
 
 } // namespace sgl
 #include "impl/sgl_page_impl.hpp"

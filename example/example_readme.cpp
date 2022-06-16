@@ -6,9 +6,16 @@ using namespace sgl::string_view_literals;
 enum class Setting { opt1, opt2, opt3 };
 enum class OtherSetting { Up, Down, Left, Right };
 #define Mac(var, ...) var << ##__VA_ARGS__
+enum class myEnum{
+   val1,
+   val2,
+   // ...
+   };
 int main() {
+   static constexpr auto m = SGL_ENUM_MAP({myEnum::val1, "val1"}, {myEnum::val2, "val2"});
+   static constexpr auto m2 = SGL_ENUM_MAP1(myEnum::val1, "val1");
 
-  auto map = SGL_MAP({OtherSetting::Up, "Up"_sv},
+  auto map = SGL_ENUM_MAP({OtherSetting::Up, "Up"_sv},
                      {OtherSetting::Down, "Down"_sv},
                      {OtherSetting::Left, "Left"_sv},
                      {OtherSetting::Right, "Right"_sv});

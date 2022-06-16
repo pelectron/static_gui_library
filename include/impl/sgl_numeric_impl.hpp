@@ -5,7 +5,7 @@
 
 namespace sgl {
   /// deduction guides for Numeric
-  /// @{
+  /// \{
   template <typename CharT, typename T>
   Numeric(sgl::string_view<CharT> name, T initial_value, T delta)
       -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
@@ -46,7 +46,7 @@ namespace sgl {
                                  Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true>
   Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&&, InputHandler&&)
       -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
-  /// @}
+  /// \}
 
   template <size_t TextSize, typename CharT, typename T>
   constexpr Numeric<TextSize, CharT, T>::Numeric(StringView name, T initial_value, T delta) noexcept

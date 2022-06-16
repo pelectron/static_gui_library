@@ -72,7 +72,7 @@ namespace sgl {
   template <typename... Ts>
   tuple(Ts&&...) -> tuple<sgl::decay_t<Ts>...>;
 
-  /// @cond
+  /// \cond
   template <size_t I, typename tuple>
   struct tuple_element_type;
 
@@ -80,7 +80,7 @@ namespace sgl {
   struct tuple_element_type<I, sgl::tuple<Ts...>> {
     using type = sgl::type_at_t<I, sgl::type_list<Ts...>>;
   };
-  /// @endcond
+  /// \endcond
 
   /// get i-th type of tuple
   template <size_t I, typename tuple>

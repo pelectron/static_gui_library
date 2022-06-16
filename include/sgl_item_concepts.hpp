@@ -6,7 +6,7 @@
 #include "sgl_type_traits.hpp"
 
 namespace sgl {
-  /// @cond
+  /// \cond
   template <typename F, typename Item>
   static constexpr bool is_input_handler_for_v =
       is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>;
@@ -24,7 +24,7 @@ namespace sgl {
       enable_if_t<is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
 
   /// item method traits
-  /// @{
+  /// \{
   template <typename T, typename = void>
   struct has_text : false_type {};
 
@@ -79,10 +79,10 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool is_item_v = is_item<T>::value;
-  /// @}
+  /// \}
 
   /// page traits
-  /// @{
+  /// \{
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
@@ -293,10 +293,10 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool is_page_v = is_page<T>::value;
-  /// @}
+  /// \}
 
   /// menu traits
-  /// @{
+  /// \{
 
   template <typename T, typename = void>
   struct has_set_active_page : false_type {};
@@ -382,7 +382,7 @@ namespace sgl {
   template <typename T>
   static constexpr bool is_menu_v = is_menu<T>::value;
 
-  /// @}
-  /// @endcond
+  /// \}
+  /// \endcond
 } // namespace sgl
 #endif

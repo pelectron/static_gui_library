@@ -32,18 +32,18 @@ namespace sgl {
     /**
      * \brief Construct a Menu with pages. The active page will be the first parameter passed to the
      * constructor. \param pages page of the menu
-     * @{
+     * \{
      */
     constexpr Menu(Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
 
     constexpr Menu(const Pages&... pages) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
-    /// @}
+    /// \}
 
     /**
      * \brief Construct a Menu with pages and custom input handler. The active page will be the
      * first parameter passed to the constructor. \tparam InputHandler input handler type \param
      * handler input handler instance. \param pages pages of the menu
-     * @{
+     * \{
      */
     template <typename InputHandler,
               sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
@@ -54,7 +54,7 @@ namespace sgl {
               sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
     constexpr Menu(InputHandler&& handler,
                    const Pages&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
-    /// @}
+    /// \}
 
     /// copy ctor
     constexpr Menu(const Menu& other) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
@@ -65,14 +65,14 @@ namespace sgl {
     /**
      * \brief process input
      * \param input user input
-     * @return sgl::error
+     * \return sgl::error
      */
     constexpr sgl::error handle_input(Input input) noexcept;
 
     /**
      * \brief Set the active page by name
      * \param page_name name of the page
-     * @return sgl::error
+     * \return sgl::error
      */
     template <typename CharT>
     constexpr sgl::error set_active_page(sgl::string_view<CharT> page_name) noexcept;
@@ -80,7 +80,7 @@ namespace sgl {
     /**
      * \brief Set the active page by index
      * \param page_index page index
-     * @return sgl::error::invalid_page_index
+     * \return sgl::error::invalid_page_index
      */
     constexpr sgl::error set_active_page(size_t page_index) noexcept;
 
@@ -107,14 +107,14 @@ namespace sgl {
     /**
      * \brief get reference to item at ItemIndex from page at PageIndex.
      * \details Works like multi array indexing.
-     * @code
+     * \code
      * // gets the third element in the first page.
      * auto& page = menu.get_page<0,2>();
-     * @endcode
+     * \endcode
      *
      * \tparam PageIndex page index in menu
      * \tparam ItemIndex item index in page
-     * @return reference to item at ItemIndex from page at PageIndex.
+     * \return reference to item at ItemIndex from page at PageIndex.
      */
     template <size_t PageIndex, size_t ItemIndex>
     constexpr item_at_t<PageIndex, ItemIndex>& get_item() noexcept;
@@ -122,14 +122,14 @@ namespace sgl {
     /**
      * \brief get const reference to item at ItemIndex from page at PageIndex.
      * \details Works like multi array indexing.
-     * @code
+     * \code
      * // gets the third element in the first page.
      * const auto& page = menu.get_page<0,2>();
-     * @endcode
+     * \endcode
      *
      * \tparam PageIndex page index in menu
      * \tparam ItemIndex item index in page
-     * @return const item_at_t<PageIndex, ItemIndex>&
+     * \return const item_at_t<PageIndex, ItemIndex>&
      */
     template <size_t PageIndex, size_t ItemIndex>
     constexpr const item_at_t<PageIndex, ItemIndex>& get_item() const noexcept;
@@ -137,7 +137,7 @@ namespace sgl {
     /**
      * \brief apply f on each page in menu.
      * \details
-     * @code
+     * \code
      * // defined somewhere in a header
      * template<typename Page>
      * void global_func(Page& page){...};
@@ -147,7 +147,7 @@ namespace sgl {
      * // or with a generic lambda
      * menu.for_each_page([](auto& page){...});
      *
-     * @endcode
+     * \endcode
      *
      * \tparam F functor type
      * \param f function template
@@ -158,7 +158,7 @@ namespace sgl {
     /**
      * \brief apply f on each page in menu.
      * \details
-     * @code
+     * \code
      * // defined somewhere in a header
      * template<typename Page>
      * void global_func(const Page& page){...};
@@ -168,7 +168,7 @@ namespace sgl {
      * // or with a generic lambda
      * menu.for_each_page([](const auto& page){...});
      *
-     * @endcode
+     * \endcode
      * \tparam F functor type
      * \param f functor instance
      */
@@ -179,14 +179,14 @@ namespace sgl {
      * \brief apply f on the current page.
      * \tparam F functor type
      * \param f functor instance
-     * @{
+     * \{
      */
     template <typename F>
     constexpr void for_current_page(F&& f) noexcept(noexcept(f));
 
     template <typename F>
     constexpr void for_current_page(F&& f) const noexcept(noexcept(f));
-    /// @}
+    /// \}
 
   private:
     constexpr static sgl::error default_handle_input(Menu<Pages...>& menu, Input input) noexcept;

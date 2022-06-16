@@ -20,7 +20,7 @@
 namespace sgl {
 
   enum class format_t { integer, floating, exponential, fixed };
-  /// @cond
+  /// \cond
   template <typename T>
   struct biggest_pow10_t;
   template <>
@@ -160,7 +160,7 @@ namespace sgl {
     }
     return sgl::error::null_format;
   }
-/// @endcond
+/// \endcond
 #if SGL_USE_RYU
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {

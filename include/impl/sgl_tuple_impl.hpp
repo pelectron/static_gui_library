@@ -7,7 +7,7 @@
 
 
 namespace sgl {
-  /// @cond
+  /// \cond
   template <size_t I, typename T>
   class tuple_element {
   public:
@@ -68,6 +68,6 @@ namespace sgl {
       return (*static_cast<const elem_at_t<I>*>(this)).get();
     }
   };
-  /// @endcond
+  /// \endcond
 } // namespace sgl
 #endif

@@ -5,12 +5,12 @@
 #include <new>
 
 namespace sgl {
-  /// @cond
+  /// \cond
   // intentional forward declaration only. specialization follows below.
 
   template <typename Signature>
   class Callable;
-  /// @endcond
+  /// \endcond
 
   /**
    * \brief This class implements a callable with the guarantee that it does not
@@ -24,7 +24,7 @@ namespace sgl {
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See function, google search for delegates, etc. if the
    * concept is not clear.
-   * @warning mutable lambdas have a issues because they are mutable. When
+   * \warning mutable lambdas have a issues because they are mutable. When
    * invoking a Callable storing a mutable lambda, there is undefined behaviour
    * if the Callable's type is const! Below is a quick code example of what is
    * ok and what is not.
