@@ -19,6 +19,18 @@ namespace sgl {
         : data_(other.data_), size_(other.size_){};
     /// construct from pointer to element an size
     constexpr string_view(const CharT* str, size_t size) noexcept : data_(str), size_(size) {}
+    explicit constexpr string_view(const CharT* str) noexcept : data_(str) {
+      for (size_t i = 0;; ++i) {
+        if (str[i] == '\0') {
+          size_ = i;
+          break;
+        }
+        if (i == 4096) {
+          size_ = 0;
+          break;
+        }
+      }
+    }
     /// construct from array
     template <size_t N>
     constexpr string_view(const CharT (&str)[N]) noexcept : data_(str), size_(N - 1) {}

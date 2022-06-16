@@ -1,19 +1,26 @@
 #include "../include/enum_map.hpp"
 //#include "../include/sgl.hpp"
-
+#include <iostream>
 using namespace sgl;
 using namespace sgl::string_view_literals;
 enum class Setting { opt1, opt2, opt3 };
 enum class OtherSetting { Up, Down, Left, Right };
+#define Mac(var, ...) var << ##__VA_ARGS__
 int main() {
-  auto elem = consume_map({Pair{OtherSetting::Up, "Up"_sv},
-                                         Pair{OtherSetting::Down, "Down"_sv},
-                                         Pair{OtherSetting::Left, "Left"_sv},
-                                         Pair{OtherSetting::Right, "Right"_sv}});
+
+  auto map = SGL_MAP({OtherSetting::Up, "Up"_sv},
+                     {OtherSetting::Down, "Down"_sv},
+                     {OtherSetting::Left, "Left"_sv},
+                     {OtherSetting::Right, "Right"_sv});
+
+  // auto m = MAP({OtherSetting::Up, "Up"_sv},
+  //              {OtherSetting::Down, "Down"_sv},
+  //              {OtherSetting::Left, "Left"_sv},
+  //              {OtherSetting::Right, "Right"_sv});
   // auto menu = Menu(make_page("page1",
   //                            "Page 1",
   //                            Boolean("bool 1", true),
-  //                            make_enum<20>("enum 1"_sv,
+  //                            make_enum<Setting,20>("enum 1"_sv,
   //                                          {{Setting::opt1, "Option 1"},
   //                                           {Setting::opt2, "Option 2"},
   //                                           {Setting::opt3, "Option 3"}}),
@@ -24,7 +31,7 @@ int main() {
   //                  make_page("page2",
   //                            "Page 2",
   //                            Boolean("bool 2", true),
-  //                            make_enum<5>("enum 1"_sv,
+  //                            make_enum<OtherSetting,5>("enum 1"_sv,
   //                                         {{OtherSetting::Up, "Up"},
   //                                          {OtherSetting::Down, "Down"},
   //                                          {OtherSetting::Left, "Left"},
