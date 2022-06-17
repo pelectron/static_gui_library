@@ -6,7 +6,6 @@
 
 #include <type_traits>
 
-
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
   #include "ryu/ryu_parse.h"
@@ -122,9 +121,94 @@ namespace sgl {
   struct max_buf_size<double> {
     static constexpr size_t value = 24;
   };
+  template <typename T>
+  constexpr auto biggest_pow16(T value) {
+    if ((numeric_limits<T>::max() >= 0x1000000000000000) and (value > T{0x1000000000000000}))
+      return 0x1000000000000000;
+    else if ((numeric_limits<T>::max() >= 0x100000000000000) and (value > T{0x100000000000000}))
+      return 0x100000000000000;
+    else if ((numeric_limits<T>::max() >= 0x10000000000000) and (value > T{0x10000000000000}))
+      return 0x10000000000000;
+    else if ((numeric_limits<T>::max() >= 0x1000000000000) and (value > T{0x1000000000000}))
+      return 0x1000000000000;
+    else if ((numeric_limits<T>::max() >= 0x100000000000) and (value > T{0x100000000000}))
+      return 0x100000000000;
+    else if ((numeric_limits<T>::max() >= 0x10000000000) and (value > T{0x10000000000}))
+      return 0x10000000000;
+    else if ((numeric_limits<T>::max() >= 0x1000000000) and (value > T{0x1000000000}))
+      return 0x1000000000;
+    else if ((numeric_limits<T>::max() >= 0x100000000) and (value > T{0x100000000}))
+      return 0x100000000;
+    else if ((numeric_limits<T>::max() >= 0x10000000) and (value > T{0x10000000}))
+      return 0x10000000;
+    else if ((numeric_limits<T>::max() >= 0x1000000) and (value > T{0x1000000}))
+      return 0x1000000;
+    else if ((numeric_limits<T>::max() >= 0x100000) and (value > T{0x100000}))
+      return 0x100000;
+    else if ((numeric_limits<T>::max() >= 0x10000) and (value > T{0x10000}))
+      return 0x10000;
+    else if ((numeric_limits<T>::max() >= 0x1000) and (value > T{0x1000}))
+      return 0x1000;
+    else if ((numeric_limits<T>::max() >= 0x100) and (value > T{0x100}))
+      return 0x100;
+    else if ((numeric_limits<T>::max() >= 0x10) and (value > T{0x10}))
+      return 0x10;
+    else
+      return 0x1;
+  }
 
   template <typename T>
   static constexpr size_t max_buf_size_v = max_buf_size<T>::value;
+
+  template <typename CharT, typename T>
+  constexpr sgl::error basic_hex_format(CharT* str, size_t len, T value) {
+    constexpr auto hex_char = [](T val) -> CharT {
+      if (val >= 0 && val <= 9) {
+        return static_cast<CharT>(val + '0');
+      }
+      if (val >= 10 && val <= 15) {
+        return static_cast<CharT>(val + 'A' - 10);
+      }
+      return 0;
+    };
+    static_assert(std::is_integral_v<T>, "");
+    // static_assert(std::is_unsigned_v<T>, "");
+    constexpr size_t           size = 2 * sizeof(T) + 2; // +2 for '0x'
+    static_string<CharT, size> buf;
+    buf.append("0x", 2);
+    for (size_t pow16 = biggest_pow16(value); pow16 != 0; pow16 /= 16) {
+      buf.append(hex_char(value / pow16));
+      value = value % pow16;
+    }
+    for (const auto& ch : buf) {
+      *str = ch;
+      ++str;
+    }
+    *str = '\0';
+    return sgl::error::no_error;
+  }
+
+  template <typename CharT, typename T>
+  constexpr sgl::error basic_integer_format(CharT* str, size_t len, T value) {
+    static_string<CharT, max_buf_size_v<T>> buf;
+    static_assert(std::is_integral_v<T>, "");
+    if constexpr (std::is_signed_v<T>) {
+      if (value < 0) {
+        buf.append(CharT{'-'});
+        value = -value;
+      }
+    }
+    for (size_t pow10 = biggest_pow10(value); pow10 != 0; pow10 /= 10) {
+      buf.append(static_cast<CharT>(value / pow10 + '0'));
+      value = value % pow10;
+    }
+    for (const auto& ch : buf) {
+      *str = ch;
+      ++str;
+    }
+    *str = '\0';
+    return sgl::error::no_error;
+  }
 
   template <typename CharT, typename T>
   constexpr sgl::error integer_format(CharT*   str,
@@ -132,31 +216,28 @@ namespace sgl {
                                       T        value,
                                       uint32_t precision,
                                       format_t format) noexcept {
+    static_assert(std::is_integral_v<T>, "");
     (void)precision;
-    (void)format;
-    (void)len;
-    if constexpr (std::is_integral_v<T>) {
-      static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(std::is_integral_v<T>, "");
-      if constexpr (std::is_signed_v<T>) {
-        if (value < 0) {
-          buf.append(CharT{'-'});
-          value = -value;
+    switch (format) {
+      case format_t::exponential:
+        [[fallthrough]];
+      case format_t::fixed:
+      case format_t::floating:
+      case format_t::integer:
+        return basic_integer_format(str, len, value);
+      case format_t::hex:
+        if constexpr (std::is_signed_v<T>) {
+          return sgl::error::invalid_format;
+        } else {
+          return basic_hex_format(str, len, value);
         }
-      }
-      for (size_t pow10 = biggest_pow10(value); pow10 != 0; pow10 /= 10) {
-        buf.append(static_cast<CharT>(value / pow10 + '0'));
-        value = value % pow10;
-      }
-      for (const auto& ch : buf) {
-        *str = ch;
-        ++str;
-      }
-      *str = '\0';
-      return sgl::error::no_error;
+      default:
+        return sgl::error::invalid_format;
     }
+
     return sgl::error::null_format;
   }
+
 #if SGL_USE_RYU
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
@@ -265,26 +346,7 @@ namespace sgl {
         return sgl::error::no_error;
       }
     } else {
-      (void)precision;
-      (void)format;
-      static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(std::is_integral_v<T>, "");
-      if constexpr (std::is_signed_v<T>) {
-        if (value < 0) {
-          buf.append(CharT{'-'});
-          value = -value;
-        }
-      }
-      for (size_t pow10 = biggest_pow10(value); pow10 != 0; pow10 /= 10) {
-        buf.append(static_cast<CharT>(value / pow10 + '0'));
-        value = value % pow10;
-      }
-      for (const auto& ch : buf) {
-        *str = ch;
-        ++str;
-      }
-      *str = '\0';
-      return sgl::error::no_error;
+      return integer_format(str, len, value, precision, format);
     }
   }
 
@@ -323,5 +385,100 @@ namespace sgl {
     return integer_format(str, len, value, precision, format);
   }
 #endif
+  namespace parse_impl {
+    template <typename T>
+    constexpr T pow10(int exp) {
+      T f{1};
+      if (exp < 0) {
+        exp = -exp;
+        while (exp--) {
+          f /= 10;
+        }
+      } else if (exp > 0) {
+        while (exp--) {
+          f *= 10;
+        }
+      }
+      return f;
+    }
+
+    static constexpr size_t not_found{18446744073709551615ULL};
+
+    constexpr auto to_num(char c) -> int64_t { return (c - '0'); };
+
+    template <typename T>
+    constexpr T decimal(const char* begin, const char* end) {
+      if (begin == end)
+        return 0;
+      if (begin[0] == '-')
+        return -decimal(begin + 1, end);
+      if (begin[0] == '+')
+        return decimal(begin + 1, end);
+
+      T               result{0};
+      const long long size{end - begin};
+
+      for (long long i = 0; i < size; ++i) {
+        result += to_num(begin[i]) * sgl::impl::pow10<T>(size - i - 1);
+      }
+      return result;
+    };
+
+    constexpr auto get_dot_index(const char* str, size_t n) {
+      for (size_t i = 0; i < n; ++i) {
+        if (str[i] == '.')
+          return i;
+      }
+      return sgl::impl::not_found;
+    };
+
+    constexpr auto get_e_index(const char* str, size_t n) {
+      for (size_t i = 0; i < n; ++i) {
+        if ((str[i] == 'e') || (str[i] == 'E'))
+          return i;
+      }
+      return sgl::impl::not_found;
+    };
+
+    template <typename T>
+    constexpr T parse(const char* str, size_t n) {
+      if constexpr (std::is_integral_v<T>) {
+        return decimal<T>(str, str + n);
+      } else {
+        size_t dot_index{get_dot_index(str, n)};
+        size_t e_index{get_e_index(str, n)};
+        if (e_index == not_found) {
+          // no exponent -> DEC[.]FRAC
+          if (dot_index == not_found) {
+            // DEC
+            return static_cast<T>(decimal<T>(str, str + n));
+          } else {
+            // [DEC].FRAC
+            auto dec = decimal<T>(str, str + dot_index);
+            auto frac = static_cast<T>(decimal<T>(str + dot_index + 1, str + n)) /
+                        sgl::impl::pow10<T>(n - dot_index - 1);
+            return static_cast<T>(dec) + frac;
+          }
+        } else {
+          // has exponent
+          // DEC[.]FRAC[Ee][+-]EXP
+          if (dot_index == not_found) {
+            // DEC[Ee][+-]EXP
+            auto dec = decimal<T>(str, str + e_index);
+            auto exp = decimal<T>(str + e_index + 1, str + n);
+            return static_cast<T>(dec) * sgl::impl::pow10<T>(exp);
+          } else {
+            // [DEC].FRAC[Ee][+-]EXP
+            auto dec = decimal<T>(str, str + dot_index);
+            auto frac = static_cast<T>(decimal<T>(str + dot_index + 1, str + e_index)) /
+                        sgl::impl::pow10<T>(e_index - dot_index - 1);
+            auto exp = decimal<T>(str + e_index + 1, str + n);
+            return (dec + frac) * sgl::impl::pow10<T>(exp);
+          }
+        }
+      }
+    }
+
+  } // namespace parse_impl
 } // namespace sgl
 #endif

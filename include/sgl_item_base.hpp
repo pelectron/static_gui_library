@@ -3,6 +3,7 @@
 #include "sgl_callable.hpp"
 #include "sgl_item_traits.hpp"
 #include "sgl_static_string.hpp"
+#include "sgl_string_view.hpp"
 
 namespace sgl {
 

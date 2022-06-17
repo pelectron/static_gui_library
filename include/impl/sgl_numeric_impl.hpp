@@ -1,25 +1,24 @@
 #ifndef SGL_NUMERIC_IMPL_HPP
 #define SGL_NUMERIC_IMPL_HPP
-#include "../sgl_format.hpp"
 #include "../sgl_numeric.hpp"
 
 namespace sgl {
   /// deduction guides for Numeric
   /// \{
   template <typename CharT, typename T>
-  Numeric(sgl::string_view<CharT> name, T initial_value, T delta)
+  Numeric(string_view<CharT> name, T initial_value, T delta)
       -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t N>
   Numeric(const CharT (&name)[N], T initial_value, T delta)
-      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
+      -> Numeric<max_buf_size_v<std::decay_t<T>>+2, CharT, std::decay_t<T>>;
 
   template <size_t TextSize, typename CharT, typename T, size_t N>
   Numeric(const CharT (&name)[N], T initial_value, const CharT (&initial_text)[TextSize], T delta)
       -> Numeric<TextSize, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t CxSize>
-  Numeric(sgl::string_view<CharT> name, const cx_arg<T, CxSize>& initial_value, T delta)
+  Numeric(string_view<CharT> name, const cx_arg<T, CxSize>& initial_value, T delta)
       -> Numeric<CxSize, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t CxSize, size_t N>
@@ -32,8 +31,8 @@ namespace sgl {
       typename Formatter,
       enable_if_is_value_formatter<Formatter,
                                    Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true>
-  Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&& formatter)
-      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
+  Numeric(string_view<CharT> name, T initial_value, T delta, Formatter&& formatter)
+      -> Numeric<max_buf_size_v<std::decay_t<T>>+2, CharT, std::decay_t<T>>;
 
   template <
       typename CharT,
@@ -44,8 +43,8 @@ namespace sgl {
                                    Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true,
       enable_if_is_input_handler<InputHandler,
                                  Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true>
-  Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&&, InputHandler&&)
-      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
+  Numeric(string_view<CharT> name, T initial_value, T delta, Formatter&&, InputHandler&&)
+      -> Numeric<max_buf_size_v<std::decay_t<T>>+2, CharT, std::decay_t<T>>;
   /// \}
 
   template <size_t TextSize, typename CharT, typename T>

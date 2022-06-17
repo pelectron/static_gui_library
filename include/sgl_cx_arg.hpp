@@ -48,9 +48,11 @@ namespace sgl {
       }
       return f;
     }
+    
     static constexpr size_t not_found{18446744073709551615ULL};
 
     constexpr auto to_num(char c) -> int64_t { return (c - '0'); };
+
     constexpr auto decimal(const char* begin, const char* end) -> int64_t {
       if (begin == end)
         return 0;
@@ -66,14 +68,7 @@ namespace sgl {
       }
       return result;
     };
-    constexpr auto get_num_dots(const char* str, size_t n) {
-      size_t count{0};
-      for (size_t i = 0; i < n; ++i) {
-        if (str[i] == '.')
-          ++count;
-      }
-      return count;
-    };
+
 
     constexpr auto get_dot_index(const char* str, size_t n) {
       for (size_t i = 0; i < n; ++i) {
@@ -89,25 +84,14 @@ namespace sgl {
       }
       return sgl::impl::not_found;
     };
-    constexpr auto get_num_es(const char* str, size_t n) {
-      size_t count{0};
-      for (size_t i = 0; i < n; ++i) {
-        if ((str[i] == 'e') || (str[i] == 'E'))
-          ++count;
-      }
-      return count;
-    };
+
 
     constexpr double convert(const char* str, size_t n) {
       size_t dot_index{get_dot_index(str, n)};
       size_t e_index{get_e_index(str, n)};
-      size_t num_es{get_num_es(str, n)};
-      size_t num_dots{get_num_dots(str, n)};
-      // if (num_es > 1 || num_dots > 1)
-      //   throw "logical error: invalid float literal";
-      if (num_es == 0) {
+      if (e_index == not_found) {
         // no exponent -> DEC[.]FRAC
-        if (num_dots == 0) {
+        if (dot_index == not_found) {
           // DEC
           return static_cast<double>(decimal(str, str + n));
         } else {
@@ -120,7 +104,7 @@ namespace sgl {
       } else {
         // has exponent
         // DEC[.]FRAC[Ee][+-]EXP
-        if (num_dots == 0) {
+        if (dot_index == not_found) {
           // DEC[Ee][+-]EXP
           auto dec = decimal(str, str + e_index);
           auto exp = decimal(str + e_index + 1, str + n);

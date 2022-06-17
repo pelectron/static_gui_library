@@ -3,6 +3,7 @@
 #include "sgl_cx_arg.hpp"
 #include "sgl_item_base.hpp"
 #include "sgl_item_concepts.hpp"
+#include "sgl_format.hpp"
 
 namespace sgl {
   /**
@@ -28,7 +29,7 @@ namespace sgl {
     using String = typename Base::String;
     using value_type = T;
     /// concrete formatter type
-    using Formatter_t = Callable<sgl::error(static_string<CharT, TextSize>&, value_type)>;
+    using Formatter_t = Callable<sgl::error(sgl::static_string<CharT, TextSize>&, value_type)>;
 
     static constexpr size_t text_size = TextSize;
 
@@ -217,5 +218,6 @@ namespace sgl {
                                                      Formatter&&             formatter,
                                                      InputHandler&&          handler) noexcept;
 } // namespace sgl
+
 #include "impl/sgl_numeric_impl.hpp"
 #endif
