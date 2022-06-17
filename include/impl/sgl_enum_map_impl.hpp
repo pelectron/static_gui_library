@@ -1,6 +1,6 @@
 #ifndef SGL_ENUM_MAP_IMPL_HPP
 #define SGL_ENUM_MAP_IMPL_HPP
-#include "../enum_map.hpp"
+#include "../sgl_enum_map.hpp"
 namespace sgl {
   template <typename E, size_t N, typename CharT>
   constexpr EnumMap<E, N, CharT>::EnumMap(const EnumMap& other) noexcept : data(other.data) {}

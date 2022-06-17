@@ -1,6 +1,6 @@
 #ifndef SGL_BASIC_ENUM_HPP
 #define SGL_BASIC_ENUM_HPP
-#include "enum_map.hpp"
+#include "sgl_enum_map.hpp"
 #include "sgl_item_base.hpp"
 
 namespace sgl {
