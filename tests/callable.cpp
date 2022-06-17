@@ -1,13 +1,6 @@
 #include "catch2/catch.hpp"
 #include "sgl_callable.hpp"
 
-template <typename T>
-static constexpr T the_answer = 42;
-template <typename T>
-constexpr T get_answer() noexcept {
-  return the_answer<T>;
-}
-
 TEMPLATE_TEST_CASE("Testing sgl::callable",
                    "[callable][template]",
                    int,
@@ -113,8 +106,4 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
     a.reset();
     REQUIRE(a() != capture_lambda());
   }
-}
-SCENARIO("Testing sgl::callable") {
-  STATIC_REQUIRE(sgl::Callable<int(void)>([]() noexcept { return the_answer<int>; })() ==
-                 the_answer<int>);
 }

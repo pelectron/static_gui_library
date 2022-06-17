@@ -1,18 +1,21 @@
 #ifndef SGL_FLOAT_ARG
 #define SGL_FLOAT_ARG
+#include "sgl_static_string.hpp"
+
 #include <cstdint>
+
 namespace sgl {
   /**
    * \brief This struct is used for compile time formatting of floating point values, used in
    * conjunction with the _double and _float operators defined in the sgl::cx_arg_literals
    * namespace.
    * \tparam T value type, i.e. float or double
-   * \tparam N of characters in the literal
+   * \tparam N amount of characters in the literal
    */
   template <typename T, size_t N>
   struct cx_arg {
-    T    value{};         ///< parsed value
-    char string[N + 1]{}; ///< string containing characters plus null terminator
+    T                      value{};  ///< parsed value
+    static_string<char, N> string{}; ///< string containing characters plus null terminator
     /// unary negation operator so that expressions like ```-3.25_float are valid constructs```
     constexpr cx_arg<T, N + 1> operator-() {
       cx_arg<T, N + 1> ret;
@@ -47,17 +50,6 @@ namespace sgl {
     }
     static constexpr size_t not_found{18446744073709551615ULL};
 
-    template <size_t N, size_t I, char c, char... chars>
-    constexpr void fill_array_impl(char (&arr)[N + 1]) {
-      arr[I] = c;
-      if constexpr (sizeof...(chars) != 0) {
-        fill_array_impl<N, I + 1, chars...>(arr);
-      }
-    }
-    template <char... chars>
-    constexpr void fill_array(char (&arr)[sizeof...(chars) + 1]) {
-      fill_array_impl<sizeof...(chars), 0, chars...>(arr);
-    }
     constexpr auto to_num(char c) -> int64_t { return (c - '0'); };
     constexpr auto decimal(const char* begin, const char* end) -> int64_t {
       if (begin == end)
@@ -168,9 +160,9 @@ namespace sgl {
      */
     template <char... chars>
     constexpr cx_arg<double, sizeof...(chars)> operator"" _double() {
-      cx_arg<double, sizeof...(chars)> ret;
-      sgl::impl::fill_array<chars...>(ret.string);
-      ret.value = sgl::impl::convert(ret.string, sizeof...(chars));
+      char                             arr[sizeof...(chars)+1]{chars...};
+      cx_arg<double, sizeof...(chars)> ret{0.0, arr};
+      ret.value = sgl::impl::convert(ret.string.data(), sizeof...(chars));
       return ret;
     }
     /**
@@ -188,9 +180,9 @@ namespace sgl {
      */
     template <char... chars>
     constexpr cx_arg<float, sizeof...(chars)> operator"" _float() {
-      cx_arg<float, sizeof...(chars)> ret;
-      sgl::impl::fill_array<chars...>(ret.string);
-      ret.value = static_cast<float>(sgl::impl::convert(ret.string, sizeof...(chars)));
+      char                             arr[sizeof...(chars)+1]{chars...};
+      cx_arg<float, sizeof...(chars)> ret{0.0f, arr};
+      ret.value = static_cast<float>(sgl::impl::convert(ret.string.data(), sizeof...(chars)));
       return ret;
     }
   } // namespace cx_arg_literals
