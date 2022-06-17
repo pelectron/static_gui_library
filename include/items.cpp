@@ -39,16 +39,12 @@ constexpr bool epsilon_equal(Float f1, Float f2, Float epsilon = 0.000001) {
 }
 constexpr auto float_ = 0.2_float;
 constexpr auto float_2 = 0.2e2_float;
-constexpr auto float_3 = +0.3e11_double;
-constexpr auto float_4 = 1.e-3_float;
 static_assert(epsilon_equal(float_.value, 0.2f, 0.2f), "");
 static_assert(float_2.value == 0.2e2f, "");
 // static_assert(float_3.value == 0.3f, "");
 // static_assert(float_4.value == 1.e-3f, "");
 
 int main() {
-  auto double_1 = 0.3e-11_double;
-  auto double_2 = .3e-11_double;
   auto double_3 = -0.3e-11_double;
   auto double_4 = -.3e+11_double;
 

@@ -26,10 +26,10 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
     SECTION("constexpr copy assignment") {
       constexpr auto copy_assign = [](auto&& f) noexcept {
         Call c;
-        c = f;
+        c = Call(f);
         return c;
       };
-      static_assert(Call{copy_assign(lambda)}() == lambda(),"");
+      static_assert(Call{copy_assign(lambda)}() == lambda(), "");
     }
     SECTION("constexpr copy assignment from callable") {
       constexpr auto assign = [](const Call& f) noexcept -> Call {
@@ -37,7 +37,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
         c = f;
         return c;
       };
-      STATIC_REQUIRE(Call{assign(Call{lambda})}() == lambda());
+      STATIC_REQUIRE(assign(Call{lambda})() == lambda());
     }
     SECTION("constexpr move assignment from callable") {
       constexpr auto move_assign = [](Call&& f) noexcept -> Call {
@@ -45,7 +45,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
         c = std::move(f);
         return c;
       };
-      STATIC_REQUIRE(Call{std::move(move_assign(std::move(Call{lambda})))}() == lambda());
+      STATIC_REQUIRE(move_assign(std::move(Call{lambda}))() == lambda());
     }
     SECTION("constexpr binding") {
       constexpr auto bind = [](auto&& f) {
@@ -57,18 +57,61 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       STATIC_REQUIRE(bind(Call{lambda})() == lambda());
     }
   }
-  REQUIRE(Call{capture_lambda}() == capture_lambda());
-  GIVEN("two callables") {
-    Call call1(lambda);
-    Call call2;
-    WHEN("copy assigning") {
-      call2 = call1;
-      REQUIRE(call2() == call1());
+  SECTION("construction") {
+    SECTION("default") {
+      Call c{};
+      REQUIRE(c() == 0);
     }
-    WHEN("copy constructing") {
-      Call call3(call1);
-      REQUIRE(call3() == call1());
+    SECTION("free function") {
+      Call c{+lambda};
+      REQUIRE(c() == lambda());
     }
+    SECTION("lambda") {
+      Call c{lambda};
+      REQUIRE(c() == lambda());
+    }
+    SECTION("capturing lambda") {
+      Call c{capture_lambda};
+      REQUIRE(c() == capture_lambda());
+    }
+  }
+  SECTION("assignment") {
+    Call a;
+    Call b{lambda};
+    SECTION("copy assignment") {
+      a = b;
+      REQUIRE(a() == b());
+    }
+    SECTION("move assignment") {
+      a = std::move(b);
+      REQUIRE(a() == b());
+    }
+  }
+
+  SECTION("binding") {
+    Call a;
+    SECTION("lambda") {
+      a.bind(lambda);
+      REQUIRE(a() == lambda());
+    }
+    SECTION("free function") {
+      a.bind(+lambda);
+      REQUIRE(a() == lambda());
+    }
+    SECTION("capturing lambda") {
+      a.bind(capture_lambda);
+      REQUIRE(a() == capture_lambda());
+    }
+  }
+  SECTION("reset") {
+    Call a(lambda);
+    REQUIRE(a() == lambda());
+    a.reset();
+    REQUIRE(a() != lambda());
+    a.bind(capture_lambda);
+    REQUIRE(a() == capture_lambda());
+    a.reset();
+    REQUIRE(a() != capture_lambda());
   }
 }
 SCENARIO("Testing sgl::callable") {

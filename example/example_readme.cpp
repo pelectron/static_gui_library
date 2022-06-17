@@ -43,7 +43,7 @@ constexpr auto Page2() noexcept {
 
 auto assign = [](auto&& f)->Callable<int(void)> {
   Callable<int(void)> c;
-  c = f;
+  c = Callable<int(void)>(f);
   return c;
 };
 auto l3 = []() noexcept { return 3; };
