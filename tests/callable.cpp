@@ -21,7 +21,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
   TestType val{25};
   auto     lambda1 = [val]() noexcept -> TestType { return val + the_answer<TestType>; };
   auto     lambda2 = [&val]() noexcept -> TestType { return the_answer<TestType> - val; };
-  static_assert(sgl::is_trivially_destructible_v<decltype(lambda2)>,"");
+  static_assert(std::is_trivially_destructible_v<decltype(lambda2)>,"");
   Call     call(lambda1);
   REQUIRE(call() == lambda1());
   call.bind(lambda2);

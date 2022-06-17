@@ -7,8 +7,7 @@
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
 #include "sgl_tuple.hpp"
-#include "sgl_type_traits.hpp"
-
+#include <type_traits>
 
 namespace sgl {
 
@@ -17,6 +16,10 @@ namespace sgl {
   public:
     static_assert((sgl::is_page_v<Pages> && ...), "");
     using InputHandler_t = Callable<error(Menu<Pages...>&, Input)>;
+    static constexpr bool nothrow_move_constructible =
+        std::is_nothrow_move_constructible_v<sgl::tuple<Pages...>>;
+    static constexpr bool nothrow_copy_constructible =
+        std::is_nothrow_copy_constructible_v<sgl::tuple<Pages...>>;
 
     /// returns type at index I of Pages...
     template <size_t I>
@@ -27,16 +30,16 @@ namespace sgl {
 
     template <typename... P>
     static constexpr bool
-        nothrow_constructible_v = (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, P> && ...);
+        nothrow_constructible_v = (std::is_nothrow_constructible_v<std::decay_t<P>, P> && ...);
     // constructors
     /**
      * \brief Construct a Menu with pages. The active page will be the first parameter passed to the
      * constructor. \param pages page of the menu
      * \{
      */
-    constexpr Menu(Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+    constexpr Menu(Pages&&... pages) noexcept(nothrow_move_constructible);
 
-    constexpr Menu(const Pages&... pages) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
+    constexpr Menu(const Pages&... pages) noexcept(nothrow_copy_constructible);
     /// \}
 
     /**
@@ -45,22 +48,22 @@ namespace sgl {
      * handler input handler instance. \param pages pages of the menu
      * \{
      */
-    template <typename InputHandler,
-              sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
-    constexpr Menu(InputHandler&& handler,
-                   Pages&&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+    // template <typename InputHandler,
+    //           sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
+    // constexpr Menu(InputHandler&& handler,
+    //                Pages&&... pages) noexcept(nothrow_move_constructible);
 
-    template <typename InputHandler,
-              sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
-    constexpr Menu(InputHandler&& handler,
-                   const Pages&... pages) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+    // template <typename InputHandler,
+    //           sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>> = true>
+    // constexpr Menu(InputHandler&& handler,
+    //                const Pages&... pages) noexcept(nothrow_move_constructible);
     /// \}
 
     /// copy ctor
-    constexpr Menu(const Menu& other) noexcept((is_nothrow_copy_constructible_v<Pages> && ...));
+    constexpr Menu(const Menu& other) noexcept(nothrow_copy_constructible);
 
     /// move ctor
-    constexpr Menu(Menu&& other) noexcept((is_nothrow_move_constructible_v<Pages> && ...));
+    constexpr Menu(Menu&& other) noexcept(nothrow_move_constructible);
 
     /**
      * \brief process input

@@ -14,14 +14,14 @@ namespace sgl {
   template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name_and_text,
                                                  InputHandler&& handler) noexcept
-      : handler_(forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
+      : handler_(std::forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
 
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
                                                  StringView     text,
                                                  InputHandler&& handler) noexcept
-      : handler_(forward<InputHandler>(handler)), name_(name), text_(text) {}
+      : handler_(std::forward<InputHandler>(handler)), name_(name), text_(text) {}
 
   template <typename ItemImpl, typename Traits>
   template <typename Menu>
@@ -66,10 +66,10 @@ namespace sgl {
   void ItemBase<ItemImpl, Traits>::set_input_handler(InputHandler&& handler) noexcept {
     static_assert(is_invocable_r_v<sgl::error, InputHandler, item_type&, sgl::Input>,
                   "the provided handler is not a valid input handler.");
-    if constexpr (is_same_v<InputHandler, InputHandler_t>) {
+    if constexpr (std::is_same_v<InputHandler, InputHandler_t>) {
       handler_ = handler;
     } else {
-      handler_.bind(forward<InputHandler>(handler));
+      handler_.bind(std::forward<InputHandler>(handler));
     }
   }
 

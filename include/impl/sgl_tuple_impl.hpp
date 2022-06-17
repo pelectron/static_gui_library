@@ -3,8 +3,9 @@
 
 #include "../sgl_index_sequence.hpp"
 #include "../sgl_type_list.hpp"
-#include "../sgl_type_traits.hpp"
-
+//#include "../sgl_type_traits.hpp"
+#include <type_traits>
+#include <utility>
 
 namespace sgl {
   /// \cond
@@ -12,14 +13,14 @@ namespace sgl {
   class tuple_element {
   public:
     using value_type = T;
-    constexpr tuple_element() noexcept(sgl::is_nothrow_default_constructible_v<T>) = default;
-    constexpr tuple_element(const T& arg) noexcept(sgl::is_nothrow_copy_constructible_v<T>)
+    constexpr tuple_element() noexcept(std::is_nothrow_default_constructible_v<T>) = default;
+    constexpr tuple_element(const T& arg) noexcept(std::is_nothrow_copy_constructible_v<T>)
         : value(arg) {}
-    constexpr tuple_element(T&& arg) noexcept(sgl::is_nothrow_move_constructible_v<T>)
-        : value(sgl::move(arg)) {}
+    constexpr tuple_element(T&& arg) noexcept(std::is_nothrow_move_constructible_v<T>)
+        : value(std::move(arg)) {}
     constexpr tuple_element(const tuple_element&) noexcept(
-        sgl::is_nothrow_copy_constructible_v<T>) = default;
-    constexpr tuple_element(tuple_element&&) noexcept(sgl::is_nothrow_move_constructible_v<T>) =
+        std::is_nothrow_copy_constructible_v<T>) = default;
+    constexpr tuple_element(tuple_element&&) noexcept(std::is_nothrow_move_constructible_v<T>) =
         default;
     constexpr T&       get() noexcept { return value; }
     constexpr const T& get() const noexcept { return value; }
@@ -36,15 +37,15 @@ namespace sgl {
   public:
     /// true if all Ts are nothrow default constructible
     static constexpr bool nothrow_default_constructible =
-        (sgl::is_nothrow_default_constructible_v<Ts> && ...);
+        (std::is_nothrow_default_constructible_v<Ts> && ...);
     /// true if all Ts are nothrow destructible
-    static constexpr bool nothrow_destructible = (sgl::is_nothrow_destructible_v<Ts> && ...);
+    static constexpr bool nothrow_destructible = (std::is_nothrow_destructible_v<Ts> && ...);
     /// true if all Ts are nothrow copy constructible
     static constexpr bool nothrow_copy_constructible =
-        (sgl::is_nothrow_copy_constructible_v<Ts> && ...);
+        (std::is_nothrow_copy_constructible_v<Ts> && ...);
     /// true if all Ts are nothrow move constructible
     static constexpr bool nothrow_move_constructible =
-        (sgl::is_nothrow_move_constructible_v<Ts> && ...);
+        (std::is_nothrow_move_constructible_v<Ts> && ...);
 
     template <size_t I>
     using elem_at_t = tuple_element<I, sgl::type_at_t<I, sgl::type_list<Ts...>>>;
@@ -56,7 +57,7 @@ namespace sgl {
         : tuple_element<Ns, Ts>(ts)... {}
 
     constexpr tuple_impl(Ts&&... ts) noexcept(nothrow_move_constructible)
-        : tuple_element<Ns, Ts>(sgl::move(ts))... {}
+        : tuple_element<Ns, Ts>(std::move(ts))... {}
 
     template <size_t I>
     constexpr typename elem_at_t<I>::value_type& get_elem() noexcept {

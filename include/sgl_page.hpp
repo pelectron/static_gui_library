@@ -7,7 +7,7 @@
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
 #include "sgl_tuple.hpp"
-
+#include "sgl_type_traits.hpp"
 namespace sgl {
 
   template <typename CharT, typename... Items>
@@ -32,14 +32,15 @@ namespace sgl {
     /// predicate that checks if F conforms to the PageAction concept, i.e. an instance of F must be
     /// nothrow invocable with a reference to Page<CharT, Items...> and return an sgl::error value.
     template <typename F>
-    using PageAction = sgl::nothrow_invocable_r<sgl::error, F, Page<CharT, Items...>&>;
+    static constexpr bool PageAction =
+        std::is_nothrow_invocable_r_v<sgl::error, F, Page<CharT, Items...>&>;
 
     /// predicate that checks if F conforms to the PageInputHandler concept, i.e. an instance of F
     /// must be nothrow invocable with a reference to Page<CharT, Items...> and an sgl::Input value
     /// and return an sgl::error value.
     template <typename F>
-    using PageInputHandler =
-        sgl::nothrow_invocable_r<sgl::error, F, Page<CharT, Items...>&, sgl::Input>;
+    static constexpr bool PageInputHandler =
+        std::is_nothrow_invocable_r_v<sgl::error, F, Page<CharT, Items...>&, sgl::Input>;
 
     /**
      * \brief get item type at index I
@@ -50,18 +51,22 @@ namespace sgl {
 
     template <typename... P>
     static constexpr bool nothrow_move_constructible_v =
-        (sgl::is_nothrow_constructible_v<sgl::decay_t<P>,
-                                         sgl::add_rvalue_reference<sgl::decay_t<P>>> &&
+        (std::is_nothrow_constructible_v<std::decay_t<P>,
+                                         std::add_rvalue_reference<std::decay_t<P>>> &&
          ...);
 
     template <typename... P>
     static constexpr bool nothrow_copy_constructible_v =
-        (sgl::is_nothrow_constructible_v<sgl::decay_t<P>, const P&> && ...);
+        (std::is_nothrow_constructible_v<std::decay_t<P>, const P&> && ...);
+    static constexpr bool nothrow_copy_constructible =
+        std::is_nothrow_copy_constructible_v<sgl::tuple<Items...>>;
+    static constexpr bool nothrow_move_constructible =
+        std::is_nothrow_move_constructible_v<sgl::tuple<Items...>>;
     /// copy constructor
-    constexpr Page(const Page& other) noexcept(nothrow_copy_constructible_v<Items...>);
+    constexpr Page(const Page& other) noexcept(nothrow_copy_constructible);
 
     /// move constructor
-    constexpr Page(Page&& other) noexcept(nothrow_move_constructible_v<Items...>);
+    constexpr Page(Page&& other) noexcept(nothrow_move_constructible);
 
     /**
      * \brief Construct a page with default input handling, default enter/exit
@@ -80,11 +85,11 @@ namespace sgl {
      */
     constexpr Page(StringView name,
                    StringView title,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible);
 
     constexpr Page(StringView name,
                    StringView title,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible);
     /// \}
 
     ///\{
@@ -92,13 +97,13 @@ namespace sgl {
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible);
 
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible);
     /// \}
 
     /// \{
@@ -107,65 +112,119 @@ namespace sgl {
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    size_t                  start_index,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible);
 
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    size_t                  start_index,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible);
     /// \}
 
     /// \{
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    InputHandler&&          handler,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                start_edit,
+                                stop_edit,
+                                0,
+                                &default_page_action,
+                                &default_page_action,
+                                std::forward<InputHandler>(handler),
+                                std::move(items)...) {}
 
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    InputHandler&&          handler,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                start_edit,
+                                stop_edit,
+                                0,
+                                &default_page_action,
+                                &default_page_action,
+                                std::forward<InputHandler>(handler),
+                                items...) {}
     /// \}
 
     /// \{
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    InputHandler&&          handler,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                sgl::Input::enter,
+                                sgl::Input::enter,
+                                0,
+                                &default_page_action,
+                                &default_page_action,
+                                std::forward<InputHandler>(handler),
+                                std::move(items)...) {}
 
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    InputHandler&&          handler,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                sgl::Input::enter,
+                                sgl::Input::enter,
+                                0,
+                                &default_page_action,
+                                &default_page_action,
+                                std::forward<InputHandler>(handler),
+                                items...) {}
     /// \}
 
     /// \{
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    size_t                  start_index,
                    InputHandler&&          handler,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
-    template <typename InputHandler, constraint_t<PageInputHandler, InputHandler> = true>
+                   Items&&... items) noexcept(nothrow_move_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                start_edit,
+                                stop_edit,
+                                start_index,
+                                std::forward<InputHandler>(handler),
+                                &default_page_action,
+                                &default_page_action,
+                                std::move(items)...) {}
+    template <typename InputHandler, std::enable_if_t<PageInputHandler<InputHandler>, bool> = true>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
                    sgl::Input              stop_edit,
                    size_t                  start_index,
                    InputHandler&&          handler,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible)
+        : Page<CharT, Items...>(name,
+                                title,
+                                start_edit,
+                                stop_edit,
+                                start_index,
+                                std::forward<InputHandler>(handler),
+                                &default_page_action,
+                                &default_page_action,
+                                items...) {}
     /// \}
 
     /// ctor with all options
@@ -173,9 +232,9 @@ namespace sgl {
     template <typename InputHandler,
               typename EnterAction,
               typename ExitAction,
-              constraint_t<PageInputHandler, InputHandler> = true,
-              constraint_t<PageAction, EnterAction> = true,
-              constraint_t<PageAction, ExitAction> = true>
+              std::enable_if_t<PageInputHandler<InputHandler>, bool> = true,
+              SGL_CONSTRAIN(PageAction, EnterAction),
+              SGL_CONSTRAIN(PageAction, ExitAction)>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
@@ -184,14 +243,18 @@ namespace sgl {
                    InputHandler&&          handler,
                    EnterAction&&           on_enter,
                    ExitAction&&            on_exit,
-                   Items&&... items) noexcept(nothrow_move_constructible_v<Items...>);
+                   Items&&... items) noexcept(nothrow_move_constructible)
+        : items_(std::move(items)...), input_handler_(std::forward<InputHandler>(handler)),
+          on_enter_(std::forward<EnterAction>(on_enter)),
+          on_exit_(std::forward<ExitAction>(on_exit)), name_(name), title_(title),
+          start_edit_(start_edit), stop_edit_(stop_edit), index_(start_index) {}
 
     template <typename InputHandler,
               typename EnterAction,
               typename ExitAction,
-              constraint_t<PageInputHandler, InputHandler> = true,
-              constraint_t<PageAction, EnterAction> = true,
-              constraint_t<PageAction, ExitAction> = true>
+              std::enable_if_t<PageInputHandler<InputHandler>, bool> = true,
+              SGL_CONSTRAIN(PageAction, EnterAction),
+              SGL_CONSTRAIN(PageAction, ExitAction)>
     constexpr Page(sgl::string_view<CharT> name,
                    sgl::string_view<CharT> title,
                    sgl::Input              start_edit,
@@ -200,7 +263,11 @@ namespace sgl {
                    InputHandler&&          handler,
                    EnterAction&&           on_enter,
                    ExitAction&&            on_exit,
-                   const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>);
+                   const Items&... items) noexcept(nothrow_copy_constructible)
+        : items_(items...), input_handler_(std::forward<InputHandler>(handler)),
+          on_enter_(std::forward<EnterAction>(on_enter)),
+          on_exit_(std::forward<ExitAction>(on_exit)), name_(name), title_(title),
+          start_edit_(start_edit), stop_edit_(stop_edit), index_(start_index) {}
     /// \}
 
     /// get the name of the page.
@@ -311,16 +378,20 @@ namespace sgl {
      * \tparam PageAction action type. See PageAction_t for more info.
      * \param action action instance
      */
-    template <typename Action, constraint_t<PageAction, Action> = true>
-    constexpr void set_on_enter(Action&& action) noexcept;
+    template <typename Action, SGL_CONSTRAIN(PageAction, Action)>
+    constexpr void set_on_enter(Action&& action) noexcept {
+      on_enter_ = std::forward<Action>(action);
+    }
 
     /**
      * \brief Set exit action.
      * \tparam PageAction action type. See PageAction_t for more info.
      * \param action action instance
      */
-    template <typename Action, constraint_t<PageAction, Action> = true>
-    constexpr void set_on_exit(Action&& action) noexcept;
+    template <typename Action, SGL_CONSTRAIN(PageAction, Action)>
+    constexpr void set_on_exit(Action&& action) noexcept {
+      on_exit_ = std::forward<Action>(action);
+    }
 
   private:
     /// \cond
@@ -367,12 +438,12 @@ namespace sgl {
   }
   template <typename F, typename CharT, typename... Items>
   constexpr void for_each(Page<CharT, Items...>& page, F&& f) {
-    page.template for_each_item(forward<F>(f));
+    page.template for_each_item(std::forward<F>(f));
   }
 
   template <typename F, typename CharT, typename... Items>
   constexpr void for_each(const Page<CharT, Items...>& page, F&& f) {
-    page.template for_each_item(forward<F>(f));
+    page.template for_each_item(std::forward<F>(f));
   }
 
   /// \addtogroup PageFactories "Page Factories"
@@ -385,249 +456,261 @@ namespace sgl {
    * \param name name of the page. Used by the PageLink class to switch pages.
    * \param title title of the page
    * \param items items of the page
-   * \return constexpr Page<CharT, decay_t<Items>...>
+   * \return constexpr Page<CharT, std::decay_t<Items>...>
    */
-  template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...>
+  template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  constexpr Page<CharT, std::decay_t<Items>...>
       make_page(sgl::string_view<CharT> name, sgl::string_view<CharT> title, Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name, title, forward<Items>(items)...);
+    return Page<CharT, std::decay_t<Items>...>(name, title, std::forward<Items>(items)...);
   }
 
-  /**
-   * \brief create page with a custom start index, i.e. the index of the item
-   * that is considered current.
-   * \tparam CharT character type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_index active page index
-   * \param items items of the page
-   * \return constexpr Page<CharT, decay_t<Items>...>
-   */
-  template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     size_t                  start_index,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name, title, start_index, forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create page with a custom start index, i.e. the index of the item
+  //  * that is considered current.
+  //  * \tparam CharT character type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_index active page index
+  //  * \param items items of the page
+  //  * \return constexpr Page<CharT, std::decay_t<Items>...>
+  //  */
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         size_t                  start_index,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_index,
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief create a page with custom start index and start and stop edit inputs.
-   * \tparam CharT character type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_edit input to start edit mode on
-   * \param stop_edit input to stop edit mode on
-   * \param start_index active page index
-   * \param items items of the page
-   */
-  template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     sgl::Input              start_edit,
-                                                     sgl::Input              stop_edit,
-                                                     size_t                  start_index,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          start_edit,
-                                          stop_edit,
-                                          start_index,
-                                          forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create a page with custom start index and start and stop edit inputs.
+  //  * \tparam CharT character type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_edit input to start edit mode on
+  //  * \param stop_edit input to stop edit mode on
+  //  * \param start_index active page index
+  //  * \param items items of the page
+  //  */
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         sgl::Input              start_edit,
+  //                                                         sgl::Input              stop_edit,
+  //                                                         size_t                  start_index,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_edit,
+  //                                              stop_edit,
+  //                                              start_index,
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief create a page with custom start and stop edit inputs.
-   * \tparam CharT character type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_edit input to start edit mode on
-   * \param stop_edit input to stop edit mode on
-   * \param items items of the page
-   */
-  template <typename CharT, typename... Items, sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     sgl::Input              start_edit,
-                                                     sgl::Input              stop_edit,
-                                                     Items&&... items) {
-    return make_page(name, title, start_edit, stop_edit, 0, forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create a page with custom start and stop edit inputs.
+  //  * \tparam CharT character type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_edit input to start edit mode on
+  //  * \param stop_edit input to stop edit mode on
+  //  * \param items items of the page
+  //  */
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         sgl::Input              start_edit,
+  //                                                         sgl::Input              stop_edit,
+  //                                                         Items&&... items) {
+  //   return make_page(name, title, start_edit, stop_edit, 0, std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief create a page with custom input handler and start index
-   * \tparam CharT character types
-   * \tparam InputHandler input handler type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_index active page index
-   * \param handler input handler
-   * \param items items of the page
-   * \return constexpr Page<CharT, decay_t<Items>...>
-   */
-  template <typename CharT,
-            typename InputHandler,
-            typename... Items,
-            sgl::enable_if_is_input_handler<InputHandler, Page<CharT, decay_t<Items>...>> = true,
-            sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     size_t                  start_index,
-                                                     InputHandler&&          handler,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          start_index,
-                                          forward<InputHandler>(handler),
-                                          forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create a page with custom input handler and start index
+  //  * \tparam CharT character types
+  //  * \tparam InputHandler input handler type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_index active page index
+  //  * \param handler input handler
+  //  * \param items items of the page
+  //  * \return constexpr Page<CharT, std::decay_t<Items>...>
+  //  */
+  // template <
+  //     typename CharT,
+  //     typename InputHandler,
+  //     typename... Items,
+  //     sgl::enable_if_is_input_handler<InputHandler, Page<CharT, std::decay_t<Items>...>> = true,
+  //     std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         size_t                  start_index,
+  //                                                         InputHandler&&          handler,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_index,
+  //                                              std::forward<InputHandler>(handler),
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief Create a page with default enter and exit action.
-   * \tparam CharT character type
-   * \tparam InputHandler input handler type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_edit input to start edit mode on
-   * \param stop_edit input to stop edit mode on
-   * \param start_index active page index
-   * \param handler input handler
-   * \param items items of the page
-   */
-  template <typename CharT,
-            typename InputHandler,
-            typename... Items,
-            sgl::enable_if_is_input_handler<InputHandler, Page<CharT, decay_t<Items>...>> = true,
-            sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     sgl::Input              start_edit,
-                                                     sgl::Input              stop_edit,
-                                                     size_t                  start_index,
-                                                     InputHandler&&          handler,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          start_edit,
-                                          stop_edit,
-                                          start_index,
-                                          forward<InputHandler>(handler),
-                                          forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief Create a page with default enter and exit action.
+  //  * \tparam CharT character type
+  //  * \tparam InputHandler input handler type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_edit input to start edit mode on
+  //  * \param stop_edit input to stop edit mode on
+  //  * \param start_index active page index
+  //  * \param handler input handler
+  //  * \param items items of the page
+  //  */
+  // template <
+  //     typename CharT,
+  //     typename InputHandler,
+  //     typename... Items,
+  //     sgl::enable_if_is_input_handler<InputHandler, Page<CharT, std::decay_t<Items>...>> = true,
+  //     std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         sgl::Input              start_edit,
+  //                                                         sgl::Input              stop_edit,
+  //                                                         size_t                  start_index,
+  //                                                         InputHandler&&          handler,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_edit,
+  //                                              stop_edit,
+  //                                              start_index,
+  //                                              std::forward<InputHandler>(handler),
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief create a page with custom input handler and start/ stop edit tokens
-   * \tparam CharT character type
-   * \tparam InputHandler input handler type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_edit input to start edit mode on
-   * \param stop_edit input to stop edit mode on
-   * \param handler input handler
-   * \param items items of the page
-   */
-  template <typename CharT,
-            typename InputHandler,
-            typename... Items,
-            sgl::enable_if_is_input_handler<InputHandler, Page<CharT, decay_t<Items>...>> = true,
-            sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     sgl::Input              start_edit,
-                                                     sgl::Input              stop_edit,
-                                                     InputHandler&&          handler,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          start_edit,
-                                          stop_edit,
-                                          forward<InputHandler>(handler),
-                                          forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create a page with custom input handler and start/ stop edit tokens
+  //  * \tparam CharT character type
+  //  * \tparam InputHandler input handler type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_edit input to start edit mode on
+  //  * \param stop_edit input to stop edit mode on
+  //  * \param handler input handler
+  //  * \param items items of the page
+  //  */
+  // template <
+  //     typename CharT,
+  //     typename InputHandler,
+  //     typename... Items,
+  //     sgl::enable_if_is_input_handler<InputHandler, Page<CharT, std::decay_t<Items>...>> = true,
+  //     std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         sgl::Input              start_edit,
+  //                                                         sgl::Input              stop_edit,
+  //                                                         InputHandler&&          handler,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_edit,
+  //                                              stop_edit,
+  //                                              std::forward<InputHandler>(handler),
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief create a page with custom input handler.
-   * \tparam CharT
-   * \tparam InputHandler
-   * \tparam Items
-   * \param name
-   * \param title
-   * \param handler
-   * \param items
-   * \return constexpr Page<CharT, decay_t<Items>...>
-   */
-  template <typename CharT,
-            typename InputHandler,
-            typename... Items,
-            sgl::enable_if_is_input_handler<InputHandler, Page<CharT, decay_t<Items>...>> = true,
-            sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     InputHandler&&          handler,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          forward<InputHandler>(handler),
-                                          forward<Items>(items)...);
-  }
+  // /**
+  //  * \brief create a page with custom input handler.
+  //  * \tparam CharT
+  //  * \tparam InputHandler
+  //  * \tparam Items
+  //  * \param name
+  //  * \param title
+  //  * \param handler
+  //  * \param items
+  //  * \return constexpr Page<CharT, std::decay_t<Items>...>
+  //  */
+  // template <
+  //     typename CharT,
+  //     typename InputHandler,
+  //     typename... Items,
+  //     sgl::enable_if_is_input_handler<InputHandler, Page<CharT, std::decay_t<Items>...>> = true,
+  //     std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         InputHandler&&          handler,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              std::forward<InputHandler>(handler),
+  //                                              std::forward<Items>(items)...);
+  // }
 
-  /**
-   * \brief Create a page with every customizable option.
-   * \tparam CharT character type
-   * \tparam InputHandler input handler type
-   * \tparam EnterAction enter action type
-   * \tparam ExitAction exit action type
-   * \tparam Items item types
-   * \param name name of the page. Used by the PageLink class to switch pages.
-   * \param title title of the page
-   * \param start_edit input to start edit mode on
-   * \param stop_edit input to stop edit mode on
-   * \param start_index active page index
-   * \param handler input handler
-   * \param on_enter action to invoke when the page is entered
-   * \param on_exit action to invoke when the page is exited
-   * \param items items of the page
-   */
-  template <
-      typename CharT,
-      typename InputHandler,
-      typename EnterAction,
-      typename ExitAction,
-      typename... Items,
-      sgl::enable_if_is_input_handler<InputHandler, Page<CharT, decay_t<Items>...>> = true,
-      sgl::enable_if_t<
-          sgl::is_nothrow_invocable_r_v<sgl::error, EnterAction, Page<CharT, decay_t<Items>...>&>,
-          bool> = true,
-      sgl::enable_if_t<
-          sgl::is_nothrow_invocable_r_v<sgl::error, ExitAction, Page<CharT, decay_t<Items>...>&>,
-          bool> = true,
-      sgl::constraint_for_all_t<is_item, Items...> = true>
-  constexpr Page<CharT, decay_t<Items>...> make_page(sgl::string_view<CharT> name,
-                                                     sgl::string_view<CharT> title,
-                                                     sgl::Input              start_edit,
-                                                     sgl::Input              stop_edit,
-                                                     size_t                  start_index,
-                                                     InputHandler&&          handler,
-                                                     EnterAction&&           on_enter,
-                                                     ExitAction&&            on_exit,
-                                                     Items&&... items) {
-    return Page<CharT, decay_t<Items>...>(name,
-                                          title,
-                                          start_edit,
-                                          stop_edit,
-                                          start_index,
-                                          forward<InputHandler>(handler),
-                                          forward<EnterAction>(on_enter),
-                                          forward<ExitAction>(on_exit),
-                                          forward<Items>(items)...);
-  }
-  /// \}
+  // /**
+  //  * \brief Create a page with every customizable option.
+  //  * \tparam CharT character type
+  //  * \tparam InputHandler input handler type
+  //  * \tparam EnterAction enter action type
+  //  * \tparam ExitAction exit action type
+  //  * \tparam Items item types
+  //  * \param name name of the page. Used by the PageLink class to switch pages.
+  //  * \param title title of the page
+  //  * \param start_edit input to start edit mode on
+  //  * \param stop_edit input to stop edit mode on
+  //  * \param start_index active page index
+  //  * \param handler input handler
+  //  * \param on_enter action to invoke when the page is entered
+  //  * \param on_exit action to invoke when the page is exited
+  //  * \param items items of the page
+  //  */
+  // template <typename CharT,
+  //           typename InputHandler,
+  //           typename EnterAction,
+  //           typename ExitAction,
+  //           typename... Items,
+  //           std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error,
+  //                                                          InputHandler,
+  //                                                          Page<CharT, std::decay_t<Items>...>&>,
+  //                            bool> = true,
+  //           std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error,
+  //                                                          EnterAction,
+  //                                                          Page<CharT, std::decay_t<Items>...>&,
+  //                                                          sgl::Input>,
+  //                            bool> = true,
+  //           std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error,
+  //                                                          ExitAction,
+  //                                                          Page<CharT, std::decay_t<Items>...>&>,
+  //                            bool> = true,
+  //           SGL_CONSTRAIN_FOR_ALL(sgl::is_item_v, Items)>
+  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  //                                                         sgl::string_view<CharT> title,
+  //                                                         sgl::Input              start_edit,
+  //                                                         sgl::Input              stop_edit,
+  //                                                         size_t                  start_index,
+  //                                                         InputHandler&&          handler,
+  //                                                         EnterAction&&           on_enter,
+  //                                                         ExitAction&&            on_exit,
+  //                                                         Items&&... items) {
+  //   return Page<CharT, std::decay_t<Items>...>(name,
+  //                                              title,
+  //                                              start_edit,
+  //                                              stop_edit,
+  //                                              start_index,
+  //                                              std::forward<InputHandler>(handler),
+  //                                              std::forward<EnterAction>(on_enter),
+  //                                              std::forward<ExitAction>(on_exit),
+  //                                              std::forward<Items>(items)...);
+  // }
+  // /// \}
 
 } // namespace sgl
 #include "impl/sgl_page_impl.hpp"

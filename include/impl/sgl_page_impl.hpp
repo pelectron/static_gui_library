@@ -3,42 +3,38 @@
 #include "../sgl_page.hpp"
 namespace sgl {
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(const Page& other) noexcept(
-      nothrow_copy_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(const Page& other) noexcept(nothrow_copy_constructible)
       : items_(other.items_), input_handler_(other.input_handler_), on_enter_(other.on_enter_),
         on_exit_(other.on_exit_), name_(other.name_), title_(other.title_),
         start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
         elem_in_edit_(other.elem_in_edit_), index_(other.index_) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(Page&& other) noexcept(
-      nothrow_move_constructible_v<Items...>)
-      : items_(move(other.items_)), input_handler_(move(other.input_handler_)),
-        on_enter_(move(other.on_enter_)), on_exit_(move(other.on_exit_)), name_(move(other.name_)),
-        title_(move(other.title_)), start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
+  constexpr Page<CharT, Items...>::Page(Page&& other) noexcept(nothrow_move_constructible)
+      : items_(std::move(other.items_)), input_handler_(std::move(other.input_handler_)),
+        on_enter_(std::move(other.on_enter_)), on_exit_(std::move(other.on_exit_)),
+        name_(std::move(other.name_)), title_(std::move(other.title_)),
+        start_edit_(other.start_edit_), stop_edit_(other.stop_edit_),
         elem_in_edit_(other.elem_in_edit_), index_(other.index_) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      StringView name,
-      StringView title,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
-      : items_(move(items)...), name_(name), title_(title) {}
+  constexpr Page<CharT, Items...>::Page(StringView name,
+                                        StringView title,
+                                        Items&&... items) noexcept(nothrow_move_constructible)
+      : items_(std::move(items)...), name_(name), title_(title) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      StringView name,
-      StringView title,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(StringView name,
+                                        StringView title,
+                                        const Items&... items) noexcept(nothrow_copy_constructible)
       : items_(items...), name_(name), title_(title) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(sgl::string_view<CharT> name,
+                                        sgl::string_view<CharT> title,
+                                        sgl::Input              start_edit,
+                                        sgl::Input              stop_edit,
+                                        Items&&... items) noexcept(nothrow_move_constructible)
       : Page<CharT, Items...>(name,
                               title,
                               start_edit,
@@ -47,15 +43,14 @@ namespace sgl {
                               &default_page_action,
                               &default_page_action,
                               &default_handle_input,
-                              move(items)...) {}
+                              std::move(items)...) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(sgl::string_view<CharT> name,
+                                        sgl::string_view<CharT> title,
+                                        sgl::Input              start_edit,
+                                        sgl::Input              stop_edit,
+                                        const Items&... items) noexcept(nothrow_copy_constructible)
       : Page<CharT, Items...>(name,
                               title,
                               start_edit,
@@ -67,13 +62,12 @@ namespace sgl {
                               items...) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(sgl::string_view<CharT> name,
+                                        sgl::string_view<CharT> title,
+                                        sgl::Input              start_edit,
+                                        sgl::Input              stop_edit,
+                                        size_t                  start_index,
+                                        Items&&... items) noexcept(nothrow_move_constructible)
       : Page<CharT, Items...>(name,
                               title,
                               start_edit,
@@ -82,16 +76,15 @@ namespace sgl {
                               &default_page_action,
                               &default_page_action,
                               &default_handle_input,
-                              move(items)...) {}
+                              std::move(items)...) {}
 
   template <typename CharT, typename... Items>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
+  constexpr Page<CharT, Items...>::Page(sgl::string_view<CharT> name,
+                                        sgl::string_view<CharT> title,
+                                        sgl::Input              start_edit,
+                                        sgl::Input              stop_edit,
+                                        size_t                  start_index,
+                                        const Items&... items) noexcept(nothrow_copy_constructible)
       : Page<CharT, Items...>(name,
                               title,
                               start_edit,
@@ -101,166 +94,6 @@ namespace sgl {
                               &default_page_action,
                               &default_handle_input,
                               items...) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      InputHandler&&          handler,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              start_edit,
-                              stop_edit,
-                              0,
-                              &default_page_action,
-                              &default_page_action,
-                              forward<InputHandler>(handler),
-                              move(items)...) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      InputHandler&&          handler,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              start_edit,
-                              stop_edit,
-                              0,
-                              &default_page_action,
-                              &default_page_action,
-                              forward<InputHandler>(handler),
-                              items...) {}
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      InputHandler&&          handler,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              sgl::Input::enter,
-                              sgl::Input::enter,
-                              0,
-                              &default_page_action,
-                              &default_page_action,
-                              forward<InputHandler>(handler),
-                              move(items)...) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      InputHandler&&          handler,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              sgl::Input::enter,
-                              sgl::Input::enter,
-                              0,
-                              &default_page_action,
-                              &default_page_action,
-                              forward<InputHandler>(handler),
-                              move(items)...) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      InputHandler&&          handler,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              start_edit,
-                              stop_edit,
-                              start_index,
-                              forward<InputHandler>(handler),
-                              &default_page_action,
-                              &default_page_action,
-                              move(items)...) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      InputHandler&&          handler,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
-      : Page<CharT, Items...>(name,
-                              title,
-                              start_edit,
-                              stop_edit,
-                              start_index,
-                              forward<InputHandler>(handler),
-                              &default_page_action,
-                              &default_page_action,
-                              items...) {}
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            typename EnterAction,
-            typename ExitAction,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>,
-            sgl::constraint_t<Page<CharT, Items...>::template PageAction, EnterAction>,
-            sgl::constraint_t<Page<CharT, Items...>::template PageAction, ExitAction>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      InputHandler&&          handler,
-      EnterAction&&           on_enter,
-      ExitAction&&            on_exit,
-      Items&&... items) noexcept(nothrow_move_constructible_v<Items...>)
-      : items_(move(items)...), input_handler_(forward<InputHandler>(handler)),
-        on_enter_(forward<EnterAction>(on_enter)), on_exit_(forward<ExitAction>(on_exit)),
-        name_(name), title_(title), start_edit_(start_edit), stop_edit_(stop_edit),
-        index_(start_index) {}
-
-  template <typename CharT, typename... Items>
-  template <typename InputHandler,
-            typename EnterAction,
-            typename ExitAction,
-            sgl::constraint_t<Page<CharT, Items...>::template PageInputHandler, InputHandler>,
-            sgl::constraint_t<Page<CharT, Items...>::template PageAction, EnterAction>,
-            sgl::constraint_t<Page<CharT, Items...>::template PageAction, ExitAction>>
-  constexpr Page<CharT, Items...>::Page(
-      sgl::string_view<CharT> name,
-      sgl::string_view<CharT> title,
-      sgl::Input              start_edit,
-      sgl::Input              stop_edit,
-      size_t                  start_index,
-      InputHandler&&          handler,
-      EnterAction&&           on_enter,
-      ExitAction&&            on_exit,
-      const Items&... items) noexcept(nothrow_copy_constructible_v<Items...>)
-      : items_(items...), input_handler_(forward<InputHandler>(handler)),
-        on_enter_(forward<EnterAction>(on_enter)), on_exit_(forward<ExitAction>(on_exit)),
-        name_(name), title_(title), start_edit_(start_edit), stop_edit_(stop_edit),
-        index_(start_index) {}
 
   template <typename CharT, typename... Items>
   constexpr typename Page<CharT, Items...>::StringView
@@ -352,25 +185,25 @@ namespace sgl {
   template <typename CharT, typename... Items>
   template <typename F>
   constexpr void Page<CharT, Items...>::for_each_item(F&& f) noexcept(noexcept(f)) {
-    sgl::for_each(items_, forward<F>(f));
+    sgl::for_each(items_, std::forward<F>(f));
   }
 
   template <typename CharT, typename... Items>
   template <typename F>
   constexpr void Page<CharT, Items...>::for_each_item(F&& f) const noexcept(noexcept(f)) {
-    sgl::for_each(items_, forward<F>(f));
+    sgl::for_each(items_, std::forward<F>(f));
   }
 
   template <typename CharT, typename... Items>
   template <typename F>
   constexpr void Page<CharT, Items...>::for_current_item(F&& f) noexcept(noexcept(f)) {
-    for_current_item_impl<0>(forward<F>(f));
+    for_current_item_impl<0>(std::forward<F>(f));
   }
 
   template <typename CharT, typename... Items>
   template <typename F>
   constexpr void Page<CharT, Items...>::for_current_item(F&& f) const noexcept(noexcept(f)) {
-    for_current_item_impl<0>(forward<F>(f));
+    for_current_item_impl<0>(std::forward<F>(f));
   }
 
   template <typename CharT, typename... Items>
@@ -381,18 +214,6 @@ namespace sgl {
   template <typename CharT, typename... Items>
   constexpr sgl::error Page<CharT, Items...>::on_exit() noexcept {
     return on_exit_(*this);
-  }
-
-  template <typename CharT, typename... Items>
-  template <typename Action, constraint_t<Page<CharT, Items...>::template PageAction, Action>>
-  constexpr void Page<CharT, Items...>::set_on_enter(Action&& action) noexcept {
-    on_enter_ = forward<Action>(action);
-  }
-
-  template <typename CharT, typename... Items>
-  template <typename Action, constraint_t<Page<CharT, Items...>::template PageAction, Action>>
-  constexpr void Page<CharT, Items...>::set_on_exit(Action&& action) noexcept {
-    on_exit_ = forward<Action>(action);
   }
 
   template <typename CharT, typename... Items>
@@ -445,7 +266,7 @@ namespace sgl {
       if (index_ == I) {
         f(this->get_item<I>());
       } else {
-        this->for_current_item_impl<I + 1>(forward<F>(f));
+        this->for_current_item_impl<I + 1>(std::forward<F>(f));
       }
     }
   }
@@ -459,7 +280,7 @@ namespace sgl {
       if (index_ == I) {
         f(this->get_item<I>());
       } else {
-        this->for_current_item_impl<I + 1>(forward<F>(f));
+        this->for_current_item_impl<I + 1>(std::forward<F>(f));
       }
     }
   }

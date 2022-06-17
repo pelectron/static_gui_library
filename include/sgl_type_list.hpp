@@ -1,6 +1,6 @@
 #ifndef CLIP_TYPE_LIST_HPP
 #define CLIP_TYPE_LIST_HPP
-#include "sgl_type_traits.hpp"
+#include <type_traits>
 namespace sgl {
   ///\cond
   template <typename... Ts>
@@ -39,7 +39,7 @@ namespace sgl {
 
   template <typename T, typename T1, typename... Ts>
   constexpr size_t index_of_impl(size_t i = 0) {
-    if constexpr (is_same_v<T, T1>) {
+    if constexpr (std::is_same_v<T, T1>) {
       return i;
     }
     if constexpr (sizeof...(Ts) == 0) {
@@ -90,7 +90,7 @@ namespace sgl {
 
   template <typename List>
   using pop_front_t = typename pop_front<List>::type;
-  static_assert(is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>, "");
+  static_assert(std::is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>, "");
 
   /**
    * \brief get N-th type in type_list List
@@ -125,9 +125,9 @@ namespace sgl {
   template <size_t N, typename List>
   using type_at_t = typename type_at<N, List>::type;
 
-  static_assert(is_same_v<type_at_t<0, type_list<int, double, char>>, int>, "");
-  static_assert(is_same_v<type_at_t<1, type_list<int, double, char>>, double>, "");
-  static_assert(is_same_v<type_at_t<2, type_list<int, double, char>>, char>, "");
+  static_assert(std::is_same_v<type_at_t<0, type_list<int, double, char>>, int>, "");
+  static_assert(std::is_same_v<type_at_t<1, type_list<int, double, char>>, double>, "");
+  static_assert(std::is_same_v<type_at_t<2, type_list<int, double, char>>, char>, "");
   template <typename List>
   using first_t = head_t<List>;
   template <typename List>
@@ -156,7 +156,7 @@ namespace sgl {
   template <typename T, typename List>
   using push_back_t = typename push_back<T, List>::type;
 
-  static_assert(is_same_v<push_back_t<double, type_list<int, char>>, type_list<int, char, double>>,
+  static_assert(std::is_same_v<push_back_t<double, type_list<int, char>>, type_list<int, char, double>>,
                 "");
 
   template <typename List, size_t I>

@@ -19,8 +19,8 @@ namespace sgl {
   template <size_t TextSize, typename CharT, typename T>
   class Numeric : public sgl::ItemBase<Numeric<TextSize, CharT, T>> {
   public:
-    static_assert(is_integral_v<T> || is_floating_point_v<T>, "T must be an integral type");
-    static_assert(!is_same_v<bool, T>, "T must not be bool. Use Boolean_t for a boolean item.");
+    static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "T must be an integral type");
+    static_assert(!std::is_same_v<bool, T>, "T must not be bool. Use Boolean_t for a boolean item.");
     using item_type = Numeric<TextSize, CharT, T>;
     using Base = sgl::ItemBase<item_type>;
 

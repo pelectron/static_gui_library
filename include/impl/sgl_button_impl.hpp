@@ -16,7 +16,7 @@ namespace sgl {
   constexpr Button<TextSize, CharT>::Button(StringView     name,
                                             StringView     text,
                                             ClickHandler&& click_handler) noexcept
-      : Base(name, text, forward<ClickHandler>(click_handler)) {}
+      : Base(name, text, std::forward<ClickHandler>(click_handler)) {}
 
   template <size_t TextSize, typename CharT>
   template <typename ClickHandler,
@@ -29,8 +29,8 @@ namespace sgl {
                                             InputHandler&& input_handler) noexcept
       : Base(name,
              text,
-             forward<ClickHandler>(click_handler),
-             forward<InputHandler>(input_handler)) {}
+             std::forward<ClickHandler>(click_handler),
+             std::forward<InputHandler>(input_handler)) {}
 
 } // namespace sgl
 #endif

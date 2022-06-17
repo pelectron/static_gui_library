@@ -4,7 +4,7 @@
 #include "sgl_error.hpp"
 #include "sgl_limits.hpp"
 #include "sgl_static_string.hpp"
-#include "sgl_type_traits.hpp"
+#include <type_traits>
 
 #include <cstdint>
 
@@ -138,10 +138,10 @@ namespace sgl {
     (void)precision;
     (void)format;
     (void)len;
-    if constexpr (is_integral_v<T>) {
+    if constexpr (std::is_integral_v<T>) {
       static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(is_integral_v<T>, "");
-      if constexpr (is_signed_v<T>) {
+      static_assert(std::is_integral_v<T>, "");
+      if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
           value = -value;
@@ -164,8 +164,8 @@ namespace sgl {
 #if SGL_USE_RYU
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
-    if constexpr (is_same_v<double, T>) {
-      static_assert(is_same_v<CharT, char>,
+    if constexpr (std::is_same_v<double, T>) {
+      static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
       if (s2d_n(str, len, &value) == Status::SUCCESS)
@@ -173,8 +173,8 @@ namespace sgl {
       else
         return sgl::error::format_error;
 
-    } else if constexpr (is_same_v<float, T>) {
-      static_assert(is_same_v<CharT, char>,
+    } else if constexpr (std::is_same_v<float, T>) {
+      static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
       if (s2f_n(str, &value) == Status::SUCCESS)
@@ -210,8 +210,8 @@ namespace sgl {
 
   template <typename CharT, typename T>
   sgl::error format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
-    if constexpr (is_floating_point_v<T>) {
-      if constexpr (is_same_v<double, T>) {
+    if constexpr (std::is_floating_point_v<T>) {
+      if constexpr (std::is_same_v<double, T>) {
         if (len < max_buf_size_v<T>)
           return sgl::error::format_error;
 
@@ -240,7 +240,7 @@ namespace sgl {
         }
         str[size] = '\0';
         return sgl::error::no_error;
-      } else if constexpr (is_same_v<float, T>) {
+      } else if constexpr (std::is_same_v<float, T>) {
         sgl::static_string<char, max_buf_size_v<T>> buf(max_buf_size_v<T>, '\0');
 
         int size{0};
@@ -272,8 +272,8 @@ namespace sgl {
       (void)precision;
       (void)format;
       static_string<CharT, max_buf_size_v<T>> buf;
-      static_assert(is_integral_v<T>, "");
-      if constexpr (is_signed_v<T>) {
+      static_assert(std::is_integral_v<T>, "");
+      if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
           value = -value;

@@ -20,7 +20,7 @@ namespace sgl {
       StringView     name,
       StringView     text,
       ClickHandler&& click_handler) noexcept
-      : Base(name, text), click_handler_(forward<ClickHandler>(click_handler)) {}
+      : Base(name, text), click_handler_(std::forward<ClickHandler>(click_handler)) {}
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
@@ -32,21 +32,21 @@ namespace sgl {
       StringView     text,
       ClickHandler&& click_handler,
       InputHandler&& input_handler) noexcept
-      : Base(name, text, forward<InputHandler>(input_handler)),
-        click_handler_(forward<ClickHandler>(click_handler)) {}
+      : Base(name, text, std::forward<InputHandler>(input_handler)),
+        click_handler_(std::forward<ClickHandler>(click_handler)) {}
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
             enable_if_is_click_handler<ClickHandler, typename Traits::item_type>>
   void PassThroughButton<ItemImpl, Traits>::set_click_handler(
       ClickHandler&& click_handler) noexcept {
-    static_assert(is_invocable_r_v<sgl::error, ClickHandler, item_type&>,
+    static_assert(std::is_invocable_r_v<sgl::error, ClickHandler, item_type&>,
                   "the supplied click_handler does not meet the click "
                   "handler requirements");
-    if constexpr (is_same_v<decltype(click_handler), ClickHandler_t>) {
-      click_handler_ = forward<ClickHandler>(click_handler);
+    if constexpr (std::is_same_v<decltype(click_handler), ClickHandler_t>) {
+      click_handler_ = std::forward<ClickHandler>(click_handler);
     } else {
-      click_handler_.bind(forward<ClickHandler>(click_handler));
+      click_handler_.bind(std::forward<ClickHandler>(click_handler));
     }
   }
 

@@ -1,10 +1,14 @@
 #ifndef CALLABLE2_HPP
 #define CALLABLE2_HPP
-#include "sgl_type_traits.hpp"
-
 #include <new>
-
+#include <type_traits>
+#include <utility>
 namespace sgl {
+  namespace detail {
+    template <typename R, typename T, typename... A>
+    static constexpr bool is_const_invocable_v =
+        std::is_nothrow_invocable_v<R, std::add_const_t<T>, A...>;
+  }
   /// \cond
   // intentional forward declaration only. specialization follows below.
 
@@ -89,11 +93,12 @@ namespace sgl {
      * \tparam F function object type
      * \param f function object instance
      */
-    template <typename F,
-              enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F> and
-                          !is_same_v<Callable<Ret(Args...)>, decay_t<F>>>* = nullptr>
+    template <
+        typename F,
+        std::enable_if_t<!std::is_constructible_v<Ret (*)(Args...) noexcept, std::decay_t<F>> and
+                         !std::is_same_v<Callable<Ret(Args...)>, std::decay_t<F>>>* = nullptr>
     Callable(F&& f) noexcept {
-      bind(forward<F>(f));
+      bind(std::forward<F>(f));
     }
 
     Callable& operator=(Ret (*func)(Args...) noexcept) noexcept {
@@ -102,13 +107,14 @@ namespace sgl {
       return *this;
     }
 
-    template <typename F, enable_if_t<!is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
-    Callable& operator=(F&& f) noexcept {
-      if constexpr (is_same_v<decay_t<F>, Callable<Ret(Args...)>>) {
+    template <typename F,
+              std::enable_if_t<!std::is_constructible_v<Ret (*)(Args...) noexcept, F>>* = nullptr>
+    constexpr Callable& operator=(F&& f) noexcept {
+      if constexpr (std::is_same_v<std::decay_t<F>, Callable<Ret(Args...)>>) {
         buffer_ = f.buffer_;
         invoke_ = f.invoke_;
       } else {
-        this->bind(forward<F>(f));
+        this->bind(std::forward<F>(f));
       }
       return *this;
     }
@@ -161,24 +167,27 @@ namespace sgl {
      */
     template <typename F>
     void bind(F&& f) noexcept {
-      if constexpr (is_constructible_v<Ret (*)(Args...) noexcept, F>) {
+      if constexpr (std::is_constructible_v<Ret (*)(Args...) noexcept, F>) {
         using type = Ret (*)(Args...) noexcept;
         bind(type{f});
       } else {
-        static_assert(is_nothrow_invocable_r_v<Ret, F, Args...>, "f must be noexcept invocable.");
-        static_assert(sizeof(decay_t<F>) <= sizeof(buffer_),
+
+        static_assert(std::is_nothrow_invocable_r_v<Ret, F, Args...>,
+                      "f must be noexcept invocable.");
+        static_assert(sizeof(std::decay_t<F>) <= sizeof(buffer_),
                       "sizeof(f) must be smaller than the buffer size.");
-        static_assert(is_trivially_destructible_v<decay_t<F>>, "F must be trivially destructible.");
-        static_assert(is_trivially_move_constructible_v<decay_t<F>>,
+        static_assert(std::is_trivially_destructible_v<std::decay_t<F>>,
+                      "F must be trivially destructible.");
+        static_assert(std::is_trivially_move_constructible_v<std::decay_t<F>>,
                       "F must be trivially move constructible.");
-        static_assert(is_trivially_copy_constructible_v<decay_t<F>>,
+        static_assert(std::is_trivially_copy_constructible_v<std::decay_t<F>>,
                       "F must be trivially copy constructible.");
-        if constexpr (is_const_invocable_v<Ret, remove_reference_t<F>, Args...>) {
-          new (buffer_.buffer) decay_t<F>(forward<F>(f));
-          invoke_ = &inline_invoke<decay_t<F>>;
+        if constexpr (detail::is_const_invocable_v<Ret, std::remove_reference_t<F>, Args...>) {
+          new (buffer_.buffer) std::decay_t<F>(std::forward<F>(f));
+          invoke_ = &inline_invoke<std::decay_t<F>>;
         } else {
-          new (buffer_.buffer) decay_t<F>(forward<F>(f));
-          invoke_ = &const_inline_invoke<decay_t<F>>;
+          new (buffer_.buffer) std::decay_t<F>(std::forward<F>(f));
+          invoke_ = &const_inline_invoke<std::decay_t<F>>;
         }
       }
     }

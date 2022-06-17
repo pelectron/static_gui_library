@@ -4,33 +4,35 @@
 #include "sgl_item_concepts.hpp"
 
 namespace sgl {
+  template<typename T>
+  static constexpr bool always_false = false;
   template <typename T, typename = void>
-  struct has_item_type_typedef : false_type {};
+  struct has_item_type_typedef : std::false_type {};
   template <typename T>
-  struct has_item_type_typedef<T, void_t<typename T::item_type>> : true_type {};
+  struct has_item_type_typedef<T, std::void_t<typename T::item_type>> : std::true_type {};
 
   template <typename T, typename = void>
-  struct has_char_type_typedef : false_type {};
+  struct has_char_type_typedef : std::false_type {};
   template <typename T>
-  struct has_char_type_typedef<T, void_t<typename T::char_type>> : true_type {};
+  struct has_char_type_typedef<T, std::void_t<typename T::char_type>> : std::true_type {};
 
   template <typename T, typename = void>
-  struct has_text_size : false_type {};
+  struct has_text_size : std::false_type {};
 
   template <typename T>
-  struct has_text_size<T, void_t<decltype(T::text_size)>> {
-    static constexpr bool value = is_convertible_v<decltype(T::text_size), size_t>;
+  struct has_text_size<T, std::void_t<decltype(T::text_size)>> {
+    static constexpr bool value = std::is_convertible_v<decltype(T::text_size), size_t>;
   };
 
   template <typename T, typename = void>
-  struct has_clickable : false_type {};
+  struct has_clickable : std::false_type {};
 
   template <typename T>
-  struct has_clickable<T, void_t<decltype(T::clickable)>> {
-    static constexpr bool value = is_convertible_v<decltype(T::clickable), bool>;
+  struct has_clickable<T, std::void_t<decltype(T::clickable)>> {
+    static constexpr bool value = std::is_convertible_v<decltype(T::clickable), bool>;
   };
   template <typename T, bool has_click = false>
-  struct get_clickable : false_type {};
+  struct get_clickable : std::false_type {};
   template <typename T>
   struct get_clickable<T, true> {
     static constexpr bool value = T::clickable;
@@ -65,7 +67,7 @@ namespace sgl {
         always_false<ItemType>,
         "This traits structure is not correctly defined. Either manually specialize it "
         "ItemTraits or implement your own. You can statically assert that your traits structure is "
-        "correctly implemented by using sgl::is_item_trait_v<YourTraitsType> template");
+        "correctly implemented by using std::is_item_trait_v<YourTraitsType> template");
   };
 
   template <size_t TextSize, typename CharT>

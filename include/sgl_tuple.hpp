@@ -17,15 +17,13 @@ namespace sgl {
   public:
     /// true if all Ts are nothrow default constructible
     static constexpr bool nothrow_default_constructible =
-        (sgl::is_nothrow_default_constructible_v<Ts> && ...);
+        std::is_nothrow_default_constructible_v<Base>;
     /// true if all Ts are nothrow destructible
-    static constexpr bool nothrow_destructible = (sgl::is_nothrow_destructible_v<Ts> && ...);
+    static constexpr bool nothrow_destructible = std::is_nothrow_destructible_v<Base>;
     /// true if all Ts are nothrow copy constructible
-    static constexpr bool nothrow_copy_constructible =
-        (sgl::is_nothrow_copy_constructible_v<Ts> && ...);
+    static constexpr bool nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<Base>;
     /// true if all Ts are nothrow move constructible
-    static constexpr bool nothrow_move_constructible =
-        (sgl::is_nothrow_move_constructible_v<Ts> && ...);
+    static constexpr bool nothrow_move_constructible = std::is_nothrow_move_constructible_v<Base>;
     /// type of the I'th element
     template <size_t I>
     using type_at_t = sgl::type_at_t<I, sgl::type_list<Ts...>>;
@@ -34,7 +32,7 @@ namespace sgl {
     constexpr tuple(tuple&&) noexcept(nothrow_move_constructible) = default;
     constexpr tuple(const tuple&) noexcept(nothrow_copy_constructible) = default;
     constexpr tuple(const Ts&... ts) noexcept(nothrow_copy_constructible) : Base(ts...) {}
-    constexpr tuple(Ts&&... ts) noexcept(nothrow_move_constructible) : Base(sgl::move(ts)...) {}
+    constexpr tuple(Ts&&... ts) noexcept(nothrow_move_constructible) : Base(std::move(ts)...) {}
 
     template <size_t I>
     constexpr type_at_t<I>& get() noexcept {
@@ -48,29 +46,29 @@ namespace sgl {
 
     template <typename F>
     constexpr void for_each(F&& f) noexcept(noexcept(f)) {
-      for_each_impl(sgl::forward<F>(f), indices_t{});
+      for_each_impl(std::forward<F>(f), indices_t{});
     }
 
     template <typename F>
     constexpr void for_each(F&& f) const noexcept(noexcept(f)) {
-      for_each_impl(sgl::forward<F>(f), indices_t{});
+      for_each_impl(std::forward<F>(f), indices_t{});
     }
 
   private:
     template <typename F, size_t... I>
     constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) noexcept(noexcept(f)) {
-      (forward<F>(f)(this->get<I>()), ...);
+      (std::forward<F>(f)(this->template get<I>()), ...);
     }
 
     template <typename F, size_t... I>
     constexpr void for_each_impl(F&& f, sgl::index_seq_t<I...>) const noexcept(noexcept(f)) {
-      (forward<F>(f)(this->get<I>()), ...);
+      (std::forward<F>(f)(this->template get<I>()), ...);
     }
   };
 
   /// deduction guide for tuple
   template <typename... Ts>
-  tuple(Ts&&...) -> tuple<sgl::decay_t<Ts>...>;
+  tuple(Ts&&...) -> tuple<std::decay_t<Ts>...>;
 
   /// \cond
   template <size_t I, typename tuple>
@@ -100,14 +98,14 @@ namespace sgl {
 
   /// Apply f on each element in t
   template <typename F, typename... Ts>
-  constexpr void for_each(tuple<Ts...>& t, F&& f) noexcept {
-    t.for_each(sgl::forward<F>(f));
+  constexpr void for_each(tuple<Ts...>& t, F&& f) noexcept(noexcept(f)) {
+    t.for_each(std::forward<F>(f));
   }
 
   /// Apply f on each element in t
   template <typename F, typename... Ts>
-  constexpr void for_each(const tuple<Ts...>& t, F&& f) noexcept {
-    t.for_each(sgl::forward<F>(f));
+  constexpr void for_each(const tuple<Ts...>& t, F&& f) noexcept(noexcept(f)) {
+    t.for_each(std::forward<F>(f));
   }
 } // namespace sgl
 #endif

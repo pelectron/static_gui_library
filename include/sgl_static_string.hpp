@@ -2,7 +2,7 @@
 #define SGL_STATIC_STRING_HPP
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
-#include "sgl_type_traits.hpp"
+#include <type_traits>
 
 namespace sgl {
 
@@ -27,7 +27,7 @@ namespace sgl {
     }
 
     /// construct from array which is smaller than declared types capacity
-    template <size_t N, enable_if_t<(N <= (Capacity + 1))>* = nullptr>
+    template <size_t N, std::enable_if_t<(N <= (Capacity + 1))>* = nullptr>
     constexpr static_string(const CharT (&string)[N]) noexcept : size_(N - 1) {
       overwrite(string, size_);
     }

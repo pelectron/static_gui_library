@@ -2,7 +2,7 @@
 #define SGL_ENUM_MAP_HPP
 #include "sgl_limits.hpp"
 #include "sgl_string_view.hpp"
-#include "sgl_type_traits.hpp"
+#include <type_traits>
 
 namespace sgl {
   template <typename T1, typename T2>
@@ -11,9 +11,9 @@ namespace sgl {
     using second_type = T2;
     constexpr Pair() = default;
     constexpr Pair(const Pair& other) : first(other.first), second(other.second) {}
-    constexpr Pair(Pair&& other) : first(move(other.first)), second(move(other.second)) {}
+    constexpr Pair(Pair&& other) : first(std::move(other.first)), second(std::move(other.second)) {}
     constexpr Pair(const T1& t1, const T2& t2) : first(t1), second(t2) {}
-    constexpr Pair(T1&& t1, T2&& t2) : first(move(t1)), second(move(t2)) {}
+    constexpr Pair(T1&& t1, T2&& t2) : first(std::move(t1)), second(std::move(t2)) {}
     constexpr Pair& operator=(const Pair& other) {
       first = other.first;
       second = other.second;
@@ -28,7 +28,7 @@ namespace sgl {
     T2 second{};
   };
   template <typename T1, typename T2>
-  Pair(T1&&, T2&&) -> Pair<decay_t<T1>, decay_t<T2>>;
+  Pair(T1&&, T2&&) -> Pair<std::decay_t<T1>, std::decay_t<T2>>;
 
   template <typename T, size_t N>
   struct array {

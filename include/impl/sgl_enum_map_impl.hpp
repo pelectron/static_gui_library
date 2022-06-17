@@ -6,7 +6,7 @@ namespace sgl {
   constexpr EnumMap<E, N, CharT>::EnumMap(const EnumMap& other) noexcept : data(other.data) {}
 
   template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(EnumMap&& other) noexcept : data(move(other.data)) {}
+  constexpr EnumMap<E, N, CharT>::EnumMap(EnumMap&& other) noexcept : data(std::move(other.data)) {}
 
   template <typename E, size_t N, typename CharT>
   constexpr EnumMap<E, N, CharT>::EnumMap(const array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept

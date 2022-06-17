@@ -8,32 +8,32 @@ namespace sgl {
   /// \{
   template <typename CharT, typename T>
   Numeric(sgl::string_view<CharT> name, T initial_value, T delta)
-      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t N>
   Numeric(const CharT (&name)[N], T initial_value, T delta)
-      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
 
   template <size_t TextSize, typename CharT, typename T, size_t N>
   Numeric(const CharT (&name)[N], T initial_value, const CharT (&initial_text)[TextSize], T delta)
-      -> Numeric<TextSize, CharT, decay_t<T>>;
+      -> Numeric<TextSize, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t CxSize>
   Numeric(sgl::string_view<CharT> name, const cx_arg<T, CxSize>& initial_value, T delta)
-      -> Numeric<CxSize, CharT, decay_t<T>>;
+      -> Numeric<CxSize, CharT, std::decay_t<T>>;
 
   template <typename CharT, typename T, size_t CxSize, size_t N>
   Numeric(const CharT (&name)[N], const cx_arg<T, CxSize>& initial_value, T delta)
-      -> Numeric<CxSize, CharT, decay_t<T>>;
+      -> Numeric<CxSize, CharT, std::decay_t<T>>;
 
   template <
       typename CharT,
       typename T,
       typename Formatter,
       enable_if_is_value_formatter<Formatter,
-                                   Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true>
+                                   Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true>
   Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&& formatter)
-      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
 
   template <
       typename CharT,
@@ -41,11 +41,11 @@ namespace sgl {
       typename Formatter,
       typename InputHandler,
       enable_if_is_value_formatter<Formatter,
-                                   Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true,
+                                   Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true,
       enable_if_is_input_handler<InputHandler,
-                                 Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>> = true>
+                                 Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>> = true>
   Numeric(sgl::string_view<CharT> name, T initial_value, T delta, Formatter&&, InputHandler&&)
-      -> Numeric<max_buf_size_v<decay_t<T>>, CharT, decay_t<T>>;
+      -> Numeric<max_buf_size_v<std::decay_t<T>>, CharT, std::decay_t<T>>;
   /// \}
 
   template <size_t TextSize, typename CharT, typename T>
@@ -81,7 +81,7 @@ namespace sgl {
                                                  T           initial_value,
                                                  T           delta,
                                                  Formatter&& formatter) noexcept
-      : Base(name, &default_handle_input), format_(sgl::forward<Formatter>(formatter)),
+      : Base(name, &default_handle_input), format_(std::forward<Formatter>(formatter)),
         value_(initial_value), delta_(delta) {
     set_value(initial_value);
   }
@@ -96,8 +96,8 @@ namespace sgl {
                                                  T              delta,
                                                  Formatter&&    formatter,
                                                  InputHandler&& handler) noexcept
-      : Base(name, sgl::forward<InputHandler>(handler)),
-        format_(sgl::forward<Formatter>(formatter)), value_(initial_value), delta_(delta) {
+      : Base(name, std::forward<InputHandler>(handler)),
+        format_(std::forward<Formatter>(formatter)), value_(initial_value), delta_(delta) {
     set_value(initial_value);
   }
 
@@ -167,7 +167,7 @@ namespace sgl {
   constexpr sgl::error
       Numeric<TextSize, CharT, T>::default_format(static_string<CharT, TextSize>& text,
                                                   T                               value) noexcept {
-    if constexpr (sgl::is_integral_v<T>) {
+    if constexpr (std::is_integral_v<T>) {
       return integer_format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
     } else
       return sgl::format(text.data(), text.size(), value, 6, sgl::format_t::fixed);
@@ -216,7 +216,7 @@ namespace sgl {
                                                      T                       initial_value,
                                                      T                       delta,
                                                      Formatter&&             formatter) noexcept {
-    return Numeric<TextSize, CharT, T>(name, initial_value, delta, forward<Formatter>(formatter));
+    return Numeric<TextSize, CharT, T>(name, initial_value, delta, std::forward<Formatter>(formatter));
   }
 
   template <size_t TextSize,
@@ -234,8 +234,8 @@ namespace sgl {
     return Numeric<TextSize, CharT, T>(name,
                                        initial_value,
                                        delta,
-                                       forward<Formatter>(formatter),
-                                       forward<InputHandler>(handler));
+                                       std::forward<Formatter>(formatter),
+                                       std::forward<InputHandler>(handler));
   }
 } // namespace sgl
 #endif
