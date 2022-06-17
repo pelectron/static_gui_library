@@ -40,4 +40,15 @@ constexpr auto Page2() noexcept {
                    make_numeric<10>("int2", 2, 2),
                    PageLink<40, char>("p1l", "page 1 link", "page1"));
 }
-int main() { auto menu = Menu(Page1(), Page2()); }
+
+auto assign = [](auto&& f)->Callable<int(void)> {
+  Callable<int(void)> c;
+  c = f;
+  return c;
+};
+auto l3 = []() noexcept { return 3; };
+int            main() {
+  static_assert((Callable<int(void)>(assign(l3)))() == l3());
+
+  auto menu = Menu(Page1(), Page2());
+}
