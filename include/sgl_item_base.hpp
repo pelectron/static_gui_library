@@ -32,6 +32,8 @@ namespace sgl {
     /// concrete input handler type.
     using InputHandler_t = sgl::Callable<sgl::error(item_type&, sgl::Input)>;
 
+    using TickHandler_t = sgl::Callable<void(item_type&)>;
+
     /**
      * \brief Construct an item with a name and text.
      * \param name name of the item
@@ -55,6 +57,11 @@ namespace sgl {
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept;
 
+    template <typename InputHandler,
+              typename TickHandler,
+              enable_if_is_input_handler<InputHandler, item_type> = true,
+              enable_if_is_tick_handler<TickHandler, item_type> = true>
+    constexpr ItemBase(StringView name, StringView text, InputHandler&& input_handler, TickHandler&& tick_handler) noexcept;
     /**
      * \brief Construct an item with name, text and input handler.
      * \tparam InputHandler input handler type
@@ -119,13 +126,21 @@ namespace sgl {
      * \param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
-    void set_input_handler(InputHandler&& handler) noexcept;
+    constexpr void set_input_handler(InputHandler&& handler) noexcept;
+
+    /**
+     * @brief invoke tick handler
+     */
+    constexpr void tick() noexcept;
+
+    template <typename TickHandler>
+    constexpr void set_tick_handler(TickHandler&& handler) noexcept;
 
   private:
-    /// default input handler. Does nothing.
     static sgl::error default_handle_input(item_type& item, sgl::Input) noexcept;
 
-    InputHandler_t handler_{&default_handle_input}; ///< input handler
+    InputHandler_t handler_{&default_handle_input}; ///< handles user input
+    TickHandler_t  tick_handler_{};                 ///< handles external update
     StringView     name_{};                         ///< name
     String         text_{};                         ///< text field
   };

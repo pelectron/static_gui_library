@@ -3,26 +3,33 @@
 
 #include "sgl_error.hpp"
 #include "sgl_input.hpp"
+
 #include <type_traits>
-#include <type_traits>
+
 namespace sgl {
   /// \cond
   template <typename F, typename Item>
   static constexpr bool is_input_handler_for_v =
       std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>;
   template <typename F, typename Item>
-  static constexpr bool is_click_handler_for_v = std::is_nothrow_invocable_r_v<sgl::error, F, Item&>;
+  static constexpr bool is_click_handler_for_v =
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&>;
   template <typename F, typename Item>
-  static constexpr bool is_value_formatter_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, typename Item::String&, typename Item::value_type>;
+  static constexpr bool is_value_formatter_v = std::
+      is_nothrow_invocable_r_v<sgl::error, F, typename Item::String&, typename Item::value_type>;
   template <typename F, typename Item>
-  using enable_if_is_input_handler = std::enable_if_t<is_input_handler_for_v<F, std::decay_t<Item>>, bool>;
+  using enable_if_is_input_handler =
+      std::enable_if_t<is_input_handler_for_v<F, std::decay_t<Item>>, bool>;
   template <typename F, typename Item>
-  using enable_if_is_value_formatter = std::enable_if_t<is_value_formatter_v<F, std::decay_t<Item>>, bool>;
+  using enable_if_is_value_formatter =
+      std::enable_if_t<is_value_formatter_v<F, std::decay_t<Item>>, bool>;
   template <typename F, typename Item>
   using enable_if_is_click_handler =
       std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
-
+  template <typename F, typename Item>
+  static constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
+  template <typename F, typename Item>
+  using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
   /// item method traits
   /// \{
   template <typename T, typename = void>
@@ -30,7 +37,8 @@ namespace sgl {
 
   template <typename T>
   struct has_text<T, std::void_t<decltype(std::declval<T>().text())>> {
-    static constexpr bool value = std::is_same_v<typename T::StringView, decltype(std::declval<T>().text())>;
+    static constexpr bool value =
+        std::is_same_v<typename T::StringView, decltype(std::declval<T>().text())>;
   };
 
   template <typename T>
@@ -40,9 +48,12 @@ namespace sgl {
   struct has_handle_input : std::false_type {};
 
   template <typename T>
-  struct has_handle_input<T, std::void_t<decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>> {
+  struct has_handle_input<
+      T,
+      std::void_t<decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>> {
     static constexpr bool value =
-        std::is_same_v<sgl::error, decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>;
+        std::is_same_v<sgl::error,
+                       decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>;
   };
 
   template <typename T>
@@ -52,10 +63,12 @@ namespace sgl {
   struct has_set_text : std::false_type {};
 
   template <typename T>
-  struct has_set_text<T,
-                      std::void_t<decltype(std::declval<T>().set_text(std::declval<typename T::StringView>()))>> {
-    static constexpr bool value =
-        std::is_same_v<sgl::error, decltype(std::declval<T>().set_text(std::declval<typename T::StringView>()))>;
+  struct has_set_text<
+      T,
+      std::void_t<decltype(std::declval<T>().set_text(std::declval<typename T::StringView>()))>> {
+    static constexpr bool value = std::is_same_v<sgl::error,
+                                                 decltype(std::declval<T>().set_text(
+                                                     std::declval<typename T::StringView>()))>;
   };
 
   template <typename T>
@@ -66,7 +79,8 @@ namespace sgl {
 
   template <typename T>
   struct has_name<T, std::void_t<decltype(std::declval<T>().name())>> {
-    static constexpr bool value = std::is_same_v<typename T::StringView, decltype(std::declval<T>().name())>;
+    static constexpr bool value =
+        std::is_same_v<typename T::StringView, decltype(std::declval<T>().name())>;
   };
   template <typename T>
   static constexpr bool has_name_v = has_name<T>::value;
@@ -96,7 +110,8 @@ namespace sgl {
 
   template <typename T>
   struct has_title<T, std::void_t<decltype(std::declval<T>().title())>> {
-    static constexpr bool value = std::is_same_v<typename T::StringView, decltype(std::declval<T>().title())>;
+    static constexpr bool value =
+        std::is_same_v<typename T::StringView, decltype(std::declval<T>().title())>;
   };
 
   template <typename T>
@@ -128,12 +143,14 @@ namespace sgl {
   struct has_get_item : std::false_type {};
 
   template <typename T>
-  struct has_get_item<T,
-                      std::void_t<decltype(std::declval<T>().template get_item<size_t{0}>()),
-                             decltype(std::declval<const T>().template get_item<size_t{0}>())>> {
+  struct has_get_item<
+      T,
+      std::void_t<decltype(std::declval<T>().template get_item<size_t{0}>()),
+                  decltype(std::declval<const T>().template get_item<size_t{0}>())>> {
     using R1 = decltype(std::declval<T>().template get_item<size_t{0}>());
     using R2 = decltype(std::declval<const T>().template get_item<size_t{0}>());
-    static constexpr bool value = std::is_lvalue_reference_v<R1> and std::is_lvalue_reference_v<R2> and
+    static constexpr bool value = std::is_lvalue_reference_v<R1> and
+                                  std::is_lvalue_reference_v<R2> and
                                   std::is_const_v<std::remove_reference_t<R2>>;
   };
 
@@ -155,7 +172,8 @@ namespace sgl {
 
   template <typename T>
   struct has_is_in_edit_mode<T, std::void_t<decltype(std::declval<T>().is_in_edit_mode())>> {
-    static constexpr bool value = std::is_same_v<bool, decltype(std::declval<T>().is_in_edit_mode())>;
+    static constexpr bool value =
+        std::is_same_v<bool, decltype(std::declval<T>().is_in_edit_mode())>;
   };
 
   template <typename T>
@@ -165,7 +183,8 @@ namespace sgl {
   struct has_set_edit_mode : std::false_type {};
 
   template <typename T>
-  struct has_set_edit_mode<T, std::void_t<decltype(std::declval<T>().set_edit_mode())>> : std::true_type {};
+  struct has_set_edit_mode<T, std::void_t<decltype(std::declval<T>().set_edit_mode())>>
+      : std::true_type {};
 
   template <typename T>
   static constexpr bool has_set_edit_mode_v = has_set_edit_mode<T>::value;
@@ -185,7 +204,8 @@ namespace sgl {
 
   template <typename T>
   struct has_get_start_edit<T, std::void_t<decltype(std::declval<T>().get_start_edit())>> {
-    static constexpr bool value = std::is_same_v<sgl::Input, decltype(std::declval<T>().get_start_edit())>;
+    static constexpr bool value =
+        std::is_same_v<sgl::Input, decltype(std::declval<T>().get_start_edit())>;
   };
 
   template <typename T>
@@ -195,7 +215,9 @@ namespace sgl {
   struct has_set_start_edit : std::false_type {};
 
   template <typename T>
-  struct has_set_start_edit<T, std::void_t<decltype(std::declval<T>().set_start_edit(std::declval<sgl::Input>()))>>
+  struct has_set_start_edit<
+      T,
+      std::void_t<decltype(std::declval<T>().set_start_edit(std::declval<sgl::Input>()))>>
       : std::true_type {};
 
   template <typename T>
@@ -206,7 +228,8 @@ namespace sgl {
 
   template <typename T>
   struct has_get_stop_edit<T, std::void_t<decltype(std::declval<T>().get_stop_edit())>> {
-    static constexpr bool value = std::is_same_v<sgl::Input, decltype(std::declval<T>().get_stop_edit())>;
+    static constexpr bool value =
+        std::is_same_v<sgl::Input, decltype(std::declval<T>().get_stop_edit())>;
   };
 
   template <typename T>
@@ -216,7 +239,9 @@ namespace sgl {
   struct has_set_stop_edit : std::false_type {};
 
   template <typename T>
-  struct has_set_stop_edit<T, std::void_t<decltype(std::declval<T>().set_stop_edit(std::declval<sgl::Input>()))>>
+  struct has_set_stop_edit<
+      T,
+      std::void_t<decltype(std::declval<T>().set_stop_edit(std::declval<sgl::Input>()))>>
       : std::true_type {};
 
   template <typename T>
@@ -226,10 +251,9 @@ namespace sgl {
   struct has_set_menu : std::false_type {};
 
   template <typename T>
-  struct has_set_menu<
-      T,
-      std::void_t<decltype(std::declval<T>().template set_menu<detail::M>(std::declval<detail::M*>()))>>
-      : std::true_type {};
+  struct has_set_menu<T,
+                      std::void_t<decltype(std::declval<T>().template set_menu<detail::M>(
+                          std::declval<detail::M*>()))>> : std::true_type {};
 
   template <typename T>
   static constexpr bool has_set_menu_v = has_set_menu<T>::value;
@@ -238,9 +262,10 @@ namespace sgl {
   struct has_for_each_item : std::false_type {};
 
   template <typename T>
-  struct has_for_each_item<T,
-                           std::void_t<decltype(std::declval<T>().template for_each_item(detail::pf)),
-                                  decltype(std::declval<const T>().template for_each_item(detail::pcf))>>
+  struct has_for_each_item<
+      T,
+      std::void_t<decltype(std::declval<T>().template for_each_item(detail::pf)),
+                  decltype(std::declval<const T>().template for_each_item(detail::pcf))>>
       : std::true_type {};
 
   template <typename T>
@@ -250,9 +275,10 @@ namespace sgl {
   struct has_for_current_item : std::false_type {};
 
   template <typename T>
-  struct has_for_current_item<T,
-                              std::void_t<decltype(std::declval<T>().for_current_item(detail::pf)),
-                                     decltype(std::declval<const T>().for_current_item(detail::pcf))>>
+  struct has_for_current_item<
+      T,
+      std::void_t<decltype(std::declval<T>().for_current_item(detail::pf)),
+                  decltype(std::declval<const T>().for_current_item(detail::pcf))>>
       : std::true_type {};
 
   template <typename T>
@@ -263,7 +289,8 @@ namespace sgl {
 
   template <typename T>
   struct has_on_enter<T, std::void_t<decltype(std::declval<T>().on_enter())>> {
-    static constexpr bool value = std::is_same_v<sgl::error, decltype(std::declval<T>().on_enter())>;
+    static constexpr bool value =
+        std::is_same_v<sgl::error, decltype(std::declval<T>().on_enter())>;
   };
 
   template <typename T>
@@ -302,14 +329,15 @@ namespace sgl {
   struct has_set_active_page : std::false_type {};
 
   template <typename T>
-  struct has_set_active_page<
-      T,
-      std::void_t<decltype(std::declval<T>().set_active_page(size_t{0})),
-             decltype(std::declval<T>().set_active_page(std::declval<typename T::StringView>()))>> {
+  struct has_set_active_page<T,
+                             std::void_t<decltype(std::declval<T>().set_active_page(size_t{0})),
+                                         decltype(std::declval<T>().set_active_page(
+                                             std::declval<typename T::StringView>()))>> {
     static constexpr bool value =
         std::is_same_v<sgl::error, decltype(std::declval<T>().set_active_page(size_t{0}))> and
         std::is_same_v<sgl::error,
-                  decltype(std::declval<T>().set_active_page(std::declval<typename T::StringView>()))>;
+                       decltype(std::declval<T>().set_active_page(
+                           std::declval<typename T::StringView>()))>;
   };
 
   template <typename T>
@@ -319,9 +347,10 @@ namespace sgl {
   struct has_for_each_page : std::false_type {};
 
   template <typename T>
-  struct has_for_each_page<T,
-                           std::void_t<decltype(std::declval<T>().template for_each_page(detail::pf)),
-                                  decltype(std::declval<const T>().template for_each_page(detail::pcf))>>
+  struct has_for_each_page<
+      T,
+      std::void_t<decltype(std::declval<T>().template for_each_page(detail::pf)),
+                  decltype(std::declval<const T>().template for_each_page(detail::pcf))>>
       : std::true_type {};
 
   template <typename T>
@@ -331,9 +360,10 @@ namespace sgl {
   struct has_for_current_page : std::false_type {};
 
   template <typename T>
-  struct has_for_current_page<T,
-                              std::void_t<decltype(std::declval<T>().for_current_page(detail::pf)),
-                                     decltype(std::declval<const T>().for_current_page(detail::pcf))>>
+  struct has_for_current_page<
+      T,
+      std::void_t<decltype(std::declval<T>().for_current_page(detail::pf)),
+                  decltype(std::declval<const T>().for_current_page(detail::pcf))>>
       : std::true_type {};
 
   template <typename T>
@@ -343,12 +373,14 @@ namespace sgl {
   struct has_get_page : std::false_type {};
 
   template <typename T>
-  struct has_get_page<T,
-                      std::void_t<decltype(std::declval<T>().template get_page<size_t{0}>()),
-                             decltype(std::declval<const T>().template get_page<size_t{0}>())>> {
+  struct has_get_page<
+      T,
+      std::void_t<decltype(std::declval<T>().template get_page<size_t{0}>()),
+                  decltype(std::declval<const T>().template get_page<size_t{0}>())>> {
     using R1 = decltype(std::declval<T>().template get_page<size_t{0}>());
     using R2 = decltype(std::declval<const T>().template get_page<size_t{0}>());
-    static constexpr bool value = std::is_lvalue_reference_v<R1> and std::is_lvalue_reference_v<R2> and
+    static constexpr bool value = std::is_lvalue_reference_v<R1> and
+                                  std::is_lvalue_reference_v<R2> and
                                   std::is_const_v<std::remove_reference_t<R2>>;
   };
 
@@ -362,10 +394,11 @@ namespace sgl {
   struct has_get_item_at_page<
       T,
       std::void_t<decltype(std::declval<T>().template get_item<size_t{0}, size_t{0}>()),
-             decltype(std::declval<const T>().template get_item<size_t{0}, size_t{0}>())>> {
+                  decltype(std::declval<const T>().template get_item<size_t{0}, size_t{0}>())>> {
     using R1 = decltype(std::declval<T>().template get_item<size_t{0}, size_t{0}>());
     using R2 = decltype(std::declval<const T>().template get_item<size_t{0}, size_t{0}>());
-    static constexpr bool value = std::is_lvalue_reference_v<R1> and std::is_lvalue_reference_v<R2> and
+    static constexpr bool value = std::is_lvalue_reference_v<R1> and
+                                  std::is_lvalue_reference_v<R2> and
                                   std::is_const_v<std::remove_reference_t<R2>>;
   };
 
