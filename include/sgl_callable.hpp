@@ -145,7 +145,7 @@ namespace sgl {
         typename F,
         std::enable_if_t<(!std::is_constructible_v<Ret (*)(Args...) noexcept, std::decay_t<F>>)and(
             !std::is_same_v<Callable<Ret(Args...)>, std::decay_t<F>>)>* = nullptr>
-    constexpr void bind(F&& f) noexcept(std::is_nothrow_constructible_v<std::decay_t<F>,F>);
+    constexpr void bind(F&& f) noexcept;
 
     /// unbind stored callable
     constexpr void reset() noexcept { invoke_ = &null_invoke; }

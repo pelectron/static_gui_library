@@ -105,7 +105,7 @@ template <
         typename F,
         std::enable_if_t<(!std::is_constructible_v<Ret (*)(Args...) noexcept, std::decay_t<F>>)and(
             !std::is_same_v<Callable<Ret(Args...)>, std::decay_t<F>>)>*>
-    constexpr void Callable<Ret(Args...)>::bind(F&& f) noexcept(std::is_nothrow_constructible_v<std::decay_t<F>,F>) {
+    constexpr void Callable<Ret(Args...)>::bind(F&& f) noexcept {
       using T = std::decay_t<F>;
       static_assert(std::is_nothrow_invocable_r_v<Ret, F, Args...>,
                     "f must be noexcept invocable.");
@@ -114,7 +114,7 @@ template <
       static_assert(std::is_trivially_destructible_v<T>, "F must be trivially destructible.");
       static_assert(std::is_trivially_move_constructible_v<T>,
                     "F must be trivially move constructible.");
-      static_assert(std::is_trivially_copy_constructible_v<T>,
+      static_assert(std::is_trivially_copyable_v<T>,
                     "F must be trivially copy constructible.");
       if constexpr (detail::is_const_invocable_v<Ret, std::remove_reference_t<F>, Args...>) {
         new (buffer_.buffer) T(std::forward<F>(f));
