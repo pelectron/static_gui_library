@@ -15,7 +15,8 @@ namespace sgl {
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
-            enable_if_is_click_handler<ClickHandler, typename Traits::item_type>>
+            enable_if_is_click_handler<ClickHandler,
+                                       typename PassThroughButton<ItemImpl, Traits>::item_type>>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
       StringView     name,
       StringView     text,
@@ -24,9 +25,26 @@ namespace sgl {
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
+            typename TickHandler,
+            enable_if_is_click_handler<ClickHandler,
+                                       typename PassThroughButton<ItemImpl, Traits>::item_type>,
+            enable_if_is_tick_handler<TickHandler,
+                                      typename PassThroughButton<ItemImpl, Traits>::item_type>>
+  constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
+      StringView     name,
+      StringView     text,
+      ClickHandler&& click_handler,
+      TickHandler&&  tick_handler) noexcept
+      : Base(name, text, std::forward<TickHandler>(tick_handler)),
+        click_handler_(std::forward<ClickHandler>(click_handler)) {}
+
+  template <typename ItemImpl, typename Traits>
+  template <typename ClickHandler,
             typename InputHandler,
-            enable_if_is_click_handler<ClickHandler, typename Traits::item_type>,
-            enable_if_is_input_handler<InputHandler, typename Traits::item_type>>
+            enable_if_is_click_handler<ClickHandler,
+                                       typename PassThroughButton<ItemImpl, Traits>::item_type>,
+            enable_if_is_input_handler<InputHandler,
+                                       typename PassThroughButton<ItemImpl, Traits>::item_type>>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
       StringView     name,
       StringView     text,
@@ -37,7 +55,8 @@ namespace sgl {
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
-            enable_if_is_click_handler<ClickHandler, typename Traits::item_type>>
+            enable_if_is_click_handler<ClickHandler,
+                                       typename PassThroughButton<ItemImpl, Traits>::item_type>>
   void PassThroughButton<ItemImpl, Traits>::set_click_handler(
       ClickHandler&& click_handler) noexcept {
     static_assert(std::is_invocable_r_v<sgl::error, ClickHandler, item_type&>,

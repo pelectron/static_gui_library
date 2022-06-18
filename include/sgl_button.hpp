@@ -34,6 +34,26 @@ namespace sgl {
     constexpr Button(StringView name, StringView text, ClickHandler&& click_handler) noexcept;
 
     /**
+     * \brief Construct a Button with name, text, click handler and tick handler.
+     * The click handler is called every time the item is clicked.
+     * The tick handler is called on every tick of the menu.
+     * \param name name of item
+     * \param text text of item
+     * \param click_handler click handler
+     * \param tick_handler tick handler
+     * \tparam ClickHandler click handler type
+     * \tparam TickHandler tick handler type
+     */
+    template <typename ClickHandler,
+              typename TickHandler,
+              enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>> = true,
+              enable_if_is_tick_handler<TickHandler, Button<TextSize, CharT>> = true>
+    constexpr Button(StringView     name,
+                     StringView     text,
+                     ClickHandler&& click_handler,
+                     TickHandler&&  tick_handler) noexcept;
+
+    /**
      * \brief Construct a Button with name, text, and custom click and input
      * handler.
      * \tparam ClickHandler click handler type

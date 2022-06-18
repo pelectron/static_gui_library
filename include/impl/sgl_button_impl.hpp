@@ -20,6 +20,20 @@ namespace sgl {
 
   template <size_t TextSize, typename CharT>
   template <typename ClickHandler,
+            typename TickHandler,
+            enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>,
+            enable_if_is_tick_handler<TickHandler, Button<TextSize, CharT>>>
+  constexpr Button<TextSize, CharT>::Button(StringView     name,
+                                            StringView     text,
+                                            ClickHandler&& click_handler,
+                                            TickHandler&&  tick_handler) noexcept
+      : Base(name,
+             text,
+             std::forward<ClickHandler>(click_handler),
+             std::forward<TickHandler>(tick_handler)) {}
+
+  template <size_t TextSize, typename CharT>
+  template <typename ClickHandler,
             typename InputHandler,
             enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>,
             enable_if_is_input_handler<InputHandler, Button<TextSize, CharT>>>
