@@ -56,12 +56,25 @@ namespace sgl {
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr ItemBase(StringView name, StringView text, InputHandler&& handler) noexcept;
+    
+    /**
+     * \brief Construct an item with name, text and tick handler. The tick handler is called every time the menu's tick() method is called.
+     * \tparam TickHandler tick handler type
+     * \param name name of the item
+     * \param text text of the item
+     * \param handler tick handler
+     */
+    template <typename TickHandler, enable_if_is_tick_handler<TickHandler, item_type> = true>
+    constexpr ItemBase(StringView name, StringView text, TickHandler&& handler) noexcept;
 
     template <typename InputHandler,
               typename TickHandler,
               enable_if_is_input_handler<InputHandler, item_type> = true,
               enable_if_is_tick_handler<TickHandler, item_type> = true>
-    constexpr ItemBase(StringView name, StringView text, InputHandler&& input_handler, TickHandler&& tick_handler) noexcept;
+    constexpr ItemBase(StringView     name,
+                       StringView     text,
+                       InputHandler&& input_handler,
+                       TickHandler&&  tick_handler) noexcept;
     /**
      * \brief Construct an item with name, text and input handler.
      * \tparam InputHandler input handler type

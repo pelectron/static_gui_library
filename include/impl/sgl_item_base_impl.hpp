@@ -11,20 +11,25 @@ namespace sgl {
       : name_(name_and_text), text_(name_and_text) {}
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name_and_text,
                                                  InputHandler&& handler) noexcept
       : handler_(std::forward<InputHandler>(handler)), name_(name_and_text), text_{name_and_text} {}
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView     name,
                                                  StringView     text,
                                                  InputHandler&& handler) noexcept
       : handler_(std::forward<InputHandler>(handler)), name_(name), text_(text) {}
 
+  template <typename ItemImpl, typename Traits>
+  template <typename TickHandler, enable_if_is_tick_handler<TickHandler, ItemImpl>>
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView    name,
+                                                 StringView    text,
+                                                 TickHandler&& handler) noexcept
+      : tick_handler_(forward<TickHandler>(handler)), name_(name), text_(text) {}
+      
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
             typename TickHandler,
