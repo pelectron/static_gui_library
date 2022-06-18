@@ -180,6 +180,8 @@ namespace sgl {
       buf.append(hex_char(value / pow16));
       value = value % pow16;
     }
+    if (buf.size() >= len)
+      return sgl::error::format_error;
     for (const auto& ch : buf) {
       *str = ch;
       ++str;
@@ -190,8 +192,8 @@ namespace sgl {
 
   template <typename CharT, typename T>
   constexpr sgl::error basic_integer_format(CharT* str, size_t len, T value) {
-    static_string<CharT, max_buf_size_v<T>> buf;
     static_assert(std::is_integral_v<T>, "");
+    static_string<CharT, max_buf_size_v<T>> buf{};
     if constexpr (std::is_signed_v<T>) {
       if (value < 0) {
         buf.append(CharT{'-'});
@@ -202,6 +204,8 @@ namespace sgl {
       buf.append(static_cast<CharT>(value / pow10 + '0'));
       value = value % pow10;
     }
+    if (buf.size() >= len)
+      return sgl::error::format_error;
     for (const auto& ch : buf) {
       *str = ch;
       ++str;
@@ -338,6 +342,8 @@ namespace sgl {
             return sgl::error::invalid_format;
         }
         buf.resize(size);
+        if (buf.size() >= len)
+          return sgl::error::format_error;
         for (const auto& ch : buf) {
           *str = ch;
           ++str;

@@ -26,6 +26,7 @@ constexpr auto Page1() noexcept {
                    make_numeric<13>("int item", 1, 2),
                    PageLink<40, char>("p2l", "page 2 link", "page2"));
 }
+
 constexpr auto Page2() noexcept {
   return make_page("page2"_sv,
                    "Page 2"_sv,
@@ -41,14 +42,17 @@ constexpr auto Page2() noexcept {
                    PageLink<40, char>("p1l", "page 1 link", "page1"));
 }
 
-auto assign = [](auto&& f)->Callable<int(void)> {
-  Callable<int(void)> c;
-  c = Callable<int(void)>(f);
-  return c;
-};
-auto l3 = []() noexcept { return 3; };
-int            main() {
-  static_assert((Callable<int(void)>(assign(l3)))() == l3());
-
-  auto menu = Menu(Page1(), Page2());
+constexpr auto SettingsPage() {
+  return make_page("settings"_sv,
+                   "Settings"_sv,
+                   make_enum<20>("Setting Option"_sv,
+                                 SGL_ENUM_MAP({Setting::opt1, "Option 1"},
+                                              {Setting::opt2, "Option 2"},
+                                              {Setting::opt3, "Option 3"})),
+                   make_enum<5>("Other Setting Option"_sv,
+                                SGL_ENUM_MAP({OtherSetting::Up, "Up"},
+                                             {OtherSetting::Down, "Down"},
+                                             {OtherSetting::Left, "Left"},
+                                             {OtherSetting::Right, "Right"})));
 }
+int main() { auto menu = Menu(Page1(), Page2()); }
