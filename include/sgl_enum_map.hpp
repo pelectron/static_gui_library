@@ -2,6 +2,7 @@
 #define SGL_ENUM_MAP_HPP
 #include "sgl_limits.hpp"
 #include "sgl_string_view.hpp"
+
 #include <type_traits>
 
 namespace sgl {
@@ -69,7 +70,7 @@ namespace sgl {
    *  };
    *  static constexpr auto m = EnumMap(array{{Pair{myEnum::val1, "val1"},
    *                                               {myEnum::val2,"val2"},...}});
-   * 
+   *
    *  \endcode
    *
    *  The curly braces and named types are necessary to deduce the enum type

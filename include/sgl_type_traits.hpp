@@ -15,8 +15,7 @@
 #include <cstdint>
 #include <type_traits>
 #define SGL_CONSTRAIN(predicate, /*args*/...) std::enable_if_t<predicate<__VA_ARGS__>, bool> = true
-#define SGL_CONSTRAIN_FOR_ALL(predicate,param_pack) std::enable_if_t<( predicate<param_pack> && ...), bool> = true
-namespace sgl {
- 
-} // namespace sgl
+#define SGL_CONSTRAIN_FOR_ALL(predicate, param_pack) \
+  std::enable_if_t<(predicate<param_pack> && ...), bool> = true
+namespace sgl {} // namespace sgl
 #endif

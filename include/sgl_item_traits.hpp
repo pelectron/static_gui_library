@@ -4,7 +4,7 @@
 #include "sgl_item_concepts.hpp"
 
 namespace sgl {
-  template<typename T>
+  template <typename T>
   static constexpr bool always_false = false;
   template <typename T, typename = void>
   struct has_item_type_typedef : std::false_type {};

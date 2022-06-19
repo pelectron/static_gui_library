@@ -90,7 +90,8 @@ namespace sgl {
 
   template <typename List>
   using pop_front_t = typename pop_front<List>::type;
-  static_assert(std::is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>, "");
+  static_assert(std::is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>,
+                "");
 
   /**
    * \brief get N-th type in type_list List
@@ -156,8 +157,9 @@ namespace sgl {
   template <typename T, typename List>
   using push_back_t = typename push_back<T, List>::type;
 
-  static_assert(std::is_same_v<push_back_t<double, type_list<int, char>>, type_list<int, char, double>>,
-                "");
+  static_assert(
+      std::is_same_v<push_back_t<double, type_list<int, char>>, type_list<int, char, double>>,
+      "");
 
   template <typename List, size_t I>
   struct pop_back_impl;

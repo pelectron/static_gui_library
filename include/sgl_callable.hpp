@@ -59,7 +59,7 @@ namespace sgl {
     constexpr Callable() noexcept = default;
     /// move constructor
     constexpr Callable(Callable&& other) noexcept;
-  	/// copy constructor
+    /// copy constructor
     constexpr Callable(const Callable& other) noexcept;
 
     /// Construct callable from free function pointer
@@ -156,7 +156,7 @@ namespace sgl {
       T* t;
       Ret (T::*member)(Args...) noexcept;
 
-      constexpr Ret operator()(Args... args) const noexcept{
+      constexpr Ret operator()(Args... args) const noexcept {
         return static_cast<Ret>((t->*member)(args...));
       }
     };
@@ -166,7 +166,7 @@ namespace sgl {
       T* t;
       Ret (T::*member)(Args...) const noexcept;
 
-      constexpr Ret operator()(Args... args) const noexcept{
+      constexpr Ret operator()(Args... args) const noexcept {
         return static_cast<Ret>((t->*member)(args...));
       }
     };

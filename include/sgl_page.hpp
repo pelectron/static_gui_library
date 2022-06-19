@@ -458,7 +458,9 @@ namespace sgl {
    * \param items items of the page
    * \return constexpr Page<CharT, std::decay_t<Items>...>
    */
-  template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
+  template <typename CharT,
+            typename... Items,
+            std::enable_if_t<(is_item_v<Items> && ...), bool> = true>
   constexpr Page<CharT, std::decay_t<Items>...>
       make_page(sgl::string_view<CharT> name, sgl::string_view<CharT> title, Items&&... items) {
     return Page<CharT, std::decay_t<Items>...>(name, title, std::forward<Items>(items)...);
@@ -475,8 +477,8 @@ namespace sgl {
   //  * \param items items of the page
   //  * \return constexpr Page<CharT, std::decay_t<Items>...>
   //  */
-  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
-  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> =
+  // true> constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
   //                                                         sgl::string_view<CharT> title,
   //                                                         size_t                  start_index,
   //                                                         Items&&... items) {
@@ -497,8 +499,8 @@ namespace sgl {
   //  * \param start_index active page index
   //  * \param items items of the page
   //  */
-  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
-  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> =
+  // true> constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
   //                                                         sgl::string_view<CharT> title,
   //                                                         sgl::Input              start_edit,
   //                                                         sgl::Input              stop_edit,
@@ -522,8 +524,8 @@ namespace sgl {
   //  * \param stop_edit input to stop edit mode on
   //  * \param items items of the page
   //  */
-  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> = true>
-  // constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
+  // template <typename CharT, typename... Items, std::enable_if_t<(is_item_v<Items>&&...),bool> =
+  // true> constexpr Page<CharT, std::decay_t<Items>...> make_page(sgl::string_view<CharT> name,
   //                                                         sgl::string_view<CharT> title,
   //                                                         sgl::Input              start_edit,
   //                                                         sgl::Input              stop_edit,

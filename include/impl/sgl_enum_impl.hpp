@@ -88,7 +88,6 @@ namespace sgl {
     return Enum<T, NumEnumerators, TextSize, CharT>{name, map, start_index};
   }
 
-
   template <
       size_t TextSize,
       typename CharT,

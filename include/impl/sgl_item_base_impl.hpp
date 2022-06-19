@@ -29,7 +29,7 @@ namespace sgl {
                                                  StringView    text,
                                                  TickHandler&& handler) noexcept
       : tick_handler_(std::forward<TickHandler>(handler)), name_(name), text_(text) {}
-      
+
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler,
             typename TickHandler,

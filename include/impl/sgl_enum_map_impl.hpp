@@ -9,11 +9,12 @@ namespace sgl {
   constexpr EnumMap<E, N, CharT>::EnumMap(EnumMap&& other) noexcept : data(std::move(other.data)) {}
 
   template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(const array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept
+  constexpr EnumMap<E, N, CharT>::EnumMap(
+      const array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept
       : data(map) {}
 
   template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(const array<Pair<E, const CharT*>, N>& map)  noexcept{
+  constexpr EnumMap<E, N, CharT>::EnumMap(const array<Pair<E, const CharT*>, N>& map) noexcept {
     for (size_t i = 0; i < N; ++i) {
       data[i].first = map[i].first;
       data[i].second = sgl::string_view<CharT>(map[i].second);

@@ -3,15 +3,13 @@
 #include "../sgl_menu.hpp"
 namespace sgl {
   template <typename... Pages>
-  constexpr Menu<Pages...>::Menu(Pages&&... pages) noexcept(
-      nothrow_move_constructible)
+  constexpr Menu<Pages...>::Menu(Pages&&... pages) noexcept(nothrow_move_constructible)
       : pages_(std::move(pages)...) {
     sgl::for_each(pages_, [this](auto& page) noexcept { page.set_menu(this); });
   }
 
   template <typename... Pages>
-  constexpr Menu<Pages...>::Menu(const Pages&... pages) noexcept(
-      nothrow_copy_constructible)
+  constexpr Menu<Pages...>::Menu(const Pages&... pages) noexcept(nothrow_copy_constructible)
       : pages_(pages...) {
     sgl::for_each(pages_, [this](auto& page) noexcept { page.set_menu(this); });
   }
@@ -20,7 +18,8 @@ namespace sgl {
   // template <typename InputHandler, sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>>>
   // constexpr Menu<Pages...>::Menu(InputHandler&& handler, Pages&&... pages) noexcept(
   //     nothrow_move_constructible)
-  //     : Menu<Pages...>(std::move(pages)...), input_handler_(std::forward<InputHandler>(handler)) {}
+  //     : Menu<Pages...>(std::move(pages)...), input_handler_(std::forward<InputHandler>(handler))
+  //     {}
 
   // template <typename... Pages>
   // template <typename InputHandler, sgl::enable_if_is_input_handler<InputHandler, Menu<Pages...>>>
@@ -29,8 +28,7 @@ namespace sgl {
   //     : Menu<Pages...>(pages...), input_handler_(std::forward<InputHandler>(handler)) {}
 
   template <typename... Pages>
-  constexpr Menu<Pages...>::Menu(const Menu& other) noexcept(
-      nothrow_copy_constructible)
+  constexpr Menu<Pages...>::Menu(const Menu& other) noexcept(nothrow_copy_constructible)
       : pages_(other.pages_), input_handler_(other.input_handler_), index_(other.index_) {
     sgl::for_each(pages_, [this](auto& page) noexcept { page.set_menu(this); });
   }
@@ -225,13 +223,14 @@ namespace sgl {
     return Menu<std::decay_t<Pages>...>(std::forward<Pages>(pages)...);
   }
 
-  template <
-      typename InputHandler,
-      typename... Pages,
-      std::enable_if_t<sgl::is_input_handler_for_v<InputHandler, Menu<std::decay_t<Pages>...>>> = true,
-      std::enable_if_t<(sgl::is_page_v<Pages> && ...), bool> = true>
+  template <typename InputHandler,
+            typename... Pages,
+            std::enable_if_t<
+                sgl::is_input_handler_for_v<InputHandler, Menu<std::decay_t<Pages>...>>> = true,
+            std::enable_if_t<(sgl::is_page_v<Pages> && ...), bool> = true>
   constexpr Menu<std::decay_t<Pages>...> make_menu(InputHandler&& handler, Pages&&... pages) {
-    return Menu<std::decay_t<Pages>...>(std::forward<InputHandler>(handler), std::forward<Pages>(pages)...);
+    return Menu<std::decay_t<Pages>...>(std::forward<InputHandler>(handler),
+                                        std::forward<Pages>(pages)...);
   }
 } // namespace sgl
 #endif

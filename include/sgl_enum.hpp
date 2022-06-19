@@ -91,7 +91,6 @@ namespace sgl {
                 const EnumMap<T, NumEnumerators, CharT>& map,
                 size_t                                   start_index = 0);
 
-
   template <size_t TextSize,
             typename CharT,
             typename T,

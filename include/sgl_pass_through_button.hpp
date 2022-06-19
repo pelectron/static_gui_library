@@ -45,7 +45,7 @@ namespace sgl {
     template <typename ClickHandler,
               typename TickHandler,
               enable_if_is_click_handler<ClickHandler, item_type> = true,
-              enable_if_is_tick_handler<TickHandler,item_type> = true>
+              enable_if_is_tick_handler<TickHandler, item_type> = true>
     constexpr PassThroughButton(StringView     name,
                                 StringView     text,
                                 ClickHandler&& click_handler,

@@ -48,7 +48,7 @@ namespace sgl {
       }
       return f;
     }
-    
+
     static constexpr size_t not_found{18446744073709551615ULL};
 
     constexpr auto to_num(char c) -> int64_t { return (c - '0'); };
@@ -69,7 +69,6 @@ namespace sgl {
       return result;
     };
 
-
     constexpr auto get_dot_index(const char* str, size_t n) {
       for (size_t i = 0; i < n; ++i) {
         if (str[i] == '.')
@@ -84,7 +83,6 @@ namespace sgl {
       }
       return sgl::impl::not_found;
     };
-
 
     constexpr double convert(const char* str, size_t n) {
       size_t dot_index{get_dot_index(str, n)};
@@ -144,7 +142,7 @@ namespace sgl {
      */
     template <char... chars>
     constexpr cx_arg<double, sizeof...(chars)> operator"" _double() {
-      char                             arr[sizeof...(chars)+1]{chars...};
+      char                             arr[sizeof...(chars) + 1]{chars...};
       cx_arg<double, sizeof...(chars)> ret{0.0, arr};
       ret.value = sgl::impl::convert(ret.string.data(), sizeof...(chars));
       return ret;
@@ -164,7 +162,7 @@ namespace sgl {
      */
     template <char... chars>
     constexpr cx_arg<float, sizeof...(chars)> operator"" _float() {
-      char                             arr[sizeof...(chars)+1]{chars...};
+      char                            arr[sizeof...(chars) + 1]{chars...};
       cx_arg<float, sizeof...(chars)> ret{0.0f, arr};
       ret.value = static_cast<float>(sgl::impl::convert(ret.string.data(), sizeof...(chars)));
       return ret;

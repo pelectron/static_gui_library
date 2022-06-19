@@ -2,7 +2,9 @@
 #define SGL_STATIC_STRING_HPP
 #include "sgl_smallest_type.hpp"
 #include "sgl_string_view.hpp"
+
 #include <type_traits>
+
 
 namespace sgl {
 

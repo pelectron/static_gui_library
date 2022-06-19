@@ -45,12 +45,14 @@ namespace sgl {
     template <typename T, typename = void>
     struct validate_menu : std::false_type {};
     template <typename T>
-    struct validate_menu<T,
-                         std::void_t<decltype(std::declval<T>().set_active_page(size_t{0})),
-                                decltype(std::declval<T>().set_active_page(std::declval<StringView>()))>> {
+    struct validate_menu<
+        T,
+        std::void_t<decltype(std::declval<T>().set_active_page(size_t{0})),
+                    decltype(std::declval<T>().set_active_page(std::declval<StringView>()))>> {
       static constexpr bool value =
           std::is_same_v<sgl::error, decltype(std::declval<T>().set_active_page(size_t{0}))> and
-          std::is_same_v<sgl::error, decltype(std::declval<T>().set_active_page(std::declval<StringView>()))>;
+          std::is_same_v<sgl::error,
+                         decltype(std::declval<T>().set_active_page(std::declval<StringView>()))>;
     };
 
     template <typename T>
