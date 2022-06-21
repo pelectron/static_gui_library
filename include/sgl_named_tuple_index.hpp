@@ -13,6 +13,9 @@
 #ifndef SGL_NAMED_TUPLE_INDEX_HPP
 #define SGL_NAMED_TUPLE_INDEX_HPP
 #include "sgl_string_view.hpp"
+
+#include <utility>
+
 namespace sgl {
   template <char... cs>
   struct Name {
@@ -46,11 +49,15 @@ namespace sgl {
           typedef sgl::Name<lambda_str_type{}.chars[indices]...> result;
         };
       };
+      template <typename F>
+      constexpr decltype(auto) invoke(F&& f) {
+        return std::forward<F>(f)();
+      }
     } // namespace compile_time
   }   // namespace detail
 
-#define IDX(string_literal)                                                               \
-  [] {                                                                                        \
+#define IDX(string_literal)                                                                   \
+  sgl::detail::compile_time::invoke([] {                                                      \
     struct constexpr_string_type {                                                            \
       const char* chars = string_literal;                                                     \
     };                                                                                        \
@@ -58,6 +65,6 @@ namespace sgl {
         sizeof(string_literal) - 1,                                                           \
         typename sgl::detail::compile_time::string_builder<constexpr_string_type>::produce>:: \
         result{};                                                                             \
-  }()
+  })
 } // namespace sgl
 #endif

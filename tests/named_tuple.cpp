@@ -14,6 +14,11 @@ int            main() {
             << tuple[name1] << std::endl
             << std::endl;
 
+  std::cout << tuple[IDX("arg1")] << std::endl
+            << tuple[IDX("arg2")] << std::endl
+            << tuple[IDX("name1")] << std::endl
+            << std::endl;
+            
   std::cout << tuple.get<0>() << std::endl
             << tuple.get<1>() << std::endl
             << tuple.get<2>() << std::endl
