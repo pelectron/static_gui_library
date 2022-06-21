@@ -125,6 +125,15 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   named_tuple(const Arg<Names, Ts>&... elems) -> named_tuple<type_list<Names...>, type_list<Ts...>>;
+
+  template<size_t I, typename NameList,typename TypeList>
+auto& get(named_tuple<NameList,TypeList>& t)noexcept {
+  return t.template get<I>();
+}
+template<size_t I, typename NameList,typename TypeList>
+const auto& get(const named_tuple<NameList,TypeList>& t)noexcept{
+  return t.template get<I>();
+}
 } // namespace sgl
 
 #include "impl/sgl_named_tuple_impl.hpp"

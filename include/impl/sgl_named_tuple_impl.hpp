@@ -28,7 +28,7 @@ namespace sgl {
   const type_for_t<Name, named_tuple<type_list<Names...>, type_list<Ts...>>>&
       named_tuple<type_list<Names...>, type_list<Ts...>>::get(Name name) const noexcept {
     static_assert(sgl::contains_v<Name, name_list_t>, "");
-    return static_cast<const Arg<Name, type_for<Name>>*>(this)->get();
+    return static_cast<const Arg<Name, type_for<Name>>*>(this)->value_;
   }
 
   template <typename... Names, typename... Ts>
@@ -36,7 +36,7 @@ namespace sgl {
   type_for_t<Name, named_tuple<type_list<Names...>, type_list<Ts...>>>&
       named_tuple<type_list<Names...>, type_list<Ts...>>::get(Name name) noexcept {
     static_assert(sgl::contains_v<Name, name_list_t>, "");
-    return static_cast<Arg<Name, type_for<Name>>*>(this)->get();
+    return static_cast<Arg<Name, type_for<Name>>*>(this)->value_;
   }
 
   template <typename... Names, typename... Ts>
@@ -47,7 +47,7 @@ namespace sgl {
     } else {
       using Name = type_at_t<I, name_list_t>;
       using Type = type_at_t<I, type_list_t>;
-      return static_cast<Arg<Name, Type>*>(this)->get();
+      return static_cast<Arg<Name, Type>*>(this)->value_;
     }
   }
 
@@ -60,7 +60,7 @@ namespace sgl {
 
       using Name = type_at_t<I, name_list_t>;
       using Type = type_at_t<I, type_list_t>;
-      return static_cast<const Arg<Name, Type>*>(this)->get();
+      return static_cast<const Arg<Name, Type>*>(this)->value_;
     }
   }
 

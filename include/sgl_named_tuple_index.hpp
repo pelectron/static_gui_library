@@ -49,7 +49,7 @@ namespace sgl {
     } // namespace compile_time
   }   // namespace detail
 
-#define CSTRING(string_literal)                                                               \
+#define IDX(string_literal)                                                               \
   [] {                                                                                        \
     struct constexpr_string_type {                                                            \
       const char* chars = string_literal;                                                     \
