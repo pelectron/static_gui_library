@@ -1,65 +1,86 @@
+/**
+ * @file sgl_named_tuple.hpp
+ * @author Pelé Constam (you@domain.com)
+ * @brief code taken from
+ * https://stackoverflow.com/questions/15858141/conveniently-declaring-compile-time-strings-in-c/.
+ * all credits to the compile time wizard
+ * @version 0.1
+ * @date 2022-06-20
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #ifndef SGL_NAMED_TUPLE_HPP
 #define SGL_NAMED_TUPLE_HPP
+#include "sgl_named_tuple_index.hpp"
 #include "sgl_string_view.hpp"
 #include "sgl_tuple.hpp"
-#include "sgl_value_list.hpp"
 
 namespace sgl {
+  template <typename Name, typename T>
+  struct Arg;
 
-  template <const auto& Name, typename T>
-  struct named_value {
-    T value;
+  template <typename T, char... chars>
+  struct Arg<Name<chars...>, T> {
+    using value_type = T;
+    using name_type = Name<chars...>;
+    static constexpr bool nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<T>;
+    static constexpr bool nothrow_move_constructible = std::is_nothrow_move_constructible_v<T>;
+    static constexpr bool nothrow_default_constructible =
+        std::is_nothrow_default_constructible_v<T>;
+
+    constexpr Arg() noexcept(nothrow_default_constructible) = default;
+
+    constexpr Arg(const Arg& other) noexcept(nothrow_copy_constructible) : value_(other.value_) {}
+
+    constexpr Arg(Arg&& other) noexcept(nothrow_move_constructible)
+        : value_(std::move(other.value_)) {}
+
+    constexpr Arg(name_type, const value_type& value) noexcept(nothrow_copy_constructible)
+        : value_(value) {}
+
+    constexpr Arg(name_type, value_type&& value) noexcept(nothrow_move_constructible)
+        : value_(std::move(value)) {}
+
+    T value_;
   };
-
-  template <typename T>
-  static constexpr bool is_named_value_wrapped_v = false;
-  template <const auto& n, typename T>
-  static constexpr bool is_named_value_wrapped_v<named_value<n, T>> = true;
-
-  template <const auto& Name, typename T>
-  constexpr named_value<Name, T> make_named(T&& t) {
-    return named_value<Name, T>{std::forward<T>(t)};
-  }
-
-  template <const auto& Name, typename T, typename... Args>
-  constexpr named_value<Name, T> make_named(Args&&... args) {
-    return named_value<Name, T>{{std::forward<Args>(args)...}};
-  }
-
+  template <typename T, char... chars>
+  Arg(Name<chars...>, T&&) -> Arg<Name<chars...>, std::decay_t<T>>;
   template <typename NameList, typename TypeList>
   class named_tuple;
-  template <const auto& N1>
-  constexpr bool name_check(value_list<N1>) {
-    return true;
-  }
 
-  template <const auto& N1, const auto& N2, const auto&... Ns>
-  constexpr bool name_check(value_list<N1, N2, Ns...>) {
-    if constexpr (sizeof...(Ns) == 0) {
-      return not(N1 == N2);
-    } else {
-      return (not(N1 == N2)) and name_check(value_list<N2, Ns...>{});
-    }
-  }
+  template <typename Name, typename Tuple>
+  struct type_for;
 
-  template <const auto&... Names, typename... Ts>
-  class named_tuple<value_list<Names...>, type_list<Ts...>> {
+  template <typename Name, typename... Names, typename... Ts>
+  struct type_for<Name, named_tuple<type_list<Names...>, type_list<Ts...>>> {
+    using name_list_t = type_list<Names...>;
+    using type_list_t = type_list<Ts...>;
+    using type = type_at_t<index_of_v<Name, name_list_t>, type_list_t>;
+  };
+
+  template <typename Name, typename Tuple>
+  using type_for_t = typename type_for<Name, Tuple>::type;
+
+  template <typename... Names, typename... Ts>
+  class named_tuple<type_list<Names...>, type_list<Ts...>> : Arg<Names, Ts>... {
   public:
     /// true if all Ts are nothrow default constructible
     static constexpr bool nothrow_default_constructible =
-        std::is_nothrow_default_constructible_v<tuple<named_value<Names, Ts>...>>;
+        (std::is_nothrow_default_constructible_v<Arg<Names, Ts>> && ...);
     /// true if all Ts are nothrow destructible
     static constexpr bool nothrow_destructible =
-        std::is_nothrow_destructible_v<tuple<named_value<Names, Ts>...>>;
+        (std::is_nothrow_destructible_v<Arg<Names, Ts>> && ...);
     /// true if all Ts are nothrow copy constructible
     static constexpr bool nothrow_copy_constructible =
-        std::is_nothrow_copy_constructible_v<tuple<named_value<Names, Ts>...>>;
+        (std::is_nothrow_copy_constructible_v<Arg<Names, Ts>> && ...);
     /// true if all Ts are nothrow move constructible
     static constexpr bool nothrow_move_constructible =
-        std::is_nothrow_move_constructible_v<tuple<named_value<Names, Ts>...>>;
-    using values_t = value_list<Names...>;
-    using types_t = type_list<named_value<Names, Ts>...>;
-    static_assert(name_check(values_t{}), "duplicate names found!");
+        (std::is_nothrow_move_constructible_v<Arg<Names, Ts>> && ...);
+    using name_list_t = type_list<Names...>;
+    using type_list_t = type_list<Ts...>;
+    using types_t = type_list<Arg<Names, Ts>...>;
+    using This_t = named_tuple<type_list<Names...>, type_list<Ts...>>;
 
     constexpr named_tuple() noexcept(nothrow_default_constructible) = default;
 
@@ -71,49 +92,39 @@ namespace sgl {
 
     constexpr named_tuple(Ts&&... elems) noexcept(nothrow_move_constructible);
 
-    template <const auto& Name>
-    auto& get() noexcept;
+    constexpr named_tuple(const Arg<Names, Ts>&... elems) noexcept(nothrow_copy_constructible);
 
-    template <const auto& Name>
-    const auto& get() const noexcept;
+    constexpr named_tuple(Arg<Names, Ts>&&... elems) noexcept(nothrow_move_constructible);
+
+    template <typename Name>
+    type_for_t<Name, This_t>& get(Name name) noexcept;
+
+    template <typename Name>
+    const type_for_t<Name, This_t>& get(Name name) const noexcept;
 
     template <size_t I>
     auto& get() noexcept;
-
     template <size_t I>
     const auto& get() const noexcept;
 
-  private:
-    tuple<named_value<Names, Ts>...> data;
+    template <typename Name>
+    type_for_t<Name, This_t>& operator[](Name) {
+      static_assert(sgl::contains_v<Name, name_list_t>, "");
+      return static_cast<Arg<Name, type_for_t<Name, This_t>>*>(this)->value_;
+    }
+
+    template <typename Name>
+    const type_for<Name, This_t>& operator[](Name) const {
+      static_assert(sgl::contains_v<Name, name_list_t>, "");
+      return static_cast<const Arg<Name, type_for_t<Name, This_t>>*>(this)->value_;
+    }
   };
+  
+  template <typename... Names, typename... Ts>
+  named_tuple(Arg<Names, Ts>&&... elems) -> named_tuple<type_list<Names...>, type_list<Ts...>>;
 
-  template <const auto&... Names, typename... Ts>
-  constexpr auto make_named_tuple(Ts&&... elements) {
-    using value_list_t = value_list<Names...>;
-    using type_list_t = type_list<std::decay_t<Ts>...>;
-    using Tuple = named_tuple<value_list_t, type_list_t>;
-    static_assert(sizeof...(Names) == sizeof...(Ts),
-                  "number of names and number of elements must match");
-    return Tuple(std::forward<Ts>(elements)...);
-  }
-
-  template <size_t I, const auto&... Names, typename... Ts>
-  auto& get(named_tuple<value_list<Names...>, type_list<Ts...>>& t) {
-    return t.template get<I>();
-  }
-  template <size_t I, const auto&... Names, typename... Ts>
-  const auto& get(named_tuple<value_list<Names...>, type_list<Ts...>>& t) {
-    return t.template get<I>();
-  }
-  template <const auto& Name, const auto&... Names, typename... Ts>
-  auto& get(named_tuple<value_list<Names...>, type_list<Ts...>>& t) {
-    return t.template get<Name>();
-  }
-  template <const auto& Name, const auto&... Names, typename... Ts>
-  const auto& get(named_tuple<value_list<Names...>, type_list<Ts...>>& t) {
-    return t.template get<Name>();
-  }
-
+  template <typename... Names, typename... Ts>
+  named_tuple(const Arg<Names, Ts>&... elems) -> named_tuple<type_list<Names...>, type_list<Ts...>>;
 } // namespace sgl
 
 #include "impl/sgl_named_tuple_impl.hpp"
