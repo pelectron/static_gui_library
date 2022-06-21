@@ -25,7 +25,8 @@ namespace sgl {
   struct make_index_seq<0> {
     using type = index_seq_t<0>;
   };
-
+template <size_t I>
+  using make_index_seq_t = typename make_index_seq<I>::type;
   template <typename... Ts>
   using index_sequence_for = typename make_index_seq<sizeof...(Ts) - 1>::type;
 

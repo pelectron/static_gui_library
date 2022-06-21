@@ -223,6 +223,17 @@ namespace sgl {
 
   template <template <typename> typename F, typename List>
   using for_each_t = typename for_each_in_list<F, List>::type;
+
+  template <typename T, typename List>
+  struct contains;
+
+  template <typename T, typename... Ts>
+  struct contains<T, type_list<Ts...>> {
+    static constexpr bool value = (std::is_same_v<T, Ts> || ...);
+  };
+  template <typename T, typename List>
+  static constexpr bool contains_v = contains<T, List>::value;
+
   ///\endcond
 } // namespace sgl
 #endif
