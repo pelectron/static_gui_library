@@ -27,12 +27,8 @@ if instantiate
 endif
 
 add_project_arguments('-ferror-limit=2',language:'cpp')
-# executable('menu_ex','menu_example.cpp')
-# executable('menu_test','menu_tester.cpp')
-# executable('sgl_test','sgl_test.cpp')
-executable('items', 'include/items.cpp', dependencies: dependencies, cpp_args:defines)
 
-static_gui_dep = declare_dependency(include_directories: include_directories('include'), dependencies: dependencies, compile_args: defines)
+sgl_dep = declare_dependency(include_directories: include_directories('include'), dependencies: dependencies, compile_args: defines)
 # custom_target('c_test', depend_files:['callable_test.cpp'], command:['clang++', '-O3','-std=c++17','-fno-exceptions','-o', meson.current_build_dir() + '/callable_test.S', '-S', meson.current_source_dir() + '/callable_test.cpp'], output:['callable_test.S'])
 # executable('callable_test','callable_test.cpp',cpp_args:['-O3'])
 # executable('item_base','item_base.cpp',dependencies:ryu_dep)

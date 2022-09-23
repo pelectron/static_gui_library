@@ -1,4 +1,4 @@
-#include "../include/sgl.hpp"
+#include "sgl/sgl.hpp"
 
 #include <iostream>
 
@@ -14,45 +14,53 @@ enum class myEnum {
 };
 
 constexpr auto Page1() noexcept {
-  return make_page("page1"_sv,
-                   "Page 1"_sv,
-                   Boolean("bool 1", true),
-                   make_enum<20>("Setting Option"_sv,
-                                 SGL_ENUM_MAP({Setting::opt1, "Option 1"},
-                                              {Setting::opt2, "Option 2"},
-                                              {Setting::opt3, "Option 3"})),
-                   make_numeric<25>("double item", 1.0_double, 1.0),
-                   make_numeric<15>("float item", 1.0_float, 1.0f),
-                   make_numeric<13>("int item", 1, 2),
-                   PageLink<40, char>("p2l", "page 2 link", "page2"));
+  return NAME("page1") <<=
+         Page(NAME("boolean") <<= Boolean(true),
+              NAME("settings enum") <<= make_enum(Setting::opt1,
+                                                  "Option 1",
+                                                  Setting::opt2,
+                                                  "Option 2",
+                                                  Setting::opt3,
+                                                  "Option 3"),
+              NAME("double item") <<= make_numeric(1.0_double, 1.0),
+              NAME("float item") <<= make_numeric(1.0_float, 1.0f),
+              NAME("int item") <<= make_numeric<12, char>(1, 2),
+              NAME("p2l") <<= make_pagelink(NAME("page2"), "return to page 2"),
+              NAME("spl") <<= make_pagelink(NAME("settings page"), "settings page"));
 }
 
 constexpr auto Page2() noexcept {
-  return make_page("page2"_sv,
-                   "Page 2"_sv,
-                   Boolean("bool 2", true),
-                   make_enum<5>("Other Setting Option"_sv,
-                                SGL_ENUM_MAP({OtherSetting::Up, "Up"},
-                                             {OtherSetting::Down, "Down"},
-                                             {OtherSetting::Left, "Left"},
-                                             {OtherSetting::Right, "Right"})),
-                   make_numeric<20>("double2", 2.0_double, 2.0),
-                   make_numeric<45>("float2", 2.0_float, 2.0f),
-                   make_numeric<10>("int2", 2, 2),
-                   PageLink<40, char>("p1l", "page 1 link", "page1"));
+  return NAME("page2") <<= Page(NAME("bool 2") <<= Boolean(true),
+                                NAME("Other Setting Option") <<= make_enum(OtherSetting::Up,
+                                                                           "Up",
+                                                                           OtherSetting::Down,
+                                                                           "Down",
+                                                                           OtherSetting::Left,
+                                                                           "Left",
+                                                                           OtherSetting::Right,
+                                                                           "Right"),
+                                NAME("double 2") <<= make_numeric(2.0_double, 2.0),
+                                NAME("float2") <<= make_numeric(2.0_float, 2.0f),
+                                NAME("int2") <<= make_numeric<12, char>(2, 2),
+                                NAME("p1l") <<= make_pagelink(NAME("page1"), "return to page 1"));
 }
 
 constexpr auto SettingsPage() {
-  return make_page("settings"_sv,
-                   "Settings"_sv,
-                   make_enum<20>("Setting Option"_sv,
-                                 SGL_ENUM_MAP({Setting::opt1, "Option 1"},
-                                              {Setting::opt2, "Option 2"},
-                                              {Setting::opt3, "Option 3"})),
-                   make_enum<5>("Other Setting Option"_sv,
-                                SGL_ENUM_MAP({OtherSetting::Up, "Up"},
-                                             {OtherSetting::Down, "Down"},
-                                             {OtherSetting::Left, "Left"},
-                                             {OtherSetting::Right, "Right"})));
+  return NAME("settings page") <<=
+         Page(NAME("settings item") <<= make_enum(Setting::opt1,
+                                                  "Option 1",
+                                                  Setting::opt2,
+                                                  "Option 2",
+                                                  Setting::opt3,
+                                                  "Option 3"),
+              NAME("Other Setting Option") <<= make_enum(OtherSetting::Up,
+                                                         "Up",
+                                                         OtherSetting::Down,
+                                                         "Down",
+                                                         OtherSetting::Left,
+                                                         "Left",
+                                                         OtherSetting::Right,
+                                                         "Right"),
+              NAME("p1l") <<= make_pagelink(NAME("page1"), "return to page 1"));
 }
-int main() { auto menu = Menu(Page1(), Page2()); }
+int main() { auto menu = Menu(Page1(), Page2(), SettingsPage()); }

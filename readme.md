@@ -135,11 +135,11 @@ The other pages are not current, but they still have a current item, i.e. index.
 ## Classes
 For these concepts, there are 3 kinds of classes in this library. 
 
-The first one in sgl::Menu_t. It implements a menu. 
+The first one in sgl::Menu. It implements a menu. 
 
-The second kind is sgl::Page_t. It implements a page. 
+The second kind is sgl::Page. It implements a page. 
 
-The last is a family of classes, the items, the base class of which is sgl::Item_t. They implement basic item behavior.
+The last is a family of classes, the items, the base class of which is sgl::ItemBase. They implement basic item behavior.
 
 
 
@@ -150,12 +150,32 @@ Input handling is divided up into three stages. Below I will describe the defaul
 First, the menu receives an Input through it's handle_input() member function. The menu relays this input to it's input handler. The default input handler does nothing more than delegate the input to the active page and return the page's result.
 
 ### Customizing Menu Input Handling
-As with all types of handlers in this library, you can replace the default behavior. There is however not much to be done here, except cycle through all pages and delegate the input to the active one. And this is already implemented.
+As with all types of handlers in this library, you can replace the default behavior. There is however not much to be done here, except delegate the input to the active page, which this is already implemented.
 
 
 ## Page Input Handling
-The second stage is the page layer. This process is explained @ref page_input_handling "here" in detail.
+The second stage is the page layer. The page input handling has two important jobs:
+ - handle navigating through items on the page
+ - handle editing and clicking of items
+
+The library way of doing this is as follows (read the documentation for sgl::Page to follow completely):
+The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate through the items. 
+When an input equal to the page's start edit is received, the page switches into edit mode and passes the input value on to the items input handler (including the start_edit value).
+The returned value from the item input handler is interpreted as such:
+ - sgl::error:::edit_finished means the page should switch back into navigation mode, regardless of which input it just received. The page's default input handler will return sgl::error::no_error in this case.
+ - sgl::error::no_error means the item handled the input successfully, and the page stays in edit mode. The page keeps relaying the inputs to the active item.The page's default input handler will return sgl::error::no_error in this case.
+ - any other sgl::error value means the item failed to handle the input. The page switches back into navigation mode and returns the error value from the item input handler.
+
+When an input equal to the page's stop edit is received, the page switches back into navigation mode. The stop edit input is NOT passed on to the item input handler.
+
+As long as the convention of the item's input handler return value is held, the whole system works as expected and you can mix and match item input handlers.
+
+If the default way of doing things is not to your liking, you can also create your own custom page input handler. Again, if the convention of the item's input handler return value is respected, the library provided item types work as expected.
+
 
 
 ## Item input Handling
-The last stage is the item layer. Items also have an input handler, though the default one of Item_t just returns sgl::error::edit_finished. The item types provided by this library always have some default, hopefully sensible, behavior. It can however be completely customized. See the section @ref item_types "Item Types" for more info.
+The last stage is the item layer. Items also have an input handler. An input handler for an item type 'Item' will always have the signature sgl::error(Item&,sgl::Input). The input handler will be called with a reference to the item it handles the input for and the user input. The return value should either be 
+ - sgl::error::edit_finished, in case the item cannot be edited, the user input indicates that the editing of the item has finished, or the item has only a 'one input and done' mechanism like a button.
+ - sgl::error::no_error, in case the provided input could be handled correctly and the item should remain in editing mode from it's point of view.
+ - any other value indicates failure which cannot be handled by the item.

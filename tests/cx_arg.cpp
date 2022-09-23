@@ -1,4 +1,4 @@
-#include "../include/sgl_cx_arg.hpp"
+#include "sgl/cx_arg.hpp"
 #include "catch2/catch.hpp"
 
 
@@ -24,12 +24,12 @@ TEST_CASE("cx_arg double test") {
   STATIC_REQUIRE(d1.string == d3.string);
 }
 TEST_CASE("cx_arg float test") {
-  static constexpr auto d1 = 62.53_float;
-  static constexpr auto d2 = -62.53_float;
-  static constexpr auto d3 = +62.53_float;
-  STATIC_REQUIRE(epsilon_equal(d1.value, d3.value, f_epsilon));
-  STATIC_REQUIRE(epsilon_equal(d1.value, 62.53f, f_epsilon));
-  STATIC_REQUIRE(epsilon_equal(d2.value, -62.53f, f_epsilon));
+  static constexpr auto f1 = 62.53_float;
+  static constexpr auto f2 = -62.53_float;
+  static constexpr auto f3 = +62.53_float;
+  STATIC_REQUIRE(epsilon_equal(f1.value, f3.value, f_epsilon));
+  STATIC_REQUIRE(epsilon_equal(f1.value, 62.53f, f_epsilon));
+  STATIC_REQUIRE(epsilon_equal(f2.value, -62.53f, f_epsilon));
 
-  STATIC_REQUIRE(d1.string == d3.string);
+  STATIC_REQUIRE(f1.string == f3.string);
 }
