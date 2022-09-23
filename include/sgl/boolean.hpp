@@ -3,6 +3,7 @@
 #include "sgl/item_base.hpp"
 namespace sgl {
 
+  /// \headerfile boolean.hpp "sgl/boolean.hpp"
   /// \ingroup item_types
   /// \brief This class implements a basic Boolean item. When clicked, it will
   /// toggle it's value and set it's text accordingly.

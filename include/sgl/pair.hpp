@@ -1,8 +1,8 @@
 #ifndef SGL_PAIR_HPP
 #define SGL_PAIR_HPP
 #include <type_traits>
-namespace sgl{
-    /// simple pair type
+namespace sgl {
+  /// simple pair type
   template <typename T1, typename T2>
   struct Pair {
     using first_type = T1;
@@ -27,6 +27,5 @@ namespace sgl{
   };
   template <typename T1, typename T2>
   Pair(T1&&, T2&&) -> Pair<std::decay_t<T1>, std::decay_t<T2>>;
-
-}
+} // namespace sgl
 #endif

@@ -12,6 +12,7 @@ namespace sgl {
   class Menu;
   /// \endcond
 
+  /// \headerfile menu.hpp "sgl/menu.hpp"
   /// \brief The menu class brings everything together and holds all the data of the menu. It is
   /// essentially a named tuple of pages.
   /// \tparam Names names of the pages
@@ -211,7 +212,7 @@ namespace sgl {
     constexpr decltype(auto) for_current_page_impl(F&& f) const
         noexcept(const_nothrow_applicable<F>);
 
-    sgl::NamedTuple<name_list, page_list> pages_;        ///< pages owned by this menu
+    sgl::NamedTuple<name_list, page_list> pages_;         ///< pages owned by this menu
     InputHandler_t input_handler_{&default_handle_input}; ///< menu input handler
     sgl::smallest_type_t<sizeof...(Pages)> index_{0};     ///< index of current page
   };
@@ -244,8 +245,8 @@ namespace sgl {
       noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>())));
   /// \}
 
-  /// \brief apply f on each page of the menu, with the name of the page. See Menu<NameList,
-  /// PageList>::for_each_page_with_name for more details.
+  /// \brief apply f on each page of the menu, with the name of the page.
+  /// See Menu::for_each_page_with_name for more details.
   /// \tparam NameList list of page names
   /// \tparam PageList list of page types
   /// \tparam F functor type

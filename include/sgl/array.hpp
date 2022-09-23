@@ -2,7 +2,7 @@
 #define SGL_ARRAY_HPP
 namespace sgl{
   
-  /// simple Array type
+  /// simple array type
   template <typename T, size_t N>
   struct Array {
   public:

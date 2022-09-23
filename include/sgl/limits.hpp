@@ -7,13 +7,14 @@
 /// \date 2022-06-14
 ///
 /// \copyright Copyright (c) 2022
-/// \cond
 #ifndef SGL_LIMITS_HPP
-  #define SGL_LIMITS_HPP
-  #include <cfloat>
-  #include <climits>
-  #include <cstdint>
-  #include <cwchar>
+#define SGL_LIMITS_HPP
+/// \cond
+
+#include <cfloat>
+#include <climits>
+#include <cstdint>
+#include <cwchar>
 
 namespace sgl {
   template <typename T>
@@ -111,7 +112,7 @@ namespace sgl {
     static constexpr long double max() noexcept { return LDBL_MAX; }
     static constexpr long double min() noexcept { return LDBL_MIN; }
   };
+  /// \endcond
 } // namespace sgl
 
 #endif
-/// \endcond

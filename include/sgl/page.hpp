@@ -1,5 +1,16 @@
-#ifndef PAGE_HPP
-#define PAGE_HPP
+/**
+ * \file sgl/page.hpp
+ * 
+ * \author Pelé Constam (you@domain.com)
+ * \brief
+ * \version 0.1
+ * @date 2022-09-23
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+#ifndef SGL_PAGE_HPP
+#define SGL_PAGE_HPP
 #include "sgl/callable.hpp"
 #include "sgl/error.hpp"
 #include "sgl/input.hpp"
@@ -14,6 +25,7 @@ namespace sgl {
   class Page;
   /// \endcond
 
+  /// \headerfile page.hpp "sgl/page.hpp"
   /// \brief This class represents a page of a menu. A page is a container for items. It is a non
   /// recursive data structure, i.e. a page cannot contain a subpage. A page is responsible for
   /// navigating through the items and delegating user input the the current item if appropriate.
@@ -39,8 +51,8 @@ namespace sgl {
   ///
   /// The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate
   /// through the items. When an input equal to the page's start edit is received, the page switches
-  /// into edit mode and passes the input value on to the current item's input handler (including the
-  /// start_edit value).
+  /// into edit mode and passes the input value on to the current item's input handler (including
+  /// the start_edit value).
   ///
   /// The returned value from the item input handler is interpreted as such:
   ///  - sgl::error:::edit_finished means the page should switch back into navigation mode,
@@ -69,8 +81,8 @@ namespace sgl {
   /// every time the page is exited. The concrete types of these actions are
   /// sgl::Callable<sgl::error(Page&)>.
   ///
-  /// \tparam Names
-  /// \tparam Items
+  /// \tparam Names names of the items
+  /// \tparam Items item types
   template <typename... Names, typename... Items>
   class Page<sgl::type_list<Names...>, sgl::type_list<Items...>> {
     template <typename F>
@@ -315,7 +327,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each(Page<NameList, ItemList>& page,
+  void for_each(sgl::Page<NameList, ItemList>& page,
                 F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f))));
 
   /// \brief apply f on each item in a page. This will call f with a const reference to the item for
@@ -326,7 +338,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each(const Page<NameList, ItemList>& page,
+  void for_each(const sgl::Page<NameList, ItemList>& page,
                 F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f))));
 
   /// \brief apply f on each item in a page. f will be called with the name of the item as an
@@ -338,7 +350,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(Page<NameList, ItemList>& page, F&& f) noexcept(
+  void for_each_with_name(sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
       noexcept(page.template for_each_item_with_name(std::forward<F>(f))));
 
   /// \brief apply f on each item in a page. f will be called with the name of the item as an
@@ -348,7 +360,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(const Page<NameList, ItemList>& page, F&& f) noexcept(
+  void for_each_with_name(const sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
       noexcept(page.template for_each_item_with_name(std::forward<F>(f))));
 
   /// \brief apply functor f on the current item of a page. This will call f with a reference to the
@@ -359,7 +371,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(Page<NameList, ItemList>& page, F&& f) noexcept(
+  decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
       noexcept(std::declval<Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
 
   /// \brief apply functor f on the current item of a page. This will call f with a const reference
@@ -370,7 +382,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(const Page<NameList, ItemList>& page, F&& f) noexcept(noexcept(
+  decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f) noexcept(noexcept(
       std::declval<const Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
 
 } // namespace sgl

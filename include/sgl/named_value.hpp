@@ -1,5 +1,5 @@
 
-/// \file named_value.hpp
+/// \file sgl/named_value.hpp
 /// \author Pelé Constam (you\domain.com)
 /// \brief This file defines the NamedValue and Name types used by NamedTuple.
 /// \version 0.1
@@ -12,7 +12,7 @@
 #include "sgl/name.hpp"
 #include "sgl/string_view.hpp"
 
-#include <utility>
+#include <type_traits>
 
 namespace sgl {
 
@@ -36,7 +36,7 @@ namespace sgl {
   template <typename Name, typename T>
   class NamedValue {
   public:
-    static_assert(is_name_type_v<Name>,
+    static_assert(sgl::is_name_type_v<Name>,
                   "Name is not a name type, i.e. of type sgl::Name<Chars...>.");
     /// value type of the argument
     using value_type = T;

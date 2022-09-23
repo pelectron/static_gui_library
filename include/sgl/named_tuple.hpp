@@ -1,10 +1,11 @@
 
-/// \file named_tuple.hpp
+/// \file sgl/named_tuple.hpp
 /// \author Pelé Constam (you\domain.com)
 /// \version 0.1
 /// \date 2022-06-20
 /// \brief This file defines the NamedTuple class and it's iteration functions, sgl::for_each() and
-/// sgl::for_each_with_name() \copyright Copyright (c) 2022
+/// sgl::for_each_with_name().
+/// \copyright Copyright (c) 2022
 ///
 
 #ifndef SGL_NAMED_TUPLE_HPP

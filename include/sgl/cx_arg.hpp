@@ -3,8 +3,6 @@
 #include "sgl/format.hpp"
 #include "sgl/static_string.hpp"
 
-#include <cstdint>
-
 namespace sgl {
 
   /// \brief This struct is used for compile time formatting of floating point values, used in

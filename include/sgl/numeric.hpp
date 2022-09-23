@@ -1,3 +1,13 @@
+/**
+ * \file sgl/numeric.hpp
+ * \author Pelé Constam (you@domain.com)
+ * \brief 
+ * \version 0.1
+ * @date 2022-09-23
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+*/ 
 #ifndef SGL_BASIC_NUMERIC_HPP
 #define SGL_BASIC_NUMERIC_HPP
 #include "sgl/cx_arg.hpp"
@@ -18,7 +28,6 @@ namespace sgl {
   /// \tparam T value type
   /// \tparam TextSize display width
   /// \tparam CharT character type
-
   template <size_t TextSize, typename CharT, typename T>
   class Numeric : public sgl::ItemBase<Numeric<TextSize, CharT, T>> {
   public:
@@ -108,6 +117,7 @@ namespace sgl {
     constexpr sgl::error set_value(T value) noexcept;
 
   private:
+
     /// \brief execute the formatter and format val into this item's text
     /// \param val value to format
     /// \return sgl::error

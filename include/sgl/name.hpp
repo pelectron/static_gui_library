@@ -1,4 +1,4 @@
-/// \file name.hpp
+/// \file sgl/name.hpp
 /// \author Pelé Constam (you@domain.com)
 /// \brief This file defines the sgl::Name class, the type trait sgl::is_name_v and the NAME
 /// convenience macro.

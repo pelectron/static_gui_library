@@ -1,3 +1,12 @@
+/**
+ * \file sgl/page_link.hpp
+ * \author Pelé Constam (you@domain.com)
+ * \version 0.1
+ * @date 2022-09-23
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+*/ 
 #ifndef SGL_PAGE_LINK_HPP
 #define SGL_PAGE_LINK_HPP
 #include "sgl/fwd.hpp"

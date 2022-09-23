@@ -3,6 +3,7 @@
 #include "sgl/pass_through_button.hpp"
 namespace sgl {
 
+  /// \headerfile button.hpp "sgl/button.hpp"
   /// \ingroup item_types
   /// \brief This class represents a button.
   /// A button can be clicked, upon which a customizable click handler is called.
