@@ -50,8 +50,8 @@ namespace sgl {
   private:
     /// default input handler
     /// \return sgl::error
-    [[nodiscard]] static constexpr sgl::error
-        default_handle_input(Boolean<TextSize, CharT>& item, sgl::Input i) noexcept;
+    [[nodiscard]] static constexpr sgl::error default_handle_input(Boolean<TextSize, CharT>& item,
+                                                                   sgl::Input i) noexcept;
 
     StringView true_string_{};  ///< view of true string
     StringView false_string_{}; ///< view of false string
@@ -81,4 +81,4 @@ namespace sgl {
   /// \}
 } // namespace sgl
 #include "sgl/impl/boolean_impl.hpp"
-#endif
+#endif /* SGL_BOOLEAN_HPP */

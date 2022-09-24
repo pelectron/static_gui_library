@@ -1,5 +1,5 @@
-#ifndef SGL_BOOLEAN_IMPL_HPP
-#define SGL_BOOLEAN_IMPL_HPP
+#ifndef SGL_IMPL_BOOLEAN_IMPL_HPP
+#define SGL_IMPL_BOOLEAN_IMPL_HPP
 #include "sgl/boolean.hpp"
 namespace sgl {
   /// \cond
@@ -79,4 +79,4 @@ namespace sgl {
     return Boolean(initial_value, true_string, false_string);
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_BOOLEAN_IMPL_HPP */

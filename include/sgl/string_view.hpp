@@ -137,4 +137,4 @@ namespace sgl {
     }
   } // namespace string_view_literals
 } // namespace sgl
-#endif
+#endif /* SGL_STRING_VIEW_HPP */

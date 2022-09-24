@@ -1,5 +1,5 @@
-#ifndef SGL_BUTTON_IMPL_HPP
-#define SGL_BUTTON_IMPL_HPP
+#ifndef SGL_IMPL_BUTTON_IMPL_HPP
+#define SGL_IMPL_BUTTON_IMPL_HPP
 #include "sgl/button.hpp"
 namespace sgl {
   template <size_t TextSize, typename CharT>
@@ -77,4 +77,4 @@ namespace sgl {
                                    std::forward<TickHandler>(tick_handler));
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_BUTTON_IMPL_HPP */

@@ -32,4 +32,4 @@ namespace sgl {
 
   /// \endcond
 } // namespace sgl
-#endif
+#endif /* SGL_INDEX_SEQUENCE_HPP */

@@ -1,5 +1,5 @@
-#ifndef SGL_NAMED_TUPLE_IMPL_HPP
-#define SGL_NAMED_TUPLE_IMPL_HPP
+#ifndef SGL_IMPL_NAMED_TUPLE_IMPL_HPP
+#define SGL_IMPL_NAMED_TUPLE_IMPL_HPP
 #include "sgl/named_tuple.hpp"
 
 namespace sgl {
@@ -46,7 +46,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename Name>
-  constexpr const auto& NamedTuple<type_list<Names...>, type_list<Ts...>>::get(Name name) const noexcept {
+  constexpr const auto&
+      NamedTuple<type_list<Names...>, type_list<Ts...>>::get(Name name) const noexcept {
     if constexpr (!sgl::contains_v<Name, name_list_t>) {
       static_assert(sgl::contains_v<Name, name_list_t>, "No such name in tuple");
     } else {
@@ -93,7 +94,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename Name>
-  constexpr auto& NamedTuple<type_list<Names...>, type_list<Ts...>>::operator[](Name name) noexcept {
+  constexpr auto&
+      NamedTuple<type_list<Names...>, type_list<Ts...>>::operator[](Name name) noexcept {
     if constexpr (!sgl::contains_v<Name, name_list_t>) {
       static_assert(sgl::contains_v<Name, name_list_t>, "No such name in tuple");
     } else {
@@ -143,8 +145,9 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<type_list<Names...>, type_list<Ts...>>::for_each_with_name(F&& f) noexcept(
-      (std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...)) {
+  constexpr void NamedTuple<type_list<Names...>, type_list<Ts...>>::for_each_with_name(
+      F&& f) noexcept((std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, Ts&> &&
+                       ...)) {
     if constexpr (!(std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...),
                     "f must be invocable with (sgl::string_view<char>, T&) for each T in this "
@@ -204,9 +207,10 @@ namespace sgl {
   }
 
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
-      std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f)))) {
+  constexpr void
+      for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
+          std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f)))) {
     return tuple.for_each_with_name(std::forward<F>(f));
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_NAMED_TUPLE_IMPL_HPP */

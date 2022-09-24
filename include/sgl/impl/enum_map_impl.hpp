@@ -1,5 +1,5 @@
-#ifndef SGL_ENUM_MAP_IMPL_HPP
-#define SGL_ENUM_MAP_IMPL_HPP
+#ifndef SGL_IMPL_ENUM_MAP_IMPL_HPP
+#define SGL_IMPL_ENUM_MAP_IMPL_HPP
 #include "sgl/enum_map.hpp"
 namespace sgl {
   template <typename E, size_t N, typename CharT>
@@ -22,7 +22,8 @@ namespace sgl {
   }
 
   template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr E EnumMap<E, N, CharT>::operator[](sgl::string_view<CharT> str) const noexcept {
+  [[nodiscard]] constexpr E
+      EnumMap<E, N, CharT>::operator[](sgl::string_view<CharT> str) const noexcept {
     for (const auto& elem : data) {
       if (elem.second == str)
         return elem.first;
@@ -31,7 +32,8 @@ namespace sgl {
   }
 
   template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr sgl::string_view<CharT> EnumMap<E, N, CharT>::operator[](E value) const noexcept {
+  [[nodiscard]] constexpr sgl::string_view<CharT>
+      EnumMap<E, N, CharT>::operator[](E value) const noexcept {
     for (const auto& elem : data) {
       if (elem.first == value)
         return elem.second;
@@ -45,7 +47,8 @@ namespace sgl {
   }
 
   template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr bool EnumMap<E, N, CharT>::contains(sgl::string_view<CharT> string) const noexcept {
+  [[nodiscard]] constexpr bool
+      EnumMap<E, N, CharT>::contains(sgl::string_view<CharT> string) const noexcept {
     return index_of(string) != numeric_limits<size_t>::max();
   }
 
@@ -61,7 +64,8 @@ namespace sgl {
   }
 
   template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr size_t EnumMap<E, N, CharT>::index_of(sgl::string_view<CharT> string) const noexcept {
+  [[nodiscard]] constexpr size_t
+      EnumMap<E, N, CharT>::index_of(sgl::string_view<CharT> string) const noexcept {
     size_t i{0};
     for (const auto& elem : data) {
       if (elem.second == string)
@@ -72,7 +76,8 @@ namespace sgl {
   }
 
   template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr sgl::string_view<CharT> EnumMap<E, N, CharT>::get_view(size_t i) const noexcept {
+  [[nodiscard]] constexpr sgl::string_view<CharT>
+      EnumMap<E, N, CharT>::get_view(size_t i) const noexcept {
     return data[i % N].second;
   }
 
@@ -174,4 +179,4 @@ namespace sgl {
     }
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_ENUM_MAP_IMPL_HPP */

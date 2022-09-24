@@ -1,5 +1,5 @@
-#ifndef MENU_HPP
-#define MENU_HPP
+#ifndef SGL_MENU_HPP
+#define SGL_MENU_HPP
 #include "sgl/callable.hpp"
 #include "sgl/error.hpp"
 #include "sgl/input.hpp"
@@ -263,4 +263,4 @@ namespace sgl {
   /// \}
 } // namespace sgl
 #include "sgl/impl/menu_impl.hpp"
-#endif
+#endif /* SGL_MENU_HPP */

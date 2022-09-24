@@ -1,5 +1,5 @@
-#ifndef SGL_BASIC_BUTTON_HPP
-#define SGL_BASIC_BUTTON_HPP
+#ifndef SGL_BUTTON_HPP
+#define SGL_BUTTON_HPP
 #include "sgl/pass_through_button.hpp"
 namespace sgl {
 
@@ -145,4 +145,4 @@ namespace sgl {
   /// \}
 } // namespace sgl
 #include "sgl/impl/button_impl.hpp"
-#endif
+#endif /* SGL_BUTTON_HPP */

@@ -106,4 +106,4 @@ namespace sgl {
     InputMap<char, N> map;
   };
 } // namespace sgl
-#endif
+#endif /* SGL_MENU_TESTER_HPP */

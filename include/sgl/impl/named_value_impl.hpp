@@ -1,5 +1,5 @@
-#ifndef SGL_NAMED_ARG_IMPL_HPP
-#define SGL_NAMED_ARG_IMPL_HPP
+#ifndef SGL_IMPL_NAMED_VALUE_IMPL_HPP
+#define SGL_IMPL_NAMED_VALUE_IMPL_HPP
 #include "../named_value.hpp"
 namespace sgl {
 
@@ -48,4 +48,4 @@ namespace sgl {
     return NamedValue(name, value);
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_NAMED_VALUE_IMPL_HPP */

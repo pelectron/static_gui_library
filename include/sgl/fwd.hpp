@@ -59,4 +59,4 @@ namespace sgl {
   struct index_seq_t;
   /// \endcond
 } // namespace sgl
-#endif
+#endif /* SGL_FWD_HPP */

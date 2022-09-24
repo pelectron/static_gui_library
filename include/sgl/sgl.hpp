@@ -1,5 +1,5 @@
-#ifndef SGL_HPP
-#define SGL_HPP
+#ifndef SGL_SGL_HPP
+#define SGL_SGL_HPP
 #include "sgl/items.hpp"
 #include "sgl/menu.hpp"
 #include "sgl/page.hpp"
@@ -18,4 +18,4 @@ namespace sgl {
   using Double_t = Numeric<SGL_LINE_WIDTH, SGL_CHAR_TYPE, double>;
 } // namespace sgl
 #endif
-#endif
+#endif /* SGL_SGL_HPP */

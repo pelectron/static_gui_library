@@ -32,4 +32,4 @@ namespace sgl {
 } // namespace sgl
 
 #include "sgl/impl/format_impl.hpp"
-#endif
+#endif /* SGL_FORMAT_HPP */

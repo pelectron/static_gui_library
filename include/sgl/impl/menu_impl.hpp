@@ -1,5 +1,5 @@
-#ifndef MENU_IMPL_HPP
-#define MENU_IMPL_HPP
+#ifndef SGL_IMPL_MENU_IMPL_HPP
+#define SGL_IMPL_MENU_IMPL_HPP
 #include "sgl/menu.hpp"
 #include "sgl/page.hpp"
 namespace sgl {
@@ -218,4 +218,4 @@ namespace sgl {
   }
 
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_MENU_IMPL_HPP */

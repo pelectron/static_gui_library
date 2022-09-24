@@ -10,7 +10,7 @@ namespace sgl {
   /// \brief simple, non allocating string class. Internally, it holds the size of the string and a
   /// CharT array of size Capacity + 1. This way, the string is always null terminated.
   /// \tparam CharT character type
-  /// \tparam Capacity capacity of the string, excluding the null character. 
+  /// \tparam Capacity capacity of the string, excluding the null character.
   template <typename CharT, size_t Capacity>
   class static_string {
   public:
@@ -204,4 +204,4 @@ namespace sgl {
     return true;
   }
 } // namespace sgl
-#endif
+#endif /* SGL_STATIC_STRING_HPP */

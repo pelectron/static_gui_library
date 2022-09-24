@@ -1,5 +1,5 @@
-#ifndef SGL_FLOAT_ARG
-#define SGL_FLOAT_ARG
+#ifndef SGL_CX_ARG_HPP
+#define SGL_CX_ARG_HPP
 #include "sgl/format.hpp"
 #include "sgl/static_string.hpp"
 
@@ -80,4 +80,4 @@ namespace sgl {
     }
   } // namespace cx_arg_literals
 } // namespace sgl
-#endif
+#endif /* SGL_CX_ARG_HPP */

@@ -1,8 +1,7 @@
-#ifndef SGL_ITEM_BASE_DETAIL_HPP
-#define SGL_ITEM_BASE_DETAIL_HPP
+#ifndef SGL_ITEM_TRAITS_HPP
+#define SGL_ITEM_TRAITS_HPP
 #include "sgl/fwd.hpp"
 #include "sgl/item_concepts.hpp"
-
 
 namespace sgl {
   /// \cond
@@ -46,27 +45,27 @@ namespace sgl {
   } // namespace traits_detail
 
   /// @brief evaluates to true if T has han inner typename item_type.
-  /// @tparam T type to inspect
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool has_item_type_typedef_v = traits_detail::has_item_type_typedef<T>::value;
 
   /// @brief evaluates to true if T has han inner typename char_type.
-  /// @tparam T type to inspect
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool has_char_type_typedef_v = traits_detail::has_char_type_typedef<T>::value;
 
   /// @brief evaluates to true if the expression ``T::text_size`` is a constant of type```size_t``.
-  /// @tparam T type to inspect
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool has_text_size_v = traits_detail::has_text_size<T>::value;
 
   /// @brief evaluates to ``T::clickable`` if the type of `T::clickable`` is bool
-  /// @tparam T type to inspect
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool has_clickable_v = traits_detail::has_clickable<T>::value;
 
   /// evaluates to false if has_clickable_v<T> is false, else it evaluates to T::clickable
-  /// @tparam T type to inspect
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool get_clickable_v =
       traits_detail::get_clickable<T, has_clickable_v<T>>::value;
@@ -77,6 +76,9 @@ namespace sgl {
         has_char_type_typedef_v<T> and has_item_type_typedef_v<T> and has_text_size_v<T>;
   };
   /// \endcond
+
+  /// @brief check if T is an item trait.
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool is_item_trait_v = is_item_trait<T>::value;
 
@@ -87,11 +89,12 @@ namespace sgl {
     static_assert(traits_detail::always_false<ItemType>,
                   "This traits structure is not correctly defined. Either manually specialize "
                   "ItemTraits or implement your own traits struct. You can statically assert that "
-                  "your traits structure is "
-                  "correctly implemented by using std::is_item_trait_v<YourTraitsType>");
+                  "your traits structure is correctly implemented by using "
+                  "sgl::is_item_trait_v<YourTraitsType>");
   };
   /// \cond
 
+  // button item traits
   template <size_t TextSize, typename CharT>
   struct ItemTraits<sgl::Button<TextSize, CharT>> {
     using item_type = sgl::Button<TextSize, CharT>;
@@ -100,6 +103,7 @@ namespace sgl {
     static constexpr bool   clickable = true;
   };
 
+  // boolean item traits
   template <size_t TextSize, typename CharT>
   struct ItemTraits<sgl::Boolean<TextSize, CharT>> {
     using item_type = sgl::Boolean<TextSize, CharT>;
@@ -108,6 +112,7 @@ namespace sgl {
     static constexpr bool   clickable = true;
   };
 
+  // enum item traits
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   struct ItemTraits<sgl::Enum<T, NumEnumerators, TextSize, CharT>> {
     using item_type = sgl::Enum<T, NumEnumerators, TextSize, CharT>;
@@ -115,6 +120,7 @@ namespace sgl {
     static constexpr size_t text_size = TextSize;
   };
 
+  // page link item traits
   template <typename PageName, size_t TextSize, typename CharT>
   struct ItemTraits<sgl::PageLink<PageName, TextSize, CharT>> {
     using item_type = sgl::PageLink<PageName, TextSize, CharT>;
@@ -123,6 +129,7 @@ namespace sgl {
     static constexpr bool   clickable = true;
   };
 
+  // numeric item traits
   template <size_t TextSize, typename CharT, typename T>
   struct ItemTraits<sgl::Numeric<TextSize, CharT, T>> {
     using item_type = sgl::Numeric<TextSize, CharT, T>;
@@ -131,4 +138,4 @@ namespace sgl {
   };
   /// \endcond
 } // namespace sgl
-#endif
+#endif /* SGL_ITEM_TRAITS_HPP */

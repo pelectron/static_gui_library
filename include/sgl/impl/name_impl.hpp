@@ -1,5 +1,5 @@
-#ifndef SGL_NAME_IMPL_HPP
-#define SGL_NAME_IMPL_HPP
+#ifndef SGL_IMPL_NAME_IMPL_HPP
+#define SGL_IMPL_NAME_IMPL_HPP
 #include "../name.hpp"
 namespace sgl {
   template <char... Chars>
@@ -13,4 +13,4 @@ namespace sgl {
   }
 
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_NAME_IMPL_HPP */

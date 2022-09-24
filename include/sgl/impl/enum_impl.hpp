@@ -1,5 +1,5 @@
-#ifndef SGL_ENUM_IMPL_HPP
-#define SGL_ENUM_IMPL_HPP
+#ifndef SGL_IMPL_ENUM_IMPL_HPP
+#define SGL_IMPL_ENUM_IMPL_HPP
 #include "sgl/enum.hpp"
 namespace sgl {
 
@@ -75,7 +75,7 @@ namespace sgl {
     enum_item.set_text(enum_item.current_string());
     return error::no_error;
   }
-  
+
   template <typename E, typename Str, typename... EnumStringArgs>
   constexpr auto
       make_enum(const E& enum_val, const Str& enum_string, const EnumStringArgs&... args) {
@@ -111,4 +111,4 @@ namespace sgl {
         start_index);
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_ENUM_IMPL_HPP */

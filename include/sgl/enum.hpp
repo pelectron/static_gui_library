@@ -1,5 +1,5 @@
-#ifndef SGL_BASIC_ENUM_HPP
-#define SGL_BASIC_ENUM_HPP
+#ifndef SGL_ENUM_HPP
+#define SGL_ENUM_HPP
 #include "sgl/enum_map.hpp"
 #include "sgl/item_base.hpp"
 #include "sgl/smallest_type.hpp"
@@ -176,4 +176,4 @@ namespace sgl {
   /// \}
 } // namespace sgl
 #include "sgl/impl/enum_impl.hpp"
-#endif
+#endif /* SGL_ENUM_HPP */

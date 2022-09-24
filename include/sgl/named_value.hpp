@@ -109,4 +109,4 @@ namespace sgl {
 
 } // namespace sgl
 #include "impl/named_value_impl.hpp"
-#endif
+#endif /* SGL_NAMED_VALUE_HPP */

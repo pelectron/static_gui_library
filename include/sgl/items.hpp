@@ -1,5 +1,5 @@
-#ifndef SGL_BASIC_ITEMS_CONVENIENCE_HPP
-#define SGL_BASIC_ITEMS_CONVENIENCE_HPP
+#ifndef SGL_ITEMS_HPP
+#define SGL_ITEMS_HPP
 #include "sgl/boolean.hpp"
 #include "sgl/button.hpp"
 #include "sgl/enum.hpp"
@@ -13,4 +13,4 @@
 /// \defgroup boolean_factories Boolean Factory Functions
 /// \defgroup page_link_factories PageLink Factory Functions
 /// \defgroup numeric_factories Numeric Factory Functions
-#endif
+#endif /* SGL_ITEMS_HPP */

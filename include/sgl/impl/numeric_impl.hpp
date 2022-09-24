@@ -1,5 +1,5 @@
-#ifndef SGL_NUMERIC_IMPL_HPP
-#define SGL_NUMERIC_IMPL_HPP
+#ifndef SGL_IMPL_NUMERIC_IMPL_HPP
+#define SGL_IMPL_NUMERIC_IMPL_HPP
 #include "sgl/numeric.hpp"
 
 namespace sgl {
@@ -162,9 +162,9 @@ namespace sgl {
     return Numeric<TextSize, CharT, T>(initial_value, delta, initial_text);
   }
 
-  template <size_t CxSize,typename T,size_t TextSize>
+  template <size_t CxSize, typename T, size_t TextSize>
   constexpr Numeric<TextSize, char, T> make_numeric(const cx_arg<T, CxSize>& initial_value,
-                                                    T                          delta) noexcept {
+                                                    T                        delta) noexcept {
     return Numeric<TextSize, char, T>(initial_value, delta);
   }
 
@@ -195,4 +195,4 @@ namespace sgl {
                                        std::forward<InputHandler>(handler));
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_NUMERIC_IMPL_HPP */

@@ -1,15 +1,15 @@
 /**
  * \file sgl/numeric.hpp
  * \author Pelé Constam (you@domain.com)
- * \brief 
+ * \brief
  * \version 0.1
  * @date 2022-09-23
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
-*/ 
-#ifndef SGL_BASIC_NUMERIC_HPP
-#define SGL_BASIC_NUMERIC_HPP
+ *
+ */
+#ifndef SGL_NUMERIC_HPP
+#define SGL_NUMERIC_HPP
 #include "sgl/cx_arg.hpp"
 #include "sgl/format.hpp"
 #include "sgl/item_base.hpp"
@@ -117,7 +117,6 @@ namespace sgl {
     constexpr sgl::error set_value(T value) noexcept;
 
   private:
-
     /// \brief execute the formatter and format val into this item's text
     /// \param val value to format
     /// \return sgl::error
@@ -235,4 +234,4 @@ namespace sgl {
 } // namespace sgl
 
 #include "sgl/impl/numeric_impl.hpp"
-#endif
+#endif /* SGL_NUMERIC_HPP */

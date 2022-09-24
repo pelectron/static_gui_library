@@ -1,5 +1,5 @@
-#ifndef SGL_PAGE_LINK_IMPL_HPP
-#define SGL_PAGE_LINK_IMPL_HPP
+#ifndef SGL_IMPL_PAGE_LINK_IMPL_HPP
+#define SGL_IMPL_PAGE_LINK_IMPL_HPP
 #include "sgl/page_link.hpp"
 #include "sgl/type_list.hpp"
 namespace sgl {
@@ -21,8 +21,9 @@ namespace sgl {
   template <char... chars, size_t TextSize, typename CharT>
   template <typename Menu>
   constexpr void PageLink<Name<chars...>, TextSize, CharT>::set_menu(Menu* menu) noexcept {
-    static_assert(sgl::contains_v<Name<chars...>, typename Menu::name_list>,
-                  "PageLink doe not link to a valid page. menu does not contain a page with this name");
+    static_assert(
+        sgl::contains_v<Name<chars...>, typename Menu::name_list>,
+        "PageLink doe not link to a valid page. menu does not contain a page with this name");
     menu_ = static_cast<void*>(menu);
     this->set_click_handler([](auto& page_link) noexcept -> sgl::error {
       return static_cast<Menu*>(page_link.get_menu())
@@ -52,4 +53,4 @@ namespace sgl {
     return PageLink<Name, TextSize, CharT>(page_name, text);
   }
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_PAGE_LINK_IMPL_HPP */

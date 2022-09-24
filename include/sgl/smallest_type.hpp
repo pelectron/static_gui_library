@@ -15,4 +15,4 @@ namespace sgl {
           uint16_t,
           std::conditional_t<N <= numeric_limits<uint32_t>::max(), uint32_t, uint64_t>>>;
 } // namespace sgl
-#endif
+#endif /* SGL_SMALLEST_TYPE_HPP */

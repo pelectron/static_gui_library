@@ -1,5 +1,5 @@
-#ifndef CALLABLE2_HPP
-#define CALLABLE2_HPP
+#ifndef SGL_CALLABLE_HPP
+#define SGL_CALLABLE_HPP
 #include <new>
 #include <type_traits>
 
@@ -181,4 +181,4 @@ namespace sgl {
   };
 } // namespace sgl
 #include "sgl/impl/callable_impl.hpp"
-#endif
+#endif /* SGL_CALLABLE_HPP */

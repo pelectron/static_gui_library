@@ -115,4 +115,4 @@ namespace sgl {
   /// \endcond
 } // namespace sgl
 
-#endif
+#endif /* SGL_LIMITS_HPP */

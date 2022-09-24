@@ -17,16 +17,16 @@ namespace sgl {
   /// not heap allocate.
   ///
   /// The input and tick handler are also non heap allocating, although capturing lambda's and
-  /// similar custom function objects can only be bound via placement new. See \ref sgl::Callable<Ret(Args...)> "Callable" for
-  /// more details.
+  /// similar custom function objects can only be bound via placement new. See \ref
+  /// sgl::Callable<Ret(Args...)> "Callable" for more details.
   ///
   /// \section item_input_handling Item Input Handling
   /// The input handler handles user input. It get's called every time the item's handle_input()
-  /// method is called. The signature of a input handler is ``sgl::error(item_type&, sgl::Input) noexcept``.
-  /// The item's input handler is called when a page is in edit mode and the
-  /// page receives an input. The input handler's job is to decide what to do with the given user
-  /// input, and return the appropiate sgl::error value. The library default way of handling things
-  /// is the following:
+  /// method is called. The signature of a input handler is ``sgl::error(item_type&, sgl::Input)
+  /// noexcept``. The item's input handler is called when a page is in edit mode and the page
+  /// receives an input. The input handler's job is to decide what to do with the given user input,
+  /// and return the appropiate sgl::error value. The library default way of handling things is the
+  /// following:
   ///  - if the item is clickable (as indicated by the item traits), the handler will call the
   ///  item's click() method and return sgl::error::edit_finished if the return value of click() is
   ///  sgl::error::no_error. This achieves the effect of only needing to click an item once to
@@ -179,4 +179,4 @@ namespace sgl {
   };
 } // namespace sgl
 #include "sgl/impl/item_base_impl.hpp"
-#endif
+#endif /* SGL_ITEM_BASE_HPP */

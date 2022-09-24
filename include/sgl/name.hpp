@@ -114,4 +114,4 @@ namespace sgl {
   })
 
 #include "impl/name_impl.hpp"
-#endif
+#endif /* SGL_NAME_HPP */

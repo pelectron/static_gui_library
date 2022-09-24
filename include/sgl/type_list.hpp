@@ -1,5 +1,5 @@
-#ifndef CLIP_TYPE_LIST_HPP
-#define CLIP_TYPE_LIST_HPP
+#ifndef SGL_TYPE_LIST_HPP
+#define SGL_TYPE_LIST_HPP
 #include <type_traits>
 namespace sgl {
   ///\cond
@@ -225,4 +225,4 @@ namespace sgl {
 
   ///\endcond
 } // namespace sgl
-#endif
+#endif /* SGL_TYPE_LIST_HPP */

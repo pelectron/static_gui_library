@@ -1,5 +1,5 @@
-#ifndef SGL_ITEM_TRAITS_HPP
-#define SGL_ITEM_TRAITS_HPP
+#ifndef SGL_ITEM_CONCEPTS_HPP
+#define SGL_ITEM_CONCEPTS_HPP
 
 #include "sgl/error.hpp"
 #include "sgl/format.hpp"
@@ -8,13 +8,34 @@
 #include <type_traits>
 
 namespace sgl {
-  /// \cond
+  /// handler traits
+  /// \{
+
+  /// @brief true if F is a valid input handler for Item.
+  /// For an instance of F named f, an Item named item and an sgl::Input i,
+  /// the expression ```f(item, i)``` compiles, does not throw, and returns an sgl::error value.
+  /// @tparam F callable type
+  /// @tparam Item item type
   template <typename F, typename Item>
   static constexpr bool is_input_handler_for_v =
       std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>;
+
+  /// @brief true if F is a valid click handler for Item.s
+  /// For an instance of F named f, an Item named item, ``f(item)`` compiles, does not throw, and
+  /// returns an sgl::error value.
+  /// @tparam F callable type
+  /// @tparam Item item type
   template <typename F, typename Item>
   static constexpr bool is_click_handler_for_v =
       std::is_nothrow_invocable_r_v<sgl::error, F, Item&>;
+
+  /// @brief true if F is a valid value formatter for Item.
+  /// For an instance of F named f, a Item::char_type* named str, a size_t named str_len, an
+  /// Item::value_type named value, a uint32_t named precision and an sgl::format_t named format,
+  /// the expression ``f(str, str_len, value, precision, format)`` compiles, does not throw, and
+  /// returns an sgl::format_result value.
+  /// @tparam F
+  /// @tparam Item
   template <typename F, typename Item>
   static constexpr bool is_value_formatter_v =
       std::is_nothrow_invocable_r_v<sgl::format_result,
@@ -24,21 +45,30 @@ namespace sgl {
                                     typename Item::value_type,
                                     uint32_t,
                                     sgl::format_t>;
+  /// \}
+
   template <typename F, typename Item>
   using enable_if_is_input_handler =
       std::enable_if_t<is_input_handler_for_v<F, std::decay_t<Item>>, bool>;
+
   template <typename F, typename Item>
   using enable_if_is_value_formatter =
       std::enable_if_t<is_value_formatter_v<F, std::decay_t<Item>>, bool>;
+
   template <typename F, typename Item>
   using enable_if_is_click_handler =
       std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
+
   template <typename F, typename Item>
   static constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
+
   template <typename F, typename Item>
   using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
-  /// item method traits
+
+  /// item traits
   /// \{
+  /// \cond
+
   template <typename T, typename = void>
   struct has_text : std::false_type {};
 
@@ -97,13 +127,18 @@ namespace sgl {
     static constexpr bool value =
         has_text_v<T> and has_handle_input_v<T> and has_set_text_v<T> and has_name_v<T>;
   };
+  /// \endcond
 
+  /// @brief  check if T fulfills the item concept.
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool is_item_v = is_item<T>::value;
+
   /// \}
 
   /// page traits
   /// \{
+  /// \cond
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
@@ -325,13 +360,19 @@ namespace sgl {
         has_for_current_item_v<T> and has_on_enter_v<T> and has_on_exit_v<T>;
   };
 
+  /// \endcond
+
+  /// @brief true if T fulfills the page concept
+  /// \tparam T type to check
   template <typename T>
   static constexpr bool is_page_v = is_page<T>::value;
+
   /// \}
 
   /// menu traits
   /// \{
 
+  /// \cond
   template <typename T, typename = void>
   struct has_set_active_page : std::false_type {};
 
@@ -418,11 +459,14 @@ namespace sgl {
                                   has_get_page_v<T> and has_get_item_at_page_v<T> and
                                   has_index_v<T> and has_size_v<T>;
   };
+  /// \endcond
 
+  /// @brief  true if T fulfills the menu concept
+  /// @tparam T possible menu type
   template <typename T>
   static constexpr bool is_menu_v = is_menu<T>::value;
 
   /// \}
-  /// \endcond
+
 } // namespace sgl
-#endif
+#endif /* SGL_ITEM_CONCEPTS_HPP */

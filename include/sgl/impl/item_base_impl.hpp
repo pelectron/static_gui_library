@@ -1,19 +1,17 @@
-#ifndef SGL_ITEM_BASE_IMPL_HPP
-#define SGL_ITEM_BASE_IMPL_HPP
+#ifndef SGL_IMPL_ITEM_BASE_IMPL_HPP
+#define SGL_IMPL_ITEM_BASE_IMPL_HPP
 #include "sgl/item_base.hpp"
 namespace sgl {
   template <typename ItemImpl, typename Traits>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView text) noexcept : text_(text) {}
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl> >
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView text, InputHandler&& handler) noexcept
       : handler_(std::forward<InputHandler>(handler)), text_{text} {}
 
   template <typename ItemImpl, typename Traits>
-  template <typename TickHandler,
-            enable_if_is_tick_handler<TickHandler, ItemImpl>>
+  template <typename TickHandler, enable_if_is_tick_handler<TickHandler, ItemImpl>>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView text, TickHandler&& handler) noexcept
       : tick_handler_(std::forward<TickHandler>(handler)), text_(text) {}
 
@@ -51,11 +49,10 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  template <typename InputHandler,
-            enable_if_is_input_handler<InputHandler, ItemImpl>>
+  template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl>>
   constexpr typename ItemBase<ItemImpl, Traits>::item_type&
       ItemBase<ItemImpl, Traits>::set_input_handler(InputHandler&& handler) noexcept {
-    static_assert(sgl::is_input_handler_for_v<InputHandler,item_type>,
+    static_assert(sgl::is_input_handler_for_v<InputHandler, item_type>,
                   "the provided handler is not a valid input handler.");
     handler_.bind(std::forward<InputHandler>(handler));
     return *static_cast<item_type*>(this);
@@ -67,8 +64,7 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  template <typename TickHandler,
-            enable_if_is_tick_handler<TickHandler, ItemImpl>>
+  template <typename TickHandler, enable_if_is_tick_handler<TickHandler, ItemImpl>>
   constexpr typename ItemBase<ItemImpl, Traits>::item_type&
       ItemBase<ItemImpl, Traits>::set_tick_handler(TickHandler&& handler) noexcept {
     tick_handler_.bind(std::forward<TickHandler>(handler));
@@ -76,10 +72,9 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(item_type&,
-                                                              sgl::Input ) noexcept {
+  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(item_type&, sgl::Input) noexcept {
     return sgl::error::edit_finished;
   }
 
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_ITEM_BASE_IMPL_HPP */

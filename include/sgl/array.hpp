@@ -1,7 +1,7 @@
 #ifndef SGL_ARRAY_HPP
 #define SGL_ARRAY_HPP
-namespace sgl{
-  
+namespace sgl {
+
   /// simple array type
   template <typename T, size_t N>
   struct Array {
@@ -25,5 +25,5 @@ namespace sgl{
   template <class T, class... U>
   Array(T, U...) -> Array<T, 1 + sizeof...(U)>;
   /// <\}
-}
-#endif
+} // namespace sgl
+#endif /* SGL_ARRAY_HPP */

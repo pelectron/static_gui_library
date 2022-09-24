@@ -7,12 +7,11 @@
 
 #include <type_traits>
 
-
 namespace sgl {
 
   /// \brief This class maps values of type T to string_view<CharT>.
-  /// \details Internally, it just contains an sgl::Array of sgl::Pair<E,sgl::String_view<CharT>> and
-  /// provides a simple interface for it. To construct a EnumMap, use the sgl::enum_map() free
+  /// \details Internally, it just contains an sgl::Array of sgl::Pair<E,sgl::String_view<CharT>>
+  /// and provides a simple interface for it. To construct a EnumMap, use the sgl::enum_map() free
   /// function.
   ///
   /// \tparam E enum type
@@ -110,4 +109,4 @@ namespace sgl {
 
 } // namespace sgl
 #include "sgl/impl/enum_map_impl.hpp"
-#endif
+#endif /* SGL_ENUM_MAP_HPP */

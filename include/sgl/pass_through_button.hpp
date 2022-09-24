@@ -1,5 +1,5 @@
-#ifndef SGL_BUTTON_PASS_THROUGH_HPP
-#define SGL_BUTTON_PASS_THROUGH_HPP
+#ifndef SGL_PASS_THROUGH_BUTTON_HPP
+#define SGL_PASS_THROUGH_BUTTON_HPP
 #include "sgl/item_base.hpp"
 namespace sgl {
 
@@ -47,7 +47,9 @@ namespace sgl {
     constexpr PassThroughButton(StringView     text,
                                 ClickHandler&& click_handler,
                                 TickHandler&&  tick_handler) noexcept
-        : Base(text, PassThroughButton::button_input_handler, std::forward<TickHandler>(tick_handler)),
+        : Base(text,
+               PassThroughButton::button_input_handler,
+               std::forward<TickHandler>(tick_handler)),
           click_handler_(std::forward<ClickHandler>(click_handler)) {}
 
     /// \brief Set the click handler
@@ -87,4 +89,4 @@ namespace sgl {
 
 } // namespace sgl
 #include "sgl/impl/pass_through_button_impl.hpp"
-#endif
+#endif /* SGL_PASS_THROUGH_BUTTON_HPP */

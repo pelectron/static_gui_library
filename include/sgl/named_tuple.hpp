@@ -14,8 +14,6 @@
 #include "sgl/named_value.hpp"
 #include "sgl/type_list.hpp"
 
-#include <utility>
-
 namespace sgl {
 
   /// \cond
@@ -27,7 +25,8 @@ namespace sgl {
   /// \brief A named tuple is like a normal std::tuple, except that it can also be indexed by
   /// 'name'.
   /// \details
-  /// Creating a NamedTuple is most easily done with the \ref sgl::operator<<=(). This way, CTAD will do all the magic for you.
+  /// Creating a NamedTuple is most easily done with the \ref sgl::operator<<=(). This way, CTAD
+  /// will do all the magic for you.
   ///
   /// \code
   /// #include "sgl/named_tuple.hpp"
@@ -161,8 +160,8 @@ namespace sgl {
     constexpr void for_each(F&& f) const noexcept(nothrow_invocable_for_each<F, const Ts&...>);
 
     /// \brief apply a callable f on each element. f will be called with the name of the element as
-    /// a sgl::string_view<char> and a reference to each element. 
-    /// \tparam F callable type 
+    /// a sgl::string_view<char> and a reference to each element.
+    /// \tparam F callable type
     /// \param f callable instance
     template <typename F>
     constexpr void for_each_with_name(F&& f) noexcept(
@@ -333,4 +332,4 @@ namespace sgl {
 } // namespace sgl
 
 #include "sgl/impl/named_tuple_impl.hpp"
-#endif
+#endif /* SGL_NAMED_TUPLE_HPP */

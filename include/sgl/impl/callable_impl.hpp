@@ -1,5 +1,5 @@
-#ifndef SGL_CALLABLE_IMPL_HPP
-#define SGL_CALLABLE_IMPL_HPP
+#ifndef SGL_IMPL_CALLABLE_IMPL_HPP
+#define SGL_IMPL_CALLABLE_IMPL_HPP
 
 #include "sgl/callable.hpp"
 namespace sgl {
@@ -110,15 +110,16 @@ namespace sgl {
           !std::is_same_v<Callable<Ret(Args...)>, std::decay_t<F>>)>*>
   constexpr void Callable<Ret(Args...)>::bind(F&& f) noexcept {
     using T = std::decay_t<F>;
-    //static_assert(std::is_nothrow_invocable_r_v<Ret, F, Args...>, "f must be noexcept invocable.");
+    // static_assert(std::is_nothrow_invocable_r_v<Ret, F, Args...>, "f must be noexcept
+    // invocable.");
     static_assert(sizeof(T) <= sizeof(buffer_), "sizeof(f) must be smaller than the buffer size.");
     static_assert(std::is_trivially_destructible_v<T>, "F must be trivially destructible.");
     static_assert(std::is_trivially_move_constructible_v<T>,
                   "F must be trivially move constructible.");
     static_assert(std::is_trivially_copyable_v<T>, "F must be trivially copy constructible.");
-      new (buffer_.buffer) T(std::forward<F>(f));
-      invoke_ = &inline_invoke<T>;
-    }
+    new (buffer_.buffer) T(std::forward<F>(f));
+    invoke_ = &inline_invoke<T>;
+  }
 
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_CALLABLE_IMPL_HPP */

@@ -130,4 +130,4 @@ namespace sgl {
   /// \}
 
 } // namespace sgl
-#endif
+#endif /* SGL_INPUT_HPP */

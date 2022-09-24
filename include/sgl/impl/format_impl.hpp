@@ -1,5 +1,5 @@
-#ifndef SGL_FORMAT_IMPL_HPP
-#define SGL_FORMAT_IMPL_HPP
+#ifndef SGL_IMPL_FORMAT_IMPL_HPP
+#define SGL_IMPL_FORMAT_IMPL_HPP
 #include "sgl/config.h"
 #include "sgl/limits.hpp"
 #include "sgl/static_string.hpp"
@@ -198,7 +198,7 @@ namespace sgl {
         }
         return 0;
       };
-      
+
       static_assert(std::is_integral_v<T>, "T must be an integral type");
       // static_assert(std::is_unsigned_v<T>, "");
       constexpr size_t           size = 2 * sizeof(T) + 3; // +2 for '0x', + 1 for '-'
@@ -524,4 +524,4 @@ namespace sgl {
 
   } // namespace parse_impl
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_FORMAT_IMPL_HPP */

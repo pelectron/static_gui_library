@@ -1,6 +1,6 @@
 /**
  * \file sgl/page.hpp
- * 
+ *
  * \author Pelé Constam (you@domain.com)
  * \brief
  * \version 0.1
@@ -387,4 +387,4 @@ namespace sgl {
 
 } // namespace sgl
 #include "sgl/impl/page_impl.hpp"
-#endif
+#endif /* SGL_PAGE_HPP */

@@ -3,10 +3,10 @@
  * \author Pelé Constam (you@domain.com)
  * \version 0.1
  * @date 2022-09-23
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
-*/ 
+ *
+ */
 #ifndef SGL_PAGE_LINK_HPP
 #define SGL_PAGE_LINK_HPP
 #include "sgl/fwd.hpp"
@@ -128,4 +128,4 @@ namespace sgl {
   /// \}
 } // namespace sgl
 #include "sgl/impl/page_link_impl.hpp"
-#endif
+#endif /* SGL_PAGE_LINK_HPP */

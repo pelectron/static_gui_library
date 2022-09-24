@@ -1,5 +1,5 @@
-#ifndef SGL_CONFIG_HPP
-#define SGL_CONFIG_HPP
+#ifndef SGL_CONFIG_H
+#define SGL_CONFIG_H
 
 #include <cstddef>
 
@@ -39,4 +39,4 @@
   #error SGL_CHAR_TYPE and SGL_LINE_WIDTH must be defined if SGL_INSTANTIATE is set to 1.
 #endif
 
-#endif
+#endif /* SGL_CONFIG_H */

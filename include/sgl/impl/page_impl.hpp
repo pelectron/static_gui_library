@@ -1,5 +1,5 @@
-#ifndef PAGE_IMPL_HPP
-#define PAGE_IMPL_HPP
+#ifndef SGL_IMPL_PAGE_IMPL_HPP
+#define SGL_IMPL_PAGE_IMPL_HPP
 #include "sgl/page.hpp"
 namespace sgl {
 
@@ -330,4 +330,4 @@ namespace sgl {
   }
 
 } // namespace sgl
-#endif
+#endif /* SGL_IMPL_PAGE_IMPL_HPP */
