@@ -1,10 +1,12 @@
 #ifndef SGL_IMPL_FORMAT_IMPL_HPP
 #define SGL_IMPL_FORMAT_IMPL_HPP
 #include "sgl/config.h"
+#include "sgl/format.hpp"
 #include "sgl/limits.hpp"
 #include "sgl/static_string.hpp"
 
 #include <type_traits>
+
 
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
@@ -13,8 +15,6 @@
 #if SGL_USE_CHARCONV
   #include <charconv>
 #endif
-
-#include "sgl/format.hpp"
 
 namespace sgl {
   namespace format_impl {

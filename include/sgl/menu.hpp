@@ -1,3 +1,15 @@
+/**
+ * \file menu.hpp
+ * \author Pelé Constam (you@domain.com)
+ * \brief This file contains the sgl::Menu class and the free iteration functions sgl::for_each,
+ * sgl::for_each_with_name and sgl::for_current.
+ *
+ * \version 0.1
+ * \date 2022-09-24
+ *
+ * \copyright Copyright (c) 2022
+ *
+ */
 #ifndef SGL_MENU_HPP
 #define SGL_MENU_HPP
 #include "sgl/callable.hpp"
@@ -13,8 +25,8 @@ namespace sgl {
   /// \endcond
 
   /// \headerfile menu.hpp "sgl/menu.hpp"
-  /// \brief The menu class brings everything together and holds all the data of the menu. It is
-  /// essentially a named tuple of pages.
+  /// \brief The menu class brings everything together and holds all the pages of the menu.
+  ///
   /// \tparam Names names of the pages
   /// \tparam Pages types of the pages
   template <typename... Names, typename... Pages>
@@ -229,7 +241,7 @@ namespace sgl {
   template <typename... Names, typename... Ts>
   Menu(const NamedValue<Names, Ts>&...) -> Menu<sgl::type_list<Names...>, sgl::type_list<Ts...>>;
 
-  /// \brief apply f on each page in menu. Same as sgl::for_each(NamedTuple&,F&&).
+  /// \brief apply f on each page in menu.
   /// \tparam NameList list of page names
   /// \tparam PageList list of page types
   /// \tparam F functor type
@@ -261,6 +273,23 @@ namespace sgl {
   void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
       std::declval<const Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>())));
   /// \}
+
+  /// \brief apply f on the current page of the menu.
+  /// \tparam NameList list of page names
+  /// \tparam PageList list of page types
+  /// \tparam F functor type
+  /// \param menu menu instance
+  /// \param f functor instance
+  /// \{
+  template <typename NameList, typename PageList, typename F>
+  void for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
+      noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
+
+  template <typename NameList, typename PageList, typename F>
+  void for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(
+      noexcept(std::declval<const Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
+  /// \}
+
 } // namespace sgl
 #include "sgl/impl/menu_impl.hpp"
 #endif /* SGL_MENU_HPP */

@@ -119,6 +119,16 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT, typename T>
+  constexpr void Numeric<TextSize, CharT, T>::set_precision(uint32_t precision) noexcept{
+    precision_ = precision;
+  }
+
+  template <size_t TextSize, typename CharT, typename T>
+  constexpr void Numeric<TextSize, CharT, T>::set_format(sgl::format_t format) noexcept{
+    format_ = format;
+  }
+
+  template <size_t TextSize, typename CharT, typename T>
   constexpr sgl::error
       Numeric<TextSize, CharT, T>::default_handle_input(Numeric<TextSize, CharT, T>& numeric_item,
                                                         sgl::Input input) noexcept {

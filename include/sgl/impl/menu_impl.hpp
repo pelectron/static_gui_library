@@ -216,6 +216,17 @@ namespace sgl {
       std::declval<const Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>()))) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
+  
+  template <typename NameList, typename PageList, typename F>
+  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
+      noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>()))) {
+    return menu.for_current_page(std::forward<F>(f));
+  }
 
+  template <typename NameList, typename PageList, typename F>
+  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
+      std::declval<const Menu<NameList, PageList>>().for_current_page(std::declval<F>()))) {
+    return menu.for_current_page(std::forward<F>(f));
+  }
 } // namespace sgl
 #endif /* SGL_IMPL_MENU_IMPL_HPP */

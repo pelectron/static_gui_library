@@ -6,7 +6,8 @@
 
 namespace sgl {
 
-  /// \brief A 'view' of CharT elements. See std::string_view for an explanation of the concept.
+  /// \headerfile string_view.hpp "sgl/string_view.hpp"
+  /// \brief A non owning 'view' of CharT elements. See std::string_view for an explanation of the concept if it is unclear.
   /// \tparam CharT character type of the string_view
   template <typename CharT>
   class string_view {

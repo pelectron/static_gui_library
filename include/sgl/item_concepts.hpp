@@ -8,43 +8,50 @@
 #include <type_traits>
 
 namespace sgl {
-  /// handler traits
+
+  /// \addtogroup handler_traits Handler traits
+  /// \ingroup sgl_concepts
   /// \{
 
   /// @brief true if F is a valid input handler for Item.
-  /// For an instance of F named f, an Item named item and an sgl::Input i,
-  /// the expression ```f(item, i)``` compiles, does not throw, and returns an sgl::error value.
-  /// @tparam F callable type
+  /// Look [here](concepts.md#input-handler) for more info.
+  /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
   static constexpr bool is_input_handler_for_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>;
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>and
+          std::is_trivially_destructible_v<F>and std::is_trivially_move_constructible_v<F>and
+                                                 std::is_trivially_copyable_v<F>;
 
-  /// @brief true if F is a valid click handler for Item.s
-  /// For an instance of F named f, an Item named item, ``f(item)`` compiles, does not throw, and
-  /// returns an sgl::error value.
-  /// @tparam F callable type
+  /// @brief true if F is a valid click handler for Item.
+  /// Look [here](#click-handler) for more info.
+  /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool is_click_handler_for_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, Item&>;
+  static constexpr bool                                      is_click_handler_for_v =
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&>and std::is_trivially_destructible_v<F>and
+          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
 
   /// @brief true if F is a valid value formatter for Item.
-  /// For an instance of F named f, a Item::char_type* named str, a size_t named str_len, an
-  /// Item::value_type named value, a uint32_t named precision and an sgl::format_t named format,
-  /// the expression ``f(str, str_len, value, precision, format)`` compiles, does not throw, and
-  /// returns an sgl::format_result value.
-  /// @tparam F
-  /// @tparam Item
+  /// @tparam F handler type
+  /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool is_value_formatter_v =
+  static constexpr bool                               is_value_formatter_v =
       std::is_nothrow_invocable_r_v<sgl::format_result,
                                     F,
                                     typename Item::char_type*,
                                     size_t,
                                     typename Item::value_type,
                                     uint32_t,
-                                    sgl::format_t>;
+                                    sgl::format_t>and std::is_trivially_destructible_v<F>and
+          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
+  
+  /// \brief true if F is a TickHandler for Item.
+  /// @tparam F handler type
+  /// @tparam Item item type
+  template <typename F, typename Item>
+  static constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
+
   /// \}
 
   template <typename F, typename Item>
@@ -60,12 +67,10 @@ namespace sgl {
       std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
 
   template <typename F, typename Item>
-  static constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
-
-  template <typename F, typename Item>
   using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
 
-  /// item traits
+  /// \addtogroup item_traits Item Traits
+  /// \ingroup sgl_concepts
   /// \{
   /// \cond
 
@@ -110,24 +115,13 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool has_set_text_v = has_set_text<T>::value;
+  /// \endcond
 
-  template <typename T, typename = void>
-  struct has_name : std::false_type {};
-
-  template <typename T>
-  struct has_name<T, std::void_t<decltype(std::declval<T>().name())>> {
-    static constexpr bool value =
-        std::is_same_v<typename T::StringView, decltype(std::declval<T>().name())>;
-  };
-  template <typename T>
-  static constexpr bool has_name_v = has_name<T>::value;
-
+  /// @brief  check if T fulfills the item concept. See sgl::is_item_v<T> for more details.
   template <typename T>
   struct is_item {
-    static constexpr bool value =
-        has_text_v<T> and has_handle_input_v<T> and has_set_text_v<T> and has_name_v<T>;
+    static constexpr bool value = has_text_v<T> and has_handle_input_v<T> and has_set_text_v<T>;
   };
-  /// \endcond
 
   /// @brief  check if T fulfills the item concept.
   /// @tparam T type to check
@@ -136,7 +130,8 @@ namespace sgl {
 
   /// \}
 
-  /// page traits
+  /// \addtogroup page_traits Page traits
+  /// \ingroup sgl_concepts
   /// \{
   /// \cond
   namespace detail {
@@ -352,12 +347,12 @@ namespace sgl {
   template <typename T>
   struct is_page {
     static constexpr bool value =
-        has_name_v<T> and has_title_v<T> and has_size_v<T> and has_index_v<T> and
-        has_handle_input_v<T> and has_get_item_v<T> and has_set_item_cursor_v<T> and
-        has_is_in_edit_mode_v<T> and has_set_edit_mode_v<T> and has_set_navigation_mode_v<T> and
-        has_get_start_edit_v<T> and has_set_start_edit_v<T> and has_get_stop_edit_v<T> and
-        has_set_stop_edit_v<T> and has_set_menu_v<T> and has_for_each_item_v<T> and
-        has_for_current_item_v<T> and has_on_enter_v<T> and has_on_exit_v<T>;
+        has_title_v<T> and has_size_v<T> and has_index_v<T> and has_handle_input_v<T> and
+        has_get_item_v<T> and has_set_item_cursor_v<T> and has_is_in_edit_mode_v<T> and
+        has_set_edit_mode_v<T> and has_set_navigation_mode_v<T> and has_get_start_edit_v<T> and
+        has_set_start_edit_v<T> and has_get_stop_edit_v<T> and has_set_stop_edit_v<T> and
+        has_set_menu_v<T> and has_for_each_item_v<T> and has_for_current_item_v<T> and
+        has_on_enter_v<T> and has_on_exit_v<T>;
   };
 
   /// \endcond
@@ -369,7 +364,8 @@ namespace sgl {
 
   /// \}
 
-  /// menu traits
+  /// \addtogroup menu_traits Menu Traits
+  /// \ingroup sgl_concepts
   /// \{
 
   /// \cond
@@ -462,7 +458,7 @@ namespace sgl {
   /// \endcond
 
   /// @brief  true if T fulfills the menu concept
-  /// @tparam T possible menu type
+  /// @tparam T type to check
   template <typename T>
   static constexpr bool is_menu_v = is_menu<T>::value;
 

@@ -1,12 +1,10 @@
-/**
- * \file sgl/page_link.hpp
- * \author Pelé Constam (you@domain.com)
- * \version 0.1
- * @date 2022-09-23
- *
- * @copyright Copyright (c) 2022
- *
- */
+/// \file sgl/page_link.hpp
+/// \author Pelé Constam (you@domain.com)
+/// \version 0.1
+/// \date 2022-09-23
+///
+/// \copyright Copyright (c) 2022
+
 #ifndef SGL_PAGE_LINK_HPP
 #define SGL_PAGE_LINK_HPP
 #include "sgl/fwd.hpp"
@@ -16,6 +14,7 @@
 namespace sgl {
 
   /// \ingroup item_types
+  /// \headerfile page_link.hpp "sgl/page_link.hpp"
   /// \brief A page link is a button item, that, when clicked, causes the menu to switch to the page
   /// specified by the link.
   /// \tparam chars characters of the page name
@@ -31,17 +30,20 @@ namespace sgl {
     using StringView = typename Base::StringView;
 
     /// \brief create a page link with the name of the page it should link to. The name will also be
-    /// used to set this item's text. The arguments type must be sgl::Name<chars...>, where
+    /// used to set the links's text. The arguments type must be sgl::Name<chars...>, where
     /// chars.. is the char sequence which makes up the page name.
     ///
     /// \code
     ///  // version 1 : Directly from NAME macro
-    ///  auto link = PageLink(NAME("home_page")); // links to a page called "home_page" in menu
+    ///  auto link1 = PageLink(NAME("home_page")); // link2's text is "home_page" and links to a page named "home_page"
     ///
-    /// // version 2 : from
+    /// // version 2 : from static name
     /// static constexpr auto page_to_link_to = NAME("Foo"); // defined somewhere
     ///
-    /// auto link2 = PAGELINK(page_to_link_to);
+    /// auto link2 = PageLink(page_to_link_to); // link2's text is "Foo" and links to a page called "Foo"
+    /// 
+    /// // or with different text
+    /// auto link3 = PageLink(NAME("home_page"), "back"); // link3's text is "back" and links to a page called "home_page".
     /// \endcode
     ///
     /// \see sgl::Name for more info.
@@ -64,7 +66,7 @@ namespace sgl {
 
     /// get name of the page to link to.
     /// \return sgl::string_view<char>
-    [[nodiscard]] constexpr string_view<char> page_name() const noexcept {
+    [[nodiscard]] constexpr sgl::string_view<char> page_name() const noexcept {
       return Name<chars...>::view;
     }
     /// get pointer to menu as void*

@@ -6,6 +6,7 @@
 namespace sgl {
 
   /// \ingroup item_types
+  /// \headerfile enum.hpp "sgl/enum.hpp"
   /// \brief This class implements a enumerated enum_item, i.e. a enum_item with
   /// only a limited amount of possible values.
   /// \details see sgl::make_enum or an easy way to instantiate a Enum

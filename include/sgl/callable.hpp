@@ -5,14 +5,7 @@
 
 namespace sgl {
   /// \cond
-
-  namespace detail {
-    template <typename R, typename T, typename... A>
-    static constexpr bool is_const_invocable_v =
-        std::is_nothrow_invocable_v<R, std::add_const_t<T>, A...>;
-  } // namespace detail
   // intentional forward declaration only. specialization follows below.
-
   template <typename Signature>
   class Callable;
   /// \endcond

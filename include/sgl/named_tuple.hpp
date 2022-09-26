@@ -22,6 +22,7 @@ namespace sgl {
       nothrow_invocable_for_each = (std::is_nothrow_invocable_v<std::decay_t<F>, Ts> && ...);
   /// \endcond
 
+  /// \headerfile named_tuple.hpp "sgl/named_tuple.hpp"
   /// \brief A named tuple is like a normal std::tuple, except that it can also be indexed by
   /// 'name'.
   /// \details
@@ -31,10 +32,10 @@ namespace sgl {
   /// \code
   /// #include "sgl/named_tuple.hpp"
   /// using namespace sgl;
-  /// constexpr auto arg1 = NAME("arg1");
-  /// constexpr auto arg2 = NAME("arg2");
-  /// constexpr auto arg3 = NAME("arg3");
-  /// auto tuple = NamedTuple(arg1 <<= 5,arg2 <<= 1.15, arg3 <<= 5.3f);
+  /// constexpr auto  name1 = NAME(" name1");
+  /// constexpr auto  name2 = NAME(" name2");
+  /// constexpr auto  name3 = NAME(" name3");
+  /// auto tuple = NamedTuple( name1 <<= 5, name2 <<= 1.15,  name3 <<= 5.3f);
   ///
   /// \endcode
   ///
@@ -43,7 +44,7 @@ namespace sgl {
   ///
   /// \code
   /// // prints '5, 1.15, 5.3', tuple indexed by different, but equivalent, methods
-  /// std::cout << tuple[arg1] << ", " << sgl::get(arg2,tuple) << tuple.get(arg3) << std::endl;
+  /// std::cout << tuple[ name1] << ", " << sgl::get( name2,tuple) << tuple.get(name3) << std::endl;
   /// // same as this:
   /// std::cout << tuple.get<0>() ", " << sgl::get<1>(tuple) << tuple.get<2>() << std::endl;
   /// \endcode
@@ -81,13 +82,13 @@ namespace sgl {
     using type_list_t = type_list<Ts...>;
 
     /// default ctor
-    constexpr NamedTuple() noexcept(nothrow_default_constructible) = default;
+    constexpr NamedTuple()= default;
 
     /// default copy ctor
-    constexpr NamedTuple(const NamedTuple&) noexcept(nothrow_copy_constructible) = default;
+    constexpr NamedTuple(const NamedTuple&) = default;
 
     /// default move ctor
-    constexpr NamedTuple(NamedTuple&&) noexcept(nothrow_move_constructible) = default;
+    constexpr NamedTuple(NamedTuple&&) = default;
 
     /// construct from values
     /// \param elems unnamed values to construct tuple

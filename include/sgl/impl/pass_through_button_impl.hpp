@@ -6,7 +6,7 @@ namespace sgl {
   template <typename ItemImpl, typename Traits>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
       typename PassThroughButton<ItemImpl, Traits>::StringView text) noexcept
-      : Base(text, PassThroughButton::button_input_handler) {}
+      : Base(text, &PassThroughButton::button_input_handler) {}
 
   template <typename ItemImpl, typename Traits>
   constexpr sgl::error PassThroughButton<ItemImpl, Traits>::click() noexcept {

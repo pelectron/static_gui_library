@@ -4,16 +4,6 @@
 namespace sgl {
 
   template <typename Name, typename T>
-  constexpr NamedValue<Name, T>::NamedValue(const NamedValue<Name, T>& other) noexcept(
-      std::is_nothrow_copy_constructible_v<T>)
-      : value_(other.value_) {}
-
-  template <typename Name, typename T>
-  constexpr NamedValue<Name, T>::NamedValue(NamedValue<Name, T>&& other) noexcept(
-      std::is_nothrow_move_constructible_v<T>)
-      : value_(std::move(other.value_)) {}
-
-  template <typename Name, typename T>
   constexpr NamedValue<Name, T>::NamedValue(name_type name, const value_type& value) noexcept(
       std::is_nothrow_copy_constructible_v<T>)
       : value_(value) {

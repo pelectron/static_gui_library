@@ -7,6 +7,7 @@
 
 namespace sgl {
 
+  /// \headerfile static_string.hpp "sgl/static_string.hpp"
   /// \brief simple, non allocating string class. Internally, it holds the size of the string and a
   /// CharT array of size Capacity + 1. This way, the string is always null terminated.
   /// \tparam CharT character type

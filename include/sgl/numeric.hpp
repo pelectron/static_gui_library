@@ -1,11 +1,11 @@
 /**
  * \file sgl/numeric.hpp
  * \author Pelé Constam (you@domain.com)
- * \brief
+ * \brief This file contains the sgl::Numeric class and the various sgl::make_numeric() overloads.
  * \version 0.1
- * @date 2022-09-23
+ * \date 2022-09-23
  *
- * @copyright Copyright (c) 2022
+ * \copyright Copyright (c) 2022
  *
  */
 #ifndef SGL_NUMERIC_HPP
@@ -18,13 +18,13 @@
 namespace sgl {
 
   /// \ingroup item_types
+  /// \headerfile numeric.hpp "sgl/numeric.hpp"
   /// \brief This class models a numeric item. It consists of a value of type T,
   /// a delta value of type T and a formatter to format T's into strings.
   /// \details The default behaviour of this item when it is edited is as follows: an input of
   /// sgl::Input::up/right increases the item's value by it's delta value, i.e. value += delta. An
   /// input equal to sgl::Input::down/left decreases the item's value by it's delta value, i.e.
-  /// value
-  /// -= value.
+  /// value -= value.
   /// \tparam T value type
   /// \tparam TextSize display width
   /// \tparam CharT character type
@@ -116,6 +116,14 @@ namespace sgl {
     /// \return sgl::error
     constexpr sgl::error set_value(T value) noexcept;
 
+    /// @brief set the formatting precision.
+    /// @param precision number of fractional digits
+    constexpr void set_precision(uint32_t precision) noexcept;
+
+    /// @brief set the formatting type.
+    /// @param format format to use
+    constexpr void set_format(sgl::format_t format) noexcept;
+
   private:
     /// \brief execute the formatter and format val into this item's text
     /// \param val value to format
@@ -178,8 +186,9 @@ namespace sgl {
       make_numeric(T initial_value, T delta, const CharT (&initial_text)[N]) noexcept;
 
   /// \brief create a numeric item at compile time for floats and doubles with default formatter and
-  /// default input handling. \details This is only needed for compile time floating point numeric
-  /// items. Use the overload with a normal T for integral types.
+  /// default input handling.
+  /// \details This is only needed for compile time floating point numeric
+  /// items. Use the overload with a normal T parameter for integral types.
   ///
   /// \tparam CxSize cx_arg string size.
   /// \param initial_value initial value as cx_arg

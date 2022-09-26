@@ -1,7 +1,7 @@
 
-/// \file sgl/named_value.hpp
+/// \file named_value.hpp
 /// \author Pelé Constam (you\domain.com)
-/// \brief This file defines the NamedValue and Name types used by NamedTuple.
+/// \brief This file defines the NamedValue and Name types used by NamedTuple and operator<<=().
 /// \version 0.1
 /// \date 2022-07-19
 /// \copyright Copyright (c) 2022
@@ -16,8 +16,9 @@
 
 namespace sgl {
 
+  /// \headerfile named_value.hpp "sgl/named_value.hpp"
   /// \brief This type represents a pair of a sgl::Name and a value of type T.  To create a
-  /// NamedValue, either use the constructor or the \ref sgl::operator<<=(Name<Chars...>,T&&). An
+  /// NamedValue, either use the constructor or the \ref sgl::operator<<=(name, value). An
   /// example of how to use:
   ///
   /// \code
@@ -43,16 +44,16 @@ namespace sgl {
     /// name type of the argument
     using name_type = Name;
 
-    /// default ctor
-    constexpr NamedValue() noexcept(std::is_nothrow_default_constructible_v<T>) = default;
+    /// default ctor. Only participates in overload resolution if T is default constructible.
+    constexpr NamedValue() = default;
 
     /// copy ctor
     /// \param other object to copy
-    constexpr NamedValue(const NamedValue& other) noexcept(std::is_nothrow_copy_constructible_v<T>);
+    constexpr NamedValue(const NamedValue& other) =default;
 
     /// move ctor
     /// \param other object to move
-    constexpr NamedValue(NamedValue&& other) noexcept(std::is_nothrow_move_constructible_v<T>);
+    constexpr NamedValue(NamedValue&& other) =default;
 
     /// construct from name and value
     /// \param name name of NamedValue

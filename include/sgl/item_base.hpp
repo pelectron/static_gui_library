@@ -1,3 +1,13 @@
+/**
+ * \file item_base.hpp
+ * \author Pelé Constam (you@domain.com)
+ * \brief This files defines the item_base class template.
+ * \version 0.1
+ * @date 2022-09-26
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+*/ 
 #ifndef SGL_ITEM_BASE_HPP
 #define SGL_ITEM_BASE_HPP
 #include "sgl/callable.hpp"
@@ -7,6 +17,7 @@
 
 namespace sgl {
 
+  /// \headerfile item_base.hpp "sgl/item_base.hpp"
   /// \brief CRTP base class for every item type.
   /// \details An item  minimally consists of a text field, an input handler and a tick handler. It
   /// is used to reduce code duplication and NOT for runtime polymorphism. The input and tick
@@ -174,7 +185,7 @@ namespace sgl {
     static sgl::error default_handle_input(item_type&, sgl::Input) noexcept;
 
     InputHandler_t handler_{&default_handle_input}; ///< handles user input
-    TickHandler_t  tick_handler_{};                 ///< handles external update
+    TickHandler_t  tick_handler_{};                 ///< handles tick update
     String         text_{};                         ///< text field
   };
 } // namespace sgl

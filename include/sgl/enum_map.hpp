@@ -9,6 +9,7 @@
 
 namespace sgl {
 
+  /// \headerfile enum_map.hpp "sgl/enum_map.hpp"
   /// \brief This class maps values of type T to string_view<CharT>.
   /// \details Internally, it just contains an sgl::Array of sgl::Pair<E,sgl::String_view<CharT>>
   /// and provides a simple interface for it. To construct a EnumMap, use the sgl::enum_map() free
@@ -83,7 +84,7 @@ namespace sgl {
     [[nodiscard]] constexpr size_t size() const noexcept { return N; }
 
   private:
-    sgl::Array<Pair<E, sgl::string_view<CharT>>, N> data{};
+    sgl::Array<sgl::Pair<E, sgl::string_view<CharT>>, N> data{};
   };
 
   /// \brief helper function to create an enum map with all template parameters deduced.

@@ -1,7 +1,7 @@
 #ifndef SGL_CONFIG_H
 #define SGL_CONFIG_H
 
-#include <cstddef>
+// #include <cstddef>
 
 #ifndef SGL_USE_RYU
   #define SGL_USE_RYU 0

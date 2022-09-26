@@ -2,7 +2,9 @@
  * \file sgl/page.hpp
  *
  * \author Pelé Constam (you@domain.com)
- * \brief
+ * \brief This file contains the sgl::Page class template and the page iteration functions
+ * sgl::for_each(), sgl::for_each_with_name() and sgl::for_current().
+ *
  * \version 0.1
  * @date 2022-09-23
  *
@@ -26,13 +28,13 @@ namespace sgl {
   /// \endcond
 
   /// \headerfile page.hpp "sgl/page.hpp"
-  /// \brief This class represents a page of a menu. A page is a container for items. It is a non
-  /// recursive data structure, i.e. a page cannot contain a subpage. A page is responsible for
-  /// navigating through the items and delegating user input the the current item if appropriate.
+  /// \brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
+  /// page cannot contain a subpage. A page is responsible for navigating through the items and
+  /// delegating user input the the current item.
   ///
   /// A page consists of the following data:
-  ///  - a named tuple of items.
-  ///  - an input handler. It manages how the page gets navigated and how user input is passed on to
+  ///  - a \ref sgl::NamedTuple "named tuple" of items.
+  ///  - an \ref handler_traits "input handler". It manages how the page gets navigated and how user input is passed on to
   ///  items. More on this in \ref page_input_handling Page Input Handling.
   ///  - an enter and exit action/handler. These will be called by the menu when a page is entered,
   ///  i.e. becomes the current page, or exited, i.e. get's switched from. By default these do
@@ -51,18 +53,19 @@ namespace sgl {
   ///
   /// The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate
   /// through the items. When an input equal to the page's start edit is received, the page switches
-  /// into edit mode and passes the input value on to the current item's input handler (including
-  /// the start_edit value).
+  /// into edit mode and starts passing the input values on to the current item's input handler (including
+  /// the start edit value) while it is in edit mode.
   ///
-  /// The returned value from the item input handler is interpreted as such:
+  /// The returned value from the item' handle_input() method is interpreted as such:
   ///  - sgl::error:::edit_finished means the page should switch back into navigation mode,
   ///  regardless of which input it just received. The page's default input handler will return
-  ///  sgl::error::no_error in this case.
+  ///  sgl::error::no_error in this case. This is used for 'one and done' items like [buttons](sgl:Button) 
+  ///  and [links](sgl::PageLink). Else it would take significantly more complicated logic to handle these kinds of items.
   ///  - sgl::error::no_error means the item handled the input successfully, and the page stays in
   ///  edit mode. The page keeps relaying the inputs to the active item.The page's default input
   ///  handler will return sgl::error::no_error in this case.
   ///  - any other sgl::error value means the item failed to handle the input. The page switches
-  ///  back into navigation mode and returns the error value from the item input handler.
+  ///  back into navigation mode and returns the received value.
   ///
   /// When an input equal to the page's stop edit is received, the page switches back into
   /// navigation mode. The stop edit input is NOT passed on to the item input handler.
