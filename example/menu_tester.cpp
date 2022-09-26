@@ -65,22 +65,27 @@ constexpr auto OtherSettingsPage() {
 }
 
 int main() {
-  auto menu = MenuTester(Menu(home_page <<= HomePage(),
-                              settings_page <<= SettingsPage(),
-                              other_settings_page <<= OtherSettingsPage()),
-                         {{sgl::Input::up, "up"_sv},
-                          {sgl::Input::down, "down"_sv},
-                          {sgl::Input::left, "left"_sv},
-                          {sgl::Input::right, "right"_sv},
-                          {sgl::Input::enter, "enter"_sv}});
-  menu.print();
+  // making a menu tester with the menu and supplying a mapping of input values to strings.
+  // The tester will check if a command line input matches any of the strings in the input map and
+  // forward the corresponding sgl::Input value.
+  // If the command line input is not in the map, the tester will call handle_input for every
+  // character in the input string.
+  auto tester = MenuTester(Menu(home_page <<= HomePage(),
+                                settings_page <<= SettingsPage(),
+                                other_settings_page <<= OtherSettingsPage()),
+                           {{sgl::Input::up, "up"_sv},
+                            {sgl::Input::down, "down"_sv},
+                            {sgl::Input::left, "left"_sv},
+                            {sgl::Input::right, "right"_sv},
+                            {sgl::Input::enter, "enter"_sv}});
+  tester.print();
   std::string s;
   while (std::getline(std::cin, s)) {
     if (s == "quit") {
       break;
     } else {
-      menu.handle_input(string_view<char>(s));
-      menu.print();
+      tester.handle_input(string_view<char>(s));
+      tester.print();
     }
   }
   return 0;

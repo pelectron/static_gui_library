@@ -9,16 +9,19 @@ instantiate = get_option('instantiate')
 dependencies = []
 defines = []
 if use_ryu and not use_charconv
-    dependencies = [dependency('ryu', fallback:['ryu','ryu_dep'])]
-    defines += '-DSGL_USE_RYU=1'
-    if optimize_size
+  message('using ryu for formatting')
+  dependencies = [dependency('ryu', fallback:['ryu','ryu_dep'])]
+  defines += '-DSGL_USE_RYU=1'
+  if optimize_size
     defines += '-DRYU_OPTIMIZE_SIZE'
-    endif
+  endif
 elif use_charconv
-    defines += '-DSGL_USE_CHARCONV=1'
+  message('using charconv for formatting')
+  defines += '-DSGL_USE_CHARCONV=1'
 else
 warning('Neither use_ryu or use_charconv set in meson options. Formatting will only work for integers.')
 endif
+
 if instantiate
     if line_width == 0
         error('library line width set to 0')
@@ -27,6 +30,10 @@ if instantiate
 endif
 
 add_project_arguments('-ferror-limit=2',language:'cpp')
+
+if get_option('gui')
+  dependencies += dependency('qt5', modules: ['Core', 'Gui'])
+endif
 
 sgl_dep = declare_dependency(include_directories: include_directories('include'), dependencies: dependencies, compile_args: defines)
 # custom_target('c_test', depend_files:['callable_test.cpp'], command:['clang++', '-O3','-std=c++17','-fno-exceptions','-o', meson.current_build_dir() + '/callable_test.S', '-S', meson.current_source_dir() + '/callable_test.cpp'], output:['callable_test.S'])
