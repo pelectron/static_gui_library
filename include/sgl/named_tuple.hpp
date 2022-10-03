@@ -16,11 +16,9 @@
 
 namespace sgl {
 
-  /// \cond
   template <typename F, typename... Ts>
-  static constexpr bool
+  inline constexpr bool
       nothrow_invocable_for_each = (std::is_nothrow_invocable_v<std::decay_t<F>, Ts> && ...);
-  /// \endcond
 
   /// \headerfile named_tuple.hpp "sgl/named_tuple.hpp"
   /// \brief A named tuple is like a normal std::tuple, except that it can also be indexed by
@@ -82,7 +80,7 @@ namespace sgl {
     using type_list_t = type_list<Ts...>;
 
     /// default ctor
-    constexpr NamedTuple()= default;
+    constexpr NamedTuple() = default;
 
     /// default copy ctor
     constexpr NamedTuple(const NamedTuple&) = default;
@@ -149,7 +147,9 @@ namespace sgl {
     constexpr const auto& operator[](Name name) const noexcept;
 
     /// \brief apply a callable f on each element. f will be called with a reference to each
-    /// element. \tparam F callable type \param f callable instance
+    /// element.
+    /// \tparam F callable type
+    /// \param f callable instance
     template <typename F>
     constexpr void for_each(F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>);
 
@@ -169,7 +169,8 @@ namespace sgl {
         (std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...));
 
     /// \brief apply a callable f on each element. f will be called with the name of the element as
-    /// a sgl::string_view<char> and a const reference to each element. \tparam F callable type
+    /// a sgl::string_view<char> and a const reference to each element.
+    /// \tparam F callable type
     /// \param f callable instance
     template <typename F>
     constexpr void for_each_with_name(F&& f) const

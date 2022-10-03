@@ -3,17 +3,17 @@
 #include "sgl/enum.hpp"
 namespace sgl {
 
-  template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  template <
-      typename InputHandler,
-      enable_if_is_input_handler<InputHandler,
-                                 typename Enum<T, NumEnumerators, TextSize, CharT>::item_type>>
-  constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(
-      const sgl::EnumMap<T, NumEnumerators, CharT>& map,
-      InputHandler&&                                handler,
-      size_t                                        start_index) noexcept
-      : Base(map.get_view(start_index % NumEnumerators), std::forward<InputHandler>(handler)),
-        map_{map}, index_(start_index % NumEnumerators) {}
+  // template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
+  // template <
+  //     typename InputHandler,
+  //     enable_if_is_input_handler<InputHandler,
+  //                                typename Enum<T, NumEnumerators, TextSize, CharT>::item_type>>
+  // constexpr Enum<T, NumEnumerators, TextSize, CharT>::Enum(
+  //     const sgl::EnumMap<T, NumEnumerators, CharT>& map,
+  //     InputHandler&&                                handler,
+  //     size_t                                        start_index) noexcept
+  //     :  Enum<T, NumEnumerators, TextSize, CharT>Base(map.get_view(start_index % NumEnumerators), std::forward<InputHandler>(handler)),
+  //       map_{map}, index_(start_index % NumEnumerators) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr size_t Enum<T, NumEnumerators, TextSize, CharT>::num_values() const noexcept {

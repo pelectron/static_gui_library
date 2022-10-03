@@ -7,7 +7,6 @@
 
 #include <type_traits>
 
-
 #if SGL_USE_RYU
   #include "ryu/ryu.h"
   #include "ryu/ryu_parse.h"
@@ -409,8 +408,6 @@ namespace sgl {
 
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
-    (void)precision;
-    (void)format;
     auto res = std::from_chars(str, str + len, value);
     if (res.ec == std::errc()) {
       return sgl::error::no_error;
@@ -464,7 +461,7 @@ namespace sgl {
       const long long size{end - begin};
 
       for (long long i = 0; i < size; ++i) {
-        result += to_num(begin[i]) * sgl::parse_impl::pow10<T>(size - i - 1);
+        result += to_num(begin[i]) * sgl::parse_impl::pow10<T>(static_cast<int>(size - i - 1));
       }
       return result;
     };
@@ -503,7 +500,7 @@ namespace sgl {
         // [DEC].FRAC
         auto dec = sgl::parse_impl::decimal<T>(str, str + dot_index);
         auto frac = static_cast<T>(sgl::parse_impl::decimal<T>(str + dot_index + 1, str + n)) /
-                    sgl::parse_impl::pow10<T>(n - dot_index - 1);
+                    sgl::parse_impl::pow10<T>(static_cast<int>(n - dot_index - 1));
         return static_cast<T>(dec) + frac;
       }
       // has exponent
@@ -512,14 +509,14 @@ namespace sgl {
         // DEC[Ee][+-]EXP
         auto dec = sgl::parse_impl::decimal<T>(str, str + e_index);
         auto exp = sgl::parse_impl::decimal<T>(str + e_index + 1, str + n);
-        return static_cast<T>(dec) * sgl::parse_impl::pow10<T>(exp);
+        return static_cast<T>(dec) * sgl::parse_impl::pow10<T>(static_cast<int>(exp));
       }
       // [DEC].FRAC[Ee][+-]EXP
       auto dec = sgl::parse_impl::decimal<T>(str, str + dot_index);
       auto frac = static_cast<T>(sgl::parse_impl::decimal<T>(str + dot_index + 1, str + e_index)) /
-                  sgl::parse_impl::pow10<T>(e_index - dot_index - 1);
+                  sgl::parse_impl::pow10<T>(static_cast<int>(e_index - dot_index - 1));
       auto exp = sgl::parse_impl::decimal<T>(str + e_index + 1, str + n);
-      return (dec + frac) * sgl::parse_impl::pow10<T>(exp);
+      return (dec + frac) * sgl::parse_impl::pow10<T>(static_cast<int>(exp));
     }
 
   } // namespace parse_impl
