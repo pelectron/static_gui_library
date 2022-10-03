@@ -83,7 +83,11 @@
     "*.rh": "cpp",
     "ryu_parse.h": "c",
     "d2s_small_table.h": "c",
-    "d2s_full_table.h": "c"
+    "d2s_full_table.h": "c",
+    "qwidget": "cpp",
+    "qvboxlayout": "cpp",
+    "qhboxlayout": "cpp",
+    "qmainwindow": "cpp"
   },
   "cSpell.words": [
     "cget",

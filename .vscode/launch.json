@@ -79,6 +79,17 @@
       "cwd": "${fileDirname}",
       "environment": [],
       "console": "externalTerminal"
-    },
+    },{
+      "name": "gui test",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-clang/gui/gui_test.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "externalTerminal"
+    }
+
   ]
 }

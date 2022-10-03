@@ -28,14 +28,15 @@ if instantiate
     endif
     defines += ['-DSGL_CHAR_TYPE=@0@'.format(char_type), '-DSGL_LINE_WIDTH=@0@'.format(line_width)]
 endif
-
-add_project_arguments('-ferror-limit=2',language:'cpp')
+if meson.get_compiler('cpp').get_id() == 'clang'
+  defines += '-ferror-limit=1'
+endif
+sgl_dep = declare_dependency(include_directories: include_directories('include'), dependencies: dependencies, compile_args: defines)
 
 if get_option('gui')
-  dependencies += dependency('qt5', modules: ['Core', 'Gui'])
+  subdir('gui')
 endif
 
-sgl_dep = declare_dependency(include_directories: include_directories('include'), dependencies: dependencies, compile_args: defines)
 # custom_target('c_test', depend_files:['callable_test.cpp'], command:['clang++', '-O3','-std=c++17','-fno-exceptions','-o', meson.current_build_dir() + '/callable_test.S', '-S', meson.current_source_dir() + '/callable_test.cpp'], output:['callable_test.S'])
 # executable('callable_test','callable_test.cpp',cpp_args:['-O3'])
 # executable('item_base','item_base.cpp',dependencies:ryu_dep)
