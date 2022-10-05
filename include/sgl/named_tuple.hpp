@@ -179,19 +179,8 @@ namespace sgl {
 
   private:
     using This_t = NamedTuple<type_list<Names...>, type_list<Ts...>>;
-    template <typename T>
-    static constexpr bool all_unique() {
-      return true;
-    }
-    template <typename T1, typename T2, typename... Rest>
-    static constexpr bool all_unique() {
-      if constexpr (sizeof...(Rest) == 0) {
-        return !std::is_same_v<T1, T2>;
-      } else {
-        return !std::is_same_v<T1, T2> && all_unique<Rest...>();
-      }
-    }
-    static_assert(This_t::all_unique<Names...>(), "NamedTuple can't have duplicate names!");
+
+    static_assert(sgl::all_unique_v<Names...>, "sgl::NamedTuple can't have duplicate names!");
   };
 
   /// \cond

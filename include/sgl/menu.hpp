@@ -31,6 +31,13 @@ namespace sgl {
   /// \tparam Pages types of the pages
   template <typename... Names, typename... Pages>
   class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
+    
+    static_assert((sgl::is_name_type_v<Names> && ...),
+                  "One of the types begin used as a name is not instance of sgl::Name<...>.");
+    static_assert(sgl::all_unique_v<Names...>,
+                  "sgl::Menu can't have duplicate names for it's pages! Make sure to use a unique "
+                  "name for each page in the menu.");
+
   public:
     /// \brief is true if F is nothrow invocable with a reference to each page in page_list
     /// \tparam F functor type

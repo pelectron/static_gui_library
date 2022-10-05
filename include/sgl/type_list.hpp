@@ -35,7 +35,7 @@ namespace sgl {
   };
 
   template <typename List>
-  static constexpr size_t list_size_v = list_size<List>::value;
+  inline constexpr size_t list_size_v = list_size<List>::value;
 
   template <typename T, typename T1, typename... Ts>
   constexpr size_t index_of_impl(size_t i = 0) {
@@ -57,7 +57,7 @@ namespace sgl {
   };
 
   template <typename T, typename List>
-  static constexpr size_t index_of_v = index_of<T, List>::value;
+  inline constexpr size_t index_of_v = index_of<T, List>::value;
   static_assert(index_of_v<int, type_list<int, double, char>> == 0);
 
   template <typename T, typename List>
@@ -220,8 +220,29 @@ namespace sgl {
   struct contains<T, type_list<Ts...>> {
     static constexpr bool value = (std::is_same_v<T, Ts> || ...);
   };
+  /// @brief checks if T is contained in List
+  /// @tparam T type to search
+  /// @tparam List sgl::type_list
   template <typename T, typename List>
-  static constexpr bool contains_v = contains<T, List>::value;
+  inline constexpr bool contains_v = contains<T, List>::value;
+
+  template <typename... Ts>
+  struct all_unique;
+
+  template <typename T>
+  struct all_unique<T> : std::true_type {};
+
+  template <typename T, typename... Rest>
+  struct all_unique<T, Rest...> {
+    static constexpr bool value = ((!std::is_same_v<T, Rest>)&&...) && all_unique<Rest...>::value;
+  };
+
+  /// @brief check if every type in \a Ts is unique
+  /// \details For example all_unique_v<char,int,double> == true,
+  /// but all_unique_v<char,int,char>==false.
+  /// @tparam ...Ts
+  template <typename... Ts>
+  inline constexpr bool all_unique_v = all_unique<Ts...>::value;
 
   ///\endcond
 } // namespace sgl
