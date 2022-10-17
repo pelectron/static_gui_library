@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "sgl_callable.hpp"
+#include "sgl/callable.hpp"
 
 TEMPLATE_TEST_CASE("Testing sgl::callable",
                    "[callable][template]",

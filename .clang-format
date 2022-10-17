@@ -22,7 +22,6 @@ SpaceBeforeInheritanceColon: 'true'
 SpaceBeforeRangeBasedForLoopColon: 'true'
 SpaceInEmptyParentheses: 'false'
 TabWidth: '2'
-ReferenceAlignment: Left
 SpaceAroundPointerQualifiers: Both
 BinPackArguments: false
 BinPackParameters: false
