@@ -1,18 +1,20 @@
-#include "mainwindow.hpp"
+#include "sgl/qt/mainwindow.hpp"
+
+#include <QKeyEvent>
+#include <iostream>
 namespace sgl::qt {
-  const char*  to_string(sgl::error e);
-  QString      to_string(sgl::Input i);
-  static void  update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree);
-  QTreeWidget* make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title);
-  static void  update_item_leaves(sgl::qt::AbstractPageNode* page, QTreeWidgetItem* page_item);
+  static const char* to_string(sgl::error e);
+  static QString     to_string(sgl::Input i);
+  static void update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree);
+  QTreeWidget*
+      make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title, QWidget* parent = nullptr);
+  static void update_item_leaves(sgl::qt::AbstractPageNode* page, QTreeWidgetItem* page_item);
 
   void MainWindow::keyPressEvent(QKeyEvent* event) {
-    std::cout << "keypressevent\n";
     sgl::Input input{sgl::Input::none};
     if ((event->key() >= Qt::Key_Space) and (event->key() <= Qt::Key_AsciiTilde)) {
       // ascii character input
       input = sgl::to_input(static_cast<char>(event->key()));
-      std::cout << "character input\n";
     } else {
       switch (event->key()) {
         case Qt::Key_Return:
@@ -36,27 +38,38 @@ namespace sgl::qt {
           input = sgl::Input::down;
           break;
       }
-      std::cout << int(event->key()) << std::endl;
     }
 
     auto error = tree_.root()->handle_input(input);
     if (error != error::no_error)
       this->log(error, input);
 
-    disp_->update();
-    sgl::qt::update_content(tree_.root(), side_tree_);
+    this->update_window();
   }
 
   void MainWindow::init_ui() {
-    this->setFocusPolicy(Qt::StrongFocus);
+    setUpdatesEnabled(false);
+    auto* center_frame = new QFrame(this);
+    this->setCentralWidget(center_frame);
+    auto* layout = new QVBoxLayout(center_frame);
+    auto* h_layout = new QHBoxLayout;
 
-    disp_ = new Display(tree_);
+    disp_ = new Display(tree_, center_frame);
+    side_section_ = new VerticalSection("menu tree", Qt::Edge::RightEdge, center_frame);
+    side_tree_ = make_tree(tree_.root(), "menu tree");
+    log_section_ = new Section("Input Error Log");
+    log_text_ = new QTextEdit;
+
+    layout->addLayout(h_layout);
+    layout->addWidget(log_section_);
+
+    h_layout->addWidget(side_section_);
+
     disp_->set_radius(10);
     disp_->set_border_thickness(15);
     disp_->setFocusPolicy(Qt::NoFocus);
-    disp_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    h_layout->addWidget(disp_, 2, Qt::AlignTop);
 
-    side_tree_ = make_tree(tree_.root(), "A menu title");
     side_tree_->setFocusPolicy(Qt::NoFocus);
 
     auto* side_layout = new QVBoxLayout;
@@ -64,7 +77,6 @@ namespace sgl::qt {
     side_section_->setFocusPolicy(Qt::NoFocus);
     side_section_->section_title()->setFocusPolicy(Qt::NoFocus);
     side_section_->section_button()->setFocusPolicy(Qt::NoFocus);
-    emit side_section_->section_button()->clicked(true);
     side_section_->body()->setFocusPolicy(Qt::NoFocus);
     side_section_->body()->setLayout(side_layout);
 
@@ -73,18 +85,78 @@ namespace sgl::qt {
     log_section_->body()->setLayout(new QVBoxLayout);
     log_section_->body()->layout()->addWidget(log_text_);
 
-    auto* main_inner = new QHBoxLayout;
-    main_inner->addWidget(side_section_);
-    main_inner->addWidget(disp_, 2, Qt::AlignTop);
+    connect(side_tree_,
+            &QTreeWidget::itemDoubleClicked,
+            this,
+            &sgl::qt::MainWindow::itemDoubleClicked);
 
-    auto* main_outer = new QVBoxLayout;
-    main_outer->addLayout(main_inner);
-    main_outer->addWidget(log_section_);
-    this->setCentralWidget(new QFrame(this));
-    this->centralWidget()->setLayout(main_outer);
+    this->setFixedSize(800, 600);
+    this->setFocusPolicy(Qt::StrongFocus);
 
-    disp_->update();
+    this->update_window();
+    setUpdatesEnabled(true);
+  }
+
+  sgl::qt::MenuTree& MainWindow::tree() { return tree_; }
+
+  void MainWindow::set_current_page(size_t i) {
+    auto error = tree_.root()->set_current_page(i);
+    if (error != sgl::error::no_error) {
+      log_text_->append(QString("Error while setting current page: %s\n").arg(to_string(error)));
+    }
+    this->update_window();
+  }
+
+  void MainWindow::set_current_item(size_t i) {
+    tree_.root()->current_page()->set_current_item(i);
+    this->update_window();
+  }
+
+  void MainWindow::set_current_index(MenuIndex i) {
+    tree_.root()->set_current_page(i.page_index);
+    this->set_current_item(i.item_index);
+  }
+
+  void MainWindow::update_window() {
+    this->setUpdatesEnabled(false);
+    side_tree_->setUpdatesEnabled(false);
+    disp_->update_display();
     update_content(tree_.root(), side_tree_);
+    side_tree_->setUpdatesEnabled(true);
+    this->setUpdatesEnabled(true);
+  }
+
+  void MainWindow::itemDoubleClicked(QTreeWidgetItem* item, int column) {
+
+    if (item->parent() == nullptr) {
+      // page item
+      this->set_current_page(item->treeWidget()->indexOfTopLevelItem(item));
+      this->update_window();
+      return;
+    }
+    if (item->childCount() == 0) {
+      // leaf item, a.k.a. a type or content label
+      itemDoubleClicked(item->parent(), column);
+      this->update_window();
+      return;
+    }
+
+    this->set_current_page(item->treeWidget()->indexOfTopLevelItem(item->parent()));
+    auto*     parent = item->parent();
+    const int count = parent->childCount();
+    for (int i = 0; i < count; ++i) {
+      if (item == parent->child(i)) {
+        this->set_current_item(i);
+        break;
+      }
+    }
+    this->update_window();
+  }
+
+  void MainWindow::log(sgl::error e, sgl::Input i) {
+    QString str = QString("Input event:\n\tError: ") + to_string(e) + QString("\n\tInput: ") +
+                  to_string(i) + '\n';
+    log_text_->append(str);
   }
 
   static void update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree) {
@@ -106,6 +178,7 @@ namespace sgl::qt {
       update_item_leaves((AbstractPageNode*)menu->children()[i], page_item);
     }
   }
+
   static void update_item_leaves(sgl::qt::AbstractPageNode* page, QTreeWidgetItem* page_item) {
     const size_t size = page->size();
     auto         back_brush = page_item->treeWidget()->palette().window();
@@ -124,37 +197,24 @@ namespace sgl::qt {
     }
   }
 
-  QTreeWidget* make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title) {
-    QTreeWidget* widget = new QTreeWidget;
+  QTreeWidget* make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title, QWidget* parent) {
+    QTreeWidget* widget = new QTreeWidget(parent);
     widget->setColumnCount(1);
 
-    QList<QTreeWidgetItem*> pages;
     for (const auto& page : menu->children()) {
-      auto* tree_page = new QTreeWidgetItem(static_cast<QTreeWidget*>(nullptr),
-                                            QStringList(QString(page->name().data())));
-      pages.append(tree_page);
-      QList<QTreeWidgetItem*> items;
+      auto* tree_page = new QTreeWidgetItem(widget, QStringList(QString(page->name().data())));
       for (const auto& item : page->children()) {
-        auto* new_item = new QTreeWidgetItem(static_cast<QTreeWidget*>(nullptr),
-                                             QStringList(QString(item->name().data())));
-        items.append(new_item);
+        auto* new_item = new QTreeWidgetItem(tree_page, QStringList(QString(item->name().data())));
         new QTreeWidgetItem(new_item, QStringList("Type: " + QString(item->type_name().data())));
         new QTreeWidgetItem(new_item, QStringList("Content: " + QString(item->text().data())));
       }
-      tree_page->addChildren(items);
     }
-    widget->addTopLevelItems(pages);
     widget->setHeaderItem(
         new QTreeWidgetItem(static_cast<QTreeWidget*>(nullptr), QStringList(title)));
     return widget;
   }
-  void MainWindow::log(sgl::error e, sgl::Input i) {
-    QString str = QString("Input event:\n\tError: ") + to_string(e) + QString("\n\tInput: ") +
-                  to_string(i) + '\n';
-    log_text_->append(str);
-  }
 
-  const char* to_string(sgl::error e) {
+  static const char* to_string(sgl::error e) {
     switch (e) {
       case error::no_error:
         return "No Error";

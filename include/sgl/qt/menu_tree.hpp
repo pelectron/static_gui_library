@@ -57,7 +57,7 @@ namespace sgl::qt {
     size_t item_index;
   };
 
-  class Node {
+  class SGL_API Node {
   public:
     enum class Type { none = 0, menu, page, item };
     using iterator = typename std::vector<Node*>::iterator;
@@ -107,7 +107,7 @@ namespace sgl::qt {
   class AbstractPageNode;
   class AbstractMenuNode;
 
-  class AbstractItemNode : public Node {
+  class SGL_API AbstractItemNode : public Node {
   public:
     using Node::Node;
     AbstractPageNode*                     get_page();
@@ -115,21 +115,23 @@ namespace sgl::qt {
     bool                                  is_current() const;
   };
 
-  class AbstractPageNode : public Node {
+  class SGL_API AbstractPageNode : public Node {
   public:
     using Node::Node;
     [[nodiscard]] virtual size_t          current_index() const = 0;
     [[nodiscard]] virtual bool            edit_mode() const = 0;
+    virtual void                          set_current_item(size_t i) = 0;
     AbstractMenuNode*                     get_menu();
     AbstractItemNode*                     current_item();
     [[nodiscard]] const AbstractItemNode* current_item() const;
   };
 
-  class AbstractMenuNode : public Node {
+  class SGL_API AbstractMenuNode : public Node {
   public:
     using Node::Node;
     virtual sgl::error           handle_input(sgl::Input i) = 0;
     [[nodiscard]] virtual size_t current_index() const = 0;
+    virtual sgl::error           set_current_page(size_t index) = 0;
 
     AbstractPageNode*                     current_page();
     [[nodiscard]] const AbstractPageNode* current_page() const;
@@ -171,6 +173,7 @@ namespace sgl::qt {
     [[nodiscard]] size_t current_index() const override { return page_.current_item_index(); }
     [[nodiscard]] std::string_view type_name() const override { return get_type_name<Page>::value; }
     [[nodiscard]] bool             edit_mode() const override { return page_.is_in_edit_mode(); }
+    void set_current_item(size_t i) override { page_.set_current_item(i); }
 
   private:
     Page& page_;
@@ -194,6 +197,8 @@ namespace sgl::qt {
 
     sgl::error handle_input(sgl::Input i) override { return menu_.handle_input(i); }
 
+    sgl::error set_current_page(size_t index) override { return menu_.set_current_page(index); }
+
   private:
     Menu menu_;
   };
@@ -201,7 +206,7 @@ namespace sgl::qt {
   template <typename Menu>
   MenuNode(Menu) -> MenuNode<Menu>;
 
-  class MenuTree {
+  class SGL_API MenuTree {
   public:
     template <typename Menu>
     MenuTree(Menu m) : root_{new MenuNode<Menu>(std::move(m))} {}

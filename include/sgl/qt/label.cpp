@@ -1,4 +1,4 @@
-#include "label.hpp"
+#include "sgl/qt/label.hpp"
 
 #include <QPainter>
 

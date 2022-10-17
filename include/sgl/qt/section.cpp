@@ -1,6 +1,10 @@
-#include "section.hpp"
+#include "sgl/qt/section.hpp"
 
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QVBoxLayout>
 #include <stdexcept>
+
 
 namespace sgl::qt {
 
@@ -9,7 +13,7 @@ namespace sgl::qt {
   Section::Section(const QString& title, QWidget* parent)
       : QWidget(parent), header_{new QFrame}, body_{new QFrame}, title_label_{new QLabel(title)},
         collapse_button_{new QPushButton} {
-    
+
     collapse_button_->setCheckable(true);
     collapse_button_->setIcon(QIcon(":/menu-burger.png"));
     collapse_button_->setIconSize(icon_size);

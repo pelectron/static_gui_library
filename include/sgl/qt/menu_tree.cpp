@@ -1,4 +1,4 @@
-#include "menu_tree.hpp"
+#include "sgl/qt/menu_tree.hpp"
 
 namespace sgl::qt {
   Node::Node(std::string_view name, Node::Type type, Node* parent)

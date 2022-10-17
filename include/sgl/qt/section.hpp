@@ -1,18 +1,14 @@
 #ifndef SECTION_HPP
 #define SECTION_HPP
-#include "label.hpp"
+#include "sgl/qt/label.hpp"
 
 #include <QFrame>
-#include <QHBoxLayout>
-#include <QIcon>
 #include <QLabel>
 #include <QPushButton>
-#include <QVBoxLayout>
-#include <QWidget>
 
 namespace sgl::qt {
 
-  class Section : public QWidget {
+  class SGL_API Section : public QWidget {
     Q_OBJECT
   public:
     Section(const QString& title, QWidget* parent = nullptr);
@@ -35,7 +31,7 @@ namespace sgl::qt {
   /**
    * \brief
    */
-  class VerticalSection : public QWidget {
+  class SGL_API VerticalSection : public QWidget {
     Q_OBJECT
   public:
     VerticalSection(const QString& title, Qt::Edge edge, QWidget* parent = nullptr);

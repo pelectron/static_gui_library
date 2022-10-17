@@ -10,16 +10,19 @@
  * @copyright Copyright (c) 2022
  *
  */
-#ifndef LABEL_HPP
-#define LABEL_HPP
+
+#ifndef SGL_QT_LABEL_HPP
+#define SGL_QT_LABEL_HPP
+#include "sgl/config.h"
 #include <QLabel>
+
 namespace sgl::qt {
   enum class direction {
     top_to_bottom,
     bottom_to_top,
   };
 
-  class VerticalLabel : public QLabel {
+  class SGL_API VerticalLabel : public QLabel {
     Q_OBJECT
   public:
     explicit VerticalLabel(QWidget* parent = nullptr);
@@ -35,4 +38,5 @@ namespace sgl::qt {
     direction dir_{direction::bottom_to_top};
   };
 } // namespace sgl::qt
-#endif /* LABEL_HPP */
+
+#endif /* SGL_QT_LABEL_HPP */
