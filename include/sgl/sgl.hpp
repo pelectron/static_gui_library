@@ -1,5 +1,6 @@
 #ifndef SGL_SGL_HPP
 #define SGL_SGL_HPP
+#include "sgl/config.h"
 #include "sgl/items.hpp"
 #include "sgl/menu.hpp"
 #include "sgl/page.hpp"

@@ -1,5 +1,7 @@
 #ifndef SGL_IMPL_FORMAT_IMPL_HPP
 #define SGL_IMPL_FORMAT_IMPL_HPP
+#include "gcem.hpp"
+#include "ryu/ryu.hpp"
 #include "sgl/config.h"
 #include "sgl/format.hpp"
 #include "sgl/limits.hpp"
@@ -7,15 +9,9 @@
 
 #include <type_traits>
 
-#if SGL_USE_RYU
-  #include "ryu/ryu.h"
-  #include "ryu/ryu_parse.h"
-#endif
-#if SGL_USE_CHARCONV
-  #include <charconv>
-#endif
 
 namespace sgl {
+
   namespace format_impl {
     template <typename T>
     struct biggest_pow10_t;
@@ -57,27 +53,34 @@ namespace sgl {
 
     template <typename T>
     constexpr size_t biggest_pow10(T val) {
-      if ((val >= T{1000000000ULL}) and (numeric_limits<T>::max() > 1000000000ULL)) {
-        return 1000000000;
-      }
-      if ((val >= T{100000000ULL}) and (numeric_limits<T>::max() > 100000000ULL)) {
-        return 100000000;
-      }
-      if ((val >= T{10000000ULL}) and (numeric_limits<T>::max() > 10000000ULL)) {
-        return 10000000;
-      }
-      if ((val >= T{1000000ULL}) and (numeric_limits<T>::max() > 1000000ULL)) {
-        return 1000000;
-      }
-      if ((val >= T{100000ULL}) and (numeric_limits<T>::max() > 100000ULL)) {
-        return 100000;
-      }
-      if ((val >= T{10000ULL}) and (numeric_limits<T>::max() > 10000ULL)) {
-        return 10000;
-      }
-      if ((val >= T{1000ULL}) and (numeric_limits<T>::max() > 1000ULL)) {
-        return 1000;
-      }
+      if constexpr (numeric_limits<T>::max() > 1000000000ULL)
+        if (val >= T{1000000000ULL}) {
+          return 1000000000;
+        }
+      if constexpr (numeric_limits<T>::max() > 100000000ULL)
+        if (val >= T{100000000ULL}) {
+          return 100000000;
+        }
+      if constexpr (numeric_limits<T>::max() > 10000000ULL)
+        if (val >= T{10000000ULL}) {
+          return 10000000;
+        }
+      if constexpr (numeric_limits<T>::max() > 1000000ULL)
+        if (val >= T{1000000ULL}) {
+          return 1000000;
+        }
+      if constexpr (numeric_limits<T>::max() > 100000ULL)
+        if (val >= T{100000ULL}) {
+          return 100000;
+        }
+      if constexpr (numeric_limits<T>::max() > 10000ULL)
+        if (val >= T{10000ULL}) {
+          return 10000;
+        }
+      if constexpr (numeric_limits<T>::max() > 1000ULL)
+        if (val >= T{1000ULL}) {
+          return 1000;
+        }
       if (val >= T{100ULL}) {
         return 100;
       }
@@ -129,55 +132,70 @@ namespace sgl {
     struct max_buf_size<double> {
       static constexpr size_t value = 24;
     };
-    // NOLINTBEGIN(readability*)
 
+    // NOLINTBEGIN(readability*)
     template <typename T>
-    constexpr auto biggest_pow16(T value) {
-      if ((numeric_limits<T>::max() >= 0x1000000000000000) and (value > T{0x1000000000000000})) {
-        return 0x1000000000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x100000000000000) and (value > T{0x100000000000000})) {
-        return 0x100000000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x10000000000000) and (value > T{0x10000000000000})) {
-        return 0x10000000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x1000000000000) and (value > T{0x1000000000000})) {
-        return 0x1000000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x100000000000) and (value > T{0x100000000000})) {
-        return 0x100000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x10000000000) and (value > T{0x10000000000})) {
-        return 0x10000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x1000000000) and (value > T{0x1000000000})) {
-        return 0x1000000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x100000000) and (value > T{0x100000000})) {
-        return 0x100000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x10000000) and (value > T{0x10000000})) {
-        return 0x10000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x1000000) and (value > T{0x1000000})) {
-        return 0x1000000;
-      }
-      if ((numeric_limits<T>::max() >= 0x100000) and (value > T{0x100000})) {
-        return 0x100000;
-      }
-      if ((numeric_limits<T>::max() >= 0x10000) and (value > T{0x10000})) {
-        return 0x10000;
-      }
-      if ((numeric_limits<T>::max() >= 0x1000) and (value > T{0x1000})) {
-        return 0x1000;
-      }
-      if ((numeric_limits<T>::max() >= 0x100) and (value > T{0x100})) {
-        return 0x100;
-      }
-      if ((numeric_limits<T>::max() >= 0x10) and (value > T{0x10})) {
-        return 0x10;
-      }
+    constexpr uint64_t biggest_pow16(T value) {
+      if constexpr (numeric_limits<T>::max() >= 0x1000000000000000)
+        if (value > T{0x1000000000000000}) {
+          return 0x1000000000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x100000000000000)
+        if (value > T{0x100000000000000}) {
+          return 0x100000000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x10000000000000)
+        if (value > T{0x10000000000000}) {
+          return 0x10000000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x1000000000000)
+        if (value > T{0x1000000000000}) {
+          return 0x1000000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x100000000000)
+        if (value > T{0x100000000000}) {
+          return 0x100000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x10000000000)
+        if (value > T{0x10000000000}) {
+          return 0x10000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x1000000000)
+        if (value > T{0x1000000000}) {
+          return 0x1000000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x100000000)
+        if (value > T{0x100000000}) {
+          return 0x100000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x10000000)
+        if (value > T{0x10000000}) {
+          return 0x10000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x1000000)
+        if (value > T{0x1000000}) {
+          return 0x1000000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x100000)
+        if (value > T{0x100000}) {
+          return 0x100000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x10000)
+        if (value > T{0x10000}) {
+          return 0x10000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x1000)
+        if (value > T{0x1000}) {
+          return 0x1000;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x100)
+        if (value > T{0x100}) {
+          return 0x100;
+        }
+      if constexpr (numeric_limits<T>::max() >= 0x10)
+        if (value > T{0x10}) {
+          return 0x10;
+        }
       return 0x1;
     }
     // NOLINTEND(readability-*)
@@ -239,14 +257,13 @@ namespace sgl {
         buf.append(static_cast<CharT>(value / pow10 + '0'));
         value = value % pow10;
       }
-      if (buf.size() >= len) {
-        return {sgl::error::format_error, 0};
+      if (buf.size() > len) {
+        return {sgl::error::buffer_too_small, 0};
       }
       for (const auto& ch : buf) {
         *str = ch;
         ++str;
       }
-      *str = '\0';
       return {sgl::error::no_error, buf.size()};
     }
 
@@ -255,17 +272,17 @@ namespace sgl {
                                                 size_t   len,
                                                 T        value,
                                                 uint32_t precision,
-                                                format_t format) noexcept {
+                                                format format) noexcept {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
       (void)precision;
       switch (format) {
-        case format_t::exponential:
+        case sgl::format::exponential:
           [[fallthrough]];
-        case format_t::fixed:
-        case format_t::floating:
-        case format_t::integer:
+        case sgl::format::fixed:
+        case sgl::format::floating:
+        case sgl::format::integer:
           return basic_integer_format(str, len, value);
-        case format_t::hex:
+        case sgl::format::hex:
           return basic_hex_format(str, len, value);
         default:
           return {sgl::error::invalid_format, 0};
@@ -274,14 +291,14 @@ namespace sgl {
       return {sgl::error::null_format, 0};
     }
   } // namespace format_impl
-#if SGL_USE_RYU
+
   template <typename CharT, typename T>
   sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
     if constexpr (std::is_same_v<double, T>) {
       static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
-      if (s2d_n(str, len, &value) == Status::SUCCESS)
+      if (ryu::s2d_n(str, len, &value) == ryu::Status::success)
         return sgl::error::no_error;
       else
         return sgl::error::format_error;
@@ -290,7 +307,7 @@ namespace sgl {
       static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
-      if (s2f_n(str, &value) == Status::SUCCESS)
+      if (ryu::s2f_n(str, &value) == ryu::Status::success)
         return sgl::error::no_error;
       else
         return sgl::error::format_error;
@@ -321,109 +338,7 @@ namespace sgl {
     }
   }
 
-  template <typename CharT, typename T>
-  sgl::format_result
-      format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
-    if constexpr (std::is_floating_point_v<T>) {
-      if constexpr (std::is_same_v<double, T>) {
-        sgl::static_string<char, max_buf_size_v<T>> buf;
-        int                                         size{0};
-        switch (format) {
-          case format_t::floating:
-            size = d2s_buffered_n(value, buf.data());
-            break;
-          case format_t::exponential:
-            size = d2exp_buffered_n(value, precision, buf.data());
-            break;
-          case format_t::fixed:
-            size = d2fixed_buffered_n(value, precision, buf.data());
-            break;
-          case format_t::integer:
-            size = d2fixed_buffered_n(value, 0, buf.data());
-            break;
-          default:
-            return {sgl::error::invalid_format, 0};
-        }
-        if (size >= len) {
-          return {sgl::error::format_error, 0};
-        }
-        buf.resize(size);
-        for (const auto& ch : buf) {
-          *str = ch;
-          ++str;
-        }
-        str[size] = '\0';
-        return {sgl::error::no_error, size};
-      } else if constexpr (std::is_same_v<float, T>) {
-        sgl::static_string<char, max_buf_size_v<T>> buf(max_buf_size_v<T>, '\0');
 
-        int size{0};
-        switch (format) {
-          case format_t::floating:
-            size = f2s_buffered_n(value, buf.data());
-            break;
-          case format_t::exponential:
-            size = d2exp_buffered_n(value, precision, buf.data());
-            break;
-          case format_t::fixed:
-            size = d2fixed_buffered_n(value, precision, buf.data());
-            break;
-          case format_t::integer:
-            size = d2fixed_buffered_n(value, 0, buf.data());
-            break;
-          default:
-            return sgl::error::invalid_format;
-        }
-        if (size >= len) {
-          return {sgl::error::format_error, 0};
-        }
-        buf.resize(size);
-        for (const auto& ch : buf) {
-          *str = ch;
-          ++str;
-        }
-        str[size] = '\0';
-        return {sgl::error::no_error, size};
-      }
-    } else {
-      return format_impl::integer_format(str, len, value, precision, format);
-    }
-  }
-
-#endif
-
-#if SGL_USE_CHARCONV
-  template <typename CharT, typename T>
-  sgl::format_result
-      format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
-    (void)precision;
-    (void)format;
-    auto res = std::to_chars(str, str + len, value);
-    if (res.ec == std::errc()) {
-      return {sgl::error::no_error, static_cast<size_t>(res.ptr - str)};
-    } else {
-      return {sgl::error::format_error, 0};
-    }
-  }
-
-  template <typename CharT, typename T>
-  sgl::error parse(const CharT* str, const size_t len, T& value) noexcept {
-    auto res = std::from_chars(str, str + len, value);
-    if (res.ec == std::errc()) {
-      return sgl::error::no_error;
-    } else {
-      return sgl::error::format_error;
-    }
-  }
-#endif
-
-#if !SGL_USE_CHARCONV && !SGL_USE_RYU
-  template <typename CharT, typename T>
-  constexpr sgl::format_result
-      format(CharT* str, size_t len, T value, uint32_t precision, format_t format) noexcept {
-    return format_impl::integer_format(str, len, value, precision, format);
-  }
-#endif
   namespace parse_impl {
     template <typename T>
     constexpr T pow10(int exp) {
@@ -520,5 +435,233 @@ namespace sgl {
     }
 
   } // namespace parse_impl
+
+
+  template <typename CharT, typename T>
+  constexpr sgl::format_result to_chars(CharT* str, size_t len, T value) noexcept {
+    return sgl::format_impl::basic_integer_format(str, len, value);
+  }
+
+  template <typename CharT>
+  sgl::format_result
+      to_chars(CharT* str, size_t len, float value, uint32_t precision, format format) noexcept {
+    sgl::static_string<CharT, 24> buf{};
+
+    unsigned size{0};
+    switch (format) {
+      case sgl::format::floating:
+        size = ryu::f2s_buffered_n(value, buf.data());
+        break;
+      case sgl::format::exponential:
+        size = ryu::d2exp_buffered_n(value, precision, buf.data());
+        break;
+      case sgl::format::fixed:
+        size = ryu::d2fixed_buffered_n(value, precision, buf.data());
+        break;
+      case sgl::format::integer:
+        size = ryu::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
+        break;
+      case sgl::format::hex:
+        return sgl::format_impl::basic_hex_format(str, len, ryu::to_bits(value));
+        break;
+      default:
+        return {sgl::error::invalid_format, 0};
+    }
+    if (size > len) {
+      return {sgl::error::format_error, 0};
+    }
+    buf.resize(size);
+    for (const auto& ch : buf) {
+      *str = ch;
+      ++str;
+    }
+    return {sgl::error::no_error, static_cast<size_t>(size)};
+  }
+
+  template <typename CharT>
+  sgl::format_result
+      to_chars(CharT* str, size_t len, double value, uint32_t precision, format format) noexcept {
+    sgl::static_string<CharT, 24> buf;
+
+    unsigned size{0};
+    switch (format) {
+      case sgl::format::floating:
+        size = ryu::d2s_buffered_n(value, buf.data());
+        break;
+      case sgl::format::exponential:
+        size = ryu::d2exp_buffered_n(value, precision, buf.data());
+        break;
+      case sgl::format::fixed:
+        size = ryu::d2fixed_buffered_n(value, precision, buf.data());
+        break;
+      case sgl::format::integer:
+        size = ryu::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
+        break;
+      case sgl::format::hex:
+        return sgl::format_impl::basic_hex_format(str, len, ryu::to_bits(value));
+        break;
+      default:
+        return {sgl::error::invalid_format, 0};
+    }
+    if (size > len) {
+      return {sgl::error::format_error, 0};
+    }
+    buf.resize(size);
+    for (const auto& ch : buf) {
+      *str = ch;
+      ++str;
+    }
+    return {sgl::error::no_error, static_cast<size_t>(size)};
+  }
+
+  template <typename CharT, size_t I, size_t F>
+  constexpr sgl::format_result to_chars(CharT*          str,
+                                        size_t          len,
+                                        sgl::unsigned_fixed<I, F> value,
+                                        uint32_t        precision,
+                                        format        format) noexcept {
+    (void)format; // unused
+    // frac is the raw integer value of the fractional part of value.
+    // This needs to be converted to a "normal" integer value for formatting.
+    // the formatting precision is equal to F.
+    // The integer value needed can be calculated as follows:
+    // value = round(frac / max_frac * 10^precision) = round(frac / 2^F * 10^precision) = round(frac
+    // * 2^-F * 10^precision). factor = 2^-F * 10^precision can be calculated at compile time, with
+    // only integer divisions at run time. This will unfortunately produce some rounding errors.
+    constexpr auto factor =
+        static_cast<uint64_t>(gcem::round(gcem::pow(2.0, -double(F)) * gcem::pow(10.0, F)));
+    // fix point value to format after the decimal point
+    auto res = sgl::format_impl::basic_integer_format(str, len, value.integer());
+    if (res.ec != sgl::error::no_error) {
+      return res;
+    }
+    if ((len - res.size - 1) < precision) {
+      return {sgl::error::buffer_too_small, 0};
+    }
+
+    if (precision < F) {
+      auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
+                                                             len - res.size,
+                                                             (value.fraction() * factor) /
+                                                                 gcem::pow(10u, F - precision));
+      if (frac_res.ec != sgl::error::no_error)
+        return frac_res;
+      str[res.size] = static_cast<CharT>('.');
+      return {sgl::error::no_error, res.size + 1 + frac_res.size};
+    }
+
+    auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
+                                                           len - res.size,
+                                                           (value.fraction() * factor) *
+                                                               gcem::pow(10u, precision - F));
+    if (frac_res.ec != sgl::error::no_error)
+      return frac_res;
+    str[res.size] = static_cast<CharT>('.');
+    return {sgl::error::no_error, res.size + 1 + frac_res.size};
+  }
+
+  template <typename CharT, size_t I, size_t F>
+  constexpr sgl::format_result to_chars(CharT*          str,
+                                        size_t          len,
+                                        sgl::signed_fixed<I, F> value,
+                                        uint32_t        precision,
+                                        format        format) noexcept {
+    if (value.is_negative()) {
+      value = -value;
+      str[0] = static_cast<CharT>('-');
+      ++str;
+      --len;
+    }
+    sgl::unsigned_fixed<I, F> u_val{value.value()};
+    return sgl::to_chars(str, len, u_val, precision, format);
+  }
+
+  namespace cx {
+
+    template <typename CharT>
+    constexpr sgl::format_result to_chars(CharT*   str,
+                                          size_t   len,
+                                          float    value,
+                                          uint32_t precision,
+                                          format format) noexcept {
+      sgl::static_string<CharT, 24> buf{};
+      unsigned                      size{0};
+
+      switch (format) {
+        case sgl::format::floating:
+          size = ryu::cx::f2s_buffered_n(value, buf.data());
+          break;
+        case sgl::format::exponential:
+          size = ryu::cx::d2exp_buffered_n(value, precision, buf.data());
+          break;
+        case sgl::format::fixed:
+          size = ryu::cx::d2fixed_buffered_n(value, precision, buf.data());
+          break;
+        case sgl::format::integer:
+          size = ryu::cx::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
+          break;
+      case sgl::format::hex:
+        return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
+        break;
+        default:
+          return {sgl::error::invalid_format, 0};
+      }
+
+      if (size > len) {
+        return {sgl::error::format_error, 0};
+      }
+
+      buf.resize(size);
+      for (const auto& ch : buf) {
+        *str = ch;
+        ++str;
+      }
+
+      return {sgl::error::no_error, static_cast<size_t>(size)};
+    }
+
+    template <typename CharT>
+    constexpr sgl::format_result to_chars(CharT*   str,
+                                          size_t   len,
+                                          double   value,
+                                          uint32_t precision,
+                                          format format) noexcept {
+      sgl::static_string<CharT, 24> buf;
+
+      unsigned size{0};
+      switch (format) {
+        case sgl::format::floating:
+          size = ryu::cx::d2s_buffered_n(value, buf.data());
+          break;
+        case sgl::format::exponential:
+          size = ryu::cx::d2exp_buffered_n(value, precision, buf.data());
+          break;
+        case sgl::format::fixed:
+          size = ryu::cx::d2fixed_buffered_n(value, precision, buf.data());
+          break;
+        case sgl::format::integer:
+          size = ryu::cx::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
+          break;
+      case sgl::format::hex:
+        return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
+        break;
+        default:
+          return {sgl::error::invalid_format, 0};
+      }
+
+      if (size > len) {
+        return {sgl::error::format_error, 0};
+      }
+
+      buf.resize(size);
+      for (const auto& ch : buf) {
+        *str = ch;
+        ++str;
+      }
+
+      return {sgl::error::no_error, static_cast<size_t>(size)};
+    }
+  } // namespace cx
+
 } // namespace sgl
 #endif /* SGL_IMPL_FORMAT_IMPL_HPP */

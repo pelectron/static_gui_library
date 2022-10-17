@@ -1,6 +1,7 @@
 docs/**
 subprojects/Catch2-2.13.8/**
 subprojects/packagecache/**
-subprojects/ryu
+subprojects/ryu/**
+subprojects/gcem/**
 build**
 .vscode/**

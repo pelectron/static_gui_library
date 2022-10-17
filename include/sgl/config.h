@@ -1,23 +1,6 @@
 #ifndef SGL_CONFIG_H
 #define SGL_CONFIG_H
 
-// #include <cstddef>
-
-#ifndef SGL_USE_RYU
-  #define SGL_USE_RYU 0
-#endif
-#ifndef SGL_USE_CHARCONV
-  #if SGL_USE_RYU
-    #define SGL_USE_CHARCONV 0
-  #else
-    #define SGL_USE_CHARCONV 1
-  #endif
-#endif
-
-#if SGL_USE_CHARCONV && SGL_USE_RYU
-  #error SGL_USE_CHARCONV and SGL_USE_RYU cannot both be defined.
-#endif
-
 /// Uncomment one of the three following lines to set a default character type
 // #define SGL_CHAR_TYPE char
 // #define SGL_CHAR_TYPE char16_t
@@ -39,4 +22,23 @@
   #error SGL_CHAR_TYPE and SGL_LINE_WIDTH must be defined if SGL_INSTANTIATE is set to 1.
 #endif
 
+#if defined(_MSC_VER)
+    //  Microsoft 
+    #define SGL_EXPORT __declspec(dllexport)
+    #define SGL_IMPORT __declspec(dllimport)
+#elif defined(__GNUC__)
+    //  GCC
+    #define SGL_EXPORT __attribute__((visibility("default")))
+    #define SGL_IMPORT
+#else
+    //  do nothing and hope for the best?
+    #define SGL_EXPORT
+    #define SGL_IMPORT
+    #pragma warning Unknown dynamic link import/export semantics.
+#endif
+#if defined(SGL_BUILD_LIB)
+#   define SGL_API SGL_EXPORT
+#else
+#   define SGL_API SGL_IMPORT
+#endif
 #endif /* SGL_CONFIG_H */

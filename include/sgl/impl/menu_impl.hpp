@@ -58,12 +58,11 @@ namespace sgl {
   template <typename... Names, typename... Pages>
   constexpr sgl::error Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::set_current_page(
       size_t page_index) noexcept {
-    index_ = page_index % sizeof...(Pages);
     auto ec = for_current_page([](auto& page) { return page.on_exit(); });
     if (ec != sgl::error::no_error) {
       return ec;
     }
-    index_ = page_index;
+    index_ = page_index % sizeof...(Pages);
     return for_current_page([](auto& page) { return page.on_enter(); });
   }
 
@@ -216,7 +215,7 @@ namespace sgl {
       std::declval<const Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>()))) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
-  
+
   template <typename NameList, typename PageList, typename F>
   decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
       noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>()))) {

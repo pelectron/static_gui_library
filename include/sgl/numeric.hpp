@@ -31,8 +31,6 @@ namespace sgl {
   template <size_t TextSize, typename CharT, typename T>
   class Numeric : public sgl::ItemBase<Numeric<TextSize, CharT, T>> {
   public:
-    static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>,
-                  "T must be an integral or floating point type");
     static_assert(!std::is_same_v<bool, T>,
                   "T must not be bool. Use sgl::boolean for a boolean item.");
     /// base class of Numeric
@@ -44,7 +42,7 @@ namespace sgl {
     /// value type of this item
     using value_type = T;
     /// concrete formatter type
-    using Formatter_t = Callable<sgl::format_result(CharT*, size_t, T, uint32_t, sgl::format_t)>;
+    using Formatter_t = Callable<sgl::format_result(CharT*, size_t, T, uint32_t, sgl::format)>;
 
     /// \brief Construct a numeric item with default formatter and default
     /// input handling. This constructor is constexpr if T is integral.
@@ -122,7 +120,7 @@ namespace sgl {
 
     /// @brief set the formatting type.
     /// @param format format to use
-    constexpr void set_format(sgl::format_t format) noexcept;
+    constexpr void set_format(sgl::format format) noexcept;
 
   private:
     /// \brief execute the formatter and format val into this item's text
@@ -136,13 +134,13 @@ namespace sgl {
                                                        size_t   len,
                                                        T        value,
                                                        uint32_t precision,
-                                                       format_t format) noexcept;
+                                                       sgl::format format) noexcept;
 
     Formatter_t format_{&default_format};      ///< formatter
     T           value_{0};                     ///< value
     T           delta_{1};                     ///< delta value
     uint32_t    precision_{6};                 ///< formatting precision
-    format_t    format_type_{format_t::fixed}; ///< formatting type
+    sgl::format    format_type_{sgl::format::fixed}; ///< formatting type
   };
 
   /// \ingroup item_factories
