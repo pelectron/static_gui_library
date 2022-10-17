@@ -43,7 +43,7 @@ namespace sgl {
                                     size_t,
                                     typename Item::value_type,
                                     uint32_t,
-                                    sgl::format_t>and std::is_trivially_destructible_v<F>and
+                                    sgl::format>and std::is_trivially_destructible_v<F>and
           std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
   
   /// \brief true if F is a TickHandler for Item.

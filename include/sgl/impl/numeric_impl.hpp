@@ -119,12 +119,12 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT, typename T>
-  constexpr void Numeric<TextSize, CharT, T>::set_precision(uint32_t precision) noexcept{
+  constexpr void Numeric<TextSize, CharT, T>::set_precision(uint32_t precision) noexcept {
     precision_ = precision;
   }
 
   template <size_t TextSize, typename CharT, typename T>
-  constexpr void Numeric<TextSize, CharT, T>::set_format(sgl::format_t format) noexcept{
+  constexpr void Numeric<TextSize, CharT, T>::set_format(sgl::format format) noexcept {
     format_ = format;
   }
 
@@ -153,12 +153,15 @@ namespace sgl {
 
   template <size_t TextSize, typename CharT, typename T>
   constexpr sgl::format_result
-      Numeric<TextSize, CharT, T>::default_format(CharT*   str,
-                                                  size_t   len,
-                                                  T        value,
-                                                  uint32_t precision,
-                                                  format_t format) noexcept {
-    return sgl::format(str, len, value, precision, format);
+      Numeric<TextSize, CharT, T>::default_format(CharT*      str,
+                                                  size_t      len,
+                                                  T           value,
+                                                  uint32_t    precision,
+                                                  sgl::format format) noexcept {
+    if constexpr (std::is_integral_v<T>)
+      return sgl::to_chars(str, len, value);
+    else
+      return sgl::to_chars(str, len, value, precision, format);
   }
 
   template <size_t TextSize, typename CharT, typename T>

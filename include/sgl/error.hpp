@@ -17,6 +17,7 @@ namespace sgl {
   enum class error : int {
     no_error = 0, //< no error occurred
     invalid_input, ///< invalid input received
+    buffer_too_small,
     null_page,
     null_element,
     string_conversion,
