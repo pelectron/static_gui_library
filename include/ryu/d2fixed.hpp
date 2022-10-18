@@ -68,7 +68,7 @@ namespace ryu::detail {
   constexpr unsigned copy_special_str_printf(CharT* const   result,
                                              const bool     sign,
                                              const uint64_t mantissa) noexcept;
-                                               template <typename CharT>
+  template <typename CharT>
   constexpr unsigned d2fixed_buffered_n(double             d,
                                         uint32_t           precision,
                                         CharT*             result,
@@ -79,9 +79,7 @@ namespace ryu::detail {
                                       uint32_t           precision,
                                       CharT*             result,
                                       DoubleCastFunction bit_cast) noexcept;
-  
 
-
-} // namespace ryu
+} // namespace ryu::detail
 #include "impl/d2fixed_impl.hpp"
 #endif /* RYU_D2FIXED_HPP */

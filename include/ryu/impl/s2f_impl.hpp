@@ -1,7 +1,8 @@
 #ifndef RYU_IMPL_S2F_IMPL_HPP
 #define RYU_IMPL_S2F_IMPL_HPP
-#include "ryu/s2f.hpp"
 #include "ryu/common.hpp"
+#include "ryu/s2f.hpp"
+
 #if defined(_MSC_VER)
   #include <intrin.h>
 namespace ryu {

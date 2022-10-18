@@ -25,11 +25,11 @@ namespace sgl {
     }
     InputPair<CharT> map[N];
     sgl::Input       get(sgl::string_view<CharT> string) {
-      for (const auto& e : map) {
-        if (string == e.string)
+            for (const auto& e : map) {
+              if (string == e.string)
           return e.input;
       }
-      return sgl::Input::none;
+            return sgl::Input::none;
     }
   };
 

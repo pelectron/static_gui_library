@@ -37,18 +37,18 @@ namespace sgl {
                               sgl::format format) noexcept;
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                    str,
+                                        size_t                    len,
                                         sgl::unsigned_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        sgl::format     format) noexcept;
+                                        uint32_t                  precision,
+                                        sgl::format               format) noexcept;
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                  str,
+                                        size_t                  len,
                                         sgl::signed_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        sgl::format     format) noexcept;
+                                        uint32_t                precision,
+                                        sgl::format             format) noexcept;
 
   namespace cx {
 

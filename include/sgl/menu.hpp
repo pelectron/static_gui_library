@@ -31,7 +31,7 @@ namespace sgl {
   /// \tparam Pages types of the pages
   template <typename... Names, typename... Pages>
   class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
-    
+
     static_assert((sgl::is_name_type_v<Names> && ...),
                   "One of the types begin used as a name is not instance of sgl::Name<...>.");
     static_assert(sgl::all_unique_v<Names...>,

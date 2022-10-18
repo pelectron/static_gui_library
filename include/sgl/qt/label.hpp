@@ -14,6 +14,7 @@
 #ifndef SGL_QT_LABEL_HPP
 #define SGL_QT_LABEL_HPP
 #include "sgl/config.h"
+
 #include <QLabel>
 
 namespace sgl::qt {

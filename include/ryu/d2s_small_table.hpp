@@ -72,7 +72,7 @@ namespace ryu::detail {
       {9630225068416591280u, 1874621017369538693u},
       {665883850346957067u, 1211445438634777304u},
       {14931890668723713708u, 1565756531257009982u}};
-      
+
   static constexpr uint32_t POW5_OFFSETS[21] = {
       0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x40000000, 0x59695995, 0x55545555,
       0x56555515, 0x41150504, 0x40555410, 0x44555145, 0x44504540, 0x45555550, 0x40004000,
@@ -177,8 +177,7 @@ namespace ryu::detail {
     }
     // high1 | sum | low0
     const uint32_t delta = pow5bits(i) - pow5bits(base2);
-    result[0] =
-        shiftright128(low0, sum, delta) + ((POW5_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
+    result[0] = shiftright128(low0, sum, delta) + ((POW5_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
     result[1] = shiftright128(sum, high1, delta);
   }
 
@@ -204,11 +203,11 @@ namespace ryu::detail {
     }
     // high1 | sum | low0
     const uint32_t delta = pow5bits(base2) - pow5bits(i);
-    result[0] = shiftright128(low0, sum, delta) + 1 +
-                ((POW5_INV_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
+    result[0] =
+        shiftright128(low0, sum, delta) + 1 + ((POW5_INV_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
     result[1] = shiftright128(sum, high1, delta);
   }
 
 #endif // defined(HAS_UINT128)
-} // namespace detail
+} // namespace ryu::detail
 #endif // RYU_D2S_SMALL_TABLE_H

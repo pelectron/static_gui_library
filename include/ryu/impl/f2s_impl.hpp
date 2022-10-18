@@ -267,9 +267,7 @@ namespace ryu {
     return detail::f2s_buffered_n(f, result, &to_bits);
   }
 
-  namespace cx {
-
-  } // namespace cx
+  namespace cx {} // namespace cx
 } // namespace ryu
 
 #endif /* RYU_IMPL_F2S_IMPL_HPP */

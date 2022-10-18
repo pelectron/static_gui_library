@@ -120,7 +120,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>) {
+  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(
+      F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>) {
     if constexpr (!(std::is_invocable_r_v<void, F, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, Ts&> && ...),
                     "f must be invocable with T& for each T in this "
@@ -132,8 +133,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void
-      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const noexcept(nothrow_invocable_for_each<F,const Ts&...>){
+  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const
+      noexcept(nothrow_invocable_for_each<F, const Ts&...>) {
     if constexpr (!(std::is_invocable_r_v<void, F, const Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, const Ts&> && ...),
                     "f must be invocable with const T& for each T in this "

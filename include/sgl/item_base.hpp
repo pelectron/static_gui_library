@@ -4,10 +4,10 @@
  * \brief This files defines the item_base class template.
  * \version 0.1
  * @date 2022-09-26
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
-*/ 
+ *
+ */
 #ifndef SGL_ITEM_BASE_HPP
 #define SGL_ITEM_BASE_HPP
 #include "sgl/callable.hpp"

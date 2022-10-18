@@ -13,7 +13,7 @@ namespace sgl::qt {
     // fill items_ with DisplayItems
     items_.reserve(page_->size());
     for (size_t i = 0; i < page_->size(); ++i) {
-      auto* item = new DisplayItem((AbstractItemNode*)(page_->children()[i]),this);
+      auto* item = new DisplayItem((AbstractItemNode*)(page_->children()[i]), this);
       items_.push_back(item);
     }
     item_layout_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

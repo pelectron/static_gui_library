@@ -2,7 +2,7 @@
 /// \author Pelé Constam (you@domain.com)
 /// \version 0.1
 /// \date 2022-09-24
-/// 
+///
 /// \copyright Copyright (c) 2022
 #ifndef SGL_CX_ARG_HPP
 #define SGL_CX_ARG_HPP
@@ -21,7 +21,7 @@ namespace sgl {
   struct cx_arg {
     T                      value{};  ///< parsed value
     static_string<char, N> string{}; ///< string containing characters plus null terminator
-   
+
     /// unary negation operator so that expressions like ```-3.25_float``` are valid constructs.
     /// \return cx_arg<T, N + 1>
     constexpr cx_arg<T, N + 1> operator-() {

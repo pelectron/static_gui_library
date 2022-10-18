@@ -136,7 +136,7 @@ namespace ryu::detail {
   #if defined(HAS_64_BIT_INTRINSICS)
     const uint32_t dist = (uint32_t)(j - 128); // dist: [0, 52]
     const uint64_t shiftedhigh = s1high >> dist;
-    const uint64_t shiftedlow = shiftright128(s1low, s1high, dist>63?63:dist);
+    const uint64_t shiftedlow = shiftright128(s1low, s1high, dist > 63 ? 63 : dist);
     return uint128_mod1e9(shiftedhigh, shiftedlow);
   #else // HAS_64_BIT_INTRINSICS
     if (j < 160) { // j: [128, 160)

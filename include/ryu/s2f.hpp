@@ -22,7 +22,6 @@
 #include "ryu/f2s_intrinsics.hpp"
 #include "ryu/ryu_parse.hpp"
 
-
 namespace ryu {
   namespace cx {
     constexpr uint32_t floor_log2(const uint32_t value) noexcept;

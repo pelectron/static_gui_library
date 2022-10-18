@@ -15,8 +15,8 @@
 // is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.
 
-#ifndef SGL_RYU_D2FIXED_FULL_TABLE_H
-#define SGL_RYU_D2FIXED_FULL_TABLE_H
+#ifndef RYU_D2FIXED_FULL_TABLE_HPP
+#define RYU_D2FIXED_FULL_TABLE_HPP
 
 #include <cstdint>
 
@@ -4405,6 +4405,6 @@ namespace ryu::detail {
       {0u, 0u, 241525390625u},
       {0u, 0u, 33000000000u},
   };
-} // namespace ryu
+} // namespace ryu::detail
 
-#endif /* SGL_RYU_D2FIXED_FULL_TABLE_H */
+#endif /* RYU_D2FIXED_FULL_TABLE_HPP */

@@ -46,7 +46,7 @@ namespace ryu {
                                         const bool   exponent,
                                         const bool   mantissa) noexcept;
   } // namespace detail
-  
+
   /// @brief get the bits of f as a uint32_t efficiently at runtime. Uses memcpy.
   /// @param f float to convert
   /// @return bit representation of f

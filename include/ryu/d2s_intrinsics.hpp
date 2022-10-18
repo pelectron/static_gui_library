@@ -102,15 +102,11 @@ namespace ryu::detail {
 
   constexpr uint64_t div10(const uint64_t x) { return umulh(x, 0xCCCCCCCCCCCCCCCDu) >> 3; }
 
-  constexpr uint64_t div100(const uint64_t x) {
-    return umulh(x >> 2, 0x28F5C28F5C28F5C3u) >> 2;
-  }
+  constexpr uint64_t div100(const uint64_t x) { return umulh(x >> 2, 0x28F5C28F5C28F5C3u) >> 2; }
 
   constexpr uint64_t div1e8(const uint64_t x) { return umulh(x, 0xABCC77118461CEFDu) >> 26; }
 
-  constexpr uint64_t div1e9(const uint64_t x) {
-    return umulh(x >> 9, 0x44B82FA09B5A53u) >> 11;
-  }
+  constexpr uint64_t div1e9(const uint64_t x) { return umulh(x >> 9, 0x44B82FA09B5A53u) >> 11; }
 
   constexpr uint32_t mod1e9(const uint64_t x) {
     // Avoid 64-bit math as much as possible.
@@ -241,9 +237,9 @@ namespace ryu::detail {
 
   constexpr uint64_t mulShift64(const uint64_t m, const uint64_t* const mul, const int32_t j) {
     // m is maximum 55 bits
-    uint64_t       high1{0};                                  // 128
+    uint64_t       high1{0};                          // 128
     const uint64_t low1 = umul128(m, mul[1], &high1); // 64
-    uint64_t       high0{0};                                  // 64
+    uint64_t       high0{0};                          // 64
     umul128(m, mul[0], &high0);                       // 0
     const uint64_t sum = high0 + low1;
     if (sum < high0) {
@@ -291,5 +287,5 @@ namespace ryu::detail {
   }
 
 #endif // HAS_64_BIT_INTRINSICS
-} // namespace ryu
+} // namespace ryu::detail
 #endif /* RYU_D2S_INTRINSICS_HPP */

@@ -12,7 +12,8 @@ namespace sgl {
   //     const sgl::EnumMap<T, NumEnumerators, CharT>& map,
   //     InputHandler&&                                handler,
   //     size_t                                        start_index) noexcept
-  //     :  Enum<T, NumEnumerators, TextSize, CharT>Base(map.get_view(start_index % NumEnumerators), std::forward<InputHandler>(handler)),
+  //     :  Enum<T, NumEnumerators, TextSize, CharT>Base(map.get_view(start_index % NumEnumerators),
+  //     std::forward<InputHandler>(handler)),
   //       map_{map}, index_(start_index % NumEnumerators) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>

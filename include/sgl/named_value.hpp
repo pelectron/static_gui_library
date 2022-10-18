@@ -49,11 +49,11 @@ namespace sgl {
 
     /// copy ctor
     /// \param other object to copy
-    constexpr NamedValue(const NamedValue& other) =default;
+    constexpr NamedValue(const NamedValue& other) = default;
 
     /// move ctor
     /// \param other object to move
-    constexpr NamedValue(NamedValue&& other) =default;
+    constexpr NamedValue(NamedValue&& other) = default;
 
     /// construct from name and value
     /// \param name name of NamedValue
