@@ -67,11 +67,11 @@ namespace sgl {
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* begin() const noexcept { return data_; }
 
-    /// get pointer to end of the view
+    /// get pointer to end of the view, i.e begin() + size().
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* end() noexcept { return data_ + size_; }
 
-    /// get pointer to end of the view
+    /// get pointer to end of the view, i.e begin() + size().
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* end() const noexcept { return data_ + size_; }
 

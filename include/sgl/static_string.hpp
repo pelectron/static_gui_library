@@ -8,7 +8,7 @@
 namespace sgl {
 
   /// \headerfile static_string.hpp "sgl/static_string.hpp"
-  /// \brief simple, non allocating string class. Internally, it holds the size of the string and a
+  /// \brief A simple, non allocating string class. Internally, it holds the size of the string and a
   /// CharT array of size Capacity + 1. This way, the string is always null terminated.
   /// \tparam CharT character type
   /// \tparam Capacity capacity of the string, excluding the null character.
@@ -17,6 +17,7 @@ namespace sgl {
   public:
     /// create empty static string
     constexpr static_string() noexcept = default;
+
     /// construct with size times the character val
     /// \param size number of times to repeat val
     /// \param val value to repeat
@@ -25,6 +26,7 @@ namespace sgl {
         data_[i] = val;
       }
     }
+
     /// copy ctor
     /// \param other string to copy
     constexpr static_string(const static_string& other) noexcept : size_(other.size_) {
@@ -62,6 +64,14 @@ namespace sgl {
     /// \return size_t
     [[nodiscard]] constexpr size_t capacity() const noexcept { return Capacity; }
 
+    /// get pointer to beginning of static string. Same as data().
+    /// \return CharT*
+    [[nodiscard]] constexpr CharT* c_str() noexcept { return data_; }
+
+    /// get const pointer to beginning of static string. Same as data()
+    /// \return const CharT*
+    [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
+
     /// get pointer to beginning of static string.
     /// \return CharT*
     [[nodiscard]] constexpr CharT* data() noexcept { return data_; }
@@ -84,7 +94,7 @@ namespace sgl {
 
     /// append str to this. Characters from str which do not fit are discarded.
     /// \param str pointer to array to append
-    /// \param n size of array to append
+    /// \param n length of str to append
     constexpr void append(const CharT* str, size_t n) noexcept {
       for (size_t i = size_; (i < Capacity) and (n != 0); ++i, --n) {
         data_[i] = str[i];
