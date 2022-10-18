@@ -28,8 +28,6 @@ namespace ryu::detail {
 // Let's do the same for now.
 #if defined(__SIZEOF_INT128__) && !defined(_MSC_VER) && !defined(RYU_ONLY_64_BIT_OPS)
   #define HAS_UINT128
-#elif defined(_MSC_VER) && !defined(RYU_ONLY_64_BIT_OPS) && defined(_M_X64)
-  #define HAS_64_BIT_INTRINSICS
 #endif
 
 #if defined(HAS_UINT128)
@@ -239,40 +237,13 @@ namespace ryu::detail {
     *vm = mulShift64(4 * m - 1 - mmShift, mul, j);
     return mulShift64(4 * m, mul, j);
   }
-
-#elif defined(HAS_64_BIT_INTRINSICS)
-
-  constexpr uint64_t mulShift64(const uint64_t m, const uint64_t* const mul, const int32_t j) {
-    // m is maximum 55 bits
-    uint64_t       high1{0};                               // 128
-    const uint64_t low1 = umul128(m, mul[1], &high1); // 64
-    uint64_t       high0{0};                               // 64
-    umul128(m, mul[0], &high0);                       // 0
-    const uint64_t sum = high0 + low1;
-    if (sum < high0) {
-      ++high1; // overflow into high1
-    }
-    return shiftright128(sum, high1, j - 64);
-  }
-
-  constexpr uint64_t mulShiftAll64(const uint64_t        m,
-                                   const uint64_t* const mul,
-                                   const int32_t         j,
-                                   uint64_t* const       vp,
-                                   uint64_t* const       vm,
-                                   const uint32_t        mmShift) {
-    *vp = mulShift64(4 * m + 2, mul, j);
-    *vm = mulShift64(4 * m - 1 - mmShift, mul, j);
-    return mulShift64(4 * m, mul, j);
-  }
-
 #else // !defined(HAS_UINT128) && !defined(HAS_64_BIT_INTRINSICS)
 
   constexpr uint64_t mulShift64(const uint64_t m, const uint64_t* const mul, const int32_t j) {
     // m is maximum 55 bits
-    uint64_t       high1;                                  // 128
+    uint64_t       high1{0};                                  // 128
     const uint64_t low1 = umul128(m, mul[1], &high1); // 64
-    uint64_t       high0;                                  // 64
+    uint64_t       high0{0};                                  // 64
     umul128(m, mul[0], &high0);                       // 0
     const uint64_t sum = high0 + low1;
     if (sum < high0) {
@@ -290,9 +261,9 @@ namespace ryu::detail {
                                    const uint32_t        mmShift) {
     m <<= 1;
     // m is maximum 55 bits
-    uint64_t       tmp;
+    uint64_t       tmp{0};
     const uint64_t lo = umul128(m, mul[0], &tmp);
-    uint64_t       hi;
+    uint64_t       hi{0};
     const uint64_t mid = tmp + umul128(m, mul[1], &hi);
     hi += mid < tmp; // overflow into hi
 

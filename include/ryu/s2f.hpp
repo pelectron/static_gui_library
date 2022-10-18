@@ -22,10 +22,6 @@
 #include "ryu/f2s_intrinsics.hpp"
 #include "ryu/ryu_parse.hpp"
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
 
 namespace ryu {
   namespace cx {

@@ -26,14 +26,14 @@ static float int32Bits2Float(uint32_t bits) {
   return f;
 }
 
-bool test_f2s(const char* expected, double d) {
+static bool test_f2s(const char* expected, double d) {
   char buf[512]{0};
   auto size = ryu::f2s_buffered_n(d, buf);
   REQUIRE(size < 512);
   return strncmp(expected, buf, size) == 0;
 }
 
-#define ASSERT_F2S(expected, d) REQUIRE(test_f2s(expected, d))
+#define ASSERT_F2S(expected, d) CHECK(test_f2s(expected, d))
 
 TEST_CASE("f2s_buffered") {
   SECTION("Basic") {

@@ -29946,19 +29946,35 @@ static double int64Bits2Double(uint64_t bits) {
 
 static double
     ieeeParts2Double(const bool sign, const uint32_t ieeeExponent, const uint64_t ieeeMantissa) {
-  assert(ieeeExponent <= 2047);
-  assert(ieeeMantissa <= ((uint64_t)1 << 53) - 1);
+  // assert(ieeeExponent <= 2047);
+  // assert(ieeeMantissa <= ((uint64_t)1 << 53) - 1);
   return int64Bits2Double(((uint64_t)sign << 63) | ((uint64_t)ieeeExponent << 52) | ieeeMantissa);
 }
-
-bool test_d2fixed(double d, uint32_t precision, const char* expected) {
+static bool str_cmp(const char* s1, const char* s2, size_t n) {
+  for (size_t i = 0; i < n; ++i) {
+    if (s1[i] != s2[i])
+      return false;
+  }
+  return true;
+}
+static size_t str_diff(const char* s1, const char* s2, size_t n) {
+  for (size_t i = 0; i < n; ++i) {
+    if (s1[i] != s2[i])
+      return i;
+  }
+  return std::numeric_limits<size_t>::max();
+}
+static void test_d2fixed(double d, uint32_t precision, const char* expected) {
   char buf[2048]{0};
+  memset(buf, 0, 2048);
   auto size = ryu::d2fixed_buffered_n(d, precision, buf);
   REQUIRE(size < 2048);
-  return strncmp(buf, expected, size) == 0;
+  INFO("diff = \"" << (buf + str_diff(buf, expected, size)) << "\"\nexp = \"" << expected
+                   << "\"\n");
+  REQUIRE(str_cmp(buf, expected, size));
 }
 
-#define EXPECT_FIXED(a, b, c) REQUIRE(test_d2fixed(a, b, c))
+#define EXPECT_FIXED(d, precision, exp) test_d2fixed(d, precision, exp)
 
 TEST_CASE("D2fixedTest") {
   SECTION("Basic") {
@@ -30002,7 +30018,9 @@ TEST_CASE("D2fixedTest") {
   }
 
   SECTION("AllPowersOfTen") {
+    INFO("Section AllPowersOfTen:\n");
     for (const auto& tc : all_powers_of_ten) {
+      INFO("value\t\t = " << tc.value << "\nexpected\t = " << tc.fixed_string << "\"\n");
       EXPECT_FIXED(tc.value, tc.fixed_precision, tc.fixed_string);
     }
   }
@@ -30166,13 +30184,16 @@ TEST_CASE("D2fixedTest") {
   SECTION("Regression") { EXPECT_FIXED(7.018232e-82, 6, "0.000000"); }
 }
 
-static bool test_d2exp(double d, uint32_t precision, const char* expected) {
+static void test_d2exp(double d, uint32_t precision, const char* expected) {
   char buf[2048]{0};
+  memset(buf, 0, 2048);
   auto size = ryu::d2exp_buffered_n(d, precision, buf);
   REQUIRE(size < 2048);
-  return strncmp(expected, buf, size) == 0;
+  INFO("diff = \"" << (buf + str_diff(buf, expected, size)) << "\"\nexp = \"" << expected
+                   << "\"\n");
+  REQUIRE(str_cmp(buf, expected, size));
 }
-#define EXPECT_EXP(a, b, c) REQUIRE(test_d2exp(a, b, c))
+#define EXPECT_EXP(a, b, c) test_d2exp(a, b, c)
 
 TEST_CASE("d2exp_buffered") {
   SECTION("Basic") {
