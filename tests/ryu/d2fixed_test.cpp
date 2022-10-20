@@ -1,25 +1,19 @@
-// Copyright 2018 Ulf Adams
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
 //
-// The contents of this file may be used under the terms of the Apache License,
-// Version 2.0.
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 //
-//    (See accompanying file LICENSE-Apache or copy at
-//     http://www.apache.org/licenses/LICENSE-2.0)
-//
-// Alternatively, the contents of this file may be used under the terms of
-// the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE-Boost or copy at
-//     https://www.boost.org/LICENSE_1_0.txt)
-//
-// Unless required by applicable law or agreed to in writing, this software
-// is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.
 
-#include "catch2/catch.hpp"
 #include "ryu/ryu.hpp"
 
+#include <catch2/catch.hpp>
 #include <cmath>
 #include <cstdint>
+
 
 struct test_case {
   double      value;
@@ -30,7 +24,7 @@ struct test_case {
 };
 
 // These values test every power of ten that's within the range of doubles.
-const test_case all_powers_of_ten[] = {
+static constexpr test_case all_powers_of_ten[] = {
     {1e-323,
      1073,
      "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
@@ -7182,7 +7176,7 @@ const test_case all_powers_of_ten[] = {
 
 // These values test every binary exponent (which would be more obvious with hexfloats).
 // The mantissas were randomly generated.
-const test_case all_binary_exponents[] = {
+static constexpr test_case all_binary_exponents[] = {
     {8.667315560151837e-309,
      1074,
      "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
@@ -29976,7 +29970,7 @@ static void test_d2fixed(double d, uint32_t precision, const char* expected) {
 
 #define EXPECT_FIXED(d, precision, exp) test_d2fixed(d, precision, exp)
 
-TEST_CASE("D2fixedTest") {
+TEST_CASE("D2fixedTest", "[ryu][d2s_fixed]") {
   SECTION("Basic") {
     EXPECT_FIXED(ieeeParts2Double(false, 1234, 99999),
                  0,
@@ -30189,13 +30183,11 @@ static void test_d2exp(double d, uint32_t precision, const char* expected) {
   memset(buf, 0, 2048);
   auto size = ryu::d2exp_buffered_n(d, precision, buf);
   REQUIRE(size < 2048);
-  INFO("diff = \"" << (buf + str_diff(buf, expected, size)) << "\"\nexp = \"" << expected
-                   << "\"\n");
   REQUIRE(str_cmp(buf, expected, size));
 }
 #define EXPECT_EXP(a, b, c) test_d2exp(a, b, c)
 
-TEST_CASE("d2exp_buffered") {
+TEST_CASE("d2exp_buffered", "[ryu][d2s_exponential]") {
   SECTION("Basic") {
     EXPECT_EXP(ieeeParts2Double(false, 1234, 99999),
                62,

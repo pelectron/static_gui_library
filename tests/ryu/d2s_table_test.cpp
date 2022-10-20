@@ -1,30 +1,24 @@
-// Copyright 2018 Ulf Adams
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
 //
-// The contents of this file may be used under the terms of the Apache License,
-// Version 2.0.
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 //
-//    (See accompanying file LICENSE-Apache or copy at
-//     http://www.apache.org/licenses/LICENSE-2.0)
-//
-// Alternatively, the contents of this file may be used under the terms of
-// the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE-Boost or copy at
-//     https://www.boost.org/LICENSE_1_0.txt)
-//
-// Unless required by applicable law or agreed to in writing, this software
-// is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.
 
-#include "catch2/catch.hpp"
 #include "ryu/common.hpp"
 #include "ryu/d2s_full_table.hpp"
 #include "ryu/d2s_intrinsics.hpp"
 #include "ryu/d2s_small_table.hpp"
 
+#include <catch2/catch.hpp>
 #include <cinttypes>
 #include <cmath>
 
-TEST_CASE("d2s table") {
+
+TEST_CASE("d2s table", "[ryu]") {
   SECTION("double_computePow5") {
     for (int i = 0; i < 326; i++) {
       uint64_t m[2];

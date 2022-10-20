@@ -1,23 +1,17 @@
-// Copyright 2018 Ulf Adams
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
 //
-// The contents of this file may be used under the terms of the Apache License,
-// Version 2.0.
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 //
-//    (See accompanying file LICENSE-Apache or copy at
-//     http://www.apache.org/licenses/LICENSE-2.0)
-//
-// Alternatively, the contents of this file may be used under the terms of
-// the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE-Boost or copy at
-//     https://www.boost.org/LICENSE_1_0.txt)
-//
-// Unless required by applicable law or agreed to in writing, this software
-// is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.
 
-#include "catch2/catch.hpp"
-#include "ryu/ryu.hpp"
 #include "cx_test_util.hpp"
+#include "ryu/ryu.hpp"
+
+#include <catch2/catch.hpp>
 #include <cmath>
 #include <gcem.hpp>
 
@@ -27,10 +21,11 @@ static constexpr bool test_f2s(const char* expected, double d) {
   return cmp(expected, buf, size);
 }
 
-// with this macro, compile time string formatting is enforced, i.e. every CX_ASSERT_F2S statement is executed at compile time.
+// with this macro, compile time string formatting is enforced, i.e. every CX_ASSERT_F2S statement
+// is executed at compile time.
 #define CX_ASSERT_F2S(expected, d) STATIC_REQUIRE(test_f2s(expected, d))
 
-TEST_CASE("cx::f2s_buffered") {
+TEST_CASE("cx::f2s_buffered", "[ryu][f2s][compile_time") {
   SECTION("Basic") {
     CX_ASSERT_F2S("0E0", 0.0);
     // CX_ASSERT_F2S("-0E0", -0.0); cant differentiate positive and negative zero in cx::to_bits

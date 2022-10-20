@@ -1,26 +1,21 @@
-// Copyright 2018 Ulf Adams
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
 //
-// The contents of this file may be used under the terms of the Apache License,
-// Version 2.0.
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 //
-//    (See accompanying file LICENSE-Apache or copy at
-//     http://www.apache.org/licenses/LICENSE-2.0)
-//
-// Alternatively, the contents of this file may be used under the terms of
-// the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE-Boost or copy at
-//     https://www.boost.org/LICENSE_1_0.txt)
-//
-// Unless required by applicable law or agreed to in writing, this software
-// is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.
 
-#include "catch2/catch.hpp"
+#include "cx_test_util.hpp"
 #include "gcem.hpp"
 #include "ryu/ryu.hpp"
-#include "cx_test_util.hpp"
+
+#include <catch2/catch.hpp>
 #include <cmath>
 #include <cstring>
+
 
 static constexpr bool test_d2s(const char* expected, double d) {
   char buf[512]{0};
@@ -28,10 +23,10 @@ static constexpr bool test_d2s(const char* expected, double d) {
   return cmp(expected, buf, size);
 }
 
-TEST_CASE("cx::d2s_buffered_n") {
+TEST_CASE("cx::d2s_buffered_n", "[ryu][d2s][compile_time") {
   SECTION("Basic") {
     STATIC_REQUIRE(test_d2s("0E0", 0.0));
-    //STATIC_REQUIRE(test_d2s("-0E0", -0.0)); cant differentiate between -0 and 0 in cx::to_bits
+    // STATIC_REQUIRE(test_d2s("-0E0", -0.0)); cant differentiate between -0 and 0 in cx::to_bits
     STATIC_REQUIRE(test_d2s("1E0", 1.0));
     STATIC_REQUIRE(test_d2s("-1E0", -1.0));
     // STATIC_REQUIRE(test_d2s("NaN", NAN));
@@ -46,7 +41,7 @@ TEST_CASE("cx::d2s_buffered_n") {
   SECTION("MinAndMax") {
     STATIC_REQUIRE(test_d2s("1.7976931348623157E308", 1.7976931348623157E308));
     // TODO: broken test
-    //STATIC_REQUIRE(test_d2s("5E-324", 4.9406564584124654E-324));
+    // STATIC_REQUIRE(test_d2s("5E-324", 4.9406564584124654E-324));
   }
 
   SECTION("LotsOfTrailingZeros") {
@@ -104,7 +99,7 @@ TEST_CASE("cx::d2s_buffered_n") {
   // Test min, max shift values in shiftright128
   SECTION("MinMaxShift") {
     // TODO: #3 ryu investigate error when maxMAntissa in double formatting
-    const uint64_t maxMantissa = ((uint64_t)1 << 53) - 1;
+    // const uint64_t maxMantissa = ((uint64_t)1 << 53) - 1;
 
     // 32-bit opt-size=0:  49 <= dist <= 50
     // 32-bit opt-size=1:  30 <= dist <= 50
@@ -127,7 +122,8 @@ TEST_CASE("cx::d2s_buffered_n") {
     // 64-bit opt-size=0:  53 <= dist <= 53
     // 64-bit opt-size=1:   2 <= dist <= 53
     // TODO: #3
-    //STATIC_REQUIRE(test_d2s("4.8929891601781557E-296", ieeeParts2Double(false, 40, maxMantissa)));
+    // STATIC_REQUIRE(test_d2s("4.8929891601781557E-296", ieeeParts2Double(false, 40,
+    // maxMantissa)));
 
     // 32-bit opt-size=0:  57 <= dist <= 58
     // 32-bit opt-size=1:  57 <= dist <= 58
@@ -139,7 +135,8 @@ TEST_CASE("cx::d2s_buffered_n") {
     // 64-bit opt-size=0:  58 <= dist <= 58
     // 64-bit opt-size=1:  58 <= dist <= 58
     // TODO: #3
-    //STATIC_REQUIRE(test_d2s("3.6028797018963964E16", ieeeParts2Double(false, 1076, maxMantissa)));
+    // STATIC_REQUIRE(test_d2s("3.6028797018963964E16", ieeeParts2Double(false, 1076,
+    // maxMantissa)));
     // 32-bit opt-size=0:  51 <= dist <= 52
     // 32-bit opt-size=1:  51 <= dist <= 59
     // 64-bit opt-size=0:  52 <= dist <= 52
@@ -150,7 +147,8 @@ TEST_CASE("cx::d2s_buffered_n") {
     // 64-bit opt-size=0:  52 <= dist <= 52
     // 64-bit opt-size=1:  52 <= dist <= 59
     // TODO: #3
-    //STATIC_REQUIRE(test_d2s("5.801671039719115E-216", ieeeParts2Double(false, 306, maxMantissa)));
+    // STATIC_REQUIRE(test_d2s("5.801671039719115E-216", ieeeParts2Double(false, 306,
+    // maxMantissa)));
 
     // https://github.com/ulfjack/ryu/commit/19e44d16d80236f5de25800f56d82606d1be00b9#commitcomment-30146483
     // 32-bit opt-size=0:  49 <= dist <= 49
@@ -158,7 +156,8 @@ TEST_CASE("cx::d2s_buffered_n") {
     // 64-bit opt-size=0:  50 <= dist <= 50
     // 64-bit opt-size=1:  44 <= dist <= 50
     // TODO: #3
-    //STATIC_REQUIRE(test_d2s("3.196104012172126E-27", ieeeParts2Double(false, 934, 0x000FA7161A4D6E0Cu)));
+    // STATIC_REQUIRE(test_d2s("3.196104012172126E-27", ieeeParts2Double(false, 934,
+    // 0x000FA7161A4D6E0Cu)));
   }
 
   SECTION("SmallIntegers") {
