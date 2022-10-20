@@ -8,6 +8,11 @@
 /// \copyright Copyright (c) 2022
 ///
 
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_NAMED_TUPLE_HPP
 #define SGL_NAMED_TUPLE_HPP
 #include "sgl/fwd.hpp"

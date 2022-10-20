@@ -3,7 +3,6 @@ test_sources = [
   'main.cpp',
   'callable.cpp',
   'cx_arg.cpp', 
-  'fixed.cpp', 
   'fixed_point.cpp',
   'ryu/common_test.cpp',
   'ryu/d2fixed_test.cpp',
@@ -17,8 +16,11 @@ test_sources = [
 ]
 
 executable('test_main', 
+            include_directories: inc_dir,
             sources:test_sources,
-            dependencies:[catch_dep,sgl_dep])
+            dependencies:[catch_dep, dependencies])
+
 executable('named_tuple',
+            include_directories: inc_dir,
             sources:['named_tuple.cpp'],
-            dependencies:[sgl_dep])
+            dependencies:[dependencies])

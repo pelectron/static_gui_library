@@ -5,9 +5,11 @@
  * \version 0.1
  * @date 2022-09-26
  *
- * @copyright Copyright (c) 2022
- *
- */
+ *          Copyright Pele Constam 2022.
+* Distributed under the Boost Software License, Version 1.0.
+*    (See accompanying file LICENSE_1_0.txt or copy at
+*          https://www.boost.org/LICENSE_1_0.txt)
+*/
 #ifndef SGL_ITEM_BASE_HPP
 #define SGL_ITEM_BASE_HPP
 #include "sgl/callable.hpp"
