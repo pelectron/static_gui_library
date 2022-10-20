@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_ITEM_CONCEPTS_HPP
 #define SGL_ITEM_CONCEPTS_HPP
 
@@ -36,7 +41,7 @@ namespace sgl {
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool                               is_value_formatter_v =
+  static constexpr bool                             is_value_formatter_v =
       std::is_nothrow_invocable_r_v<sgl::format_result,
                                     F,
                                     typename Item::char_type*,
@@ -45,7 +50,7 @@ namespace sgl {
                                     uint32_t,
                                     sgl::format>and std::is_trivially_destructible_v<F>and
           std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
-  
+
   /// \brief true if F is a TickHandler for Item.
   /// @tparam F handler type
   /// @tparam Item item type

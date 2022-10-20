@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_IMPL_NAMED_TUPLE_IMPL_HPP
 #define SGL_IMPL_NAMED_TUPLE_IMPL_HPP
 #include "sgl/named_tuple.hpp"
@@ -120,7 +125,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>) {
+  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(
+      F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>) {
     if constexpr (!(std::is_invocable_r_v<void, F, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, Ts&> && ...),
                     "f must be invocable with T& for each T in this "
@@ -132,8 +138,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void
-      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const noexcept(nothrow_invocable_for_each<F,const Ts&...>){
+  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const
+      noexcept(nothrow_invocable_for_each<F, const Ts&...>) {
     if constexpr (!(std::is_invocable_r_v<void, F, const Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, const Ts&> && ...),
                     "f must be invocable with const T& for each T in this "

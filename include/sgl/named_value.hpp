@@ -6,6 +6,11 @@
 /// \date 2022-07-19
 /// \copyright Copyright (c) 2022
 
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_NAMED_VALUE_HPP
 #define SGL_NAMED_VALUE_HPP
 #include "sgl/index_sequence.hpp"
@@ -49,11 +54,11 @@ namespace sgl {
 
     /// copy ctor
     /// \param other object to copy
-    constexpr NamedValue(const NamedValue& other) =default;
+    constexpr NamedValue(const NamedValue& other) = default;
 
     /// move ctor
     /// \param other object to move
-    constexpr NamedValue(NamedValue&& other) =default;
+    constexpr NamedValue(NamedValue&& other) = default;
 
     /// construct from name and value
     /// \param name name of NamedValue

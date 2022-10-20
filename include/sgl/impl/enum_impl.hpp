@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_IMPL_ENUM_IMPL_HPP
 #define SGL_IMPL_ENUM_IMPL_HPP
 #include "sgl/enum.hpp"
@@ -12,7 +17,8 @@ namespace sgl {
   //     const sgl::EnumMap<T, NumEnumerators, CharT>& map,
   //     InputHandler&&                                handler,
   //     size_t                                        start_index) noexcept
-  //     :  Enum<T, NumEnumerators, TextSize, CharT>Base(map.get_view(start_index % NumEnumerators), std::forward<InputHandler>(handler)),
+  //     :  Enum<T, NumEnumerators, TextSize, CharT>Base(map.get_view(start_index % NumEnumerators),
+  //     std::forward<InputHandler>(handler)),
   //       map_{map}, index_(start_index % NumEnumerators) {}
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>

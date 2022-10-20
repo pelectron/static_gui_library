@@ -5,7 +5,7 @@
 namespace sgl::qt {
   static const char* to_string(sgl::error e);
   static QString     to_string(sgl::Input i);
-  static void update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree);
+  static void        update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree);
   QTreeWidget*
       make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title, QWidget* parent = nullptr);
   static void update_item_leaves(sgl::qt::AbstractPageNode* page, QTreeWidgetItem* page_item);

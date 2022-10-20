@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_CONFIG_H
 #define SGL_CONFIG_H
 
@@ -23,22 +28,22 @@
 #endif
 
 #if defined(_MSC_VER)
-    //  Microsoft 
-    #define SGL_EXPORT __declspec(dllexport)
-    #define SGL_IMPORT __declspec(dllimport)
+  //  Microsoft
+  #define SGL_EXPORT __declspec(dllexport)
+  #define SGL_IMPORT __declspec(dllimport)
 #elif defined(__GNUC__)
-    //  GCC
-    #define SGL_EXPORT __attribute__((visibility("default")))
-    #define SGL_IMPORT
+  //  GCC
+  #define SGL_EXPORT __attribute__((visibility("default")))
+  #define SGL_IMPORT
 #else
-    //  do nothing and hope for the best?
-    #define SGL_EXPORT
-    #define SGL_IMPORT
-    #pragma warning Unknown dynamic link import/export semantics.
+  //  do nothing and hope for the best?
+  #define SGL_EXPORT
+  #define SGL_IMPORT
+  #pragma warning Unknown dynamic link import / export semantics.
 #endif
 #if defined(SGL_BUILD_LIB)
-#   define SGL_API SGL_EXPORT
+  #define SGL_API SGL_EXPORT
 #else
-#   define SGL_API SGL_IMPORT
+  #define SGL_API SGL_IMPORT
 #endif
 #endif /* SGL_CONFIG_H */

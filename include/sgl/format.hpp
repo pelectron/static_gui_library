@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_FORMAT_HPP
 #define SGL_FORMAT_HPP
 #include "sgl/callable.hpp"
@@ -37,18 +42,18 @@ namespace sgl {
                               sgl::format format) noexcept;
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                    str,
+                                        size_t                    len,
                                         sgl::unsigned_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        sgl::format     format) noexcept;
+                                        uint32_t                  precision,
+                                        sgl::format               format) noexcept;
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                  str,
+                                        size_t                  len,
                                         sgl::signed_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        sgl::format     format) noexcept;
+                                        uint32_t                precision,
+                                        sgl::format             format) noexcept;
 
   namespace cx {
 

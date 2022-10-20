@@ -1,3 +1,12 @@
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
+//
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef RYU_IMPL_F2S_IMPL_HPP
 #define RYU_IMPL_F2S_IMPL_HPP
 #include "ryu/common.hpp"
@@ -133,8 +142,7 @@ namespace ryu::detail {
         // We need to know one removed digit even if we are not going to loop below. We could use
         // q = X - 1 above, except that would require 33 bits for the result, and we've found that
         // 32-bit arithmetic is faster even on 64-bit machines.
-        const int32_t l =
-            detail::float_pow5_inv_bitcount + pow5bits((int32_t)(q - 1)) - 1;
+        const int32_t l = detail::float_pow5_inv_bitcount + pow5bits((int32_t)(q - 1)) - 1;
         lastRemovedDigit = (uint8_t)(mulPow5InvDivPow2(mv, q - 1, -e2 + (int32_t)q - 1 + l) % 10);
       }
       if (q <= 9) {
@@ -245,11 +253,9 @@ namespace ryu::detail {
     const uint32_t bits = bit_cast(f);
 
     // Decode bits into sign, mantissa, and exponent.
-    const bool ieeeSign =
-        ((bits >> (float_mantissa_bits + float_exponent_bits)) & 1) != 0;
+    const bool     ieeeSign = ((bits >> (float_mantissa_bits + float_exponent_bits)) & 1) != 0;
     const uint32_t ieeeMantissa = bits & ((1u << float_mantissa_bits) - 1);
-    const uint32_t ieeeExponent =
-        (bits >> float_mantissa_bits) & ((1u << float_exponent_bits) - 1);
+    const uint32_t ieeeExponent = (bits >> float_mantissa_bits) & ((1u << float_exponent_bits) - 1);
 
     // Case distinction; exit early for the easy cases.
     if (ieeeExponent == ((1u << float_exponent_bits) - 1u) ||
@@ -261,20 +267,16 @@ namespace ryu::detail {
     return to_chars(v, ieeeSign, result);
   }
 
-} // namespace detail
+} // namespace ryu::detail
 
 namespace ryu {
+
   template <typename CharT>
   inline unsigned f2s_buffered_n(float f, CharT* result) noexcept {
     return detail::f2s_buffered_n(f, result, &to_bits);
   }
 
-  namespace cx {
-    template <typename CharT>
-    constexpr unsigned f2s_buffered_n(float f, char* result) noexcept {
-      return detail::f2s_buffered_n(f, result, &cx::to_bits);
-    }
-  } // namespace cx
+  namespace cx {} // namespace cx
 } // namespace ryu
 
 #endif /* RYU_IMPL_F2S_IMPL_HPP */

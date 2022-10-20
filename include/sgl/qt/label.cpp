@@ -3,14 +3,13 @@
 #include <QPainter>
 
 namespace sgl::qt {
-  VerticalLabel::VerticalLabel(QWidget* parent) : QLabel(parent) {  }
-  VerticalLabel::VerticalLabel(const QString& text, QWidget* parent) : QLabel(text, parent) {
-  }
+  VerticalLabel::VerticalLabel(QWidget* parent) : QLabel(parent) {}
+  VerticalLabel::VerticalLabel(const QString& text, QWidget* parent) : QLabel(text, parent) {}
   void VerticalLabel::paintEvent(QPaintEvent*) {
     QPainter painter(this);
     switch (dir_) {
       case direction::top_to_bottom:
-       painter.translate(width(), 0);
+        painter.translate(width(), 0);
         painter.rotate(90);
         painter.drawText(QRect(QPoint(0, 0), QLabel::sizeHint()), alignment(), text());
         break;

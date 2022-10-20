@@ -5,6 +5,11 @@
 ///
 /// \copyright Copyright (c) 2022
 
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_PAGE_LINK_HPP
 #define SGL_PAGE_LINK_HPP
 #include "sgl/fwd.hpp"
@@ -35,16 +40,18 @@ namespace sgl {
     ///
     /// \code
     ///  // version 1 : Directly from NAME macro
-    ///  auto link1 = PageLink(NAME("home_page")); // link2's text is "home_page" and links to a page named "home_page"
+    ///  auto link1 = PageLink(NAME("home_page")); // link2's text is "home_page" and links to a
+    ///  page named "home_page"
     ///
     /// // version 2 : from static name
     /// static constexpr auto page_to_link_to = NAME("Foo"); // defined somewhere
     ///
-    /// auto link2 = PageLink(page_to_link_to); // link2's text is "Foo" and links to a page called "Foo"
-    /// 
+    /// auto link2 = PageLink(page_to_link_to); // link2's text is "Foo" and links to a page called
+    /// "Foo"
+    ///
     /// // or with different text
-    /// auto link3 = PageLink(NAME("home_page"), "back"); // link3's text is "back" and links to a page called "home_page".
-    /// \endcode
+    /// auto link3 = PageLink(NAME("home_page"), "back"); // link3's text is "back" and links to a
+    /// page called "home_page". \endcode
     ///
     /// \see sgl::Name for more info.
     /// \param page_to_link name of the page to link to.

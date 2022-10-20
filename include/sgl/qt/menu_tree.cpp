@@ -29,7 +29,7 @@ namespace sgl::qt {
     if (not parent_) {
       return 0;
     }
-    
+
     const auto& siblings = parent_->children_;
 
     for (size_t i = 0; i < siblings.size(); ++i) {
@@ -62,7 +62,7 @@ namespace sgl::qt {
   }
 
   bool AbstractItemNode::is_current() const { return get_page()->current_index() == this->index(); }
-  
+
   AbstractMenuNode* AbstractPageNode::get_menu() {
     return dynamic_cast<AbstractMenuNode*>(parent());
   }

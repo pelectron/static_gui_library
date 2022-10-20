@@ -6,7 +6,6 @@
 #include <QFrame>
 #include <QVBoxLayout>
 
-
 namespace sgl::qt {
   class SGL_API DisplayPage : public QFrame {
     Q_OBJECT
@@ -16,14 +15,14 @@ namespace sgl::qt {
     void update_page();
 
     ~DisplayPage();
-    //QSize minimumSizeHint() const override;
+    // QSize minimumSizeHint() const override;
 
   private:
     QVBoxLayout*                       item_layout_{nullptr};
     AbstractPageNode*                  page_{nullptr};
     std::vector<sgl::qt::DisplayItem*> items_;
     size_t                             line_count_{4};
-    QSize min_size_;
+    QSize                              min_size_;
   };
 } // namespace sgl::qt
 

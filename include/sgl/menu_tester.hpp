@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_MENU_TESTER_HPP
 #define SGL_MENU_TESTER_HPP
 #include "sgl/menu.hpp"
@@ -25,11 +30,11 @@ namespace sgl {
     }
     InputPair<CharT> map[N];
     sgl::Input       get(sgl::string_view<CharT> string) {
-      for (const auto& e : map) {
-        if (string == e.string)
+            for (const auto& e : map) {
+              if (string == e.string)
           return e.input;
       }
-      return sgl::Input::none;
+            return sgl::Input::none;
     }
   };
 

@@ -5,9 +5,11 @@
  * \version 0.1
  * \date 2022-09-23
  *
- * \copyright Copyright (c) 2022
- *
- */
+ *          Copyright Pele Constam 2022.
+* Distributed under the Boost Software License, Version 1.0.
+*    (See accompanying file LICENSE_1_0.txt or copy at
+*          https://www.boost.org/LICENSE_1_0.txt)
+*/
 #ifndef SGL_NUMERIC_HPP
 #define SGL_NUMERIC_HPP
 #include "sgl/cx_arg.hpp"
@@ -130,17 +132,17 @@ namespace sgl {
     constexpr static sgl::error default_handle_input(Numeric<TextSize, CharT, T>& numeric_item,
                                                      sgl::Input                   input) noexcept;
 
-    constexpr static sgl::format_result default_format(CharT*   str,
-                                                       size_t   len,
-                                                       T        value,
-                                                       uint32_t precision,
+    constexpr static sgl::format_result default_format(CharT*      str,
+                                                       size_t      len,
+                                                       T           value,
+                                                       uint32_t    precision,
                                                        sgl::format format) noexcept;
 
-    Formatter_t format_{&default_format};      ///< formatter
-    T           value_{0};                     ///< value
-    T           delta_{1};                     ///< delta value
-    uint32_t    precision_{6};                 ///< formatting precision
-    sgl::format    format_type_{sgl::format::fixed}; ///< formatting type
+    Formatter_t format_{&default_format};         ///< formatter
+    T           value_{0};                        ///< value
+    T           delta_{1};                        ///< delta value
+    uint32_t    precision_{6};                    ///< formatting precision
+    sgl::format format_type_{sgl::format::fixed}; ///< formatting type
   };
 
   /// \ingroup item_factories

@@ -7,9 +7,11 @@
  * \version 0.1
  * \date 2022-09-24
  *
- * \copyright Copyright (c) 2022
- *
- */
+ *          Copyright Pele Constam 2022.
+* Distributed under the Boost Software License, Version 1.0.
+*    (See accompanying file LICENSE_1_0.txt or copy at
+*          https://www.boost.org/LICENSE_1_0.txt)
+*/
 #ifndef SGL_MENU_HPP
 #define SGL_MENU_HPP
 #include "sgl/callable.hpp"
@@ -31,7 +33,7 @@ namespace sgl {
   /// \tparam Pages types of the pages
   template <typename... Names, typename... Pages>
   class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
-    
+
     static_assert((sgl::is_name_type_v<Names> && ...),
                   "One of the types begin used as a name is not instance of sgl::Name<...>.");
     static_assert(sgl::all_unique_v<Names...>,

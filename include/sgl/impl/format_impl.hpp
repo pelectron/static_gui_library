@@ -9,7 +9,6 @@
 
 #include <type_traits>
 
-
 namespace sgl {
 
   namespace format_impl {
@@ -272,7 +271,7 @@ namespace sgl {
                                                 size_t   len,
                                                 T        value,
                                                 uint32_t precision,
-                                                format format) noexcept {
+                                                format   format) noexcept {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
       (void)precision;
       switch (format) {
@@ -337,7 +336,6 @@ namespace sgl {
       return sgl::error::no_error;
     }
   }
-
 
   namespace parse_impl {
     template <typename T>
@@ -436,7 +434,6 @@ namespace sgl {
 
   } // namespace parse_impl
 
-
   template <typename CharT, typename T>
   constexpr sgl::format_result to_chars(CharT* str, size_t len, T value) noexcept {
     return sgl::format_impl::basic_integer_format(str, len, value);
@@ -515,11 +512,11 @@ namespace sgl {
   }
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                    str,
+                                        size_t                    len,
                                         sgl::unsigned_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        format        format) noexcept {
+                                        uint32_t                  precision,
+                                        format                    format) noexcept {
     (void)format; // unused
     // frac is the raw integer value of the fractional part of value.
     // This needs to be converted to a "normal" integer value for formatting.
@@ -561,11 +558,11 @@ namespace sgl {
   }
 
   template <typename CharT, size_t I, size_t F>
-  constexpr sgl::format_result to_chars(CharT*          str,
-                                        size_t          len,
+  constexpr sgl::format_result to_chars(CharT*                  str,
+                                        size_t                  len,
                                         sgl::signed_fixed<I, F> value,
-                                        uint32_t        precision,
-                                        format        format) noexcept {
+                                        uint32_t                precision,
+                                        format                  format) noexcept {
     if (value.is_negative()) {
       value = -value;
       str[0] = static_cast<CharT>('-');
@@ -579,11 +576,8 @@ namespace sgl {
   namespace cx {
 
     template <typename CharT>
-    constexpr sgl::format_result to_chars(CharT*   str,
-                                          size_t   len,
-                                          float    value,
-                                          uint32_t precision,
-                                          format format) noexcept {
+    constexpr sgl::format_result
+        to_chars(CharT* str, size_t len, float value, uint32_t precision, format format) noexcept {
       sgl::static_string<CharT, 24> buf{};
       unsigned                      size{0};
 
@@ -600,9 +594,9 @@ namespace sgl {
         case sgl::format::integer:
           size = ryu::cx::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
           break;
-      case sgl::format::hex:
-        return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
-        break;
+        case sgl::format::hex:
+          return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
+          break;
         default:
           return {sgl::error::invalid_format, 0};
       }
@@ -621,11 +615,8 @@ namespace sgl {
     }
 
     template <typename CharT>
-    constexpr sgl::format_result to_chars(CharT*   str,
-                                          size_t   len,
-                                          double   value,
-                                          uint32_t precision,
-                                          format format) noexcept {
+    constexpr sgl::format_result
+        to_chars(CharT* str, size_t len, double value, uint32_t precision, format format) noexcept {
       sgl::static_string<CharT, 24> buf;
 
       unsigned size{0};
@@ -642,9 +633,9 @@ namespace sgl {
         case sgl::format::integer:
           size = ryu::cx::d2fixed_buffered_n(gcem::round(value), 0, buf.data());
           break;
-      case sgl::format::hex:
-        return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
-        break;
+        case sgl::format::hex:
+          return sgl::format_impl::basic_hex_format(str, len, ryu::cx::to_bits(value));
+          break;
         default:
           return {sgl::error::invalid_format, 0};
       }

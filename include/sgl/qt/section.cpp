@@ -5,7 +5,6 @@
 #include <QVBoxLayout>
 #include <stdexcept>
 
-
 namespace sgl::qt {
 
   const QSize icon_size(12, 12);

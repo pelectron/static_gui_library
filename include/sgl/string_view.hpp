@@ -1,3 +1,8 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_STRING_VIEW_HPP
 #define SGL_STRING_VIEW_HPP
 #include "sgl/limits.hpp"
@@ -7,8 +12,8 @@
 namespace sgl {
 
   /// \headerfile string_view.hpp "sgl/string_view.hpp"
-  /// \brief A non owning 'view' of CharT elements. See std::string_view for an explanation of the concept if it is unclear.
-  /// \tparam CharT character type of the string_view
+  /// \brief A non owning 'view' of CharT elements. See std::string_view for an explanation of the
+  /// concept if it is unclear. \tparam CharT character type of the string_view
   template <typename CharT>
   class string_view {
   public:
@@ -67,11 +72,11 @@ namespace sgl {
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* begin() const noexcept { return data_; }
 
-    /// get pointer to end of the view
+    /// get pointer to end of the view, i.e begin() + size().
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* end() noexcept { return data_ + size_; }
 
-    /// get pointer to end of the view
+    /// get pointer to end of the view, i.e begin() + size().
     /// \return const CharT*
     [[nodiscard]] constexpr const CharT* end() const noexcept { return data_ + size_; }
 

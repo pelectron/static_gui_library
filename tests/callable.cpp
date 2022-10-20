@@ -1,5 +1,12 @@
-#include "catch2/catch.hpp"
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #include "sgl/callable.hpp"
+
+#include <catch2/catch.hpp>
+
 
 TEMPLATE_TEST_CASE("Testing sgl::callable",
                    "[callable][template]",
@@ -24,6 +31,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       };
       static_assert(Call{copy_assign(lambda)}() == lambda(), "");
     }
+
     SECTION("constexpr copy assignment from callable") {
       constexpr auto assign = [](const Call& f) noexcept -> Call {
         Call c;
@@ -32,6 +40,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       };
       STATIC_REQUIRE(assign(Call{lambda})() == lambda());
     }
+
     SECTION("constexpr move assignment from callable") {
       constexpr auto move_assign = [](Call&& f) noexcept -> Call {
         Call c;
@@ -40,6 +49,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       };
       STATIC_REQUIRE(move_assign(std::move(Call{lambda}))() == lambda());
     }
+
     SECTION("constexpr binding") {
       constexpr auto bind = [](auto&& f) {
         Call c;
@@ -50,6 +60,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       STATIC_REQUIRE(bind(Call{lambda})() == lambda());
     }
   }
+
   SECTION("construction") {
     SECTION("default") {
       Call c{};
@@ -68,6 +79,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       REQUIRE(c() == capture_lambda());
     }
   }
+
   SECTION("assignment") {
     Call a;
     Call b{lambda};
@@ -96,6 +108,7 @@ TEMPLATE_TEST_CASE("Testing sgl::callable",
       REQUIRE(a() == capture_lambda());
     }
   }
+
   SECTION("reset") {
     Call a(lambda);
     REQUIRE(a() == lambda());

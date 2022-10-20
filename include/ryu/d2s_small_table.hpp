@@ -1,19 +1,12 @@
-// Copyright 2018 Ulf Adams
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
 //
-// The contents of this file may be used under the terms of the Apache License,
-// Version 2.0.
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 //
-//    (See accompanying file LICENSE-Apache or copy at
-//     http://www.apache.org/licenses/LICENSE-2.0)
-//
-// Alternatively, the contents of this file may be used under the terms of
-// the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE-Boost or copy at
-//     https://www.boost.org/LICENSE_1_0.txt)
-//
-// Unless required by applicable law or agreed to in writing, this software
-// is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.
 #ifndef RYU_D2S_SMALL_TABLE_H
 #define RYU_D2S_SMALL_TABLE_H
 
@@ -72,7 +65,7 @@ namespace ryu::detail {
       {9630225068416591280u, 1874621017369538693u},
       {665883850346957067u, 1211445438634777304u},
       {14931890668723713708u, 1565756531257009982u}};
-      
+
   static constexpr uint32_t POW5_OFFSETS[21] = {
       0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x40000000, 0x59695995, 0x55545555,
       0x56555515, 0x41150504, 0x40555410, 0x44555145, 0x44504540, 0x45555550, 0x40004000,
@@ -177,8 +170,7 @@ namespace ryu::detail {
     }
     // high1 | sum | low0
     const uint32_t delta = pow5bits(i) - pow5bits(base2);
-    result[0] =
-        shiftright128(low0, sum, delta) + ((POW5_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
+    result[0] = shiftright128(low0, sum, delta) + ((POW5_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
     result[1] = shiftright128(sum, high1, delta);
   }
 
@@ -204,11 +196,11 @@ namespace ryu::detail {
     }
     // high1 | sum | low0
     const uint32_t delta = pow5bits(base2) - pow5bits(i);
-    result[0] = shiftright128(low0, sum, delta) + 1 +
-                ((POW5_INV_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
+    result[0] =
+        shiftright128(low0, sum, delta) + 1 + ((POW5_INV_OFFSETS[i / 16] >> ((i % 16) << 1)) & 3);
     result[1] = shiftright128(sum, high1, delta);
   }
 
 #endif // defined(HAS_UINT128)
-} // namespace detail
+} // namespace ryu::detail
 #endif // RYU_D2S_SMALL_TABLE_H

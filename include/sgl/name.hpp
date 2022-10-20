@@ -6,6 +6,11 @@
 /// \date 2022-07-21
 /// \copyright Copyright (c) 2022
 
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_NAME_HPP
 #define SGL_NAME_HPP
 #include "sgl/string_view.hpp"

@@ -1,16 +1,21 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef SGL_QT_MAINWINDOW_HPP
 #define SGL_QT_MAINWINDOW_HPP
 #ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
-#include "sgl/qt/display.hpp"
-#include "sgl/qt/menu_tree.hpp"
-#include "sgl/qt/section.hpp"
+  #define MAINWINDOW_HPP
+  #include "sgl/qt/display.hpp"
+  #include "sgl/qt/menu_tree.hpp"
+  #include "sgl/qt/section.hpp"
 
-#include <QLineEdit>
-#include <QMainWindow>
-#include <QTextEdit>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
+  #include <QLineEdit>
+  #include <QMainWindow>
+  #include <QTextEdit>
+  #include <QTreeWidget>
+  #include <QTreeWidgetItem>
 
 namespace sgl::qt {
   class SGL_API MainWindow : public QMainWindow {
@@ -49,6 +54,5 @@ namespace sgl::qt {
 } // namespace sgl::qt
 
 #endif /* MAINWINDOW_HPP */
-
 
 #endif /* SGL_QT_MAINWINDOW_HPP */
