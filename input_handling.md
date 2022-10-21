@@ -28,7 +28,7 @@ the start edit value).
      edit mode. The page keeps relaying the inputs to the active item.The page's default input
      handler will return sgl::error::no_error in this case.
      - any other sgl::error value means the item failed to handle the input. The page switches
-     back into navigation mode and returns the item's return value.
+     back into navigation mode and returns the error value.
 
 4. When an input equal to the page's stop edit is received, the page switches back into
 navigation mode. The stop edit input is NOT passed on to the item.
@@ -36,13 +36,13 @@ navigation mode. The stop edit input is NOT passed on to the item.
 As long as the convention of the item's input handler return value is held, the whole system
 works as expected and you can mix and match item input handlers and page handlers, either library provided or your own.
 
-Again, to change the page input handling, just provide an [InputHandler](concepts.md/#input-handler) for the page.
+Again, to change the page input handling strategy, simply provide an [InputHandler](concepts.md/#input-handler) for the page.
 
 ## Item Layer
 The last layer is the item layer. Items receive user input from their containing page through the item's handle_input() method. The only requirement for the return value of the item's handle_input() method is that it respects the return value convention specified [above](#page-layer). That is:
  - sgl::error::no_error means no error.
  - sgl::error::edit_finished means the item itself decided it is done being edited.
- - any other value means an error occurred which you need to handle in your main loop.
+ - any other value means an error occurred which the item cannot handle itself an an upper layer must decide what to do.
 
 If the default way of doing things is not to your liking, you can also create your own custom page input handler. Again, if the convention of the item's input handler return value is respected, the library provided item types work as expected.
 
@@ -51,6 +51,6 @@ All in all, the default input handling is quite simple:
 
 - Menu's forward the input to their current page. 
 
-- Pages process the input and decide wether the current item should process an input (edit mode) or if the page should be navigated (navigation mode).
+- Pages process the input and decide wether the current item should process an input (edit mode) or if itself should be navigated (navigation mode).
 
-- Items process the input received from their page. An item either processes the input successfully (sgl::error::no_error), successfully and wants to stop being edited (sgl::error::edit_finished) or with an error (any other sgl::error value).
+- Items process the input received from their page. An item either processes the input successfully (sgl::error::no_error), successfully and wants to stop being edited (sgl::error::edit_finished) or with an error (any other sgl::error value, which by default also stops edit mode).

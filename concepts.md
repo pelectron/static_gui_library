@@ -54,7 +54,7 @@ variable  | type          |
 ----------|---------------|
 `f`       | `F`           |
 `t`       | `T&`          |
-`ì`       | `sgl::Input`  |
+`i`       | `sgl::Input`  |
 
 
 Expression                                  | Return type/value |
@@ -92,16 +92,16 @@ Handler_t handler3 {/* ... */};
 sgl::Callable<sgl::error(T&,sgl::Input)> handler_4{/*...*/};
 
 // Now, for any T modelling Item, Page or Menu,
-T item{/*...*/};
+T t{/*...*/};
 
 // any of the following lines will compile
-item.set_input_handler(handler1);
-item.set_input_handler(handler2);
-item.set_input_handler(handler3);
-item.set_input_handler(handler4);
+t.set_input_handler(handler1);
+t.set_input_handler(handler2);
+t.set_input_handler(handler3);
+t.set_input_handler(handler4);
 
 sgl::Input i = /* ... */;
-item.handle_input(i); // calls the handler
+t.handle_input(i); // calls the handler
 ```
 
 # Click Handler
