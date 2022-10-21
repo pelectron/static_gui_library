@@ -6,6 +6,7 @@
 #ifndef SGL_BUTTON_HPP
 #define SGL_BUTTON_HPP
 #include "sgl/pass_through_button.hpp"
+
 namespace sgl {
 
   /// \headerfile button.hpp "sgl/button.hpp"
@@ -149,5 +150,6 @@ namespace sgl {
                                                 TickHandler&&           tick_handler);
   /// \}
 } // namespace sgl
+
 #include "sgl/impl/button_impl.hpp"
 #endif /* SGL_BUTTON_HPP */

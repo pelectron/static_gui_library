@@ -76,6 +76,7 @@ namespace sgl {
     [[nodiscard]] constexpr sgl::string_view<char> page_name() const noexcept {
       return Name<chars...>::view;
     }
+
     /// get pointer to menu as void*
     /// \return void*
     [[nodiscard]] constexpr void* get_menu() noexcept;
@@ -136,5 +137,6 @@ namespace sgl {
                                                           sgl::string_view<CharT> text);
   /// \}
 } // namespace sgl
+
 #include "sgl/impl/page_link_impl.hpp"
 #endif /* SGL_PAGE_LINK_HPP */

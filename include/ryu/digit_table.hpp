@@ -10,6 +10,7 @@
 
 #ifndef RYU_DIGIT_TABLE_HPP
 #define RYU_DIGIT_TABLE_HPP
+
 namespace ryu::detail {
   // A table of all two-digit numbers. This is used to speed up decimal digit
   // generation by copying pairs of digits into the final output.

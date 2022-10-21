@@ -120,6 +120,7 @@ namespace sgl {
 
   template <typename T>
   static constexpr bool has_set_text_v = has_set_text<T>::value;
+
   /// \endcond
 
   /// @brief  check if T fulfills the item concept. See sgl::is_item_v<T> for more details.
@@ -143,6 +144,7 @@ namespace sgl {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
     [[maybe_unused]] auto set_menu = [](auto*) {};
+
     // dummy menu type
     struct M {};
   } // namespace detail
@@ -460,6 +462,7 @@ namespace sgl {
                                   has_get_page_v<T> and has_get_item_at_page_v<T> and
                                   has_index_v<T> and has_size_v<T>;
   };
+
   /// \endcond
 
   /// @brief  true if T fulfills the menu concept

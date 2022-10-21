@@ -1,7 +1,12 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/qt/mainwindow.hpp"
 
 #include <QKeyEvent>
 #include <iostream>
+
 namespace sgl::qt {
   static const char* to_string(sgl::error e);
   static QString     to_string(sgl::Input i);
@@ -244,6 +249,7 @@ namespace sgl::qt {
         return "Unknown Error";
     }
   }
+
   QString to_string(sgl::Input i) {
     if (sgl::is_keyboard_input(i)) {
       return QString{sgl::get_char8(i)};

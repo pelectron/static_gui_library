@@ -32,5 +32,6 @@ namespace ryu::detail {
   constexpr unsigned f2s_buffered_n(float f, CharT* result, FloatCastFunction bit_cast) noexcept;
 
 } // namespace ryu::detail
+
 #include "impl/f2s_impl.hpp"
 #endif /* RYU_F2S_HPP */

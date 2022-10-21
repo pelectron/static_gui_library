@@ -193,9 +193,11 @@ namespace sgl {
     CharT                          data_[Capacity + 1]{0}; ///< holds the characters.
     sgl::smallest_type_t<Capacity> size_{0};               ///< size of the string.
   };
+
   /// \cond
   template <typename CharT, size_t N>
   static_string(const CharT (&string)[N]) -> static_string<CharT, N - 1>;
+
   /// \endcond
 
   ///\brief compares s1 and s2 lexicographically and returns true if they are equal

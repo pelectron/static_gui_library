@@ -6,6 +6,7 @@
 #ifndef SGL_IMPL_ENUM_IMPL_HPP
 #define SGL_IMPL_ENUM_IMPL_HPP
 #include "sgl/enum.hpp"
+
 namespace sgl {
 
   // template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
@@ -36,6 +37,7 @@ namespace sgl {
   constexpr size_t Enum<T, NumEnumerators, TextSize, CharT>::index() const noexcept {
     return index_;
   }
+
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr void Enum<T, NumEnumerators, TextSize, CharT>::set_index(size_t index) noexcept {
     index_ = index % NumEnumerators;

@@ -1,10 +1,16 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/qt/label.hpp"
 
 #include <QPainter>
 
 namespace sgl::qt {
   VerticalLabel::VerticalLabel(QWidget* parent) : QLabel(parent) {}
+
   VerticalLabel::VerticalLabel(const QString& text, QWidget* parent) : QLabel(text, parent) {}
+
   void VerticalLabel::paintEvent(QPaintEvent*) {
     QPainter painter(this);
     switch (dir_) {
@@ -32,6 +38,7 @@ namespace sgl::qt {
     QSize s = QLabel::minimumSizeHint();
     return QSize(s.height(), s.width());
   }
+
   void VerticalLabel::set_direction(direction d) { dir_ = d; }
 
 } // namespace sgl::qt

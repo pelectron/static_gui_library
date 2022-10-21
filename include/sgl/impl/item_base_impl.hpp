@@ -6,6 +6,7 @@
 #ifndef SGL_IMPL_ITEM_BASE_IMPL_HPP
 #define SGL_IMPL_ITEM_BASE_IMPL_HPP
 #include "sgl/item_base.hpp"
+
 namespace sgl {
   template <typename ItemImpl, typename Traits>
   constexpr ItemBase<ItemImpl, Traits>::ItemBase(StringView text) noexcept : text_(text) {}

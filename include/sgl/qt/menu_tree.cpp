@@ -1,3 +1,7 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/qt/menu_tree.hpp"
 
 namespace sgl::qt {
@@ -17,7 +21,8 @@ namespace sgl::qt {
     }
   }
 
-  Node*       Node::parent() { return parent_; }
+  Node* Node::parent() { return parent_; }
+
   const Node* Node::parent() const { return parent_; }
 
   void Node::set_parent(Node* p) {
@@ -40,18 +45,27 @@ namespace sgl::qt {
     return ~size_t{0};
   }
 
-  Node::iterator            Node::begin() { return children_.begin(); }
-  Node::iterator            Node::end() { return children_.end(); }
-  Node::const_iterator      Node::begin() const { return children_.begin(); }
-  Node::const_iterator      Node::end() const { return children_.end(); }
-  std::vector<Node*>&       Node::children() { return children_; }
+  Node::iterator Node::begin() { return children_.begin(); }
+
+  Node::iterator Node::end() { return children_.end(); }
+
+  Node::const_iterator Node::begin() const { return children_.begin(); }
+
+  Node::const_iterator Node::end() const { return children_.end(); }
+
+  std::vector<Node*>& Node::children() { return children_; }
+
   const std::vector<Node*>& Node::children() const { return children_; }
 
-  size_t           Node::size() const { return children_.size(); }
+  size_t Node::size() const { return children_.size(); }
+
   std::string_view Node::name() const { return name_; }
+
   std::string_view Node::text() const { return {}; }
+
   std::string_view Node::type_name() const { return {}; }
-  Node::Type       Node::type() const { return type_; }
+
+  Node::Type Node::type() const { return type_; }
 
   AbstractPageNode* AbstractItemNode::get_page() {
     return dynamic_cast<AbstractPageNode*>(parent());
@@ -78,10 +92,13 @@ namespace sgl::qt {
   AbstractPageNode* AbstractMenuNode::current_page() {
     return dynamic_cast<AbstractPageNode*>(children()[current_index()]);
   }
+
   const AbstractPageNode* AbstractMenuNode::current_page() const {
     return dynamic_cast<const AbstractPageNode*>(children()[current_index()]);
   }
+
   AbstractItemNode* AbstractMenuNode::current_item() { return current_page()->current_item(); }
+
   const AbstractItemNode* AbstractMenuNode::current_item() const {
     return current_page()->current_item();
   }
@@ -98,7 +115,8 @@ namespace sgl::qt {
     }
   }
 
-  AbstractMenuNode*       MenuTree::root() { return root_; }
+  AbstractMenuNode* MenuTree::root() { return root_; }
+
   const AbstractMenuNode* MenuTree::root() const { return root_; }
 
   MenuIndex MenuTree::active_index() const { return root_->current_menu_index(); }

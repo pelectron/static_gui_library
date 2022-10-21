@@ -1,108 +1,138 @@
 # About
-I wanted to create a solution for making gui menus for fixed-width, line based displays.
-There are three important points for me:
- - no dynamic allocations
- - declarative style for end users
- - customizable behavior where needed
+I wanted to create a solution for making gui menus for fixed-width, line based displays on microcontrollers. These types of displays are very simple to communicate with and good for prototyping, but coding a useable menu for them isn't trivial and can quickly become a hardcoded mess. I also didn't find any other libraries handling this task, so I wrote my own.
 
-I also wanted a pure software solution, i.e. no dependency on a certain display controller type, mcu etc. This way, it's up to the end user on how to actually print to a , with provided examples on how to do that.
+There are a few important points for me when I set out to write this library:
+ - no dynamic allocations
+ - declarative style
+ - constexpr everything possible
+ - easily customizable behavior without inheritance
+ - easily adaptable to new environment, i.e. changing MCU etc.
+
+In addition, I wanted an easy way to visualize menus without deploying to an MCU. For this, sgl provides two solutions. 
+One is a command line tester. Look into the header menu_tester.hpp and the example menu_tester.cpp for more info.
+The other option sgl offers is a menu visualizer made with Qt. This will give you a better insight into what's going on, but requires a Qt installation.
+
+# Building and configuring
+If you simply want to use the library without the qt visualizer, no special installation or build process is needed. sgl is a header only library and you just need to add the `include` subfolder to your compilers include path, assuming you have the [dependencies](#dependencies) installed.
+
+Alternatively you can use the meson build system. Just include this repo as a subproject, i.e. with a wrap file or just cloning it. Then in your main meson.build file, you can get the required dependency by using the command below:
+
+``sgl_dep = dependency('sgl', fallback:['sgl', 'sgl_dep'])``. 
+
+Note that if you want to also have access to the qt visualizer, you will need to slightly modify the dependency call by setting default options:
+
+``sgl_dep = dependency('sgl', fallback: ['sgl', 'sgl_dep'], default_options: ['gui=true'])``
+
+This will add the visualizer library to the sgl_dep.
+For compiling with Qt5, you should set `qt_major_version=5` in the default options. qmake needs to be available in your path for this to work!
+
+Note: This project requires c++17 or later!
+
+## Dependencies
+sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone it and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
+
+For testing, [Catch2](https://github.com/catchorg/Catch2 ) is required. Again, you will manually need to download it if you are not using meson and want to build the tests. See more info [here](#testing).
+
+## Building without meson
+If you don't want to use meson, but still want the qt visualizer, you will have to do the following:
+ 1. Pass all header files in the `include/sgl/qt` subfolder (except menu_tree.hpp) to moc and generate the necessary source files.
+ 2. Compile the qt resource file `include/sgl/qt/resources/section.qrc` with the Qt rcc
+ 3. Compile all cpp files in the `include/sgl/qt` subfolder and the generated sources from the previous steps and link them into a library. You will also have to define the macro `SGL_BUILD_LIB`, most easily done by passing `-DSGL_BUILD_LIB` as a command line argument to the compiler.
+ 4. Done. Now you can build an application with the qt visualizer.
+
+If the instruction above are unclear, have a look at the meson.build file located in `include/sgl/qt`. Even if you don't know meson, it should be very clear what is done.
+
+# Testing
+sgl has unit tests. To enable building tests with meson, set the `test` option to `enabled`  when building the project or using it as a dependency. This will produce an executable called `test_main` in the tests subfolder. 
+
+Building the tests without meson requires compiling all cpp files in the `tests` subdirectory and linking them into a single executable. You will need [Catch2](https://github.com/catchorg/Catch2). Catch2 is also a header only library, just add its `single_include` subdirectory to your include path when compiling the tests.
 
 # A small example to show the benefits
-Below is a very basic example, showing how to create a menu.
-\include example/example_readme.cpp
+Below is a basic example, showing how to create a menu. It shows how to create a page with items, and a menu with pages.
 
-Also included is a simple command line tester.
-\include example/menu_tester.cpp
+```cpp
+#include <sgl.hpp>
+using namespace sgl::cx_arg_literals;
+// example enums
+enum class Setting { opt1, opt2, opt3 };
+enum class OtherSetting { Up, Down, Left, Right };
 
-# Architecture
-Because of the nature of line based displays, I have the following visualization for the architecture:
+constexpr auto Page1() noexcept {
+  // a page is more or less a named_tuple of items. The <<= operator 'binds' 
+  // the name(created with the NAME macro) on the left hand side to the item on the right hand side.
+  return sgl::Page(
+      NAME("bool item 1") <<= sgl::Boolean(true),              // boolean item
+      NAME("setting item 1") <<= sgl::make_enum(Setting::opt1, // enumerated item
+                                                "Option 1",
+                                                Setting::opt2,
+                                                "Option 2",
+                                                Setting::opt3,
+                                                "Option 3"),
+      NAME("double item 1") <<= sgl::make_numeric(1.0_double, 1.0), // item holding a double
+      NAME("float item 1") <<= sgl::make_numeric(1.0_float, 1.0f),  // item holding a float
+      NAME("int item 1") <<= sgl::make_numeric<12, char>(1, 2),     // item holding an int
+      NAME("link to page 2") <<=
+      sgl::make_pagelink(NAME("page2"), "return to page 2") // a page link item
+  );
+}
 
-Everything you see on a display at once is a list/array of **items** in a **page**. This list of items can be scrolled through. One item, at all times, is the active/current item of the page.
-An example of (a part of) a page is below, where '->' marks the current item:
+constexpr auto Page2() noexcept {
+  return sgl::Page(NAME("bool item 2") <<= sgl::Boolean(true),
+                   NAME("OtherSetting item 1") <<= sgl::make_enum(OtherSetting::Up,
+                                                                  "Up",
+                                                                  OtherSetting::Down,
+                                                                  "Down",
+                                                                  OtherSetting::Left,
+                                                                  "Left",
+                                                                  OtherSetting::Right,
+                                                                  "Right"),
+                   NAME("double item 2") <<= sgl::make_numeric(2.0_double, 2.0),
+                   NAME("float item 2") <<= sgl::make_numeric(2.0_float, 2.0f),
+                   NAME("int item 2") <<= sgl::make_numeric<12, char>(2, 2),
+                   NAME("link to page 1") <<=
+                   sgl::make_pagelink(NAME("page1"), "return to page 1"));
+}
 
-    --------Display--------
-    Configuration Page
-    -> Settings
-       some value: 45 
-       Version: 1.0.5
-       Some other item
-       back
-    ----End of Display-----
+constexpr auto make_menu() {
+  // a menu is more or less a named_tuple of pages, so the creation of one is similar to that of a
+  // page. Here the menu consists only of two pages.
+  return sgl::Menu(NAME("page1") <<= Page1(), NAME("page2") <<= Page2());
+}
+```
 
-**Items** are the things which occupy one line in the display. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button).
+To test the menu above, the provided command line tester can be used.
+Add `sgl/menu_tester.hpp` to you includes, and add a main like so:
 
-A **page** is (almost) nothing more than a container of items, with an additional index for keeping track of the current item. A page cannot have another page as an item. 
+```cpp
+#include <sgl/menu_tester.hpp>
+int main(){
+  auto tester = MenuTester(make_menu(),
+                           {{sgl::Input::up, "up"_sv},
+                            {sgl::Input::down, "down"_sv},
+                            {sgl::Input::left, "left"_sv},
+                            {sgl::Input::right, "right"_sv},
+                            {sgl::Input::enter, "enter"_sv},
+                            {sgl::Input::enter, sgl::string_view<char>{}}});
+  // print just outputs the text of all items of the current page line by line.
+  tester.print();
 
-A **menu** is a container of pages, where one page is active at any given time. The hierarchy of the pages is flat because each page is standalone and does not 'contain' any subpages in the programmatic sense. In the example above, the item with the text 'Settings' is not a page, it merely links to a 'Settings Page'. More on this @ref sgl::PageLink "here".
+  // user input
+  std::string s;
+  // main event loop
+  while (std::getline(std::cin, s)) {
+    if (s == "quit") {
+      break;
+    }
+    tester.handle_input(sgl::string_view<char>(s));
+    tester.print();
+  }
+  return 0;
+}
 
-In the end, the menu structure should look something like below, where '->' marks the current page and '-->' marks the current item of a page.
-
-    Menu
-    ->Home Page
-           item1
-        -->item2
-           item3
-          ...
-      Configuration Page
-           Settings
-           some value: 45 
-           Version: 1.0.5
-        -->Some other item
-           back
-      Settings Page
-          ...
-
-In the example above, the current page of the menu is the 'Home Page', with 'item2' being the current item of 'Home Page' and the whole menu.
-The other pages are not current, but they still have a current item, i.e. index.
-
-## Classes
-For these concepts, there are 3 kinds of class templates in this library. 
-
-The first one is \ref sgl::Menu "sgl::Menu". It implements a menu. 
-
-The second class is \RefPageType. It implements a page. 
-
-The last is a family of classes, the items. They implement basic item behavior.
-This library provide the following basic items:
- - \ref sgl::Button "boolean items"
- - \ref sgl::Numeric "numerical items"
- - \ref sgl::Enum "enumerated items"
- - \ref sgl::Button "buttons"
- - \RefPageType
-
-# Input handling and processing
-Input handling is divided up into three stages. Below I will describe the default input handling process. However, keep in mind that all three stages can be completely customized.
-
-## Menu Input Handling
-First, the menu receives an Input through it's handle_input() member function. The menu relays this input to it's input handler. The default input handler does nothing more than delegate the input to the active page and return the page's result.
-
-### Customizing Menu Input Handling
-As with all types of handlers in this library, you can replace the default behavior. There is however not much to be done here, except delegate the input to the active page, which this is already implemented.
-
-
-## Page Input Handling
-The second stage is the page layer. The page input handling has two important jobs:
- - handle navigating through items on the page
- - handle editing and clicking of items
-
-The library way of doing this is as follows (read the documentation for sgl::Page to follow completely):
-The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate through the items. 
-When an input equal to the page's start edit is received, the page switches into edit mode and passes the input value on to the items input handler (including the start_edit value).
-The returned value from the item input handler is interpreted as such:
- - sgl::error:::edit_finished means the page should switch back into navigation mode, regardless of which input it just received. The page's default input handler will return sgl::error::no_error in this case.
- - sgl::error::no_error means the item handled the input successfully, and the page stays in edit mode. The page keeps relaying the inputs to the active item.The page's default input handler will return sgl::error::no_error in this case.
- - any other sgl::error value means the item failed to handle the input. The page switches back into navigation mode and returns the error value from the item input handler.
-
-When an input equal to the page's stop edit is received, the page switches back into navigation mode. The stop edit input is NOT passed on to the item input handler.
-
-As long as the convention of the item's input handler return value is held, the whole system works as expected and you can mix and match item input handlers.
-
-If the default way of doing things is not to your liking, you can also create your own custom page input handler. Again, if the convention of the item's input handler return value is respected, the library provided item types work as expected.
+```
 
 
+For more info on how sgl is built up, see [here](architecture.md).
 
-## Item input Handling
-The last stage is the item layer. Items also have an input handler. An input handler for an item type 'Item' will always have the signature sgl::error(Item&,sgl::Input). The input handler will be called with a reference to the item it handles the input for and the user input. The return value should either be 
- - sgl::error::edit_finished, in case the item cannot be edited, the user input indicates that the editing of the item has finished, or the item has only a 'one input and done' mechanism like a button.
- - sgl::error::no_error, in case the provided input could be handled correctly and the item should remain in editing mode from it's point of view.
- - any other value indicates failure which cannot be handled by the item.
+To see how to integrate sgl in your embedded system, see [here](integrating.md).
+

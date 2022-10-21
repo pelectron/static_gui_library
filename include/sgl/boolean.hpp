@@ -6,6 +6,7 @@
 #ifndef SGL_BOOLEAN_HPP
 #define SGL_BOOLEAN_HPP
 #include "sgl/item_base.hpp"
+
 namespace sgl {
 
   /// \headerfile boolean.hpp "sgl/boolean.hpp"
@@ -85,5 +86,6 @@ namespace sgl {
                            const CharT (&false_string)[NFalse]);
   /// \}
 } // namespace sgl
+
 #include "sgl/impl/boolean_impl.hpp"
 #endif /* SGL_BOOLEAN_HPP */

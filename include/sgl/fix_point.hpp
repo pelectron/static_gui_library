@@ -19,6 +19,7 @@ namespace sgl {
     }
     return val;
   }
+
   static_assert(mask<uint8_t, 3>() == 0b111);
   static_assert(mask<uint8_t, 4>() == 0b1111);
   static_assert(mask<uint64_t, 64>() == 0xFFFFFFFFFFFFFFFFu);
@@ -73,9 +74,9 @@ namespace sgl {
     constexpr unsigned_fixed(unsigned_fixed<I, F> other) noexcept;
     constexpr unsigned_fixed(value_type value) noexcept;
 
-    explicit unsigned_fixed(float value) noexcept;
+    constexpr explicit unsigned_fixed(float value) noexcept;
 
-    explicit unsigned_fixed(double value) noexcept;
+    constexpr explicit unsigned_fixed(double value) noexcept;
 
     /// access the fixpoint's raw value
     [[nodiscard]] constexpr value_type value() const;
@@ -125,8 +126,8 @@ namespace sgl {
     template <size_t I, size_t F>
     constexpr signed_fixed(signed_fixed<I, F> other) noexcept;
     constexpr signed_fixed(value_type value) noexcept;
-    explicit signed_fixed(float value) noexcept;
-    explicit signed_fixed(double value) noexcept;
+    constexpr explicit signed_fixed(float value) noexcept;
+    constexpr explicit signed_fixed(double value) noexcept;
 
     /// access the fixpoint's raw value (stored in two's complement)
     [[nodiscard]] constexpr value_type value() const noexcept;
@@ -193,7 +194,7 @@ namespace sgl {
   constexpr signed_fixed<I1 + F2, I2 + F1> operator/(signed_fixed<I1, F1> f1,
                                                      signed_fixed<I2, F2> f2);
 
-  /// @brief resize value from <I2,F2> to <I1,F1>
+  /// @brief resize signed_fixed from <I2,F2> to <I1,F1>
   /// @tparam I1
   /// @tparam F1
   /// @tparam I2
@@ -249,5 +250,6 @@ namespace sgl {
   template <size_t I, size_t F>
   constexpr double to_double(sgl::unsigned_fixed<I, F> v) noexcept;
 } // namespace sgl
+
 #include "sgl/impl/fix_point_impl.hpp"
 #endif /* SGL_FIX_POINT_HPP */

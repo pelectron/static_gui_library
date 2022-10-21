@@ -9,6 +9,7 @@
 #include "sgl/enum_map.hpp"
 #include "sgl/item_base.hpp"
 #include "sgl/smallest_type.hpp"
+
 namespace sgl {
 
   /// \ingroup item_types
@@ -182,5 +183,6 @@ namespace sgl {
                            const EnumStringArgs&... args);
   /// \}
 } // namespace sgl
+
 #include "sgl/impl/enum_impl.hpp"
 #endif /* SGL_ENUM_HPP */

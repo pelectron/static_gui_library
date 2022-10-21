@@ -25,6 +25,7 @@
 
 namespace ryu::detail {
   using DoubleCastFunction = uint64_t (*)(const double) noexcept;
+
   // A floating decimal representing m * 10^e.
   struct floating_decimal_64 {
     uint64_t mantissa{0};
@@ -49,5 +50,6 @@ namespace ryu::detail {
   constexpr unsigned d2s_buffered_n(double f, CharT* result, DoubleCastFunction bit_cast) noexcept;
 
 } // namespace ryu::detail
+
 #include "impl/d2s_impl.hpp"
 #endif /* RYU_D2S_HPP */

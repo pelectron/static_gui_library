@@ -115,5 +115,6 @@ namespace sgl {
   constexpr auto enum_map(const EnumStringArgs&... args);
 
 } // namespace sgl
+
 #include "sgl/impl/enum_map_impl.hpp"
 #endif /* SGL_ENUM_MAP_HPP */

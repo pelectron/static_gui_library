@@ -13,6 +13,7 @@ namespace sgl {
   namespace traits_detail {
     template <typename T>
     static constexpr bool always_false = false;
+
     template <typename T, typename = void>
     struct has_item_type_typedef : std::false_type {};
 
@@ -21,6 +22,7 @@ namespace sgl {
 
     template <typename T, typename = void>
     struct has_char_type_typedef : std::false_type {};
+
     template <typename T>
     struct has_char_type_typedef<T, std::void_t<typename T::char_type>> : std::true_type {};
 
@@ -80,6 +82,7 @@ namespace sgl {
     static constexpr bool value =
         has_char_type_typedef_v<T> and has_item_type_typedef_v<T> and has_text_size_v<T>;
   };
+
   /// \endcond
 
   /// @brief check if T is an item trait.
@@ -97,6 +100,7 @@ namespace sgl {
                   "your traits structure is correctly implemented by using "
                   "sgl::is_item_trait_v<YourTraitsType>");
   };
+
   /// \cond
 
   // button item traits
@@ -141,6 +145,7 @@ namespace sgl {
     using char_type = CharT;
     static constexpr size_t text_size = TextSize;
   };
+
   /// \endcond
 } // namespace sgl
 #endif /* SGL_ITEM_TRAITS_HPP */

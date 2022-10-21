@@ -9,10 +9,10 @@
  * @date 2022-09-23
  *
  *          Copyright Pele Constam 2022.
-* Distributed under the Boost Software License, Version 1.0.
-*    (See accompanying file LICENSE_1_0.txt or copy at
-*          https://www.boost.org/LICENSE_1_0.txt)
-*/
+ * Distributed under the Boost Software License, Version 1.0.
+ *    (See accompanying file LICENSE_1_0.txt or copy at
+ *          https://www.boost.org/LICENSE_1_0.txt)
+ */
 #ifndef SGL_PAGE_HPP
 #define SGL_PAGE_HPP
 #include "sgl/callable.hpp"
@@ -27,6 +27,7 @@ namespace sgl {
   /// \cond
   template <typename ItemNameList, typename ItemTypeList>
   class Page;
+
   /// \endcond
 
   /// \headerfile page.hpp "sgl/page.hpp"
@@ -398,5 +399,6 @@ namespace sgl {
       std::declval<const Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
 
 } // namespace sgl
+
 #include "sgl/impl/page_impl.hpp"
 #endif /* SGL_PAGE_HPP */

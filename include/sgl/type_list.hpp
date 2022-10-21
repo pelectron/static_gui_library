@@ -6,6 +6,7 @@
 #ifndef SGL_TYPE_LIST_HPP
 #define SGL_TYPE_LIST_HPP
 #include <type_traits>
+
 namespace sgl {
   ///\cond
   template <typename... Ts>
@@ -13,6 +14,7 @@ namespace sgl {
 
   template <typename>
   struct head;
+
   template <typename T, typename... Ts>
   struct head<type_list<T, Ts...>> {
     using type = T;
@@ -22,10 +24,12 @@ namespace sgl {
   using head_t = typename head<List>::type;
   template <typename List>
   struct tail;
+
   template <typename T, typename... Ts>
   struct tail<type_list<T, Ts...>> {
     using type = type_list<Ts...>;
   };
+
   template <typename List>
   using tail_t = typename tail<List>::type;
 
@@ -86,6 +90,7 @@ namespace sgl {
   struct pop_front<type_list<T, Ts...>> {
     using type = type_list<Ts...>;
   };
+
   template <>
   struct pop_front<type_list<>> {
     using type = type_list<>;
@@ -101,18 +106,22 @@ namespace sgl {
   /// \tparam List
   template <size_t N, typename List>
   struct type_at;
+
   template <size_t N>
   struct index_out_of_range {
     static_assert(N != 0, "index out of range");
   };
   template <size_t, typename...>
   struct type_at_impl;
+
   template <size_t N, typename T, typename... Ts>
   struct type_at_impl<N, T, Ts...> : type_at_impl<N - 1, Ts...> {};
+
   template <typename T, typename... Ts>
   struct type_at_impl<0, T, Ts...> {
     using type = T;
   };
+
   template <size_t N>
   struct type_at_impl<N> {
     static_assert(N < 0, "type index out of range");
@@ -172,6 +181,7 @@ namespace sgl {
 
   template <typename List>
   struct pop_back;
+
   template <typename... Ts>
   struct pop_back<type_list<Ts...>> {
     using type = typename pop_back_impl<type_list<Ts...>, sizeof...(Ts)>::type;
@@ -225,6 +235,7 @@ namespace sgl {
   struct contains<T, type_list<Ts...>> {
     static constexpr bool value = (std::is_same_v<T, Ts> || ...);
   };
+
   /// @brief checks if T is contained in List
   /// @tparam T type to search
   /// @tparam List sgl::type_list

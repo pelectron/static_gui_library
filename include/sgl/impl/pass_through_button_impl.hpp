@@ -6,6 +6,7 @@
 #ifndef SGL_IMPL_PASS_THROUGH_BUTTON_IMPL_HPP
 #define SGL_IMPL_PASS_THROUGH_BUTTON_IMPL_HPP
 #include "sgl/pass_through_button.hpp"
+
 namespace sgl {
 
   template <typename ItemImpl, typename Traits>

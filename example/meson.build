@@ -4,7 +4,6 @@ menu_teser = executable('menu_tester','menu_tester.cpp',dependencies:[sgl_dep])
 
 if get_option('gui')
   executable('gui_example', 'qt_main.cpp', 
-                            dependencies: [gui_dep], 
-                            cpp_args:['-Wno-microsoft-enum-value','-Wno-language-extension-token'],
+                            dependencies: [sgl_dep], 
                             override_options: ['cpp_eh=default'])
 endif

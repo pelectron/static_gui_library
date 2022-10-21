@@ -1,3 +1,7 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef MENU_TREE_HPP
 #define MENU_TREE_HPP
 #include "sgl/sgl.hpp"
@@ -31,22 +35,27 @@ namespace sgl::qt {
   struct get_type_name<sgl::Numeric<N, CharT, T>> {
     static constexpr std::string_view value{"sgl::Numeric with T = integer"};
   };
+
   template <typename CharT, size_t N>
   struct get_type_name<sgl::Numeric<N, CharT, float>> {
     static constexpr std::string_view value{"sgl::Numeric with T = float"};
   };
+
   template <typename CharT, size_t N>
   struct get_type_name<sgl::Numeric<N, CharT, double>> {
     static constexpr std::string_view value{"sgl::Numeric with T = double"};
   };
+
   template <typename Name, typename CharT, size_t N>
   struct get_type_name<sgl::PageLink<Name, N, CharT>> {
     static constexpr std::string_view value{"sgl::PageLink"};
   };
+
   template <typename NameList, typename ItemList>
   struct get_type_name<sgl::Page<NameList, ItemList>> {
     static constexpr std::string_view value{"sgl::Page"};
   };
+
   template <typename NameList, typename PageList>
   struct get_type_name<sgl::Menu<NameList, PageList>> {
     static constexpr std::string_view value{"sgl::Menu"};
@@ -151,11 +160,13 @@ namespace sgl::qt {
     [[nodiscard]] std::string_view text() const override {
       return {item_.text().data(), item_.text().size()};
     }
+
     [[nodiscard]] std::string_view type_name() const override { return get_type_name<Item>::value; }
 
   private:
     Item& item_;
   };
+
   template <typename Item>
   ItemNode(std::string_view, Item&, Node*) -> ItemNode<Item>;
 
@@ -171,8 +182,11 @@ namespace sgl::qt {
     }
 
     [[nodiscard]] size_t current_index() const override { return page_.current_item_index(); }
+
     [[nodiscard]] std::string_view type_name() const override { return get_type_name<Page>::value; }
-    [[nodiscard]] bool             edit_mode() const override { return page_.is_in_edit_mode(); }
+
+    [[nodiscard]] bool edit_mode() const override { return page_.is_in_edit_mode(); }
+
     void set_current_item(size_t i) override { page_.set_current_item(i); }
 
   private:
@@ -193,6 +207,7 @@ namespace sgl::qt {
     }
 
     [[nodiscard]] size_t current_index() const override { return menu_.current_page_index(); }
+
     [[nodiscard]] std::string_view type_name() const override { return get_type_name<Menu>::value; }
 
     sgl::error handle_input(sgl::Input i) override { return menu_.handle_input(i); }
@@ -210,6 +225,7 @@ namespace sgl::qt {
   public:
     template <typename Menu>
     MenuTree(Menu m) : root_{new MenuNode<Menu>(std::move(m))} {}
+
     MenuTree(const MenuTree&) = delete;
     MenuTree(MenuTree&&);
     ~MenuTree();

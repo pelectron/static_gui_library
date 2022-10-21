@@ -6,6 +6,7 @@
 #ifndef SGL_IMPL_BUTTON_IMPL_HPP
 #define SGL_IMPL_BUTTON_IMPL_HPP
 #include "sgl/button.hpp"
+
 namespace sgl {
   template <size_t TextSize, typename CharT>
   constexpr Button<TextSize, CharT>::Button(StringView text) noexcept : Base(text) {}
@@ -32,6 +33,7 @@ namespace sgl {
       : Base(text,
              std::forward<ClickHandler>(click_handler),
              std::forward<TickHandler>(tick_handler)) {}
+
   template <typename String>
   constexpr auto make_button(const String& text) {
     return Button(text);

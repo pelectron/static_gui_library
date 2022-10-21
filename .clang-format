@@ -29,4 +29,5 @@ ExperimentalAutoDetectBinPacking: false
 AllowAllParametersOfDeclarationOnNextLine: false
 ColumnLimit: 100
 Standard: c++17
+SeparateDefinitionBlocks: Always
 ...

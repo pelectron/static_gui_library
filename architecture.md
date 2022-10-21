@@ -5,7 +5,7 @@ Everything you see on a display at once are [items](item.md) in a [page](page.md
 
 Items are the things which occupy one line in the display.
 
-The items on a page can be scrolled through, interacted with and optionally edited via user input.
+The items on a page can be scrolled through, interacted with via user input.
 
 One item, at any time, is the current item of a page.
 
@@ -20,7 +20,7 @@ An example display of (a part of) a page is below, where '->' marks the current 
     |   back            |
     |-------------------|
 
-On a high level, a [page](page.md) can be thought of as simply an array of items with an index to keep track of the current item. Items of a page cannot be a page, i.e. pages cannot contain subpages.
+On a high level, a [page](page.md) can be thought of as simply an array of items with an index to keep track of the current item. Items of a page cannot be a page themselves, i.e. pages cannot contain subpages.
 
 Now, usually more than one page is needed for a menu.
 In order to create a hierarchical structure to navigate, the pages need to be assembled into a [menu](menu.md).
@@ -68,4 +68,6 @@ The rest are item classes, which implement various items like:
  - [numerical items](#sgl::Numeric)
  - [enumerated items](#sgl::Enum)
  - [buttons](#sgl::Button)
+
+
 

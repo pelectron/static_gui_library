@@ -1,5 +1,9 @@
-#ifndef SECTION_HPP
-#define SECTION_HPP
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
+#ifndef SGL_QT_SECTION_HPP
+#define SGL_QT_SECTION_HPP
 #include "sgl/qt/label.hpp"
 
 #include <QFrame>
@@ -17,7 +21,9 @@ namespace sgl::qt {
     QFrame*      body();
     QLabel*      section_title();
     QPushButton* section_button();
-    void         set_title(const QString& str) { title_label_->setText(str); }
+
+    void set_title(const QString& str) { title_label_->setText(str); }
+
   public slots:
     void show_body(bool show);
 
@@ -53,4 +59,4 @@ namespace sgl::qt {
 
 } // namespace sgl::qt
 
-#endif /* SECTION_HPP */
+#endif /* SGL_QT_SECTION_HPP */

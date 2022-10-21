@@ -1,4 +1,3 @@
-
 test_sources = [
   'main.cpp',
   'callable.cpp',
@@ -15,12 +14,10 @@ test_sources = [
   'ryu/cx/d2fixed_test.cpp'
 ]
 
-executable('test_main', 
-            include_directories: inc_dir,
-            sources:test_sources,
-            dependencies:[catch_dep, dependencies])
+catch_dep = dependency('catch2')
 
-executable('named_tuple',
-            include_directories: inc_dir,
-            sources:['named_tuple.cpp'],
-            dependencies:[dependencies])
+executable('test_main', 
+            include_directories: sgl_include_dir,
+            sources: test_sources,
+            dependencies: [catch_dep, dependencies]
+)
