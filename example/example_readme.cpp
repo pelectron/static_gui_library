@@ -1,3 +1,7 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/sgl.hpp"
 
 using namespace sgl::cx_arg_literals;
@@ -38,7 +42,7 @@ constexpr auto Page2() noexcept {
                    NAME("link to page 1") <<= sgl::make_pagelink(NAME("page1"), "return to page 1"));
 }
 
-constexpr auto SettingsPage() {
+constexpr auto SettingsPage() noexcept{
   return NAME("settings page") <<=
          sgl::Page(NAME("settings item 2") <<= sgl::make_enum(Setting::opt1,
                                                             "Option 1",

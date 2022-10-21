@@ -6,6 +6,7 @@
 #ifndef SGL_IMPL_PAGE_IMPL_HPP
 #define SGL_IMPL_PAGE_IMPL_HPP
 #include "sgl/page.hpp"
+
 namespace sgl {
 
   template <typename... Names, typename... Items>

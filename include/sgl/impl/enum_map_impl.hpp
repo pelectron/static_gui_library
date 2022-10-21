@@ -1,6 +1,11 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef SGL_IMPL_ENUM_MAP_IMPL_HPP
 #define SGL_IMPL_ENUM_MAP_IMPL_HPP
 #include "sgl/enum_map.hpp"
+
 namespace sgl {
   template <typename E, size_t N, typename CharT>
   constexpr EnumMap<E, N, CharT>::EnumMap(const EnumMap& other) noexcept : data(other.data) {}
@@ -94,6 +99,7 @@ namespace sgl {
       return std::is_same_v<T, T1> && every_second_same<T, Ts...>();
     }
   }
+
   template <typename T, typename T1, typename T2, typename... Ts>
   constexpr bool every_second_convertible() {
     if constexpr (sizeof...(Ts) < 2) {
@@ -105,30 +111,37 @@ namespace sgl {
 
   template <typename Str>
   struct get_char_type;
+
   template <typename CharT>
   struct get_char_type<const CharT*> {
     using type = CharT;
   };
+
   template <typename CharT, size_t N>
   struct get_char_type<const CharT (&)[N]> {
     using type = CharT;
   };
+
   template <typename CharT>
   struct get_char_type<sgl::string_view<CharT>> {
     using type = CharT;
   };
+
   template <typename T>
   struct get_string_size {
     static constexpr size_t value = 0;
   };
+
   template <typename T, size_t N>
   struct get_string_size<T (&)[N]> {
     static constexpr size_t value = N - 1;
   };
+
   template <typename T, size_t N>
   struct get_string_size<T[N]> {
     static constexpr size_t value = N - 1;
   };
+
   template <typename E, typename Str, typename... Rs>
   constexpr bool check_template_params() noexcept {
     using char_type = typename get_char_type<Str>::type;

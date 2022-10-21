@@ -14,6 +14,7 @@
 
 #if defined(_MSC_VER)
   #include <intrin.h>
+
 namespace ryu {
   static inline uint32_t floor_log2(const uint32_t value) noexcept {
     unsigned long index;
@@ -46,6 +47,7 @@ namespace ryu {
       return ryu::s2f_n(buffer, len, result, ryu::cx::floor_log2, ryu::cx::int32Bits2Float);
     }
   } // namespace cx
+
   namespace detail {
     // The max function is already defined on Windows.
     constexpr int32_t max32(int32_t a, int32_t b) noexcept { return a < b ? b : a; }
@@ -236,6 +238,7 @@ namespace ryu {
       return Status::success;
     }
   } // namespace detail
+
   inline Status s2f_n(const char* buffer, const int len, float* result) noexcept {
     return ryu::detail::s2f_n(buffer, len, result, &floor_log2, &int32Bits2Float);
   }

@@ -13,6 +13,7 @@ namespace sgl {
   // intentional forward declaration only. specialization follows below.
   template <typename Signature>
   class Callable;
+
   /// \endcond
 
   /// \headerfile callable.hpp "sgl/callable.hpp"
@@ -178,5 +179,6 @@ namespace sgl {
     Storage buffer_{nullptr};
   };
 } // namespace sgl
+
 #include "sgl/impl/callable_impl.hpp"
 #endif /* SGL_CALLABLE_HPP */

@@ -27,6 +27,7 @@ namespace sgl {
     template <typename Name, typename Tuple>
     using type_for_t = typename type_for<Name, Tuple>::type;
   }; // namespace tuple_detail
+
   /// \endcond
 
   template <typename... Names, typename... Ts>
@@ -186,10 +187,12 @@ namespace sgl {
   constexpr const auto& get(const NamedTuple<NameList, TypeList>& t) noexcept {
     return t.template get<I>();
   }
+
   template <typename Name, typename NameList, typename TypeList>
   constexpr auto& get(Name name, NamedTuple<NameList, TypeList>& t) noexcept {
     return t.template get(name);
   }
+
   template <typename Name, typename NameList, typename TypeList>
   constexpr const auto& get(Name name, const NamedTuple<NameList, TypeList>& t) noexcept {
     return t.template get(name);

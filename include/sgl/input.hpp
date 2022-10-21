@@ -6,6 +6,7 @@
 #ifndef SGL_INPUT_HPP
 #define SGL_INPUT_HPP
 #include <cstdint>
+
 namespace sgl {
 
   /// \brief This enum class represents a universal input, i.e. character or keypad input
@@ -58,6 +59,7 @@ namespace sgl {
         return Input::none;
     }
   }
+
   /// \}
 
   /// \addtogroup input_type
@@ -74,6 +76,7 @@ namespace sgl {
   constexpr bool is_keypad_input(Input input) {
     return get_keypad_input(input) != sgl::Input::none;
   }
+
   /// \}
 
   /// \addtogroup char_input_conversion
@@ -117,11 +120,13 @@ namespace sgl {
   constexpr CharT get_char(Input i) {
     return static_cast<CharT>(i & Input::char32_mask);
   }
+
   /// \cond
   template <>
   constexpr char get_char<char>(Input i) {
     return get_char8(i);
   }
+
   template <>
   constexpr char16_t get_char<char16_t>(Input i) {
     return get_char16(i);
@@ -131,6 +136,7 @@ namespace sgl {
   constexpr char32_t get_char<char32_t>(Input i) {
     return get_char32(i);
   }
+
   /// \endcond
   /// \}
 

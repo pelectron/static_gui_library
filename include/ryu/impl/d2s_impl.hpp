@@ -78,6 +78,7 @@ namespace ryu::detail {
     }
     return 1;
   }
+
   constexpr floating_decimal_64 d2d(const uint64_t ieeeMantissa,
                                     const uint32_t ieeeExponent) noexcept {
     int32_t  e2{0};
@@ -268,6 +269,7 @@ namespace ryu::detail {
     fd.mantissa = output;
     return fd;
   }
+
   template <typename CharT>
   constexpr unsigned
       to_chars(const floating_decimal_64 v, const bool sign, CharT* const result) noexcept {

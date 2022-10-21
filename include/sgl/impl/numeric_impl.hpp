@@ -40,6 +40,7 @@ namespace sgl {
           Numeric<format_impl::max_buf_size_v<std::decay_t<T>>, char, std::decay_t<T>>> = true>
   Numeric(T initial_value, T delta, Formatter&&, InputHandler&&)
       -> Numeric<format_impl::max_buf_size_v<std::decay_t<T>> + 2, char, std::decay_t<T>>;
+
   /// \}
 
   template <size_t TextSize, typename CharT, typename T>

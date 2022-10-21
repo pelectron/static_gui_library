@@ -30,6 +30,7 @@ namespace ryu {
     constexpr unsigned f2s_buffered_n(float f, CharT* result) noexcept {
       return ryu::detail::f2s_buffered_n(f, result, &cx::to_bits);
     }
+
     template <typename CharT>
     constexpr unsigned d2s_buffered_n(double f, CharT* result) noexcept;
     template <typename CharT>

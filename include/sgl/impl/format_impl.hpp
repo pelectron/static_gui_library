@@ -1,3 +1,7 @@
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef SGL_IMPL_FORMAT_IMPL_HPP
 #define SGL_IMPL_FORMAT_IMPL_HPP
 #include "gcem.hpp"
@@ -14,34 +18,42 @@ namespace sgl {
   namespace format_impl {
     template <typename T>
     struct biggest_pow10_t;
+
     template <>
     struct biggest_pow10_t<uint8_t> {
       static constexpr size_t value = 100;
     };
+
     template <>
     struct biggest_pow10_t<int8_t> {
       static constexpr size_t value = 100;
     };
+
     template <>
     struct biggest_pow10_t<uint16_t> {
       static constexpr size_t value = 10000;
     };
+
     template <>
     struct biggest_pow10_t<int16_t> {
       static constexpr size_t value = 10000;
     };
+
     template <>
     struct biggest_pow10_t<uint32_t> {
       static constexpr size_t value = 1000000;
     };
+
     template <>
     struct biggest_pow10_t<int32_t> {
       static constexpr size_t value = 1000000;
     };
+
     template <>
     struct biggest_pow10_t<uint64_t> {
       static constexpr size_t value = 1000000000;
     };
+
     template <>
     struct biggest_pow10_t<int64_t> {
       static constexpr size_t value = 1000000000;
@@ -91,42 +103,52 @@ namespace sgl {
 
     template <typename T>
     struct max_buf_size;
+
     template <>
     struct max_buf_size<uint8_t> {
       static constexpr size_t value = 3;
     };
+
     template <>
     struct max_buf_size<int8_t> {
       static constexpr size_t value = 4;
     };
+
     template <>
     struct max_buf_size<uint16_t> {
       static constexpr size_t value = 5;
     };
+
     template <>
     struct max_buf_size<int16_t> {
       static constexpr size_t value = 6;
     };
+
     template <>
     struct max_buf_size<uint32_t> {
       static constexpr size_t value = 7;
     };
+
     template <>
     struct max_buf_size<int32_t> {
       static constexpr size_t value = 8;
     };
+
     template <>
     struct max_buf_size<uint64_t> {
       static constexpr size_t value = 10;
     };
+
     template <>
     struct max_buf_size<int64_t> {
       static constexpr size_t value = 11;
     };
+
     template <>
     struct max_buf_size<float> {
       static constexpr size_t value = 15;
     };
+
     template <>
     struct max_buf_size<double> {
       static constexpr size_t value = 24;
@@ -197,6 +219,7 @@ namespace sgl {
         }
       return 0x1;
     }
+
     // NOLINTEND(readability-*)
 
     template <typename T>

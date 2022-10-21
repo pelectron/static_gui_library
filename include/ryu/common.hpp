@@ -26,10 +26,12 @@ namespace ryu {
   inline constexpr int    POW10_ADDITIONAL_BITS = 120;
   inline constexpr float  f_infinity = HUGE_VALL;
   inline constexpr double d_infinity = HUGE_VALL;
+
   namespace config {
     inline constexpr int DOUBLE_POW5_BITCOUNT = 125;
     inline constexpr int DOUBLE_POW5_INV_BITCOUNT = 125;
   } // namespace config
+
   namespace detail {
     /// Returns the number of decimal digits in v, which must not contain more than 9 digits.
     constexpr uint32_t decimalLength9(const uint32_t v) noexcept;
@@ -85,5 +87,6 @@ namespace ryu {
   } // namespace cx
 
 } // namespace ryu
+
 #include "impl/common_impl.hpp"
 #endif /* SGL_RYU_COMMON_HPP */

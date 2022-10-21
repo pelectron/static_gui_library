@@ -7,6 +7,7 @@
 #define SGL_IMPL_MENU_IMPL_HPP
 #include "sgl/menu.hpp"
 #include "sgl/page.hpp"
+
 namespace sgl {
 
   template <typename... Names, typename... Pages>

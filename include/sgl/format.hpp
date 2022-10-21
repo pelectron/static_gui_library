@@ -107,6 +107,7 @@ namespace sgl {
         sgl::format                                          format = sgl::format::fixed) noexcept;
 
     constexpr RealFormatter& set_precision(uint32_t p) noexcept { precision_ = p; }
+
     constexpr RealFormatter& set_format(sgl::format f) noexcept { format_ = f; }
 
     sgl::format_result operator()(CharT* str, size_t len, T value) {

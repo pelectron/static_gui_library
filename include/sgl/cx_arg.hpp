@@ -37,6 +37,7 @@ namespace sgl {
       }
       return ret;
     }
+
     /// unary plus operator for same reason as negation operator, just that this time the value does
     /// not change.
     /// \return cx_arg<T, N>

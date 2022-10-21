@@ -5,19 +5,26 @@
 //
 #ifndef SGL_ARRAY_HPP
 #define SGL_ARRAY_HPP
+
 namespace sgl {
 
   /// simple array type
   template <typename T, size_t N>
   struct Array {
   public:
-    constexpr T*                   begin() { return data; }
-    constexpr const T*             begin() const { return data; }
-    constexpr T*                   end() { return data + N; }
-    constexpr const T*             end() const { return data + N; }
+    constexpr T* begin() { return data; }
+
+    constexpr const T* begin() const { return data; }
+
+    constexpr T* end() { return data + N; }
+
+    constexpr const T* end() const { return data + N; }
+
     [[nodiscard]] constexpr size_t size() const { return N; }
-    constexpr T&                   operator[](size_t i) { return data[i]; }
-    constexpr const T&             operator[](size_t i) const { return data[i]; }
+
+    constexpr T& operator[](size_t i) { return data[i]; }
+
+    constexpr const T& operator[](size_t i) const { return data[i]; }
 
     T data[N];
   };

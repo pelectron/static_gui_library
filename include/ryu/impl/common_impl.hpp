@@ -132,6 +132,7 @@ namespace ryu {
     memcpy(&bits, &f, sizeof(float));
     return bits;
   }
+
   namespace cx {
 
     // Based on code from

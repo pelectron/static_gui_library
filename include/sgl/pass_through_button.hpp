@@ -6,6 +6,7 @@
 #ifndef SGL_PASS_THROUGH_BUTTON_HPP
 #define SGL_PASS_THROUGH_BUTTON_HPP
 #include "sgl/item_base.hpp"
+
 namespace sgl {
 
   /// \brief This class can be inherited from if the item implementation needs a click handler.
@@ -93,5 +94,6 @@ namespace sgl {
   };
 
 } // namespace sgl
+
 #include "sgl/impl/pass_through_button_impl.hpp"
 #endif /* SGL_PASS_THROUGH_BUTTON_HPP */

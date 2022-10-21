@@ -7,6 +7,7 @@
 #define SGL_IMPL_PAGE_LINK_IMPL_HPP
 #include "sgl/page_link.hpp"
 #include "sgl/type_list.hpp"
+
 namespace sgl {
 
   template <char... chars, size_t TextSize, typename CharT>

@@ -46,7 +46,7 @@ namespace sgl {
       : value_(value & value_mask) {}
 
   template <size_t IntDigits, size_t FracDigits>
-  unsigned_fixed<IntDigits, FracDigits>::unsigned_fixed(float value) noexcept {
+  constexpr unsigned_fixed<IntDigits, FracDigits>::unsigned_fixed(float value) noexcept {
 
     const value_type int_part = (static_cast<value_type>(value) & integer_mask) << num_frac_digits;
 
@@ -58,7 +58,7 @@ namespace sgl {
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  unsigned_fixed<IntDigits, FracDigits>::unsigned_fixed(double value) noexcept {
+  constexpr unsigned_fixed<IntDigits, FracDigits>::unsigned_fixed(double value) noexcept {
 
     const value_type int_part =
         ((static_cast<value_type>(value) & integer_mask) << num_frac_digits);
@@ -98,8 +98,9 @@ namespace sgl {
   constexpr signed_fixed<IntDigits, FracDigits>::signed_fixed(
       signed_fixed<IntDigits, FracDigits>::value_type value) noexcept
       : value_(value & value_mask) {}
+
   template <size_t IntDigits, size_t FracDigits>
-  signed_fixed<IntDigits, FracDigits>::signed_fixed(float value) noexcept {
+  constexpr signed_fixed<IntDigits, FracDigits>::signed_fixed(float value) noexcept {
     if (value < 0.0f) {
       value = -value;
       const value_type int_part = (static_cast<value_type>(value) & integer_mask)
@@ -125,7 +126,7 @@ namespace sgl {
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  signed_fixed<IntDigits, FracDigits>::signed_fixed(double value) noexcept {
+  constexpr signed_fixed<IntDigits, FracDigits>::signed_fixed(double value) noexcept {
     if (value < 0.0) {
       value = -value;
       const value_type int_part = (static_cast<value_type>(value) & integer_mask)

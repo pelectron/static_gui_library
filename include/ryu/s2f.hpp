@@ -41,5 +41,6 @@ namespace ryu {
   inline ryu::Status s2f_n(const char* buffer, const int len, float* result) noexcept;
 
 } // namespace ryu
+
 #include "impl/s2f_impl.hpp"
 #endif /* RYU_S2F_HPP */

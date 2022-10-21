@@ -73,5 +73,6 @@ namespace ryu::detail {
                                       DoubleCastFunction bit_cast) noexcept;
 
 } // namespace ryu::detail
+
 #include "impl/d2fixed_impl.hpp"
 #endif /* RYU_D2FIXED_HPP */

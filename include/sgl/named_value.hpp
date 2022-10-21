@@ -114,5 +114,6 @@ namespace sgl {
   constexpr NamedValue<Name<Chars...>, std::decay_t<T>> operator<<=(Name<Chars...> name, T&& value);
 
 } // namespace sgl
+
 #include "impl/named_value_impl.hpp"
 #endif /* SGL_NAMED_VALUE_HPP */

@@ -8,6 +8,7 @@
 #include "sgl/menu.hpp"
 
 #include <iostream>
+
 namespace sgl {
 
   /// \brief pair of sgl::Input and sgl::string_view<char>
@@ -28,13 +29,15 @@ namespace sgl {
       for (size_t i = 0; i < N; ++i)
         map[i] = inp_map[i];
     }
+
     InputPair<CharT> map[N];
-    sgl::Input       get(sgl::string_view<CharT> string) {
-            for (const auto& e : map) {
-              if (string == e.string)
+
+    sgl::Input get(sgl::string_view<CharT> string) {
+      for (const auto& e : map) {
+        if (string == e.string)
           return e.input;
       }
-            return sgl::Input::none;
+      return sgl::Input::none;
     }
   };
 
@@ -66,6 +69,7 @@ namespace sgl {
 
     MenuTester(Menu&& menu, const InputPair<char> (&input_map)[N])
         : menu_(std::move(menu)), map(input_map) {}
+
     /// \}
 
     /// \brief handles input

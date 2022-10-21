@@ -13,6 +13,7 @@
  */
 #ifndef SGL_ERROR_HPP
 #define SGL_ERROR_HPP
+
 namespace sgl {
 
   /// \headerfile error.hpp "sgl/error.hpp"

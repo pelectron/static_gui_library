@@ -316,6 +316,7 @@ namespace ryu::detail {
     // +1 for ceil, +16 for mantissa, +8 to round up when dividing by 9
     return (log10Pow2(16 * (int32_t)idx) + 1 + 16 + 8) / 9;
   }
+
   template <typename CharT>
   constexpr unsigned copy_special_str_printf(CharT* const   result,
                                              const bool     sign,
@@ -809,6 +810,7 @@ namespace ryu {
     constexpr unsigned d2exp_buffered_n(double d, uint32_t precision, CharT* result) noexcept {
       return ryu::detail::d2exp_buffered_n(d, precision, result, cx::to_bits);
     }
+
     template <typename CharT>
     constexpr unsigned d2fixed_buffered_n(double d, uint32_t precision, CharT* result) noexcept {
       return ryu::detail::d2fixed_buffered_n(d, precision, result, &cx::to_bits);

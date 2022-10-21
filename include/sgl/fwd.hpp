@@ -6,6 +6,7 @@
 #ifndef SGL_FWD_HPP
 #define SGL_FWD_HPP
 #include <cstdint>
+
 namespace sgl {
   /// \cond
   enum class Input : uint64_t;

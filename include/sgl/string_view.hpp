@@ -127,6 +127,7 @@ namespace sgl {
     constexpr sgl::string_view<char> operator"" _sv(const char* str, size_t n) noexcept {
       return {str, n};
     }
+
     /// string_view<char16_t> literal operator
     /// \param str pointer to literal
     /// \param n literal size
@@ -134,6 +135,7 @@ namespace sgl {
     constexpr sgl::string_view<char16_t> operator"" _sv16(const char16_t* str, size_t n) noexcept {
       return {str, n};
     }
+
     /// string_view<char32_t> literal operator
     /// \param str pointer to literal
     /// \param n literal size

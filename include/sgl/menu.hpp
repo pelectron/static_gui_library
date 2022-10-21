@@ -8,10 +8,10 @@
  * \date 2022-09-24
  *
  *          Copyright Pele Constam 2022.
-* Distributed under the Boost Software License, Version 1.0.
-*    (See accompanying file LICENSE_1_0.txt or copy at
-*          https://www.boost.org/LICENSE_1_0.txt)
-*/
+ * Distributed under the Boost Software License, Version 1.0.
+ *    (See accompanying file LICENSE_1_0.txt or copy at
+ *          https://www.boost.org/LICENSE_1_0.txt)
+ */
 #ifndef SGL_MENU_HPP
 #define SGL_MENU_HPP
 #include "sgl/callable.hpp"
@@ -24,6 +24,7 @@ namespace sgl {
   /// \cond
   template <typename NameList, typename PageTypeList>
   class Menu;
+
   /// \endcond
 
   /// \headerfile menu.hpp "sgl/menu.hpp"
@@ -179,6 +180,7 @@ namespace sgl {
 
     template <typename F>
     constexpr void for_each_page(F&& f) const noexcept(const_nothrow_applicable<F>);
+
     /// \}
 
     /// \brief apply f on each page in menu.
@@ -207,6 +209,7 @@ namespace sgl {
     constexpr void for_each_page_with_name(F&& f) const noexcept(const_nothrow_applicable<F>) {
       sgl::for_each_with_name(pages_, std::forward<F>(f));
     }
+
     /// \}
 
     /// \brief apply f on the current page.
@@ -300,5 +303,6 @@ namespace sgl {
   /// \}
 
 } // namespace sgl
+
 #include "sgl/impl/menu_impl.hpp"
 #endif /* SGL_MENU_HPP */
