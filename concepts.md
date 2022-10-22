@@ -9,41 +9,18 @@ The concept is always provided as a table of variables and a table of expression
 Items are the things which occupy one line in the display. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button).
 For a type `T` to satisfy the item concept, the following must hold:
 
-variable      | type                                  |
---------------|---------------------------------------|
-t             | T                                     |
-ct            | const T                               |
-i             | sgl::Input                            |
-sv            | T::StringView                         |
-m             | Menu containing t                     |
-input_handler | [InputHandler](#input-handler) for T  |
-tick_handler  | [TickHandler](#tick-handler) for T    |
-click_handler | [ClickHandler](#click-handler) for T  |
+variable | type                                  |
+---------|---------------------------------------|
+ t       | T                                     |
+ i       | sgl::Input                            |
+ m       | type satisfying the Menu concept      |
 
 For basic items, the following must hold:
-Expression                           | Return type/value  | Notes                                   |
--------------------------------------|--------------------|-----------------------------------------|
-`typename T::StringView`             | sgl::string_view   |                                         |
-`typename T::String`                 | sgl::static_string |                                         |
-`t.text()`                           | T::String&         |                                         |
-`ct.text()`                          | const T::String&   |                                         |
-`t.set_text(sv)`                     | sgl::error         |                                         | 
-`t.clear_text()`                     | void               |                                         |
-`t.handle_input(i)`                  | sgl::error         | calls the user provided input handler   |
-`t.set_menu(&m)`                     | void               |                                         |
-`t.tick()`                           | void               | calls the user provided tick handler    |
-`t.set_input_handler(input_handler)` | T&                 |                                         |
-`t.set_tick_handler(tick_handler)`   | T&                 |                                         |
-
-
-Clickable Items additionally support:
-Expression                           | Return type/value |
--------------------------------------|-------------------|
-`t.click()`                          | sgl::error        |
-`t.set_click_handler(click_handler)` | T&                |
-
-
-Note that all of the operation listed above should be non throwing.
+Expression          | Return type/value  | Notes        |
+--------------------|--------------------|--------------|
+`t.handle_input(i)` | sgl::error         | non throwing |
+`t.set_menu(&m)`    | void               | non throwing |
+`t.tick()`          | void               | non throwing |
 
 
 # Input Handler
@@ -91,7 +68,7 @@ Handler_t handler3 {/* ... */};
 // items provided by sgl store their input handler as an sgl::Callable
 sgl::Callable<sgl::error(T&,sgl::Input)> handler_4{/*...*/};
 
-// Now, for any T modelling Item, Page or Menu,
+// Now for a type T provided by sgl, i.e. an Item, Page or Menu
 T t{/*...*/};
 
 // any of the following lines will compile
@@ -181,7 +158,7 @@ item.tick(); // calls the handler
 ```
 
 # Formatter
-Formatters are used by the sgl::Numeric class to automatically format the values into it's text field.
+Formatters are used by the sgl::Numeric class to automatically format the values into its text field.
 
 For F to be a Formatter for Item, the following must hold:
 
