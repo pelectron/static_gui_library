@@ -65,6 +65,7 @@ namespace sgl {
   template <typename T>
   static constexpr bool is_name_type_v = sgl::detail::is_name_type<T>::value;
 } // namespace sgl
+#include "impl/name_impl.hpp"
 
 /**
  * \brief convenience macro to define compile time string literals used by the NamedTuple for
@@ -91,6 +92,5 @@ namespace sgl {
         typename sgl::detail::compile_time::string_builder<constexpr_string_type>::produce>:: \
         result{};                                                                             \
   })
-#include "impl/name_impl.hpp"
 
 #endif /* SGL_NAME_HPP */

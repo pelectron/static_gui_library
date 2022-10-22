@@ -22,12 +22,6 @@ if get_option('instantiate')
     defines += ['-DSGL_CHAR_TYPE=@0@'.format(get_option('char_type')), '-DSGL_LINE_WIDTH=@0@'.format(get_option('line_width'))]
 endif
 
-
-
-if get_option('test').enabled()
-  subdir('tests')
-endif
-
 if get_option('gui')
   subdir('include/sgl/qt')
 endif
@@ -35,6 +29,10 @@ endif
 sgl_dep = declare_dependency( include_directories: sgl_include_dir, 
                               dependencies: dependencies, 
                               compile_args: defines)
+
+if get_option('test').enabled()
+  subdir('tests')
+endif
 
 if get_option('example').enabled()
   subdir('example')
