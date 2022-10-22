@@ -7,13 +7,19 @@ There are a few important points for me when I set out to write this library:
  - constexpr everything possible
  - easily customizable behavior without inheritance
  - easily adaptable to new environment, i.e. changing MCU etc.
+ - make it simple extend if the provided customizability is not enough.
 
 In addition, I wanted an easy way to visualize menus without deploying to an MCU. For this, sgl provides two solutions. 
 One is a command line tester. Look into the header menu_tester.hpp and the example menu_tester.cpp for more info.
 The other option sgl offers is a menu visualizer made with Qt. This will give you a better insight into what's going on, but requires a Qt installation.
 
+Note that this project requires a c++17 compliant compiler. It uses variadic pack expansion and some other newer c++ features to make the source code more readable and fun to program and this will not change. 
+It is also written by an EE student and not some c++ wizard, so beware if you expect code that would make even shakespeare cry of joy;)
+
+Feedback, comments and question are greatly welcome. I would love to hear from you!
+
 # Building and configuring
-If you simply want to use the library without the qt visualizer, no special installation or build process is needed. sgl is a header only library and you just need to add the `include` subfolder to your compilers include path, assuming you have the [dependencies](#dependencies) installed.
+If you simply want to use the library without the qt visualizer, no special installation or build process is needed. sgl is a header only library and you just need to add the `include` subdirectory to your compilers include path, assuming you have the [dependencies](#dependencies) installed.
 
 Alternatively you can use the meson build system. Just include this repo as a subproject, i.e. with a wrap file or just cloning it. Then in your main meson.build file, you can get the required dependency by using the command below:
 
@@ -24,26 +30,19 @@ Note that if you want to also have access to the qt visualizer, you will need to
 ``sgl_dep = dependency('sgl', fallback: ['sgl', 'sgl_dep'], default_options: ['gui=true'])``
 
 This will add the visualizer library to the sgl_dep.
-For compiling with Qt5, you should set `qt_major_version=5` in the default options. qmake needs to be available in your path for this to work!
+For compiling with Qt5, you should set `qt_major_version=5` in the default options. Note that qmake needs to be available in your path for this to work!
+More on the visualizer can be found [here](visualizer.md).
 
-Note: This project requires c++17 or later!
 
-## Dependencies
-sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone it and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
+# Dependencies
+sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone gcem and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
 
-For testing, [Catch2](https://github.com/catchorg/Catch2 ) is required. Again, you will manually need to download it if you are not using meson and want to build the tests. See more info [here](#testing).
+For testing, [Catch2](https://github.com/catchorg/Catch2) is required. Again, you will manually need to download it if you are not using meson and want to build the tests. See more info [here](#testing).
 
-## Building without meson
-If you don't want to use meson, but still want the qt visualizer, you will have to do the following:
- 1. Pass all header files in the `include/sgl/qt` subfolder (except menu_tree.hpp) to moc and generate the necessary source files.
- 2. Compile the qt resource file `include/sgl/qt/resources/section.qrc` with the Qt rcc
- 3. Compile all cpp files in the `include/sgl/qt` subfolder and the generated sources from the previous steps and link them into a library. You will also have to define the macro `SGL_BUILD_LIB`, most easily done by passing `-DSGL_BUILD_LIB` as a command line argument to the compiler.
- 4. Done. Now you can build an application with the qt visualizer.
-
-If the instruction above are unclear, have a look at the meson.build file located in `include/sgl/qt`. Even if you don't know meson, it should be very clear what is done.
+[Ryu](https://github.com/ulfjack/ryu) used to be an external dependency, I have however adopted the algorithm and made a constexpr version, which lives in the include/ryu subdirectory. Ulf Adams (the creator of ryu) really did a wonderful job and without his brains, constexpr floating point formatting wouldn't have been possible for me with all the features (roundtripping, shortest form formatting, speed) of ryu.
 
 # Testing
-sgl has unit tests. To enable building tests with meson, set the `test` option to `enabled`  when building the project or using it as a dependency. This will produce an executable called `test_main` in the tests subfolder. 
+sgl has unit tests. To enable building tests with meson, set the `test` option to `enabled`  when building the project or using it as a dependency. This will produce an executable called `test_main` in the tests subdirectory. 
 
 Building the tests without meson requires compiling all cpp files in the `tests` subdirectory and linking them into a single executable. You will need [Catch2](https://github.com/catchorg/Catch2). Catch2 is also a header only library, just add its `single_include` subdirectory to your include path when compiling the tests.
 
@@ -131,8 +130,18 @@ int main(){
 
 ```
 
-
 For more info on how sgl is built up, see [here](architecture.md).
 
 To see how to integrate sgl in your embedded system, see [here](integrating.md).
 
+# Contributing
+To contribute simply make a pull request. Just be sure to format your request with clang-format with the config file in the root directory. If you plan to add a new feature or improve existing ones, it would be great to here from you!
+
+# Questions
+Feel free to write me at pelectron1602@gmail.com or open an issue if you have any questions regarding sgl.
+
+# Requests
+If you have a feature request or an idea that would improve the library, again feel free to contact me or open an issue.
+
+# Licensing
+This library is distributed under the Boost Software License, Version 1.0. See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt.
