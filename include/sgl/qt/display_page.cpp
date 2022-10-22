@@ -47,8 +47,6 @@ namespace sgl::qt {
   //   return min_size;
   // }
 
-  static DisplayItem* item_cast(QWidget* w) { return dynamic_cast<DisplayItem*>(w); }
-
   void DisplayPage::update_page() {
     // remove all items from layout, still store pointers to them in items_
     auto* item = item_layout_->takeAt(0);

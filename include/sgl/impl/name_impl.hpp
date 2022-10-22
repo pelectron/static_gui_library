@@ -50,6 +50,7 @@ namespace sgl {
         return std::forward<F>(f)();
       }
     } // namespace compile_time
+
   } // namespace detail
 
   /// \endcond

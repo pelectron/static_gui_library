@@ -98,9 +98,12 @@ namespace sgl {
   struct has_handle_input<
       T,
       std::void_t<decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>> {
-    static constexpr bool value =
-        std::is_same_v<sgl::error,
-                       decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>;
+    static constexpr bool value = std::is_same_v<
+        sgl::error,
+        decltype(std::declval<T>().handle_input(
+            std::declval<sgl::Input>()))>and noexcept(std::declval<T>()
+                                                          .handle_input(
+                                                              std::declval<sgl::Input>()));
   };
 
   template <typename T>
@@ -118,21 +121,21 @@ namespace sgl {
                                                      std::declval<typename T::StringView>()))>;
   };
 
+  template <typename T, typename = void>
+  struct has_tick : std::false_type {};
+
+  template <typename T>
+  struct has_tick<T, decltype(std::declval<T>().tick())> {
+    static constexpr bool value = noexcept(std::declval<T>().tick());
+  };
+
   template <typename T>
   static constexpr bool has_set_text_v = has_set_text<T>::value;
 
+  template <typename T>
+  inline constexpr bool has_tick_v = has_tick<T>::value;
+
   /// \endcond
-
-  /// @brief  check if T fulfills the item concept. See sgl::is_item_v<T> for more details.
-  template <typename T>
-  struct is_item {
-    static constexpr bool value = has_text_v<T> and has_handle_input_v<T> and has_set_text_v<T>;
-  };
-
-  /// @brief  check if T fulfills the item concept.
-  /// @tparam T type to check
-  template <typename T>
-  static constexpr bool is_item_v = is_item<T>::value;
 
   /// \}
 
@@ -295,9 +298,8 @@ namespace sgl {
   struct has_set_menu : std::false_type {};
 
   template <typename T>
-  struct has_set_menu<T,
-                      std::void_t<decltype(std::declval<T>().template set_menu<detail::M>(
-                          std::declval<detail::M*>()))>> : std::true_type {};
+  struct has_set_menu<T, std::void_t<decltype(std::declval<T>().set_menu(std::declval<void*>()))>>
+      : std::true_type {};
 
   template <typename T>
   static constexpr bool has_set_menu_v = has_set_menu<T>::value;
@@ -472,5 +474,15 @@ namespace sgl {
 
   /// \}
 
+  /// @brief  check if T fulfills the item concept. See sgl::is_item_v<T> for more details.
+  template <typename T>
+  struct is_item {
+    static constexpr bool value = has_set_menu_v<T> and has_handle_input_v<T> and has_tick_v<T>;
+  };
+
+  /// @brief  check if T fulfills the item concept.
+  /// @tparam T type to check
+  template <typename T>
+  static constexpr bool is_item_v = is_item<T>::value;
 } // namespace sgl
 #endif /* SGL_ITEM_CONCEPTS_HPP */
