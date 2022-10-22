@@ -36,7 +36,7 @@ namespace sgl {
   class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
 
     static_assert((sgl::is_name_type_v<Names> && ...),
-                  "One of the types begin used as a name is not instance of sgl::Name<...>.");
+                  "One of the types used as a name is of type sgl::Name<...>.");
     static_assert(sgl::all_unique_v<Names...>,
                   "sgl::Menu can't have duplicate names for it's pages! Make sure to use a unique "
                   "name for each page in the menu.");
@@ -148,13 +148,13 @@ namespace sgl {
 
     /// \brief get reference to page at index I
     /// \tparam I page index
-    /// \return reference to page
+    /// \return reference to I-th page
     template <size_t I>
     [[nodiscard]] constexpr auto& get_page() noexcept;
 
     /// \brief get const reference to page at index I
     /// \tparam I page index
-    /// \return const reference to page
+    /// \return const reference to I-th page
     template <size_t I>
     [[nodiscard]] constexpr const auto& get_page() const noexcept;
 
