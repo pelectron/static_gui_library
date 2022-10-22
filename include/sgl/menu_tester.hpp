@@ -5,7 +5,7 @@
 //
 #ifndef SGL_MENU_TESTER_HPP
 #define SGL_MENU_TESTER_HPP
-#include "sgl/menu.hpp"
+#include "sgl.hpp"
 
 #include <iostream>
 

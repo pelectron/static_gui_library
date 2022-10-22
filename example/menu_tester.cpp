@@ -4,7 +4,6 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/menu_tester.hpp"
 
-#include "sgl.hpp"
 
 #include <iostream>
 #include <string>
