@@ -4,7 +4,7 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef MENU_TREE_HPP
 #define MENU_TREE_HPP
-#include "sgl/sgl.hpp"
+#include "sgl.hpp"
 
 #include <cassert>
 #include <string_view>

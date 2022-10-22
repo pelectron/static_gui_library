@@ -4,12 +4,7 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 #include "sgl/menu_tester.hpp"
 
-#include "sgl/boolean.hpp"
-#include "sgl/enum.hpp"
-#include "sgl/menu.hpp"
-#include "sgl/numeric.hpp"
-#include "sgl/page.hpp"
-#include "sgl/page_link.hpp"
+#include "sgl.hpp"
 
 #include <iostream>
 #include <string>
@@ -67,18 +62,19 @@ constexpr auto OtherSettingsPage() {
               settings_link <<= PageLink(settings_page),
               home_link <<= PageLink(home_page));
 }
+
 constexpr auto MainMenu() {
   // this menu as three pages, a home page, settings page and 'other' settings page
   return sgl::Menu(home_page <<= HomePage(),
                    settings_page <<= SettingsPage(),
                    other_settings_page <<= OtherSettingsPage());
 }
+
 int main() {
-  // making a menu tester with the menu and supplying a mapping of sgl::Input values to sgl::string_view.
-  // The tester will check if a command line input matches any of the strings in the input map and
-  // forward the corresponding sgl::Input value.
-  // If the command line input is not in the map, the tester will call handle_input for every
-  // character in the input string.
+  // making a menu tester with the menu and supplying a mapping of sgl::Input values to
+  // sgl::string_view. The tester will check if a command line input matches any of the strings in
+  // the input map and forward the corresponding sgl::Input value. If the command line input is not
+  // in the map, the tester will call handle_input for every character in the input string.
   auto tester = MenuTester(MainMenu(),
                            {{sgl::Input::up, "up"_sv},
                             {sgl::Input::down, "down"_sv},
