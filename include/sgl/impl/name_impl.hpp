@@ -51,13 +51,6 @@ namespace sgl {
       }
     } // namespace compile_time
 
-    // primary template for is_name_type
-    template <typename>
-    struct is_name_type : std::false_type {};
-
-    // specialization for when T is a name type
-    template <char... Chars>
-    struct is_name_type<Name<Chars...>> : std::true_type {};
   } // namespace detail
 
   /// \endcond
