@@ -1,6 +1,6 @@
 /**
  * \file item_base.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief This files defines the item_base class template.
  * \version 0.1
  * @date 2022-09-26
