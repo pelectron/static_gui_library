@@ -1,6 +1,6 @@
 /**
  * \file sgl/numeric.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief This file contains the sgl::Numeric class and the various sgl::make_numeric() overloads.
  * \version 0.1
  * \date 2022-09-23

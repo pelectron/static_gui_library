@@ -1,3 +1,12 @@
+/**
+ * \file fix_point.hpp
+ * \author Pelé Constam (pelectron1602@gmail.com)
+ * \brief
+ * \version 0.1
+ * @date 2022-10-23
+ *
+ *
+ */
 //          Copyright Pele Constam 2022.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -5,9 +14,7 @@
 //
 #ifndef SGL_FIX_POINT_HPP
 #define SGL_FIX_POINT_HPP
-#include "gcem.hpp"
-
-#include <cassert>
+#include <gcem.hpp>
 #include <type_traits>
 
 namespace sgl {
