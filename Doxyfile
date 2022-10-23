@@ -908,11 +908,13 @@ WARN_LOGFILE           =
 
 INPUT                  = include \
                          readme.md \
-                         concepts.md \
-                         architecture.md \
-                         page.md \
-                         menu.md \
-                         item.md
+                         markdown/concepts.md \
+                         markdown/architecture.md \
+                         markdown/input_handling.md \
+                         markdown/integrating.md \
+                         markdown/menu.md \
+                         markdown/page.md \
+                         markdown/visualizer.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1054,7 +1056,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             =
+IMAGE_PATH             = markdown/images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1247,7 +1249,7 @@ CLANG_DATABASE_PATH    =
 # classes, structs, unions or interfaces.
 # The default value is: YES.
 
-ALPHABETICAL_INDEX     = NO
+ALPHABETICAL_INDEX     = YES
 
 # In case all classes in a project start with a common prefix, all classes will
 # be put under the same header in the alphabetical index. The IGNORE_PREFIX tag
@@ -2481,7 +2483,7 @@ CLASS_GRAPH            = YES
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-COLLABORATION_GRAPH    = NO
+COLLABORATION_GRAPH    = YES
 
 # If the GROUP_GRAPHS tag is set to YES then doxygen will generate a graph for
 # groups, showing the direct groups dependencies. See also the chapter Grouping
@@ -2523,7 +2525,7 @@ UML_LIMIT_NUM_FIELDS   = 20
 # The default value is: NO.
 # This tag requires that the tag UML_LOOK is set to YES.
 
-DOT_UML_DETAILS        = YES
+DOT_UML_DETAILS        = NO
 
 # The DOT_WRAP_THRESHOLD tag can be used to set the maximum number of characters
 # to display on a single line. If the actual line length exceeds this threshold
