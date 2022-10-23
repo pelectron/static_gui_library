@@ -1,7 +1,7 @@
 # Architecture
 Because of the nature of line based displays, sgl has the following visualization for the architecture:
 
-Everything you see on a display at once are [items](item.md) in a [page](page.md).
+Everything you see on a display at once are [items](concepts.md#item) in a [page](page.md).
 
 Items are the things which occupy one line in the display.
 
