@@ -44,9 +44,9 @@ namespace sgl {
    * constexpr auto name3 = NAME("name3");
    *
    * // Next, a named tuple can be created by constructing it from NamedValues.
-   * // A NamedValue is most easily created with the '<<=' operator. This operator takes an sgl::Name
-   * // N on the left hand side and a value of type T on the right hand side, and returns a
-   * // NamedValue<N,T>.
+   * // A NamedValue is most easily created with the '<<=' operator. This operator takes an
+   * // sgl::Name N on the left hand side and a value of type T on the right hand side, and returns
+   * // a NamedValue<N,T>.
    *  auto tuple = sgl::NamedTuple( name1 <<= 5, name2 <<= 1.15,  name3 <<= 5.3f);
    *
    * \endcode
@@ -56,9 +56,9 @@ namespace sgl {
    *
    * \code
    * // prints '5, 1.15, 5.3', tuple indexed by different, but equivalent, methods
-   * std::cout << tuple[name1] << ", " << sgl::get(name2,tuple) << tuple.get(name3) << std::endl;
+   * std::cout << tuple[name1] << ", " << sgl::get(name2,tuple) << ", " << tuple.get(name3) << std::endl;
    * // same as above
-   * std::cout << tuple.get<0>() ", " << sgl::get<1>(tuple) << tuple.get<2>() << std::endl;
+   * std::cout << tuple.get<0>() ", " << sgl::get<1>(tuple) << ", " << tuple.get<2>() << std::endl;
    * \endcode
    *
    * A variadic functor like a generic lambda can be invoked on all values, again with free and
@@ -164,29 +164,30 @@ namespace sgl {
 
     /**
      * \brief get value by name
-     * \tparam Name name type
+     * \tparam Cs characters of the name
      * \param name name instance
      * \return corresponding reference to the values type
      */
-    template <typename Name>
-    constexpr auto& operator[](Name name) noexcept;
+    template <char... Cs>
+    constexpr auto& operator[](sgl::Name<Cs...> name) noexcept;
 
     /**
      * \brief get value by name
-     * \tparam Name name type
+     * \tparam Cs characters of the name
      * \param name name instance
      * \return corresponding const reference to value
      */
-    template <typename Name>
-    constexpr const auto& operator[](Name name) const noexcept;
+    template <char... Cs>
+    constexpr const auto& operator[](sgl::Name<Cs...> name) const noexcept;
 
     /**
      * \brief apply a callable f on each value in the tuple.
      * \details This means that f is invoked for every value in this with the **values type**. For
      * example, if this is constructed with a NamedValue<N,T>, then f is called with a reference to
      * T. If you also want the name of the value, see for_each_with_name().
-     * \code NamedTuple
-     * tuple(name1<<= 1, name2 <<=5.0); sgl::for_each([](auto& value){
+     * \code
+     * sgl::NamedTuple tuple(name1<<= 1, name2 <<=5.0);
+     * sgl::for_each([](auto& value){
      * // decltype(value) would be int& and double& for the invocations of f.
      * });
      * \endcode
@@ -199,10 +200,9 @@ namespace sgl {
     /**
      * \brief apply a callable f on each value in the tuple.
      * \details This means that f is invoked for every value in this with the **values type**. For
-     * example, if this is constructed with a NamedValue<N,T>, then f is called with a const reference to
-     * T. If you also want the name of the value, see for_each_with_name().
-     * \tparam F callable type
-     * \param f callable instance
+     * example, if this is constructed with a NamedValue<N,T>, then f is called with a const
+     * reference to T. If you also want the name of the value, see for_each_with_name(). \tparam F
+     * callable type \param f callable instance
      */
     template <typename F>
     constexpr void for_each(F&& f) const noexcept(nothrow_invocable_for_each<F, const Ts&...>);

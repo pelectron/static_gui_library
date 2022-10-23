@@ -59,9 +59,9 @@ And the resulting display output could look something like this:
 
 sgl provides various classes to support this structure.
 
-The first is [sgl::Menu](include/sgl/menu.hpp). It implements a menu.
+The first is [sgl::Menu](#sgl::Menu). It implements a menu.
 
-The second is sgl::Page. It implements a page.
+The second is [sgl::Page](#sgl::Page). It implements a page.
 
 The rest are item classes, which implement various items like:
  - [boolean items](#sgl::Boolean)
