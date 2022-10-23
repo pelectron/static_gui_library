@@ -21,8 +21,8 @@ the start edit value).
 3. The returned value from the active item' handle_input() method is interpreted as such:
      - sgl::error:::edit_finished means the page should switch back into navigation mode,
      regardless of which input it just received. The page's default input handler will return
-     sgl::error::no_error in this case. This is used for 'one and done' items like [buttons](sgl:Button) 
-     and [links](sgl::PageLink). Else it would take significantly more complicated logic to handle these kinds of items.
+     sgl::error::no_error in this case. This is used for 'one and done' items like [buttons](#sgl:Button) 
+     and [links](#sgl::PageLink). Else it would take significantly more complicated logic to handle these kinds of items.
      - sgl::error::no_error means the item handled the input successfully, and the page stays in
      edit mode. The page keeps relaying the inputs to the active item.The page's default input
      handler will return sgl::error::no_error in this case.
@@ -43,7 +43,7 @@ The last layer is the item layer. Items receive user input from their containing
  - sgl::error::edit_finished means the item itself decided it is done being edited.
  - any other value means an error occurred which the item cannot handle itself and an upper layer must decide what to do.
 
-If the default way of doing things is not to your liking, you can also create your own custom item input handler. Note that you really should respect the return value convention for correct interoperation with the rest of the library.
+If the default way of doing things is not to your liking, you can also create your own custom item [input handler](concepts.md/#input-handler). Note that you really should respect the return value convention for correct interoperation with the rest of the library.
 
 ## Putting it all together
 All in all, the default input handling is quite simple:

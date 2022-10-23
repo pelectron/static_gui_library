@@ -101,25 +101,30 @@ namespace sgl {
   }
 
   template <typename... Names, typename... Ts>
-  template <typename Name>
-  constexpr auto&
-      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::operator[](Name name) noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list_t>) {
-      static_assert(sgl::contains_v<Name, name_list_t>, "No such name in tuple");
+  template <char... Cs>
+  constexpr auto& NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::operator[](
+      sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list_t>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list_t>, "No such name in tuple");
     } else {
-      return static_cast<NamedValue<Name, tuple_detail::type_for_t<Name, This_t>>*>(this)->value();
+      return static_cast<
+                 NamedValue<sgl::Name<Cs...>, tuple_detail::type_for_t<sgl::Name<Cs...>, This_t>>*>(
+                 this)
+          ->value();
       static_cast<void>(name);
     }
   }
 
   template <typename... Names, typename... Ts>
-  template <typename Name>
-  constexpr const auto&
-      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::operator[](Name) const noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list_t>) {
-      static_assert(sgl::contains_v<Name, name_list_t>, "No such name in tuple");
+  template <char... Cs>
+  constexpr const auto& NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::operator[](
+      sgl::Name<Cs...>) const noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list_t>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list_t>, "No such name in tuple");
     } else {
-      return static_cast<const NamedValue<Name, tuple_detail::type_for_t<Name, This_t>>*>(this)
+      return static_cast<const NamedValue<sgl::Name<Cs...>,
+                                          tuple_detail::type_for_t<sgl::Name<Cs...>, This_t>>*>(
+                 this)
           ->value();
     }
   }

@@ -6,7 +6,12 @@ sgl_include_dir = include_directories('include')
 dependencies = [dependency('gcem', fallback:['gcem','gcem_dep'])]
 
 defines = []
-
+if meson.get_compiler('cpp').get_id() == 'clang'
+  defines += '-Wno-language-extension-token'
+endif
+if host_machine.system() == 'windows'
+  defines += '-Wno-microsoft-enum-value'
+endif
 
 if get_option('optimize_size')
   defines += '-DRYU_OPTIMIZE_SIZE'

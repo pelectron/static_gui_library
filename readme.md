@@ -1,7 +1,7 @@
 # Static Gui Library
 Welcome to this repository. It contains the source code for sgl, the static gui library for character base lcd displays. This is still a work in progress, documentation and testing is not complete yet, as well as some feature missing or being buggy.
 
-![16x2 display](/markdown/images/display.jpg)
+![16x2 display](markdown/images/display.jpg)
 
 ## About
 I wanted to create a solution for making gui menus for fixed-width, line based displays on microcontrollers. These types of displays are very simple to communicate with and good for prototyping, but coding a useable menu for them isn't trivial and can quickly become a hardcoded mess. I also didn't find any other libraries handling this task, so I wrote my own.
@@ -16,7 +16,7 @@ There are a few important points for me when I set out to write this library:
 
 In addition, I wanted an easy way to visualize menus without deploying to an MCU. For this, sgl provides two solutions:
  - a command line tester. Look into the header menu_tester.hpp and the example menu_tester.cpp for more info.
- - A menu visualizer made with Qt. This will give you a better insight into what's going on, but requires a Qt installation. See [here](/markdown/visualizer.md) for more info.
+ - A menu visualizer made with Qt. This will give you a better insight into what's going on, but requires a Qt installation. See [here](markdown/visualizer.md) for more info.
 
 Feedback, comments and question are greatly welcome. I would love to hear from you! Keep in mind that this is written by an EE student and not some c++ wizard, so beware if you expect code that would make even Shakespeare cry of joy;)
 
@@ -31,6 +31,14 @@ The only standard headers required are:
   - `<cwchar>`
   - `<cmath>` for INFINITY
   - `<cstddef>`
+  - `<cstring>` for memcpy
+
+### Dependencies
+sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone gcem and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
+
+For testing, [Catch2](https://github.com/catchorg/Catch2) is required. Again, you will manually need to download it if you are not using meson and want to build the tests. See more info [here](#testing).
+
+[Ryu](https://github.com/ulfjack/ryu) used to be an external dependency. I have however adapted it to be constexpr, which lives in the include/ryu subdirectory. Ulf Adams (the creator of ryu) really did a wonderful job and without his brains, constexpr floating point formatting wouldn't have been possible for me with all the features (roundtripping, shortest form formatting, speed) of ryu.
 
 ## Building and configuring
 If you simply want to use the library without the qt visualizer, no special installation or build process is needed. sgl is a header only library and you just need to add the `include` subdirectory to your compilers include path, assuming you have the [dependencies](#dependencies) installed.
@@ -48,14 +56,9 @@ Note that qmake needs to be available in your path for this to work!
 
 For compiling with Qt5, you should set `qt_major_version=5` in the default options.
 
-More on the visualizer can be found [here](/markdown/visualizer.md).
+More on the visualizer can be found [here](markdown/visualizer.md).
 
-## Dependencies
-sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone gcem and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
 
-For testing, [Catch2](https://github.com/catchorg/Catch2) is required. Again, you will manually need to download it if you are not using meson and want to build the tests. See more info [here](#testing).
-
-[Ryu](https://github.com/ulfjack/ryu) used to be an external dependency. I have however adapted it to be constexpr, which lives in the include/ryu subdirectory. Ulf Adams (the creator of ryu) really did a wonderful job and without his brains, constexpr floating point formatting wouldn't have been possible for me with all the features (roundtripping, shortest form formatting, speed) of ryu.
 
 ## Testing
 sgl has unit tests. To enable building tests with meson, set the `test` option to `enabled`  when building the project or using it as a dependency. This will produce an executable called `test_main` in the tests subdirectory. 
@@ -121,13 +124,13 @@ Add `sgl/menu_tester.hpp` to you includes, and add a main like so:
 ```cpp
 #include <sgl/menu_tester.hpp>
 int main(){
-  auto tester = MenuTester(make_menu(),
-                           {{sgl::Input::up, "up"_sv},
-                            {sgl::Input::down, "down"_sv},
-                            {sgl::Input::left, "left"_sv},
-                            {sgl::Input::right, "right"_sv},
-                            {sgl::Input::enter, "enter"_sv},
-                            {sgl::Input::enter, sgl::string_view<char>{}}});
+  auto tester = sgl::MenuTester(make_menu(),
+                              {{sgl::Input::up, "up"_sv},
+                               {sgl::Input::down, "down"_sv},
+                               {sgl::Input::left, "left"_sv},
+                               {sgl::Input::right, "right"_sv},
+                               {sgl::Input::enter, "enter"_sv},
+                               {sgl::Input::enter, sgl::string_view<char>{}}});
   // print just outputs the text of all items of the current page line by line.
   tester.print();
 
@@ -146,9 +149,9 @@ int main(){
 
 ```
 
-For more info on how sgl is built up, see [here](/markdown/architecture.md).
+For more info on how sgl is built up, see [here](markdown/architecture.md).
 
-To see how to integrate sgl in your embedded system, see [here](/markdown/integrating.md).
+To see how to integrate sgl in your embedded system, see [here](markdown/integrating.md).
 
 # Contributing
 To contribute simply make a pull request. Just be sure to format your request with clang-format with the config file in the root directory. If you plan to add a new feature or improve existing ones, it would be great to here from you!

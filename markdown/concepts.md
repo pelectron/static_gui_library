@@ -38,7 +38,7 @@ struct CustomItem{
 
 static_assert(sgl::is_item_v<CustomItem>);
 ```
-To reduced boilerplate and allow for the same mechanism of changing input and tick handlers as the sgl provided item types, the custom type can inherit from [sgl::ItemBase](/include/sgl/item_base.hpp).
+To reduced boilerplate and allow for the same mechanism of changing input and tick handlers as the sgl provided item types, the custom type can inherit from [sgl::ItemBase](#sgl::ItemBase).
 
 # Input Handler
 An `InputHandler` handles user input for an item, page or menu. 
@@ -97,6 +97,9 @@ t.set_input_handler(handler4);
 sgl::Input i = /* ... */;
 t.handle_input(i); // calls the handler
 ```
+
+For more info on the whole input handling process, see [here](/markdown/input_handling.md).
+
 
 # Click Handler
 A `ClickHandler` handles click inputs for a clickable [item](#item). It is called every time the item's click() method is called.
@@ -196,3 +199,35 @@ For F to be a Formatter for Item, the following must hold:
 | `std::is_trivially_destructible_v<F>`                 | true               |
 | `std::is_trivially_move_constructible_v<F>`           | true               |
 | `std::is_trivially_copyable_v<F>`                     | true               |
+
+
+# Page Action
+ A page action is a callable that gets executed on certain events on a page. 
+ For now, the only actions are the enter and exit actions, which are called when a page becomes the current page(i.e. is entered) or when the current page switches(i.e. is exited).
+
+ For a type F to be a page action, the following must hold:
+ 
+| variable | type       |
+| -------- | ---------- |
+| `f`      | F          |
+| `page`   | sgl::Page& |
+
+
+| Expression                                  | Return type or value |
+| ------------------------------------------- | -------------------- |
+| `f(page)`                                   | `sgl::error`         |
+| `noexcept(f(page))`                         | `true`               |
+| `std::is_trivially_destructible_v<F>`       | `true`               |
+| `std::is_trivially_move_constructible_v<F>` | `true`               |
+| `std::is_trivially_copyable_v<F>`           | `true`               |
+
+An good example for an enter action would be a function that resets a pages current item index to 0 every time a page is entered, i.e. the page has no memory:
+```cpp
+template<typename Names, typename Types>
+sgl::error reset_enter_action(sgl::Page<Names,Types>& page) noexcept{
+  page.set_current_item(0);
+  return sgl::error::no_error;
+}
+```
+
+By default, this is not the case and a page will keep its current item index unchanged when being entered or exited.
