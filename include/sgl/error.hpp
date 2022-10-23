@@ -1,6 +1,6 @@
 /**
  * \file error.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief This file defines the sgl::error enum.
  * \version 0.1
  * @date 2022-09-26

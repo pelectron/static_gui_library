@@ -11,8 +11,6 @@
 #define RYU_IMPL_COMMON_IMPL_HPP
 #include "../common.hpp"
 
-#include <cstring>
-
 namespace ryu {
   namespace detail {
     // Returns the number of decimal digits in v, which must not contain more than 9 digits.
