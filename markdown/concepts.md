@@ -38,7 +38,7 @@ struct CustomItem{
 
 static_assert(sgl::is_item_v<CustomItem>);
 ```
-To reduced boilerplate and allow for the same mechanism of changing input and tick handlers as the sgl provided item types, the custom type can inherit from [sgl::ItemBase](/include/sgl/item_base.hpp).
+To reduced boilerplate and allow for the same mechanism of changing input and tick handlers as the sgl provided item types, the custom type can inherit from [sgl::ItemBase](#sgl::ItemBase).
 
 # Input Handler
 An `InputHandler` handles user input for an item, page or menu. 
