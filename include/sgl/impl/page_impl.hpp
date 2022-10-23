@@ -39,15 +39,15 @@ namespace sgl {
   }
 
   template <typename... Names, typename... Items>
-  template <typename Name>
+  template <char... Cs>
   constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
       Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_current_item(
-          Name name) noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>,
+          sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
                     "No Item with such a name exists in this page");
     } else {
-      index_ = sgl::index_of_v<Name, name_list>;
+      index_ = sgl::index_of_v<sgl::Name<Cs...>, name_list>;
       static_cast<void>(name);
     }
     return *this;
@@ -159,21 +159,24 @@ namespace sgl {
   }
 
   template <typename... Names, typename... Items>
-  template <typename Name>
-  auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](Name name) noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>, "No item with this name found in this page");
+  template <char... Cs>
+  constexpr auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](
+      sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+                    "No item with this name found in this page");
     } else {
       return items_[name];
     }
   }
 
   template <typename... Names, typename... Items>
-  template <typename Name>
-  const auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](
-      Name name) const noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>, "No item with this name found in this page");
+  template <char... Cs>
+  constexpr const auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](
+      sgl::Name<Cs...> name) const noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+                    "No item with this name found in this page");
     } else {
       return items_[name];
     }

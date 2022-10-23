@@ -25,71 +25,34 @@
 
 namespace sgl {
   /// \cond
+  // this is an intentional forward declaration. Dont remove.
   template <typename ItemNameList, typename ItemTypeList>
   class Page;
 
   /// \endcond
 
-  /// \headerfile page.hpp "sgl/page.hpp"
-  /// \brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
-  /// page cannot contain a subpage. A page is responsible for navigating through the items and
-  /// delegating user input the the current item.
-  ///
-  /// A page consists of the following data:
-  ///  - a \ref sgl::NamedTuple "named tuple" of items.
-  ///  - an \ref handler_traits "input handler". It manages how the page gets navigated and how user
-  ///  input is passed on to items. More on this in \ref page_input_handling Page Input Handling.
-  ///  - an enter and exit action/handler. These will be called by the menu when a page is entered,
-  ///  i.e. becomes the current page, or exited, i.e. get's switched from. By default these do
-  ///  nothing.
-  ///  - a boolean to indicate edit or navigation mode. Used by the page input handler.
-  ///  - a start and stop edit input value. Receiving an input equal to this set's the page into
-  ///  edit or navigation mode respectively. Used by the page input handler.
-  ///  - an index to keep track of the current page.
-  ///
-  /// \section page_input_handling Page Input Handling
-  /// The page input handling has two important jobs:
-  ///  - handle navigating through items on the page
-  ///  - handle editing and clicking of items
-  ///
-  /// This library's way of doing this is as follows:
-  ///
-  /// The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate
-  /// through the items. When an input equal to the page's start edit is received, the page switches
-  /// into edit mode and starts passing the input values on to the current item's input handler
-  /// (including the start edit value) while it is in edit mode.
-  ///
-  /// The returned value from the item' handle_input() method is interpreted as such:
-  ///  - sgl::error:::edit_finished means the page should switch back into navigation mode,
-  ///  regardless of which input it just received. The page's default input handler will return
-  ///  sgl::error::no_error in this case. This is used for 'one and done' items like
-  ///  [buttons](sgl:Button) and [links](sgl::PageLink). Else it would take significantly more
-  ///  complicated logic to handle these kinds of items.
-  ///  - sgl::error::no_error means the item handled the input successfully, and the page stays in
-  ///  edit mode. The page keeps relaying the inputs to the active item.The page's default input
-  ///  handler will return sgl::error::no_error in this case.
-  ///  - any other sgl::error value means the item failed to handle the input. The page switches
-  ///  back into navigation mode and returns the received value.
-  ///
-  /// When an input equal to the page's stop edit is received, the page switches back into
-  /// navigation mode. The stop edit input is NOT passed on to the item input handler.
-  ///
-  /// As long as the convention of the item's input handler return value is held, the whole system
-  /// works as expected and you can mix and match item input handlers.
-  ///
-  /// If the default way of doing things is not to your liking, you can also create your own custom
-  /// page input handler. Again, if the convention of the item's input handler return value is
-  /// respected, the library provided item types work as expected.
-  ///
-  /// \section page_actions Page
-  /// Actions Page actions are callables which can be invoked with a reference to a page and return
-  /// an sgl::error value, i.e. a signature equal to sgl::error(Page&) noexcept. A page has an enter
-  /// action which gets called every time the page is entered, and an exit action which gets called
-  /// every time the page is exited. The concrete types of these actions are
-  /// sgl::Callable<sgl::error(Page&)>.
-  ///
-  /// \tparam Names names of the items
-  /// \tparam Items item types
+  /**
+   * \headerfile page.hpp "sgl/page.hpp"
+   * \brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
+   * page cannot contain a subpage. A page is responsible for navigating through the items and
+   * delegating user input the the current item.
+   *
+   * \details A page consists of the following data:
+   *  - a \ref sgl::NamedTuple "named tuple" of items.
+   *  - an [input handler](/markdown/concepts.md#input-handler). It manages how the page gets
+   * navigated and how user input is passed on to its items.
+   *  - an enter and exit action/handler. These will be called by the menu when a page is entered,
+   *  i.e. becomes the current page, or exited, i.e. get's switched from. By default these do
+   *  nothing. More on this [here](/markdown/concepts.md#page-action).
+   *  - a boolean to indicate edit or navigation mode.
+   *  - a start and stop edit input value. Receiving an input equal to this value set's the page
+   * into edit or navigation mode respectively.
+   *  - an index to keep track of the current page.
+   *
+   *
+   * \tparam Names names of the items
+   * \tparam Items item types
+   */
   template <typename... Names, typename... Items>
   class Page<sgl::type_list<Names...>, sgl::type_list<Items...>> {
     template <typename F>
@@ -113,22 +76,27 @@ namespace sgl {
     static constexpr bool nothrow_move_constructible = std::is_nothrow_move_constructible_v<
         sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>;
 
+  public:
     static_assert((sgl::is_name_type_v<Names> && ...),
                   "One of the types begin used as a name is not instance of sgl::Name<...>.");
     static_assert(sgl::all_unique_v<Names...>,
                   "sgl::Page can't have duplicate names for its items! Make sure to give every "
                   "item in the page a unique name.");
 
-  public:
     /// type list of item types
     using item_list = sgl::type_list<Items...>;
+
     /// type list of the item names
     using name_list = sgl::type_list<Names...>;
+
     /// \brief Concrete input handler type. A page input handler is a callable with a call signature
-    /// equal to sgl::error(Page&, sgl::Input).
+    /// equal to sgl::error(Page&, sgl::Input).[See here](markdown/concepts.md#input-handler) for
+    /// more info.
     using InputHandler_t = Callable<error(Page&, sgl::Input)>;
+
     /// Concrete page action type. Page actions are callables which can be invoked with a reference
-    /// to a page and return an sgl::error value.
+    /// to a page and return an sgl::error value. [See here](markdown/concepts.md#page-action) for
+    /// more info.
     using PageAction_t = sgl::Callable<sgl::error(Page&)>;
 
     /// construct Page from named items
@@ -155,11 +123,11 @@ namespace sgl {
     constexpr Page& set_current_item(size_t i) noexcept;
 
     /// set current item by name.
-    /// \tparam Name page name type
-    /// \param name page name
+    /// \tparam Name characters of name
+    /// \param name item name
     /// \return Page&
-    template <typename Name>
-    constexpr Page& set_current_item(Name name) noexcept;
+    template <char... Cs>
+    constexpr Page& set_current_item(sgl::Name<Cs...> name) noexcept;
 
     /// handle input. Delegates to input handler.
     /// \param i input to handle
@@ -202,7 +170,7 @@ namespace sgl {
     /// \return Page&
     constexpr Page& set_stop_edit(sgl::Input stop_edit) noexcept;
 
-    /// \brief Set the menu for items which need it, i.e. page links.
+    /// \brief Set the menu for items which need it, for example \ref sgl::PageLink "page links".
     /// \tparam Menu menu type
     /// \param menu pointer to menu instance
     ////
@@ -279,20 +247,20 @@ namespace sgl {
     /// \}
 
     /// \brief get item by name
-    /// \tparam Name name type
+    /// \tparam Name characters of name
     /// \param name name instance
     /// \return reference to item
     ////
-    template <typename Name>
-    auto& operator[](Name name) noexcept;
+    template <char... Cs>
+    constexpr auto& operator[](sgl::Name<Cs...> name) noexcept;
 
     /// \brief get item by name
-    /// \tparam Name name type
+    /// \tparam Cs characters of name
     /// \param name name instance
     /// \return const reference to item
     ////
-    template <typename Name>
-    const auto& operator[](Name name) const noexcept;
+    template <char... Cs>
+    constexpr const auto& operator[](sgl::Name<Cs...> name) const noexcept;
 
     /// invoke the tick handler of every item contained
     constexpr void tick() noexcept;

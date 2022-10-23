@@ -20,11 +20,12 @@
 
 namespace sgl {
   /**
+   * \headerfile name.hpp "slg/name.hpp"
    * \brief This class represents a compile time string used by sgl::NamedValue and
    * sgl::NamedTuple. To create a name, there are two ways:
    *
    * \code
-   * #include "sgl/named_value.hpp"
+   * #include "sgl/named.hpp"
    * // using the NAME macro defined at the bottom of this file
    * constexpr auto name1 = NAME("a string literal");
    * // manually defining it like below, equivalent to 'constexpr auto name2 = NAME("N2");'
@@ -55,6 +56,7 @@ namespace sgl {
     template <char... Chars>
     struct is_name_type<Name<Chars...>> : std::true_type {};
   } // namespace detail
+
   /// \endcond
 
   /**

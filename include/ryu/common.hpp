@@ -11,6 +11,7 @@
 #define SGL_RYU_COMMON_HPP
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 
 #if defined(_M_IX86) || defined(_M_ARM)
   #define RYU_32_BIT_PLATFORM
