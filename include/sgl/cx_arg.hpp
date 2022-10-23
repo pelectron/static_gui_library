@@ -1,5 +1,5 @@
 /// \file cx_arg.hpp
-/// \author Pelé Constam (you@domain.com)
+/// \author Pelé Constam (pelectron1602@gmail.com)
 /// \version 0.1
 /// \date 2022-09-24
 //

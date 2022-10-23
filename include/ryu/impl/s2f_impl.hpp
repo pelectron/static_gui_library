@@ -197,7 +197,7 @@ namespace ryu {
       }
 
       // Compute the final IEEE exponent.
-      uint32_t ieee_e2 = (uint32_t)max32(0, e2 + float_exponent_bias + floor_log2_func(m2));
+      uint32_t ieee_e2 = (uint32_t)max32(0, e2 + float_bias + floor_log2_func(m2));
 
       if (ieee_e2 > 0xfe) {
         // Final IEEE exponent is larger than the maximum representable; return +/-Infinity.
@@ -210,7 +210,7 @@ namespace ryu {
       // We need to figure out how much we need to shift m2. The tricky part is that we need to take
       // the final IEEE exponent into account, so we need to reverse the bias and also special-case
       // the value 0.
-      int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - float_exponent_bias - float_mantissa_bits;
+      int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - float_bias - float_mantissa_bits;
       // assert(shift >= 0);
 
       // We need to round up if the exact value is more than 0.5 above the value we computed. That's

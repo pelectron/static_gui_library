@@ -1,6 +1,6 @@
 /**
  * \file menu.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief This file contains the sgl::Menu class and the free iteration functions sgl::for_each,
  * sgl::for_each_with_name and sgl::for_current.
  *

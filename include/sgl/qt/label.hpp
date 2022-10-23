@@ -1,6 +1,6 @@
 /**
  * \file label.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief The code was taken from
  * https://stackoverflow.com/questions/9183050/vertical-qlabel-or-the-equivalent. I did not come up
  * with the idea.

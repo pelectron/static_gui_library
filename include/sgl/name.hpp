@@ -1,6 +1,6 @@
 /**
  * \file sgl/name.hpp
- * \author Pelé Constam (you@domain.com)
+ * \author Pelé Constam (pelectron1602@gmail.com)
  * \brief This file defines the sgl::Name class, the type trait sgl::is_name_v and the NAME
  * convenience macro.
  * \version 0.1
