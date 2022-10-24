@@ -2,7 +2,6 @@
 
 #include <catch2/catch.hpp>
 
-
 using View = sgl::string_view<char>;
 using namespace sgl::string_view_literals;
 
