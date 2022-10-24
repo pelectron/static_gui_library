@@ -38,7 +38,7 @@ namespace sgl {
     /// \param str array to convert to view
     explicit constexpr string_view(const CharT* str) noexcept : data_(str) {
       for (size_t i = 0;; ++i) {
-        if ((str[i] == '\0') || (i == sgl::numeric_limits<size_t>::max())) {
+        if ((str[i] == static_cast<CharT>('\0')) || (i == sgl::numeric_limits<size_t>::max())) {
           size_ = i;
           break;
         }

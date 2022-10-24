@@ -5,46 +5,48 @@
 //
 #include "sgl/named_tuple.hpp"
 
-#include <iostream>
+#include <catch2/catch.hpp>
+
 using namespace sgl::string_view_literals;
-#include <iostream>
-using namespace sgl;
-constexpr auto name1 = NAME("name1");
 
-int main() {
-  auto a1 = NAME("arg1");
-  auto a2 = NAME("arg2");
+TEST_CASE("NamedTuple") {
+  constexpr auto n1 = NAME("n1");
+  constexpr auto n2 = NAME("n2");
+  constexpr auto n3 = NAME("n3");
 
-  auto tuple = NamedTuple(NAME("arg1") <<= 5, a2 <<= 1.15, name1 <<= 5.3f);
+  using Tuple =
+      sgl::NamedTuple<sgl::type_list<sgl::Name<'n', '1'>, sgl::Name<'n', '2'>, sgl::Name<'n', '3'>>,
+                      sgl::type_list<int, char, double>>;
+  SECTION("Construction from named values") {
+    auto tuple = sgl::NamedTuple(n1 <<= 1, n2 <<= 'x', n3 <<= 2.0);
+    REQUIRE(tuple[n1] == 1);
+    REQUIRE(tuple[n2] == 'x');
+    REQUIRE(tuple[n3] == 2.0);
+  }
+  SECTION("construction from values") {
+    Tuple tuple(1, 'x', 2.0);
+    REQUIRE(tuple[n1] == 1);
+    REQUIRE(tuple[n2] == 'x');
+    REQUIRE(tuple[n3] == 2.0);
+  }
+  SECTION("all access methods return the same value") {
+    auto tuple = sgl::NamedTuple(n1 <<= 1, n2 <<= 'x', n3 <<= 2.0);
+    REQUIRE(tuple[n1] == tuple.get<0>());
+    REQUIRE(tuple[n1] == sgl::get<0>(tuple));
+    REQUIRE(tuple[n1] == sgl::get(n1, tuple));
 
-  std::cout << tuple[a1] << std::endl
-            << tuple[a2] << std::endl
-            << tuple[name1] << std::endl
-            << std::endl;
+    REQUIRE(tuple[n2] == tuple.get<1>());
+    REQUIRE(tuple[n2] == sgl::get<1>(tuple));
+    REQUIRE(tuple[n2] == sgl::get(n2, tuple));
 
-  std::cout << tuple[NAME("arg1")] << std::endl
-            << tuple[NAME("arg2")] << std::endl
-            << tuple[NAME("name1")] << std::endl
-            << std::endl;
-
-  std::cout << tuple.get<0>() << std::endl
-            << tuple.get<1>() << std::endl
-            << tuple.get<2>() << std::endl
-            << std::endl;
-
-  std::cout << sgl::get<0>(tuple) << std::endl
-            << sgl::get<1>(tuple) << std::endl
-            << sgl::get<2>(tuple) << std::endl
-            << std::endl;
-  tuple.for_each([](const auto& elem) { std::cout << elem << std::endl; });
-  std::cout << std::endl;
-  tuple.for_each([](auto& elem) { std::cout << elem << std::endl; });
-  std::cout << std::endl;
-  tuple.for_each_with_name([](sgl::string_view<char> name, const auto& elem) {
-    std::cout << name.data() << ": " << elem << std::endl;
-  });
-  std::cout << std::endl;
-  tuple.for_each_with_name([](sgl::string_view<char> name, auto& elem) {
-    std::cout << name.data() << ": " << elem << std::endl;
-  });
+    REQUIRE(tuple[n3] == tuple.get<2>());
+    REQUIRE(tuple[n3] == sgl::get<2>(tuple));
+    REQUIRE(tuple[n3] == sgl::get(n3, tuple));
+  }
+  SECTION("foreach") {
+    // TODO: test for each
+  }
+  SECTION("for_each_with_name") {
+    // TODO: test for each with name
+  }
 }
