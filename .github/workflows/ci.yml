@@ -9,24 +9,28 @@ concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 jobs:
-  build-job:
-    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+  build-gcc:
+    strategy: 
+      matrix:
+        cxx: ['clang++', 'g++']
+    runs-on: ubuntu-latest
+    env: 
+      CXX:  ${{ matrix.cxx }}
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: installing python
-        uses: actions/setup-python@v4
+      - run: echo $CXX
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
       - name: installing meson
         run: pip install meson
-      - name: installign ninja
+      - name: installing ninja
         run: pip install ninja
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
           version: '6.2.4'
-      - name: setup build dir
+      - name: setup build directory
         run: meson setup build -Dgui=true -Dtest=enabled
       - name: building
         run: meson compile -C build
-      - name: running test executable
+      - name: testing
         run: ./build/tests/test_main
