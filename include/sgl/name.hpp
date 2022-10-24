@@ -67,6 +67,7 @@ namespace sgl {
   template <typename T>
   static constexpr bool is_name_type_v = sgl::detail::is_name_type<T>::value;
 } // namespace sgl
+
 #include "impl/name_impl.hpp"
 
 /**
@@ -91,8 +92,7 @@ namespace sgl {
     };                                                                                        \
     return sgl::detail::variadic_toolbox::apply_range<                                        \
         sizeof(string_literal) - 1,                                                           \
-        typename sgl::detail::compile_time::string_builder<constexpr_string_type>::produce>:: \
-        result{};                                                                             \
+        sgl::detail::compile_time::string_builder<constexpr_string_type>::produce>::result{}; \
   })
 
 #endif /* SGL_NAME_HPP */
