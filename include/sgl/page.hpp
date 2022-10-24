@@ -39,11 +39,11 @@ namespace sgl {
    *
    * \details A page consists of the following data:
    *  - a \ref sgl::NamedTuple "named tuple" of items.
-   *  - an [input handler](/markdown/concepts.md#input-handler). It manages how the page gets
+   *  - an [input handler](markdown/concepts.md#input-handler). It manages how the page gets
    * navigated and how user input is passed on to its items.
    *  - an enter and exit action/handler. These will be called by the menu when a page is entered,
    *  i.e. becomes the current page, or exited, i.e. get's switched from. By default these do
-   *  nothing. More on this [here](/markdown/concepts.md#page-action).
+   *  nothing. More on this [here](markdown/concepts.md#page-action).
    *  - a boolean to indicate edit or navigation mode.
    *  - a start and stop edit input value. Receiving an input equal to this value set's the page
    * into edit or navigation mode respectively.
@@ -170,7 +170,7 @@ namespace sgl {
     /// \return Page&
     constexpr Page& set_stop_edit(sgl::Input stop_edit) noexcept;
 
-    /// \brief Set the menu for items which need it, for example \ref sgl::PageLink "page links".
+    /// \brief Set the menu for items which need it, for example sgl::PageLink.
     /// \tparam Menu menu type
     /// \param menu pointer to menu instance
     ////
@@ -351,6 +351,7 @@ namespace sgl {
   /// \tparam F functor type
   /// \param page page instance
   /// \param f functor instance
+  /// \return returns the return value of f.
   template <typename NameList, typename ItemList, typename F>
   decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
       noexcept(std::declval<Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
@@ -362,6 +363,7 @@ namespace sgl {
   /// \tparam F functor type
   /// \param page page instance
   /// \param f functor instance
+  /// \return returns the return value of f.
   template <typename NameList, typename ItemList, typename F>
   decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f) noexcept(noexcept(
       std::declval<const Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));

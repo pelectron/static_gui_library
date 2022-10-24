@@ -1,10 +1,10 @@
 # Default Input Handling
-This section explains how the default input handling works in sgl. It assumes you are familiar with the [architecture of sgl](architechture.md).
+This section explains how the default input handling works in sgl. It assumes you are familiar with the [architecture of sgl](markdown/architechture.md).
 
 Like the architecture, input handling is split into three layers. 
 
 ## Menu Layer
-A menu can handle user input with its handle_input() method. By default, a menu simply delegates the user input to the current page and returns the pages result. To customize this behavior, set an [InputHandler](concepts.md/#input-handler) for the menu.
+A menu can handle user input with its handle_input() method. By default, a menu simply delegates the user input to the current page and returns the pages result. To customize this behavior, set an [InputHandler](markdown/concepts.md/#input-handler) for the menu.
 
 ## Page Layer
 The page layer has two important jobs:
@@ -35,7 +35,7 @@ navigation mode. The stop edit input is NOT passed on to the item.
 As long as the convention of the item's input handler return value is held, the whole system
 works as expected and you can mix and match item input handlers and page handlers, either library provided or your own.
 
-Again, to change the page input handling strategy, simply provide an [InputHandler](concepts.md/#input-handler) for the page.
+Again, to change the page input handling strategy, simply provide an [InputHandler](markdown/concepts.md/#input-handler) for the page.
 
 ## Item Layer
 The last layer is the item layer. Items receive user input from their containing page through the item's handle_input() method. The only requirement for the return value of the method is that it respects the return value convention specified [above](#page-layer). That is:
@@ -43,7 +43,7 @@ The last layer is the item layer. Items receive user input from their containing
  - sgl::error::edit_finished means the item itself decided it is done being edited.
  - any other value means an error occurred which the item cannot handle itself and an upper layer must decide what to do.
 
-If the default way of doing things is not to your liking, you can also create your own custom item [input handler](concepts.md/#input-handler). Note that you really should respect the return value convention for correct interoperation with the rest of the library.
+If the default way of doing things is not to your liking, you can also create your own custom item [input handler](markdown/concepts.md/#input-handler). Note that you really should respect the return value convention for correct interoperation with the rest of the library.
 
 ## Putting it all together
 All in all, the default input handling is quite simple:

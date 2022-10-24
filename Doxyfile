@@ -345,7 +345,7 @@ EXTENSION_MAPPING      =
 
 # If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
-# documentation. See https://daringfireball.net/projects/markdown/ for details.
+# documentation. See https://daringfireball.net/projectsmarkdown/ for details.
 # The output of markdown processing is further processed by doxygen, so you can
 # mix doxygen, HTML, and XML commands with Markdown formatting. Disable only in
 # case of backward compatibilities issues.
