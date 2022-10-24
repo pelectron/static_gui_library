@@ -45,7 +45,7 @@ namespace sgl {
       }
     }
 
-    /// construct from array/literal. Assumes str is null terminated
+    /// construct from array/literal. Assumes str is null terminated.
     /// \param str array/literal to create view of
     template <size_t N>
     explicit constexpr string_view(const CharT (&str)[N]) noexcept : data_(str), size_(N - 1) {}

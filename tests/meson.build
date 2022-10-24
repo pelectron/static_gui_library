@@ -12,7 +12,10 @@ test_sources = [
   'ryu/cx/f2s_test.cpp',
   'ryu/cx/d2s_test.cpp',
   'ryu/cx/d2fixed_test.cpp',
-  'item_concept.cpp'
+  'item_concept.cpp',
+  'array.cpp',
+  'type_list.cpp',
+  'string_view.cpp'
 ]
 
 catch_dep = dependency('catch2')

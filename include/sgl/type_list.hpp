@@ -5,6 +5,8 @@
 //
 #ifndef SGL_TYPE_LIST_HPP
 #define SGL_TYPE_LIST_HPP
+#include "sgl/limits.hpp"
+
 #include <type_traits>
 
 namespace sgl {
@@ -52,7 +54,7 @@ namespace sgl {
       return i;
     }
     if constexpr (sizeof...(Ts) == 0) {
-      return static_cast<size_t>(-1);
+      return sgl::numeric_limits<size_t>::max();
     } else {
       return index_of_impl<T, Ts...>(i + 1);
     }
@@ -138,8 +140,10 @@ namespace sgl {
   static_assert(std::is_same_v<type_at_t<0, type_list<int, double, char>>, int>);
   static_assert(std::is_same_v<type_at_t<1, type_list<int, double, char>>, double>);
   static_assert(std::is_same_v<type_at_t<2, type_list<int, double, char>>, char>);
+
   template <typename List>
   using first_t = head_t<List>;
+
   template <typename List>
   using last_t = type_at_t<list_size_v<List> - 1, List>;
 
