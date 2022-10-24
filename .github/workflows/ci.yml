@@ -14,12 +14,13 @@ jobs:
   build-job:
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
-      - name: testing
+      - name: building
       - uses: actions/setup-python@v1
       - uses: actions/checkout@v3
       - uses: BSFishy/meson-build@v1.0.3
         with:
           directory: build
           setup-options: -Db_coverage=true -Dgui=true -Dtest=enabled
-          options: --verbose 
-      - run: ./build/tests/test_main
+          options: --verbose
+      - name: testing
+        run: ./build/tests/test_main
