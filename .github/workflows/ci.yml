@@ -18,6 +18,9 @@ jobs:
       - uses: actions/setup-python@v4
       - uses: actions/checkout@v3
       - run: pip install meson
+      - name: setup build dir
       - run: meson setup build -Dgui=true -Dtest=enabled
+      - name: building
       - run: meson compile -C build
+      - name: running test executable
       - run: ./build/tests/test_main
