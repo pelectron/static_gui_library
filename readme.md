@@ -32,6 +32,7 @@ The only standard headers required are:
   - `<cmath>` for INFINITY
   - `<cstddef>`
   - `<cstring>` for memcpy
+  - `<utility>` for std::forward
 
 ### Dependencies
 sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone gcem and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.

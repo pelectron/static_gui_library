@@ -6,6 +6,9 @@
 #define SGL_IMPL_NAME_IMPL_HPP
 #include "../name.hpp"
 
+#include <utility>
+
+
 namespace sgl {
   template <char... Chars>
   constexpr Name<Chars...>::operator sgl::string_view<char>() {
@@ -54,7 +57,6 @@ namespace sgl {
   } // namespace detail
 
   /// \endcond
-
 
 } // namespace sgl
 
