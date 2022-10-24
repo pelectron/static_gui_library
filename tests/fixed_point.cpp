@@ -203,7 +203,7 @@ TEST_CASE("signed_fixed resize", "[fixpoint]") {
   REQUIRE(resized.value() == 0xF0u);
   sgl::signed_fixed<2, 4> val2{-1.0};
   REQUIRE(val.value() == 0b110000u);
-  auto resized2 = sgl::resize<12, 12>(val);
+  auto resized2 = sgl::resize<12, 12>(val2);
   REQUIRE(resized2.value() == 0xFFF000u);
 }
 

@@ -14,9 +14,10 @@
 //
 #ifndef SGL_FIX_POINT_HPP
 #define SGL_FIX_POINT_HPP
+#include <cstdint>
 #include <gcem.hpp>
 #include <type_traits>
-#include <cstdint>
+
 
 namespace sgl {
   template <typename T, size_t num_digits>

@@ -4,14 +4,15 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef SGL_IMPL_FORMAT_IMPL_HPP
 #define SGL_IMPL_FORMAT_IMPL_HPP
-#include "gcem.hpp"
 #include "ryu/ryu.hpp"
 #include "sgl/config.h"
 #include "sgl/format.hpp"
 #include "sgl/limits.hpp"
 #include "sgl/static_string.hpp"
 
+#include <gcem.hpp>
 #include <type_traits>
+
 
 namespace sgl {
 
@@ -267,7 +268,7 @@ namespace sgl {
     template <typename CharT, typename T>
     constexpr sgl::format_result basic_integer_format(CharT* str, size_t len, T value) {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
-      constexpr size_t                        base = 10;
+      constexpr size_t                                     base = 10;
       static_string<CharT, format_impl::max_buf_size_v<T>> buf{};
       if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
