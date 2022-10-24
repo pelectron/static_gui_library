@@ -5,6 +5,7 @@
 //
 #ifndef SGL_FWD_HPP
 #define SGL_FWD_HPP
+#include <cstddef>
 #include <cstdint>
 
 namespace sgl {
