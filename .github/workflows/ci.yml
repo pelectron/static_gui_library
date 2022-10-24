@@ -1,4 +1,4 @@
-name: Meson Build
+name: test
 on:
   workflow_dispatch:
   push:
@@ -14,16 +14,12 @@ jobs:
   build-job:
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: build
-        uses: BSFishy/meson-build@v1.0.3
+      - name: testing
+      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: BSFishy/meson-build@v1.0.3
         with:
-          action: test
           directory: build
           setup-options: -Db_coverage=true -Dgui=true -Dtest=enabled
           options: --verbose 
-      - name: change directory
-        run: cd build/tests
-      - name: test
-        run: test_main
+      - run: ./build/tests/test_main
