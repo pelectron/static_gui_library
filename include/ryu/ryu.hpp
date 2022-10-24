@@ -13,6 +13,7 @@
 #include "ryu/d2fixed.hpp"
 #include "ryu/d2s.hpp"
 #include "ryu/f2s.hpp"
+#include "ryu/ryu_parse.hpp"
 
 namespace ryu {
 

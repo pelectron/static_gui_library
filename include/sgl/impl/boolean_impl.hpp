@@ -13,7 +13,7 @@ namespace sgl {
     static constexpr CharT True[] = {'T', 'R', 'U', 'E', '\0'};
     template <typename CharT>
     static constexpr CharT False[] = {'F', 'A', 'L', 'S', 'E', '\0'};
-  }; // namespace detail
+  } // namespace detail
 
   /// \endcond
   Boolean(bool value)->Boolean<sizeof(detail::False<char>) - 1, char>;

@@ -26,7 +26,7 @@ namespace sgl {
 
     template <typename Name, typename Tuple>
     using type_for_t = typename type_for<Name, Tuple>::type;
-  }; // namespace tuple_detail
+  } // namespace tuple_detail
 
   /// \endcond
 
