@@ -1,0 +1,29 @@
+name: Meson Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+jobs:
+  build-job:
+    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: build
+        uses: BSFishy/meson-build@v1.0.3
+        with:
+          action: test
+          directory: build
+          setup-options: -Db_coverage=true -Dgui=true -Dtest=enabled
+          options: --verbose 
+      - name: change directory
+        run: cd build/tests
+      - name: test
+        run: test_main
