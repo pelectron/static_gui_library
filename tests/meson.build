@@ -15,7 +15,8 @@ test_sources = [
   'item_concept.cpp',
   'array.cpp',
   'type_list.cpp',
-  'string_view.cpp'
+  'string_view.cpp',
+  'named_tuple.cpp'
 ]
 
 catch_dep = dependency('catch2')

@@ -5,6 +5,7 @@
 //
 #ifndef SGL_ARRAY_HPP
 #define SGL_ARRAY_HPP
+#include <cstddef>
 
 namespace sgl {
 

@@ -18,8 +18,10 @@
 
 #include <cfloat>
 #include <climits>
+#include <cstddef>
 #include <cstdint>
 #include <cwchar>
+
 
 namespace sgl {
   template <typename T>
