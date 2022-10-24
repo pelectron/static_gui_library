@@ -98,7 +98,7 @@ sgl::Input i = /* ... */;
 t.handle_input(i); // calls the handler
 ```
 
-For more info on the whole input handling process, see [here](/markdown/input_handling.md).
+For more info on the whole input handling process, see [here](markdown/input_handling.md).
 
 
 # Click Handler
