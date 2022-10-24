@@ -15,12 +15,9 @@ jobs:
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
       - name: building
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
       - uses: actions/checkout@v3
-      - uses: BSFishy/meson-build@v1.0.3
-        with:
-          directory: build
-          setup-options: -Db_coverage=true -Dgui=true -Dtest=enabled
-          options: --verbose
-      - name: testing
-        run: ./build/tests/test_main
+      - run: pip install meson
+      - run: meson setup build -Dgui=true -Dtest=enabled
+      - run: meson compile -C build
+      - run: ./build/tests/test_main
