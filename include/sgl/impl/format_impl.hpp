@@ -268,7 +268,7 @@ namespace sgl {
     constexpr sgl::format_result basic_integer_format(CharT* str, size_t len, T value) {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
       constexpr size_t                        base = 10;
-      static_string<CharT, max_buf_size_v<T>> buf{};
+      static_string<CharT, format_impl::max_buf_size_v<T>> buf{};
       if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
@@ -336,7 +336,7 @@ namespace sgl {
 
     } else {
 
-      if ((len > max_buf_size_v<T>) || (len == 0))
+      if ((len > format_impl::max_buf_size_v<T>) || (len == 0))
         return sgl::error::format_error;
 
       bool   negative = false;
@@ -400,7 +400,7 @@ namespace sgl {
         result += to_num(begin[i]) * sgl::parse_impl::pow10<T>(static_cast<int>(size - i - 1));
       }
       return result;
-    };
+    }
 
     constexpr auto get_dot_index(const char* str, size_t n) {
       for (size_t i = 0; i < n; ++i) {
@@ -409,7 +409,7 @@ namespace sgl {
         }
       }
       return sgl::parse_impl::not_found;
-    };
+    }
 
     constexpr auto get_e_index(const char* str, size_t n) {
       for (size_t i = 0; i < n; ++i) {
@@ -418,7 +418,7 @@ namespace sgl {
         }
       }
       return sgl::parse_impl::not_found;
-    };
+    }
 
     template <typename T>
     constexpr T parse(const char* str, size_t n) {
