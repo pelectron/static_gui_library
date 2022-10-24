@@ -3,7 +3,7 @@
 
 # Concepts
 This library has a few concepts.
-The concepts are provided as a table of variables and a table of expressions using those variables. The table of expressions must be fulfilled in order for the concept to be satisfied.
+The concept is always provided as a table of variables and a table of expressions using those variables. The table of expressions must be fulfilled in order for the concept to be satisfied.
 
 # Item
 Items are the things which occupy one line in the display. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button).
@@ -14,7 +14,6 @@ For a type `T` to satisfy the item concept, the following must hold:
 | t        | T                                |
 | i        | sgl::Input                       |
 | m        | type satisfying the Menu concept |
-
 
 | Expression          | Return type/value | Notes        |
 | ------------------- | ----------------- | ------------ |
@@ -64,7 +63,7 @@ This syntactic requirements can be checked with `sgl::is_input_handler_for_v<F, 
 
 The few examples of input handlers:
 
-```cpp
+```
 // as a free function
 sgl::error handler1(T& item, sgl::Input i) noexcept{
   // ...;
@@ -99,7 +98,7 @@ sgl::Input i = /* ... */;
 t.handle_input(i); // calls the handler
 ```
 
-For more info on the whole input handling process, see [here](markdown/input_handling.md).
+For more info on the whole input handling process, see [here](/markdown/input_handling.md).
 
 
 # Click Handler
@@ -144,7 +143,7 @@ This concept can be checked with `sgl::is_tick_handler_for_v<F,Item>`.
 
 The few examples of tick handlers:
 
-```cpp
+```
 // as a free function
 void handler1(Item& item) noexcept{
   // ...;

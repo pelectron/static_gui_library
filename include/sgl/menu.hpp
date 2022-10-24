@@ -241,13 +241,17 @@ namespace sgl {
     sgl::smallest_type_t<sizeof...(Pages)> index_{0};     ///< index of current page
   };
 
-  /// \cond
+  /// \brief template argument deduction guide for Menu
+  /// \tparam Names names of pages
+  /// \tparam Ts page types
   template <typename... Names, typename... Ts>
   Menu(NamedValue<Names, Ts>&&...) -> Menu<sgl::type_list<Names...>, sgl::type_list<Ts...>>;
 
+  /// \brief template argument deduction guide for Menu
+  /// \tparam Names names of pages
+  /// \tparam Ts page types
   template <typename... Names, typename... Ts>
   Menu(const NamedValue<Names, Ts>&...) -> Menu<sgl::type_list<Names...>, sgl::type_list<Ts...>>;
-  /// \endcond
 
   /// \brief apply f on each page in menu.
   /// \tparam NameList list of page names
