@@ -17,7 +17,7 @@ namespace sgl {
 
   template <char... Chars>
   constexpr sgl::string_view<char> Name<Chars...>::to_view() const {
-    return sgl::string_view<char>(*this);
+    return {chars, sizeof(chars) - 1};
   }
 
   /// \cond

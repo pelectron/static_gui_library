@@ -1,8 +1,5 @@
 test_sources = [
-  'main.cpp',
-  'callable.cpp',
-  'cx_arg.cpp', 
-  'fixed_point.cpp',
+  'main.cpp', 
   'ryu/common_test.cpp',
   'ryu/d2fixed_test.cpp',
   'ryu/d2s_intrinsics_test.cpp',
@@ -12,11 +9,19 @@ test_sources = [
   'ryu/cx/f2s_test.cpp',
   'ryu/cx/d2s_test.cpp',
   'ryu/cx/d2fixed_test.cpp',
-  'item_concept.cpp',
+
   'array.cpp',
-  'type_list.cpp',
+  'callable.cpp',
+  'cx_arg.cpp',
+  'fixed_point.cpp',
+  'input.cpp',
+  'item_concept.cpp',
+  'name.cpp',
+  'named_tuple.cpp',
+  'named_value.cpp',
+  'static_string.cpp',
   'string_view.cpp',
-  'named_tuple.cpp'
+  'type_list.cpp',
 ]
 
 catch_dep = dependency('catch2')
