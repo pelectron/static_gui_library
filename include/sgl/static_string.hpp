@@ -25,22 +25,26 @@ namespace sgl {
     /// construct with size times the character val
     /// \param size number of times to repeat val
     /// \param val value to repeat
-    constexpr explicit static_string(size_t size, CharT val) noexcept : size_(size) {
-      for (size_t i = 0; (i < size) and (i < Capacity); ++i) {
+    constexpr explicit static_string(size_t size, CharT val) noexcept
+        : size_(size > Capacity ? Capacity : size) {
+      for (size_t i = 0; (i < size); ++i) {
         data_[i] = val;
       }
     }
 
     /// copy ctor
     /// \param other string to copy
-    constexpr static_string(const static_string& other) noexcept : size_(other.size_) {
-      overwrite(other.data_, size_);
-    }
+    constexpr static_string(const static_string& other) = default;
+
+    /// move ctor
+    /// \param other string to move
+    constexpr static_string(static_string&& other) = default;
 
     /// construct from array/string literal
     /// \param string string literal to construct from
-    explicit constexpr static_string(const CharT (&string)[Capacity + 1]) noexcept
-        : size_(Capacity) {
+    template <size_t ArraySize = Capacity + 1>
+    explicit constexpr static_string(const CharT (&string)[ArraySize]) noexcept
+        : size_((ArraySize - 1) < Capacity ? (ArraySize - 1) : Capacity) {
       overwrite(string, size_);
     }
 
@@ -99,11 +103,15 @@ namespace sgl {
     /// append str to this. Characters from str which do not fit are discarded.
     /// \param str pointer to array to append
     /// \param n length of str to append
-    constexpr void append(const CharT* str, size_t n) noexcept {
-      for (size_t i = size_; (i < Capacity) and (n != 0); ++i, --n) {
-        data_[i] = str[i];
+    /// \return numer of characters appended
+    constexpr size_t append(const CharT* str, size_t n) noexcept {
+      const auto max = (size_ + n) < Capacity ? (size_ + n) : Capacity;
+      const auto old_size = size_;
+      for (size_t i = size_; i < max; ++i) {
+        data_[i] = str[i - old_size];
         ++size_;
       }
+      return size_ - old_size;
     }
 
     /// append string_view to this. Characters from str which do not fit are
@@ -164,10 +172,11 @@ namespace sgl {
         size_ = new_size;
         return;
       }
+      // when new_size < size_, then fill with the newly unused characters to 0
       for (size_t i = size_ - 1; i >= new_size; --i) {
         data_[i] = 0;
       }
-      size_ = new_size;
+      size_ = new_size > Capacity ? Capacity : new_size;
     }
 
     /// access to i-th character. Undefined behaviour if i > Capacity.
@@ -182,11 +191,13 @@ namespace sgl {
 
   private:
     constexpr void overwrite(const CharT* str, size_t n) noexcept {
-      size_t i = 0;
+      const auto max_index = n < Capacity ? n : Capacity;
       size_ = 0;
-      for (; (i < Capacity) and (i < n); ++i) {
+      for (size_t i = 0; i < max_index; ++i, ++size_) {
         data_[i] = str[i];
-        ++size_;
+      }
+      for (size_t i = max_index; i < Capacity; ++i) {
+        data_[i] = 0;
       }
     }
 

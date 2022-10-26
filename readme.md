@@ -32,7 +32,7 @@ The only standard headers required are:
   - `<cmath>` for INFINITY
   - `<cstddef>`
   - `<cstring>` for memcpy
-  - `<utility>` for std::forward
+  - `<utility>` for std::forward and std::move
 
 ### Dependencies
 sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't use meson, you will also need to clone gcem and add its include directory to your compilers include path. gcem is a header only library, so don't worry about having to build anything.
@@ -58,7 +58,6 @@ Note that qmake needs to be available in your path for this to work!
 For compiling with Qt5, you should set `qt_major_version=5` in the default options.
 
 More on the visualizer can be found [here](markdown/visualizer.md).
-
 
 
 ## Testing
