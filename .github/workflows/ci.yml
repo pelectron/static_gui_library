@@ -9,7 +9,7 @@ concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 jobs:
-  build-gcc:
+  testing:
     strategy: 
       matrix:
         cxx: ['clang++', 'g++']
@@ -25,7 +25,7 @@ jobs:
       - name: installing ninja
         run: pip install ninja
       - name: setup build directory
-        run: meson setup build -Dtest=enabled --buildtype=${{ matrix.buildtype }}
+        run: meson setup build -Dtest=enabled -Dbuildtype=${{ matrix.buildtype }} -Dwarning_level=3
       - name: building
         run: meson compile -C build
       - name: testing

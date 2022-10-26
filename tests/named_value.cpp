@@ -19,6 +19,16 @@ TEST_CASE("NamedValue") {
     STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(named_val)>,
                                   sgl::NamedValue<sgl::Name<'n', 'a', 'm', 'e'>, int>>);
   }
+  SECTION("deduction guide") {
+    auto named_val = sgl::NamedValue(name, "hello world");
+    STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(named_val)>,
+                                  sgl::NamedValue<sgl::Name<'n', 'a', 'm', 'e'>, const char*>>);
+  const char lit[]{"Literal"};
+  sgl::NamedValue n2 {name,lit};
+  STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(n2)>,
+                                  sgl::NamedValue<sgl::Name<'n', 'a', 'm', 'e'>, const char*>>);
+  
+  }
   SECTION("name()") {
     auto named_val = sgl::NamedValue(name, 1);
     REQUIRE(named_val.name() == "name"_sv);
@@ -29,7 +39,7 @@ TEST_CASE("NamedValue") {
     REQUIRE(named_val.value() == val);
   }
   SECTION("operator <<=") {
-        auto val = GENERATE(1, 2, 3, 4, 55, 10, 255, 123456);
+    auto val = GENERATE(1, 2, 3, 4, 55, 10, 255, 123456);
     auto result = name <<= val;
     auto expected = sgl::NamedValue(name, val);
     STATIC_REQUIRE(std::is_same_v<decltype(result), decltype(expected)>);
