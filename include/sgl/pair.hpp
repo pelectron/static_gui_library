@@ -35,6 +35,6 @@ namespace sgl {
   template <typename T1, typename T2>
   Pair(T1&&, T2&&) -> Pair<std::decay_t<T1>, std::decay_t<T2>>;
   template <typename T1, typename T2>
-  Pair(const T1&, const T2&) -> Pair<std::decay_t<T1>, std::decay_t<T2>>;
+  Pair(const T1&, const T2&) -> Pair<std::decay_t<const T1>, std::decay_t<const T2>>;
 } // namespace sgl
 #endif

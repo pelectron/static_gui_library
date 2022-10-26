@@ -18,6 +18,10 @@ TEST_CASE("Pair constructor") {
   }
   SECTION("deduction guide") {
     auto p = sgl::Pair{"hello", "world"};
-    STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(p)>, sgl::Pair<char*, char*>>);
+    STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(p)>, sgl::Pair<const char*, const char*>>);
+
+    int  array[5]{0, 1, 2, 3, 4};
+    auto p2 = sgl::Pair{array, array};
+    STATIC_REQUIRE(std::is_same_v<std::decay_t<decltype(p2)>, sgl::Pair<int*, int*>>);
   }
 }

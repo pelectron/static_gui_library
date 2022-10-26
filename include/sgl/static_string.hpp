@@ -122,7 +122,7 @@ namespace sgl {
     /// append character, if there is capacity left.
     /// \param c character to append
     constexpr void append(CharT c) noexcept {
-      if ((size_ + 1) < Capacity) {
+      if ((size_ + 1u) < Capacity) {
         data_[size_] = c;
         ++size_;
       }
