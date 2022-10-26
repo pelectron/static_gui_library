@@ -13,12 +13,12 @@ namespace sgl {
   enum class Input : uint64_t {
     none = 0,                                ///< invalid input
     keyboard_type_mask = 0x8000000000000000, ///< mask for keyboard type inputs
+    up = 0x0000000100000000,                 ///< keypad up
     down = 0x0000000200000000,               ///< keypad down
     left = 0x0000000300000000,               ///< keypad left
-    up = 0x0000000100000000,                 ///< keypad up
     right = 0x0000000400000000,              ///< keypad right
     enter = 0x0000000500000000,              ///< keypad enter
-    keypad_mask = 0x0000000700000000,        ///< keypad value mask
+    keypad_mask = 0x0000000F00000000,        ///< keypad value mask
     char8_mask = 0x00000000000000FF,         ///< 8 bit character mask
     char16_mask = 0x000000000000FFFF,        ///< 16 bit character mask
     char32_mask = 0x00000000FFFFFFFF,        ///< 32 bit character mask
@@ -48,22 +48,12 @@ namespace sgl {
   /// \param input input to convert
   /// \return either keypad constant or Input::none
   constexpr Input get_keypad_input(Input input) {
-    switch (Input::keypad_mask & input) {
-      case Input::up:
-        [[fallthrough]];
-      case Input::down:
-      case Input::left:
-      case Input::right:
-        return Input::keypad_mask & input;
-      default:
-        return Input::none;
-    }
+    if ((input & sgl::Input::keypad_mask) == input)
+      return input;
+    return sgl::Input::none;
   }
 
   /// \}
-
-  /// \addtogroup input_type
-  /// \{
 
   /// check if input is a keyboard input
   /// \return bool
@@ -73,11 +63,7 @@ namespace sgl {
 
   /// check if input is a keypad input.
   /// \return bool
-  constexpr bool is_keypad_input(Input input) {
-    return get_keypad_input(input) != sgl::Input::none;
-  }
-
-  /// \}
+  constexpr bool is_keypad_input(Input input) { return (input & sgl::Input::keypad_mask) == input; }
 
   /// \addtogroup char_input_conversion
   /// \{

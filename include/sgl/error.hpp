@@ -33,7 +33,6 @@ namespace sgl {
     invalid_page_index,
     invalid_format,
     null_format
-
   };
 } // namespace sgl
 #endif /* SGL_ERROR_HPP */
