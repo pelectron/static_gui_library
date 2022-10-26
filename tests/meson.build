@@ -13,6 +13,7 @@ test_sources = [
   'array.cpp',
   'callable.cpp',
   'cx_arg.cpp',
+  'enum_map.cpp',
   'fixed_point.cpp',
   'input.cpp',
   'item_concept.cpp',

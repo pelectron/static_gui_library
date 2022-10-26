@@ -59,5 +59,6 @@ TEST_CASE("string_view") {
   SECTION("literal operators") {
     auto v1 = "A literal"_sv;
     REQUIRE(v1.size() == 9);
+    REQUIRE(v1 == View("A literal"));
   }
 }

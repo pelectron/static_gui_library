@@ -43,12 +43,13 @@ namespace sgl {
     /// \param map Array of pairs of E and const CharT*
     constexpr explicit EnumMap(const Array<Pair<E, const CharT*>, N>& map) noexcept;
 
-    /// \brief get value from string_view
+    /// \brief get value from string_view. If str is not mapped to any value, any of the contained
+    /// values of E might be returned.
     /// \param str stringified value
     /// \return constexpr E
     [[nodiscard]] constexpr E operator[](sgl::string_view<CharT> str) const noexcept;
 
-    /// \brief get string_view of value with index operator
+    /// \brief get string_view of value. Returns empty view if value is not mapped to any view.
     /// \param value value to get view of
     /// \return constexpr sgl::string_view<CharT>
     [[nodiscard]] constexpr sgl::string_view<CharT> operator[](E value) const noexcept;
@@ -61,10 +62,15 @@ namespace sgl {
 
     /// \brief query if map contains a value
     /// \param string stringified value
-    /// \return true contains value
-    /// \return false doesn't contain value
+    /// \return true if this contains string.
+    /// \return false if this doesn't contain string.
     [[nodiscard]] constexpr bool contains(sgl::string_view<CharT> string) const noexcept;
 
+    /// \brief get number of map entries
+    /// \return constexpr size_t
+    [[nodiscard]] constexpr size_t size() const noexcept { return N; }
+
+  private:
     /// \brief get index of value in string form
     /// \param string stringified value
     /// \return constexpr size_t
@@ -85,17 +91,12 @@ namespace sgl {
     /// \return constexpr E
     [[nodiscard]] constexpr E get_value(size_t i) const noexcept;
 
-    /// \brief get number of map entries
-    /// \return constexpr size_t
-    [[nodiscard]] constexpr size_t size() const noexcept { return N; }
-
-  private:
     sgl::Array<sgl::Pair<E, sgl::string_view<CharT>>, N> data{};
   };
 
   /// \brief helper function to create an enum map with all template parameters deduced.
   /// \note args must be of the following form: MyEnum::val1, "string of val1", MyEnum::Val2,
-  /// "string of val2", ... etc.
+  /// "string of val2", ... etc. Below is a code snippet showing how to use it:
   ///
   /// \code
   /// #include "sgl/enum_map.hpp"
@@ -107,7 +108,7 @@ namespace sgl {
   /// constexpr auto map = sgl::enum_map(E::val1, "value 1", E::val2, "value 2", E::val3, "value3");
   /// \endcode
   ///
-  /// \tparam EnumStringArgs should be viewed as pairs of enum values to character literals
+  /// \tparam EnumStringArgs should be viewed as pairs of enum values and character literals
   /// \param args must be in the form mentioned above and in the example code snippet, i.e. enum
   /// value, enum string, ...
   /// \return enum map with deduced parameters
