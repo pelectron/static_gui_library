@@ -13,23 +13,19 @@ jobs:
     strategy: 
       matrix:
         cxx: ['clang++', 'g++']
+        buildtype: ['debug', 'release']
     runs-on: ubuntu-latest
     env: 
       CXX:  ${{ matrix.cxx }}
     steps:
-      - run: echo $CXX
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
       - name: installing meson
         run: pip install meson
       - name: installing ninja
         run: pip install ninja
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: '6.2.4'
       - name: setup build directory
-        run: meson setup build -Dgui=true -Dtest=enabled
+        run: meson setup build -Dtest=enabled --buildtype=${{ matrix.buildtype }}
       - name: building
         run: meson compile -C build
       - name: testing

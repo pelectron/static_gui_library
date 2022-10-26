@@ -144,7 +144,7 @@ namespace sgl {
 
   template <>
   struct numeric_limits<double> {
-    static constexpr double max() noexcept { return LDBL_MAX; }
+    static constexpr double max() noexcept { return DBL_MAX; }
 
     static constexpr double min() noexcept { return DBL_MIN; }
   };
