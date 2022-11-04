@@ -264,6 +264,20 @@ namespace sgl {
   template <typename... Ts>
   inline constexpr bool all_unique_v = all_unique<Ts...>::value;
 
+  template <typename... Ts>
+  struct all_same;
+
+  template <typename T>
+  struct all_same<T> : std::true_type {};
+
+  template <typename T,typename... Rest>
+  struct all_same<T, Rest...> {
+    static constexpr bool value = (std::is_same_v<T, Rest> && ...);
+  };
+  /// @brief check if every type in Ts is the same, i.e. all_same_v<int,int,int> == true, all_same_v<int,int,char> == false
+  /// @tparam ...Ts 
+  template <typename... Ts>
+  inline constexpr bool all_same_v = all_same<Ts...>::value;
   ///\endcond
 } // namespace sgl
 #endif /* SGL_TYPE_LIST_HPP */
