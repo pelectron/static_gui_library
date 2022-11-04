@@ -23,7 +23,7 @@ namespace sgl {
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool is_input_handler_for_v =
+  inline constexpr bool is_input_handler_for_v =
       std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>and
           std::is_trivially_destructible_v<F>and std::is_trivially_move_constructible_v<F>and
                                                  std::is_trivially_copyable_v<F>;
@@ -55,7 +55,7 @@ namespace sgl {
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
+  inline constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
 
   /// \}
 
@@ -89,7 +89,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_text_v = has_text<T>::value;
+  inline constexpr bool has_text_v = has_text<T>::value;
 
   template <typename T, typename = void>
   struct has_handle_input : std::false_type {};
@@ -107,7 +107,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_handle_input_v = has_handle_input<T>::value;
+  inline constexpr bool has_handle_input_v = has_handle_input<T>::value;
 
   template <typename T, typename = void>
   struct has_set_text : std::false_type {};
@@ -130,7 +130,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_set_text_v = has_set_text<T>::value;
+  inline constexpr bool has_set_text_v = has_set_text<T>::value;
 
   template <typename T>
   inline constexpr bool has_tick_v = has_tick<T>::value;
@@ -162,7 +162,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_title_v = has_title<T>::value;
+  inline constexpr bool has_title_v = has_title<T>::value;
 
   template <typename T, typename = void>
   struct has_index : std::false_type {};
@@ -173,7 +173,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_index_v = has_index<T>::value;
+  inline constexpr bool has_index_v = has_index<T>::value;
 
   template <typename T, typename = void>
   struct has_size : std::false_type {};
@@ -184,7 +184,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_size_v = has_size<T>::value;
+  inline constexpr bool has_size_v = has_size<T>::value;
 
   template <typename T, typename = void>
   struct has_get_item : std::false_type {};
@@ -202,7 +202,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_get_item_v = has_get_item<T>::value;
+  inline constexpr bool has_get_item_v = has_get_item<T>::value;
 
   template <typename T, typename = void>
   struct has_set_item_cursor : std::false_type {};
@@ -212,7 +212,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_item_cursor_v = has_set_item_cursor<T>::value;
+  inline constexpr bool has_set_item_cursor_v = has_set_item_cursor<T>::value;
 
   template <typename T, typename = void>
   struct has_is_in_edit_mode : std::false_type {};
@@ -224,7 +224,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_is_in_edit_mode_v = has_is_in_edit_mode<T>::value;
+  inline constexpr bool has_is_in_edit_mode_v = has_is_in_edit_mode<T>::value;
 
   template <typename T, typename = void>
   struct has_set_edit_mode : std::false_type {};
@@ -234,7 +234,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_edit_mode_v = has_set_edit_mode<T>::value;
+  inline constexpr bool has_set_edit_mode_v = has_set_edit_mode<T>::value;
 
   template <typename T, typename = void>
   struct has_set_navigation_mode : std::false_type {};
@@ -244,7 +244,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_navigation_mode_v = has_set_navigation_mode<T>::value;
+  inline constexpr bool has_set_navigation_mode_v = has_set_navigation_mode<T>::value;
 
   template <typename T, typename = void>
   struct has_get_start_edit : std::false_type {};
@@ -256,7 +256,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_get_start_edit_v = has_get_start_edit<T>::value;
+  inline constexpr bool has_get_start_edit_v = has_get_start_edit<T>::value;
 
   template <typename T, typename = void>
   struct has_set_start_edit : std::false_type {};
@@ -268,7 +268,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_start_edit_v = has_set_start_edit<T>::value;
+  inline constexpr bool has_set_start_edit_v = has_set_start_edit<T>::value;
 
   template <typename T, typename = void>
   struct has_get_stop_edit : std::false_type {};
@@ -280,7 +280,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_get_stop_edit_v = has_get_stop_edit<T>::value;
+  inline constexpr bool has_get_stop_edit_v = has_get_stop_edit<T>::value;
 
   template <typename T, typename = void>
   struct has_set_stop_edit : std::false_type {};
@@ -292,7 +292,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_stop_edit_v = has_set_stop_edit<T>::value;
+  inline constexpr bool has_set_stop_edit_v = has_set_stop_edit<T>::value;
 
   template <typename T, typename = void>
   struct has_set_menu : std::false_type {};
@@ -302,7 +302,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_set_menu_v = has_set_menu<T>::value;
+  inline constexpr bool has_set_menu_v = has_set_menu<T>::value;
 
   template <typename T, typename = void>
   struct has_for_each_item : std::false_type {};
@@ -315,7 +315,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_for_each_item_v = has_for_each_item<T>::value;
+  inline constexpr bool has_for_each_item_v = has_for_each_item<T>::value;
 
   template <typename T, typename = void>
   struct has_for_current_item : std::false_type {};
@@ -328,7 +328,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_for_current_item_v = has_for_current_item<T>::value;
+  inline constexpr bool has_for_current_item_v = has_for_current_item<T>::value;
 
   template <typename T, typename = void>
   struct has_on_enter : std::false_type {};
@@ -340,7 +340,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_on_enter_v = has_on_enter<T>::value;
+  inline constexpr bool has_on_enter_v = has_on_enter<T>::value;
 
   template <typename T, typename = void>
   struct has_on_exit : std::false_type {};
@@ -351,7 +351,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_on_exit_v = has_on_exit<T>::value;
+  inline constexpr bool has_on_exit_v = has_on_exit<T>::value;
 
   template <typename T>
   struct is_page {
@@ -369,7 +369,7 @@ namespace sgl {
   /// @brief true if T fulfills the page concept
   /// \tparam T type to check
   template <typename T>
-  static constexpr bool is_page_v = is_page<T>::value;
+  inline constexpr bool is_page_v = is_page<T>::value;
 
   /// \}
 
@@ -394,7 +394,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_set_active_page_v = has_set_active_page<T>::value;
+  inline constexpr bool has_set_active_page_v = has_set_active_page<T>::value;
 
   template <typename T, typename = void>
   struct has_for_each_page : std::false_type {};
@@ -407,7 +407,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_for_each_page_v = has_for_each_page<T>::value;
+  inline constexpr bool has_for_each_page_v = has_for_each_page<T>::value;
 
   template <typename T, typename = void>
   struct has_for_current_page : std::false_type {};
@@ -420,7 +420,7 @@ namespace sgl {
       : std::true_type {};
 
   template <typename T>
-  static constexpr bool has_for_current_page_v = has_for_current_page<T>::value;
+  inline constexpr bool has_for_current_page_v = has_for_current_page<T>::value;
 
   template <typename T, typename = void>
   struct has_get_page : std::false_type {};
@@ -438,7 +438,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_get_page_v = has_get_page<T>::value;
+  inline constexpr bool has_get_page_v = has_get_page<T>::value;
 
   template <typename T, typename = void>
   struct has_get_item_at_page : std::false_type {};
@@ -456,7 +456,7 @@ namespace sgl {
   };
 
   template <typename T>
-  static constexpr bool has_get_item_at_page_v = has_get_item_at_page<T>::value;
+  inline constexpr bool has_get_item_at_page_v = has_get_item_at_page<T>::value;
 
   template <typename T>
   struct is_menu {
@@ -470,7 +470,7 @@ namespace sgl {
   /// @brief  true if T fulfills the menu concept
   /// @tparam T type to check
   template <typename T>
-  static constexpr bool is_menu_v = is_menu<T>::value;
+  inline constexpr bool is_menu_v = is_menu<T>::value;
 
   /// \}
 
@@ -483,6 +483,7 @@ namespace sgl {
   /// @brief  check if T fulfills the item concept.
   /// @tparam T type to check
   template <typename T>
-  static constexpr bool is_item_v = is_item<T>::value;
+  inline constexpr bool is_item_v = is_item<T>::value;
+  
 } // namespace sgl
 #endif /* SGL_ITEM_CONCEPTS_HPP */
