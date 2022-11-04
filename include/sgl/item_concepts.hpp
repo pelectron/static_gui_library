@@ -9,17 +9,84 @@
 #include "sgl/error.hpp"
 #include "sgl/format.hpp"
 #include "sgl/input.hpp"
+#include "sgl/static_string.hpp"
 
 #include <type_traits>
 
 namespace sgl {
+  namespace detail {
+    template <typename T>
+    static constexpr bool always_false = false;
+
+    template <typename T, typename = void>
+    struct has_item_type_typedef : std::false_type {};
+
+    template <typename T>
+    struct has_item_type_typedef<T, std::void_t<typename T::item_type>> : std::true_type {};
+
+    template <typename T, typename = void>
+    struct has_char_type_typedef : std::false_type {};
+
+    template <typename T>
+    struct has_char_type_typedef<T, std::void_t<typename T::char_type>> {
+      using Ch = typename T::char_type;
+      static constexpr bool value =
+          std::is_same_v<Ch, char> or std::is_same_v<Ch, char16_t> or std::is_same_v<Ch, char32_t>;
+    };
+
+    template <typename T, typename = void>
+    struct has_text_size : std::false_type {};
+
+    template <typename T>
+    struct has_text_size<T, std::void_t<decltype(T::text_size)>> {
+      static constexpr bool value = std::is_convertible_v<decltype(T::text_size), size_t>;
+    };
+
+    /// @brief evaluates to true if T has han inner typename item_type.
+    /// @tparam T type to check
+    template <typename T>
+    static constexpr bool has_item_type_typedef_v = detail::has_item_type_typedef<T>::value;
+
+    /// @brief evaluates to true if T has han inner typename char_type.
+    /// @tparam T type to check
+    template <typename T>
+    static constexpr bool has_char_type_typedef_v = detail::has_char_type_typedef<T>::value;
+
+    /// @brief evaluates to true if the expression ``T::text_size`` is a constant of
+    /// type```size_t``.
+    /// @tparam T type to check
+    template <typename T>
+    static constexpr bool has_text_size_v = detail::has_text_size<T>::value;
+
+  } // namespace detail
+
+  template <typename T>
+  struct is_item_trait {
+    static constexpr bool value = detail::has_char_type_typedef_v<T> and detail::has_text_size_v<T>;
+  };
+
+  /// \endcond
+
+  /// @brief check if T is an Item Trait. An a class T must satisfy the following to be an Item
+  /// Trait:
+  ///
+  /// expression or typename | type                        | notes                         |
+  /// -----------------------|-----------------------------|-------------------------------|
+  /// typename T::char_type  | char, char16_t or char32_t. |                               |
+  /// T::text_size           | size_t                      | must be a constant expression |
+  ///
+  /// @tparam T type to check
+  template <typename T>
+  static constexpr bool is_item_trait_v = is_item_trait<T>::value;
+
+  /// \endcond
 
   /// \addtogroup handler_traits Handler traits
   /// \ingroup sgl_concepts
   /// \{
 
   /// @brief true if F is a valid input handler for Item.
-  /// Look [here](concepts.md#input-handler) for more info.
+  /// Look [here](markdown/concepts.md) for more info.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
@@ -29,7 +96,7 @@ namespace sgl {
                                                  std::is_trivially_copyable_v<F>;
 
   /// @brief true if F is a valid click handler for Item.
-  /// Look [here](#click-handler) for more info.
+  /// Look [here](markdown/concepts.md) for more info.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
@@ -83,9 +150,15 @@ namespace sgl {
   struct has_text : std::false_type {};
 
   template <typename T>
-  struct has_text<T, std::void_t<decltype(std::declval<T>().text())>> {
-    static constexpr bool value =
-        std::is_same_v<typename T::StringView, decltype(std::declval<T>().text())>;
+  struct has_text<
+      T,
+      std::void_t<decltype(std::declval<T>().text()), decltype(std::declval<const T>().text())>> {
+
+    using R = std::remove_reference_t<decltype(std::declval<T>().text())>;
+    using CR = std::remove_reference_t<decltype(std::declval<const T>().text())>;
+    using String = sgl::static_string<typename T::char_type, T::text_size>;
+
+    static constexpr bool value = std::is_same_v<R, String> and std::is_same_v<CR, const String>;
   };
 
   template <typename T>
@@ -101,9 +174,8 @@ namespace sgl {
     static constexpr bool value = std::is_same_v<
         sgl::error,
         decltype(std::declval<T>().handle_input(
-            std::declval<sgl::Input>()))>and noexcept(std::declval<T>()
-                                                          .handle_input(
-                                                              std::declval<sgl::Input>()));
+            std::declval<sgl::Input>()))>&& noexcept(std::declval<T>()
+                                                         .handle_input(std::declval<sgl::Input>()));
   };
 
   template <typename T>
@@ -146,10 +218,6 @@ namespace sgl {
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
-    [[maybe_unused]] auto set_menu = [](auto*) {};
-
-    // dummy menu type
-    struct M {};
   } // namespace detail
 
   template <typename T, typename = void>
@@ -474,16 +542,16 @@ namespace sgl {
 
   /// \}
 
-  /// @brief  check if T fulfills the item concept. See sgl::is_item_v<T> for more details.
   template <typename T>
   struct is_item {
-    static constexpr bool value = has_set_menu_v<T> and has_handle_input_v<T> and has_tick_v<T>;
+    static constexpr bool value =
+        has_text_v<T> and has_set_menu_v<T> and has_handle_input_v<T> and has_tick_v<T>;
   };
 
   /// @brief  check if T fulfills the item concept.
   /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_item_v = is_item<T>::value;
-  
+
 } // namespace sgl
 #endif /* SGL_ITEM_CONCEPTS_HPP */

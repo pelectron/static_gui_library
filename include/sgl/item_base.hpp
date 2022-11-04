@@ -13,6 +13,7 @@
 #ifndef SGL_ITEM_BASE_HPP
 #define SGL_ITEM_BASE_HPP
 #include "sgl/callable.hpp"
+#include "sgl/item_concepts.hpp"
 #include "sgl/item_traits.hpp"
 #include "sgl/static_string.hpp"
 #include "sgl/string_view.hpp"
@@ -72,11 +73,9 @@ namespace sgl {
   template <typename ItemImpl, typename Traits = sgl::ItemTraits<ItemImpl>>
   class ItemBase {
   public:
-    static_assert(sgl::has_item_type_typedef_v<Traits>,
-                  "Traits type needs an inner typename named 'item_type'.");
-    static_assert(sgl::has_char_type_typedef_v<Traits>,
+    static_assert(sgl::detail::has_char_type_typedef_v<Traits>,
                   "Traits type needs an inner typename named 'char_type'.");
-    static_assert(sgl::has_text_size_v<Traits>,
+    static_assert(sgl::detail::has_text_size_v<Traits>,
                   "Traits type needs a static constexpr member of type size_t called 'text_size'.");
     /// traits of this item
     using traits_type = Traits;
@@ -87,7 +86,7 @@ namespace sgl {
     /// text size of the item.
     static constexpr size_t text_size = traits_type::text_size;
     /// true if this item is clickable, defaults to false.
-    static constexpr bool clickable = sgl::get_clickable_v<traits_type>;
+    // static constexpr bool clickable = sgl::get_clickable_v<traits_type>;
     /// string_view type used by this item.
     using StringView = sgl::string_view<char_type>;
     /// string type used by this item for the text field.
