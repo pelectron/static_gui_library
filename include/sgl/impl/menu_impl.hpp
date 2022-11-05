@@ -73,36 +73,37 @@ namespace sgl {
   }
 
   template <typename... Names, typename... Pages>
-  template <typename Name>
+  template <char... Cs>
   constexpr sgl::error Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::set_current_page(
-      Name name) noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>,
+      sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
                     "No page with such a name found in this menu");
     } else {
       static_cast<void>(name);
-      return set_current_page(sgl::index_of_v<Name, name_list>);
+      return set_current_page(sgl::index_of_v<sgl::Name<Cs...>, name_list>);
     }
   }
 
   template <typename... Names, typename... Pages>
-  template <typename Name>
-  auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::operator[](Name name) noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>,
-                    "No page with such a name found in this menu");
+  template <char... Cs>
+  auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::operator[](
+      sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+                    "No page with such a name exists in this menu");
     } else {
       return pages_[name];
     }
   }
 
   template <typename... Names, typename... Pages>
-  template <typename Name>
+  template <char... Cs>
   const auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::operator[](
-      Name name) const noexcept {
-    if constexpr (!sgl::contains_v<Name, name_list>) {
-      static_assert(sgl::contains_v<Name, name_list>,
-                    "No page with such a name found in this menu");
+      sgl::Name<Cs...> name) const noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+                    "No page with such a name exists in this menu");
     } else {
       return pages_[name];
     }
@@ -127,6 +128,25 @@ namespace sgl {
     } else {
       return sgl::get<I>(pages_);
     }
+  }
+
+  template <typename... Names, typename... Pages>
+  constexpr sgl::string_view<char>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::page_name() const noexcept {
+    return page_name_impl<0>();
+  }
+
+  template <typename... Names, typename... Pages>
+  constexpr sgl::string_view<char>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_name(size_t i) const noexcept {
+    return item_name_impl(i);
+  }
+
+  template <typename... Names, typename... Pages>
+  constexpr sgl::string_view<
+      typename Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::char_type>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_text(size_t i) const noexcept {
+    return this->item_text_impl(i);
   }
 
   template <typename... Names, typename... Pages>
@@ -196,6 +216,36 @@ namespace sgl {
       }
       return for_current_page_impl<I + 1>(std::forward<F>(f));
     }
+  }
+
+  template <typename... Names, typename... Pages>
+  template <size_t I>
+  constexpr sgl::string_view<char>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::page_name_impl() const noexcept {
+    if constexpr (I == sizeof...(Pages))
+      return {};
+    else {
+      if (index_ == I)
+        return sgl::type_at_t<I, name_list>{}.to_view();
+      return this->page_name_impl<I + 1>();
+    }
+  }
+
+  template <typename... Names, typename... Pages>
+  template <size_t I>
+  [[nodiscard]] constexpr sgl::string_view<char>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_name_impl(
+          size_t i) const noexcept {
+    return this->for_current_page(
+        [i](const auto& page) -> sgl::string_view<char> { return page.item_name(i); });
+  }
+
+  template <typename... Names, typename... Pages>
+  constexpr sgl::string_view<
+      typename Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::char_type>
+      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_text_impl(
+          size_t i) const noexcept {
+    return this->for_current_page([i](const auto& page) { return page.item_text(i); });
   }
 
   template <typename NameList, typename PageList, typename F>

@@ -27,19 +27,26 @@ namespace sgl {
 
   /// \endcond
 
-  /// \headerfile menu.hpp "sgl/menu.hpp"
-  /// \brief The menu class brings everything together and holds all the pages of the menu.
-  ///
-  /// \tparam Names names of the pages
-  /// \tparam Pages types of the pages
+  /// @headerfile menu.hpp "sgl/menu.hpp"
+  /// @brief The menu class brings everything together and holds all the pages of the menu.
+  /// @details It consists of a NameTuple of pages, an index to keep track of the current page, and
+  /// an input handler. The default input handler just delegates the input to the current page and
+  /// returns its result.
+  /// @tparam Names names of the pages
+  /// @tparam Pages types of the pages
   template <typename... Names, typename... Pages>
   class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
 
     static_assert((sgl::is_name_type_v<Names> && ...),
                   "One of the types used as a name is of type sgl::Name<...>.");
+
     static_assert(sgl::all_unique_v<Names...>,
-                  "sgl::Menu can't have duplicate names for it's pages! Make sure to use a unique "
+                  "sgl::Menu can't have duplicate names for its pages! Make sure to use a unique "
                   "name for each page in the menu.");
+
+    static_assert(sgl::all_same_v<typename Pages::char_type...>,
+                  "All pages in a menu must have the same char_type! Make sure each page has the "
+                  "expected character type.");
 
   public:
     /// \brief is true if F is nothrow invocable with a reference to each page in page_list
@@ -53,15 +60,15 @@ namespace sgl {
     static constexpr bool
         const_nothrow_applicable = (std::is_nothrow_invocable_v<F, const Pages&> && ...);
 
-    /// \brief is true if F is nothrow invocable with a string_view<char> as it's first argument and
-    /// a reference to each page in page_list as it's second.
+    /// \brief is true if F is nothrow invocable with a string_view<char> as its first argument and
+    /// a reference to each page in page_list as its second.
     /// \tparam F functor type
     template <typename F>
     static constexpr bool nothrow_applicable_with_name =
         (std::is_nothrow_invocable_v<F, sgl::string_view<char>, Pages&> && ...);
 
-    /// \brief is true if F is nothrow invocable with a string_view<char> as it's first argument and
-    /// a const reference to each page in page_list as it's second.
+    /// \brief is true if F is nothrow invocable with a string_view<char> as its first argument and
+    /// a const reference to each page in page_list as its second.
     /// \tparam F functor type
     template <typename F>
     static constexpr bool const_nothrow_applicable_with_name =
@@ -71,6 +78,10 @@ namespace sgl {
     using name_list = sgl::type_list<Names...>;
     /// page types of the menu
     using page_list = sgl::type_list<Pages...>;
+    /// character type of the menu
+    using char_type = typename sgl::first_t<page_list>::char_type;
+    /// string view type of the menu
+    using StringView = sgl::string_view<char_type>;
     /// concrete input handler type
     using InputHandler_t =
         sgl::Callable<sgl::error(sgl::Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>&,
@@ -129,22 +140,22 @@ namespace sgl {
     /// set current page by name
     /// \param name name of the page
     /// \return sgl::error
-    template <typename Name>
-    [[nodiscard]] constexpr sgl::error set_current_page(Name name) noexcept;
+    template <char... Cs>
+    [[nodiscard]] constexpr sgl::error set_current_page(sgl::Name<Cs...> name) noexcept;
 
     /// \brief get page by name
     /// \tparam Name name type
     /// \param name name instance
     /// \return reference to page
-    template <typename Name>
-    [[nodiscard]] auto& operator[](Name name) noexcept;
+    template <char... Cs>
+    [[nodiscard]] auto& operator[](sgl::Name<Cs...> name) noexcept;
 
     /// \brief get page by name
     /// \tparam Name name type
     /// \param name name instance
     /// \return const reference to page
-    template <typename Name>
-    [[nodiscard]] const auto& operator[](Name name) const noexcept;
+    template <char... Cs>
+    [[nodiscard]] const auto& operator[](sgl::Name<Cs...> name) const noexcept;
 
     /// \brief get reference to page at index I
     /// \tparam I page index
@@ -157,6 +168,26 @@ namespace sgl {
     /// \return const reference to I-th page
     template <size_t I>
     [[nodiscard]] constexpr const auto& get_page() const noexcept;
+
+    /**
+     * \brief get the name of the current page as a string_view.
+     * \return sgl::string_view<char>
+     */
+    [[nodiscard]] constexpr sgl::string_view<char> page_name() const noexcept;
+
+    /**
+     * \brief returns the name of the i-th item of the current page as a string_view.
+     * \param i item index
+     * \return sgl::string_view<char>
+     */
+    [[nodiscard]] constexpr sgl::string_view<char> item_name(size_t i) const noexcept;
+
+    /**
+     * \brief returns the text from the i-th item of the current page as a string_view.
+     * \param i item index
+     * \return sgl::string_view<char_type>
+     */
+    [[nodiscard]] constexpr sgl::string_view<char_type> item_text(size_t i) const noexcept;
 
     /// \brief apply f on each page in menu.
     /// \details
@@ -236,6 +267,13 @@ namespace sgl {
     constexpr decltype(auto) for_current_page_impl(F&& f) const
         noexcept(const_nothrow_applicable<F>);
 
+    template <size_t I>
+    [[nodiscard]] constexpr sgl::string_view<char> page_name_impl() const noexcept;
+    template <size_t I>
+    [[nodiscard]] constexpr sgl::string_view<char> item_name_impl(size_t i) const noexcept;
+
+    [[nodiscard]] constexpr sgl::string_view<char_type> item_text_impl(size_t i) const noexcept;
+
     sgl::NamedTuple<name_list, page_list> pages_;         ///< pages owned by this menu
     InputHandler_t input_handler_{&default_handle_input}; ///< menu input handler
     sgl::smallest_type_t<sizeof...(Pages)> index_{0};     ///< index of current page
@@ -257,7 +295,7 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  void for_each(Menu<NameList, PageList>& menu, F&& f) noexcept(
+  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f) noexcept(
       noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>())));
 
   template <typename NameList, typename PageList, typename F>
@@ -290,11 +328,11 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  void for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
+  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
       noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
 
   template <typename NameList, typename PageList, typename F>
-  void for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(
+  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(
       noexcept(std::declval<const Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
   /// \}
 
