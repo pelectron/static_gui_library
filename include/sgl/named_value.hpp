@@ -64,12 +64,12 @@ namespace sgl {
     /// \param name name of NamedValue
     /// \param value value of NamedValue
     constexpr NamedValue(Name     name,
-                         const T& value) noexcept(std::is_nothrow_copy_constructible_v<T>);
+                         const value_type& value) noexcept(std::is_nothrow_copy_constructible_v<T>);
 
     /// \brief move construct from name and value
     /// \param name name of NamedValue
     /// \param value value to move into NamedValue
-    constexpr NamedValue(Name name, T&& value) noexcept(std::is_nothrow_move_constructible_v<T>);
+    constexpr NamedValue(Name name, value_type&& value) noexcept(std::is_nothrow_move_constructible_v<T>);
 
     /// \brief get name as sgl::string_view<char>
     /// \return sgl::string_view<char>
@@ -77,11 +77,11 @@ namespace sgl {
 
     /// \brief get reference to value
     /// \return value_type&
-    [[nodiscard]] constexpr T& value() noexcept;
+    [[nodiscard]] constexpr value_type& value() noexcept;
 
     /// \brief get const reference to value
     /// \return const value_type&
-    [[nodiscard]] constexpr const T& value() const noexcept;
+    [[nodiscard]] constexpr const value_type& value() const noexcept;
 
   private:
     value_type value_; ///< value of the argument

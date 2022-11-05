@@ -25,8 +25,8 @@ namespace sgl {
   /// \brief This class models a numeric item. It consists of a value of type T,
   /// a delta value of type T and a formatter to format T's into strings.
   /// \details The default behaviour of this item when it is edited is as follows: an input of
-  /// sgl::Input::up/right increases the item's value by it's delta value, i.e. value += delta. An
-  /// input equal to sgl::Input::down/left decreases the item's value by it's delta value, i.e.
+  /// sgl::Input::up/right increases the item's value by its delta value, i.e. value += delta. An
+  /// input equal to sgl::Input::down/left decreases the item's value by its delta value, i.e.
   /// value -= value.
   /// \tparam T value type
   /// \tparam TextSize display width

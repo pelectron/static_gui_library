@@ -9,16 +9,33 @@
 
 namespace sgl {
 
-  /// \brief This enum class represents a universal input, i.e. character or keypad input
+  /**
+   * @brief This enum class represents a user input, i.e. character or keypad input.
+   * @details Its underlying type is uint64_t to support the following requirements:
+   * - accept all character type inputs, be it 8, 16 or 32 bits without modifying the input.
+   * - accept more input types, like left, right up, down, enter.
+   * - since a static cast conversion from custom integer constants is ok, a user of the library can easily install his own masking in top of this libraries masking.
+   * 
+   * The bits are split up as follows:
+   * Bit Nr  | Meaning
+   * --------|--------
+   * 63      | if 0-> keypad or custom input. if 1 -> character input.
+   * 56 - 59 | reserved for keypad inputs.
+   * 0 - 55  | free for use, but sgl assumes character inputs are at most 32 bits in size.
+   * 
+   */
   enum class Input : uint64_t {
     none = 0,                                ///< invalid input
+
     keyboard_type_mask = 0x8000000000000000, ///< mask for keyboard type inputs
-    up = 0x0000000100000000,                 ///< keypad up
-    down = 0x0000000200000000,               ///< keypad down
-    left = 0x0000000300000000,               ///< keypad left
-    right = 0x0000000400000000,              ///< keypad right
-    enter = 0x0000000500000000,              ///< keypad enter
-    keypad_mask = 0x0000000F00000000,        ///< keypad value mask
+
+    up = 0x0100000000000000,                 ///< keypad up
+    down = 0x0200000000000000,               ///< keypad down
+    left = 0x0300000000000000,               ///< keypad left
+    right = 0x0400000000000000,              ///< keypad right
+    enter = 0x0500000000000000,              ///< keypad enter
+
+    keypad_mask = 0x0F00000000000000,        ///< keypad value mask
     char8_mask = 0x00000000000000FF,         ///< 8 bit character mask
     char16_mask = 0x000000000000FFFF,        ///< 16 bit character mask
     char32_mask = 0x00000000FFFFFFFF,        ///< 32 bit character mask
@@ -40,8 +57,7 @@ namespace sgl {
     return static_cast<Input>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
   }
 
-  /// \defgroup input_keypad_conversion input to keypad conversion
-  /// \addtogroup input_type
+  /// \addtogroup input_conversion Input Conversion functions
   /// \{
 
   /// \brief get input as keypad input constant
@@ -53,7 +69,6 @@ namespace sgl {
     return sgl::Input::none;
   }
 
-  /// \}
 
   /// check if input is a keyboard input
   /// \return bool
@@ -64,9 +79,6 @@ namespace sgl {
   /// check if input is a keypad input.
   /// \return bool
   constexpr bool is_keypad_input(Input input) { return (input & sgl::Input::keypad_mask) == input; }
-
-  /// \addtogroup char_input_conversion
-  /// \{
 
   /// convert char to Input
   /// \param c character to convert

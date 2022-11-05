@@ -83,7 +83,7 @@ namespace sgl {
     [[nodiscard]] constexpr T get_value() const noexcept;
 
     /// set value. returns sgl::error::invalid_value if value is not found in
-    /// it's map.
+    /// its map.
     /// \param value value to set
     /// \return sgl::error
     [[nodiscard]] constexpr sgl::error set_value(T value) noexcept;

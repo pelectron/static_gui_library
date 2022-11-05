@@ -218,6 +218,18 @@ namespace sgl {
   }
 
   template <typename... Names, typename... Items>
+  constexpr sgl::string_view<char>
+      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_name(size_t i) const noexcept {
+    return item_name_impl<0>(i);
+  }
+
+  template <typename... Names, typename... Items>
+  constexpr sgl::string_view<typename Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::char_type>
+      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_text(size_t i) const noexcept {
+    return this->item_text_impl(i);
+  }
+
+  template <typename... Names, typename... Items>
   constexpr sgl::error
       Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::default_handle_input(
           Page<sgl::type_list<Names...>, sgl::type_list<Items...>>& page,
@@ -300,6 +312,36 @@ namespace sgl {
           Page<sgl::type_list<Names...>, sgl::type_list<Items...>>& page) noexcept {
     static_cast<void>(page);
     return sgl::error::no_error;
+  }
+
+  template <typename... Names, typename... Items>
+  template <size_t I>
+  constexpr sgl::string_view<char>
+      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_name_impl(
+          size_t i) const noexcept {
+    if constexpr (I == sizeof...(Items)) {
+      return {};
+    } else {
+      if (I == i) {
+        return sgl::type_at_t<I, name_list>{}.to_view();
+      }
+      return item_name_impl<I + 1>();
+    }
+  }
+
+  template <typename... Names, typename... Items>
+  template <size_t I>
+  constexpr sgl::string_view<typename Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::char_type>
+      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_text_impl(
+          size_t i) const noexcept {
+    if constexpr (I == sizeof...(Items)) {
+      return {};
+    } else {
+      if (I == i) {
+        return sgl::get<I>(items_).text();
+      }
+      return item_text_impl<I + 1>();
+    }
   }
 
   template <typename NameList, typename ItemList, typename F>

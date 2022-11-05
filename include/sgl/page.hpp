@@ -22,17 +22,13 @@
 #include "sgl/named_tuple.hpp"
 #include "sgl/smallest_type.hpp"
 #include "sgl/static_string.hpp"
+#include "sgl/fwd.hpp"
 
 namespace sgl {
-  /// \cond
-  // this is an intentional forward declaration. Dont remove.
-  template <typename ItemNameList, typename ItemTypeList>
-  class Page;
-
-  /// \endcond
 
   /**
    * \headerfile page.hpp "sgl/page.hpp"
+   * <a href="sgl_page">link text</a> 
    * \brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
    * page cannot contain a subpage. A page is responsible for navigating through the items and
    * delegating user input the the current item.
@@ -82,13 +78,17 @@ namespace sgl {
     static_assert(sgl::all_unique_v<Names...>,
                   "sgl::Page can't have duplicate names for its items! Make sure to give every "
                   "item in the page a unique name.");
-
+    static_assert(sgl::all_same_v<typename Items::traits_type::char_type...>,
+                  "All items in a page must have the same char_type! Make sure ech item has the "
+                  "expected character type.");
     /// type list of item types
     using item_list = sgl::type_list<Items...>;
 
     /// type list of the item names
     using name_list = sgl::type_list<Names...>;
 
+    /// the character type of the items
+    using char_type = typename sgl::first_t<item_list>::traits_type::char_type;
     /// \brief Concrete input handler type. A page input handler is a callable with a call signature
     /// equal to sgl::error(Page&, sgl::Input).[See here](markdown/concepts.md#input-handler) for
     /// more info.
@@ -265,6 +265,16 @@ namespace sgl {
     /// invoke the tick handler of every item contained
     constexpr void tick() noexcept;
 
+    /// @brief get the name of the i-th item as a string_view
+    /// @param i item index
+    /// @return sgl::string_view<char>
+    constexpr sgl::string_view<char> item_name(size_t i) const noexcept;
+
+    /// @brief get the text of the i-th item as a string_view
+    /// @param i item index
+    /// @return sgl::string_view<char_type>
+    constexpr sgl::string_view<char_type> item_text(size_t i) const noexcept;
+
   private:
     /// default input handler
     [[nodiscard]] static constexpr sgl::error default_handle_input(Page&      page,
@@ -279,6 +289,12 @@ namespace sgl {
     template <size_t I, typename F>
     constexpr decltype(auto) for_current_item_impl(F&& f) const
         noexcept(const_nothrow_applicable<F>);
+
+    template <size_t I>
+    constexpr sgl::string_view<char> item_name_impl(size_t i) const noexcept;
+
+    template <size_t I>
+    constexpr sgl::string_view<char_type> item_text_impl(size_t i) const noexcept;
 
     sgl::NamedTuple<sgl::type_list<Names...>, sgl::type_list<Items...>>
                    items_;                                ///< storage for the items

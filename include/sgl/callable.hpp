@@ -38,10 +38,10 @@ namespace sgl {
     constexpr Callable() noexcept = default;
     /// move constructor
     /// \param other callable to move from
-    constexpr Callable(Callable&& other) noexcept;
+    constexpr Callable(Callable<Ret(Args...)>&& other) noexcept;
     /// copy constructor
     /// \param other callable to copy
-    constexpr Callable(const Callable& other) noexcept;
+    constexpr Callable(const Callable<Ret(Args...)>& other) noexcept;
 
     /// Construct callable from free function pointer
     /// \param f pointer to free function
@@ -73,12 +73,12 @@ namespace sgl {
     /// move assignment operator
     /// \param other callable to move assign from
     /// \return reference to this
-    constexpr Callable& operator=(Callable&& other) noexcept;
+    constexpr Callable& operator=(Callable<Ret(Args...)>&& other) noexcept;
 
     /// copy assignment operator
     /// \param other callable to copy assign from
     /// \return reference to this
-    constexpr Callable& operator=(const Callable& other) noexcept;
+    constexpr Callable& operator=(const Callable<Ret(Args...)>& other) noexcept;
 
     /// invoke delegate. Returns statically allocated value, i.e. 0, if the callable is not bound to
     /// anything.
