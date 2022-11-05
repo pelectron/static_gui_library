@@ -24,6 +24,8 @@ jobs:
         run: pip3 install meson==0.60.0
       - name: installing ninja
         run: pip3 install ninja
+      - name: ninja location
+        run: which ninja
       - name: setup build directory
         run: meson setup build -Dtest=enabled -Dbuildtype=${{ matrix.buildtype }} -Dwarning_level=3
       - name: building
