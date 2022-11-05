@@ -36,13 +36,15 @@ namespace sgl {
    */
   template <char... Chars>
   struct Name {
-    /// \brief static array of characters containing the name.
+    /// static array of characters containing the name.
     static constexpr const char chars[]{Chars..., '\0'};
 
     /// \brief conversion operator to sgl::string_view<char>
+    /// \return sgl::string_view<char>
     [[nodiscard]] constexpr explicit operator sgl::string_view<char>();
 
     /// \brief get name as sgl::string_view<char>
+    /// \return sgl::string_view<char>
     [[nodiscard]] constexpr sgl::string_view<char> to_view() const;
   };
 

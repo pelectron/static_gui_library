@@ -43,7 +43,7 @@ namespace sgl {
   class NamedValue {
   public:
     static_assert(sgl::is_name_type_v<Name>,
-                  "Name is not a name type, i.e. of type sgl::Name<Chars...>.");
+                  "Name is not an instance of sgl::Name<Chars...>.");
     /// value type of the argument
     using value_type = T;
     /// name type of the argument
@@ -63,13 +63,14 @@ namespace sgl {
     /// \brief construct from name and value
     /// \param name name of NamedValue
     /// \param value value of NamedValue
-    constexpr NamedValue(Name     name,
+    constexpr NamedValue(name_type         name,
                          const value_type& value) noexcept(std::is_nothrow_copy_constructible_v<T>);
 
     /// \brief move construct from name and value
     /// \param name name of NamedValue
     /// \param value value to move into NamedValue
-    constexpr NamedValue(Name name, value_type&& value) noexcept(std::is_nothrow_move_constructible_v<T>);
+    constexpr NamedValue(name_type    name,
+                         value_type&& value) noexcept(std::is_nothrow_move_constructible_v<T>);
 
     /// \brief get name as sgl::string_view<char>
     /// \return sgl::string_view<char>
@@ -113,7 +114,7 @@ namespace sgl {
    * \return  NamedValue<Name<Chars...>, std::decay_t<T>>
    */
   template <typename T, char... Chars>
-  constexpr NamedValue<Name<Chars...>, std::decay_t<T>> operator<<=(Name<Chars...> name, T&& value);
+  constexpr NamedValue<sgl::Name<Chars...>, std::decay_t<T>> operator<<=(sgl::Name<Chars...> name, T&& value);
 
 } // namespace sgl
 

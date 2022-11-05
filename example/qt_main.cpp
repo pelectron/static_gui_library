@@ -21,9 +21,9 @@ constexpr auto Page1() noexcept {
              NAME("double item 1") <<= sgl::make_numeric(12345.000000000_double, 0.1),
              NAME("float item 1") <<= sgl::make_numeric(1.0000000000000_float, 0.25f),
              NAME("int item 1") <<= sgl::make_numeric<12, char>(1, 2),
-             NAME("link to page 2") <<= sgl::make_pagelink(NAME("page2"), "return to page 2"),
+             NAME("link to page 2") <<= sgl::pagelink(NAME("page2"), "return to page 2"),
              NAME("link to settings page") <<=
-             sgl::make_pagelink(NAME("settings page"), "settings page"),
+             sgl::pagelink(NAME("settings page"), "settings page"),
              NAME("settings item 2") <<= sgl::make_enum(Setting::opt1,
                                                         "Option 1",
                                                         Setting::opt2,
@@ -38,7 +38,7 @@ constexpr auto Page1() noexcept {
                                                             "Left",
                                                             OtherSetting::Right,
                                                             "Right"),
-             NAME("link to page 2 too") <<= sgl::make_pagelink(NAME("page2"), "go to page 2"));
+             NAME("link to page 2 too") <<= sgl::pagelink(NAME("page2"), "go to page 2"));
 }
 
 constexpr auto Page2() noexcept {
@@ -55,7 +55,7 @@ constexpr auto Page2() noexcept {
              NAME("double item 2") <<= sgl::make_numeric(2.0000000_double, 0.15),
              NAME("float item 2") <<= sgl::make_numeric(2.0_float, 2.0f),
              NAME("int item 2") <<= sgl::make_numeric<12, char>(2, 2),
-             NAME("link to page 1") <<= sgl::make_pagelink(NAME("page1"), "return to page 1"));
+             NAME("link to page 1") <<= sgl::pagelink(NAME("page1"), "return to page 1"));
 }
 
 constexpr auto SettingsPage() {
@@ -74,7 +74,7 @@ constexpr auto SettingsPage() {
                                                             "Left",
                                                             OtherSetting::Right,
                                                             "Right"),
-             NAME("link to page 1") <<= sgl::make_pagelink(NAME("page1"), "return to page 1"));
+             NAME("link to page 1") <<= sgl::pagelink(NAME("page1"), "return to page 1"));
 }
 
 auto make_menu() { return sgl::Menu(Page1(), Page2(), SettingsPage()); }

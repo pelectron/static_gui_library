@@ -18,7 +18,6 @@
 #include <gcem.hpp>
 #include <type_traits>
 
-
 namespace sgl {
   template <typename T, size_t num_digits>
   constexpr T mask() noexcept {
@@ -42,8 +41,6 @@ namespace sgl {
                          std::conditional_t<num_digits <= 32,
                                             uint32_t,
                                             std::conditional_t<num_digits <= 64, uint64_t, void>>>>;
-  static_assert(std::is_same_v<uint64_t, fixpoint_value_type_t<64>>);
-  static_assert(std::is_same_v<uint32_t, fixpoint_value_type_t<32>>);
 
   /**
    * \brief unsigned fix point type.
@@ -344,6 +341,7 @@ namespace sgl {
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
+   * @return sgl::unsigned_fixed<I, F>
    */
   template <size_t I, size_t F>
   constexpr sgl::unsigned_fixed<I, F> to_unsigned(sgl::signed_fixed<I, F> v) noexcept;
@@ -354,6 +352,7 @@ namespace sgl {
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
+   * @return sgl::signed_fixed<I, F>
    */
   template <size_t I, size_t F>
   constexpr sgl::signed_fixed<I, F> to_signed(sgl::unsigned_fixed<I, F> v) noexcept;

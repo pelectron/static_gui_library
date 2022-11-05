@@ -38,8 +38,8 @@ namespace sgl {
   }
 
   template <typename T, char... Chars>
-  constexpr NamedValue<Name<Chars...>, std::decay_t<T>> operator<<=(Name<Chars...> name,
-                                                                    T&&            value) {
+  constexpr NamedValue<sgl::Name<Chars...>, std::decay_t<T>> operator<<=(sgl::Name<Chars...> name,
+                                                                         T&& value) {
     return NamedValue(name, value);
   }
 } // namespace sgl

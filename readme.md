@@ -99,7 +99,7 @@ constexpr auto Page1() noexcept {
       NAME("float item 1") <<= sgl::make_numeric(1.0_float, 1.0f),  // item holding a float
       NAME("int item 1") <<= sgl::make_numeric<12, char>(1, 2),     // item holding an int
       NAME("link to page 2") <<=
-      sgl::make_pagelink(NAME("page2"), "return to page 2") // a page link item
+      sgl::pagelink(NAME("page2"), "return to page 2") // a page link item
   );
 }
 
@@ -117,7 +117,7 @@ constexpr auto Page2() noexcept {
                    NAME("float item 2") <<= sgl::make_numeric(2.0_float, 2.0f),
                    NAME("int item 2") <<= sgl::make_numeric<12, char>(2, 2),
                    NAME("link to page 1") <<=
-                   sgl::make_pagelink(NAME("page1"), "return to page 1"));
+                   sgl::pagelink(NAME("page1"), "return to page 1"));
 }
 
 constexpr auto make_menu() {

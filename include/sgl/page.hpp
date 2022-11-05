@@ -170,7 +170,7 @@ namespace sgl {
     /// \return Page&
     constexpr Page& set_stop_edit(sgl::Input stop_edit) noexcept;
 
-    /// \brief Set the menu for items which need it, for example \ref sgl::PageLink "page links".
+    /// \brief Set the menu for items which need it, for example sgl::PageLink.
     /// \tparam Menu menu type
     /// \param menu pointer to menu instance
     ////

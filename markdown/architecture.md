@@ -59,6 +59,6 @@ sgl provides various classes implementing this concept for different uses, but t
 - [numerical items](#sgl::Numeric)
 - [enumerated items](#sgl::Enum)
 - [buttons](#sgl::Button)
-- [links](#sgl::Pagelink)
+- [links](#sgl::PageLink)
   
 The exact requirements of the Item concept can be checked [here](concepts.md).

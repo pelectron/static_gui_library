@@ -65,8 +65,6 @@ namespace sgl {
     static constexpr bool value = detail::has_char_type_typedef_v<T> and detail::has_text_size_v<T>;
   };
 
-  /// \endcond
-
   /// @brief check if T is an Item Trait. An a class T must satisfy the following to be an Item
   /// Trait:
   ///
@@ -79,14 +77,12 @@ namespace sgl {
   template <typename T>
   static constexpr bool is_item_trait_v = is_item_trait<T>::value;
 
-  /// \endcond
-
   /// \addtogroup handler_traits Handler traits
   /// \ingroup sgl_traits
   /// \{
 
   /// @brief true if F is a valid input handler for Item.
-  /// Look [here](markdown/concepts.md) for more info.
+  /// Look [here](markdown/concepts.md#input-handler) for more info.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
@@ -96,7 +92,7 @@ namespace sgl {
                                                  std::is_trivially_copyable_v<F>;
 
   /// @brief true if F is a valid click handler for Item.
-  /// Look [here](markdown/concepts.md) for more info.
+  /// Look [here](markdown/concepts.md#click-handler) for more info.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
@@ -105,6 +101,7 @@ namespace sgl {
           std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
 
   /// @brief true if F is a valid value formatter for Item.
+  /// Look [here](markdown/concepts.md#formatter) for more info.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
