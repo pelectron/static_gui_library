@@ -82,7 +82,7 @@ namespace sgl {
   /// \endcond
 
   /// \addtogroup handler_traits Handler traits
-  /// \ingroup sgl_concepts
+  /// \ingroup sgl_traits
   /// \{
 
   /// @brief true if F is a valid input handler for Item.
@@ -142,7 +142,7 @@ namespace sgl {
   using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
 
   /// \addtogroup item_traits Item Traits
-  /// \ingroup sgl_concepts
+  /// \ingroup sgl_traits
   /// \{
   /// \cond
 
@@ -212,7 +212,7 @@ namespace sgl {
   /// \}
 
   /// \addtogroup page_traits Page traits
-  /// \ingroup sgl_concepts
+  /// \ingroup sgl_traits
   /// \{
   /// \cond
   namespace detail {
@@ -442,7 +442,7 @@ namespace sgl {
   /// \}
 
   /// \addtogroup menu_traits Menu Traits
-  /// \ingroup sgl_concepts
+  /// \ingroup sgl_traits
   /// \{
 
   /// \cond

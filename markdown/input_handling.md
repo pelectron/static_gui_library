@@ -1,19 +1,23 @@
-# Default Input Handling
-This section explains how the default input handling works in sgl. It assumes you are familiar with the [architecture of sgl](architechture.md).
+# Input Handling
 
-Like the architecture, input handling is split into three layers. 
+This section explains how the default input handling works in sgl. It assumes you are familiar with the [architecture of sgl](architecture.md).
+
+Like the architecture, input handling is split into three layers.
 
 ## Menu Layer
-A menu can handle user input with its handle_input() method. By default, a menu simply delegates the user input to the current page and returns the pages result. To customize this behavior, set an [InputHandler](concepts.md/#input-handler) for the menu.
+
+A menu can handle user input with its handle_input() method. By default, a menu simply delegates the user input to the current page and returns the pages result. To customize this behavior, set an [InputHandler](concepts.md#input-handler) for the menu.
 
 ## Page Layer
+
 The page layer has two important jobs:
- - handle navigating through items on the page
- - handle editing and clicking of items
+
+- handle navigating through items on the page
+- handle editing and clicking of items
 
 This library's way of doing this is as follows:
 
-1. The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate through the items. 
+1. The page starts out in navigation mode. The keypad inputs Up, Down, Left, Right navigate through the items of the current page.
 2. When an input equal to the page's start edit is received, the page switches
 into edit mode and starts passing the input values on to the current item (including
 the start edit value).
@@ -24,32 +28,39 @@ the start edit value).
      sgl::error::no_error in this case. This is used for 'one and done' items like [buttons](#sgl:Button) 
      and [links](#sgl::PageLink). Else it would take significantly more complicated logic to handle these kinds of items.
      - sgl::error::no_error means the item handled the input successfully, and the page stays in
-     edit mode. The page keeps relaying the inputs to the active item.The page's default input
-     handler will return sgl::error::no_error in this case.
+     edit mode. The page keeps relaying the inputs to the active item.The page's default input handler will return sgl::error::no_error in this case.
      - any other sgl::error value means the item failed to handle the input. The page switches
      back into navigation mode and returns the error value.
 
 4. When an input equal to the page's stop edit is received, the page switches back into
 navigation mode. The stop edit input is NOT passed on to the item.
 
-As long as the convention of the item's input handler return value is held, the whole system
-works as expected and you can mix and match item input handlers and page handlers, either library provided or your own.
+As long as the convention of the item's input handler return value is held, the whole system works as expected and you can mix and match item input handlers and page handlers, either library provided or your own.
 
-Again, to change the page input handling strategy, simply provide an [InputHandler](concepts.md/#input-handler) for the page.
+Again, to change the page input handling strategy, simply provide an [InputHandler](concepts.md#input-handler) for the page.
 
 ## Item Layer
-The last layer is the item layer. Items receive user input from their containing page through the item's handle_input() method. The only requirement for the return value of the method is that it respects the return value convention specified [above](#page-layer). That is:
- - sgl::error::no_error means no error.
- - sgl::error::edit_finished means the item itself decided it is done being edited.
- - any other value means an error occurred which the item cannot handle itself and an upper layer must decide what to do.
 
-If the default way of doing things is not to your liking, you can also create your own custom item [input handler](concepts.md/#input-handler). Note that you really should respect the return value convention for correct interoperation with the rest of the library.
+The last layer is the item layer. Items receive user input from their containing page through the item's handle_input() method. The only requirement for the return value of the method is that it respects the return value convention specified [above](input_Handling.md#page-layer). That is:
+
+- sgl::error::no_error means no error.
+- sgl::error::edit_finished means the item itself decided it is done being edited.
+- any other value means an error occurred which the item cannot handle itself and an upper layer must decide what to do.
+
+If the default way of doing things is not to your liking, you can also create your own custom [input handler](concepts.md#input-handler). Note that you really should respect the return value convention for correct interoperation with the rest of the library.
+
+## sgl::Input
+
+the enum class sgl::Input is used to handle all input in sgl.
 
 ## Putting it all together
+
 All in all, the default input handling is quite simple:
 
-- Menu's forward the input to their current page. 
+- Menu's forward the user input to their current page.
 
-- Pages process the input and decide wether the current item should process an input (edit mode) or if itself should be navigated (navigation mode).
+- Pages process the input and decide wether the current item should process an input (edit mode), if itself should be navigated (navigation mode), if it should ignore the input or if it should return an error.
 
 - Items process the input received from their page. An item either processes the input successfully (sgl::error::no_error), successfully and wants to stop being edited (sgl::error::edit_finished) or with an error (any other sgl::error value, which by default also stops edit mode of the page).
+
+In the end, the library user only needs to call the menus handle_input() method when a new input is received. This can be done in a low priority tasks or the main loop easily.

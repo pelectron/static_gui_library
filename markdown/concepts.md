@@ -3,13 +3,6 @@
 This library has a few concepts.
 The concept is always provided as a table of variables and a table of expressions using those variables. The table of expressions must be fulfilled in order for the concept to be satisfied.
 
-- [Item](#item)
-- [Input Handler](#input-handler)
-- [Click Handler](#click-handler)
-- [Tick Handler](#tick-handler)
-- [Formatter](#formatter)
-- [Page Action](#page-action)
-
 ## Item
 
 Items are the things which occupy one line in the display. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button).
@@ -130,10 +123,9 @@ t.handle_input(i); // calls the handler
 
 For more info on the whole input handling process, see [here](markdown/input_handling.md).
 
-
 ## Click Handler
 
-A `ClickHandler` handles click inputs for a clickable [item](#item). It is called every time the item's click() method is called.
+A `ClickHandler` handles click inputs for a clickable [item](concepts.md#item). It is called every time the item's click() method is called.
 The following must hold for a type F to be an `ClickHandler` for Item.
 | variable | type  |
 | -------- | ----- |
@@ -153,7 +145,7 @@ This concept can be checked with `sgl::is_click_handler_for_v<F,Item>`.
 
 ## Tick Handler
 
-A `TickHandler` handles tick events for an [item](#item). The tick handler is called when an item's tick() method is called. It is used to update an item through external means. 
+A `TickHandler` handles tick events for an [item](concepts.md#item). The tick handler is called when an item's tick() method is called. It is used to update an item through external means. 
 
 The following must hold for a type F to be an `TickHandler` for Item.
 
@@ -210,6 +202,7 @@ item.tick(); // calls the handler
 ```
 
 ## Formatter
+
 Formatters are used by the sgl::Numeric class to automatically format the values into its text field.
 
 For F to be a Formatter for Item, the following must hold:
@@ -232,8 +225,8 @@ For F to be a Formatter for Item, the following must hold:
 | `std::is_trivially_move_constructible_v<F>`           | true               |
 | `std::is_trivially_copyable_v<F>`                     | true               |
 
-
 ## Page Action
+
  A page action is a callable that gets executed on certain events on a page. 
  For now, the only actions are the enter and exit actions, which are called when a page becomes the current page(i.e. is entered) or when the current page switches(i.e. is exited).
 

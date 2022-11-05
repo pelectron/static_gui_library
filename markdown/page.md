@@ -1,7 +1,8 @@
 # Page
-A page is a flat collection of [items](item.md). It is a non recursive, i.e. a page cannot contain a subpage. 
+
+A page is a flat collection of [items](item.md). It is non recursive, i.e. a page cannot contain a subpage in the C++ sense.
 A page is responsible for navigating through the items, delegating user input the the current item, and handling the returned error of the current item.
-The [default implementation](#sgl::Page) does this already.
+The [default implementation](#sgl::Page< sgl::type_list< Names... >, sgl::type_list< Items... > >) does this already.
 For a type `T` to satisfy the page concept, the following must hold:
 
  | variable      | type                              |

@@ -69,6 +69,11 @@ namespace sgl {
     /// \brief get number of map entries
     /// \return constexpr size_t
     [[nodiscard]] constexpr size_t size() const noexcept { return N; }
+    
+    /// \brief get string_view of value by index
+    /// \param i index
+    /// \return constexpr sgl::string_view<CharT>
+    [[nodiscard]] constexpr sgl::string_view<CharT> get_view(size_t i) const noexcept;
 
   private:
     /// \brief get index of value in string form
@@ -80,11 +85,6 @@ namespace sgl {
     /// \param value value to get index of
     /// \return constexpr size_t
     [[nodiscard]] constexpr size_t index_of(E value) const noexcept;
-
-    /// \brief get string_view of value by index
-    /// \param i index
-    /// \return constexpr sgl::string_view<CharT>
-    [[nodiscard]] constexpr sgl::string_view<CharT> get_view(size_t i) const noexcept;
 
     /// \brief Get the value by index
     /// \param i index

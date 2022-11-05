@@ -22,52 +22,26 @@ namespace sgl {
 
   /// \headerfile item_base.hpp "sgl/item_base.hpp"
   /// \brief CRTP base class for every item type.
-  /// \details An item  minimally consists of a text field, an input handler and a tick handler. It
-  /// is used to reduce code duplication and NOT for runtime polymorphism. The input and tick
-  /// handler allow flexible behavioral changes without a need to create a new derived type for
-  /// every differently acting item using the same old data.
+  /// \details An item  minimally consists of a text field, plus methods for handling inputs and
+  /// ticks. ItemBase is used to reduce code duplication and NOT for runtime polymorphism.
   ///
   /// The text field contains the text which the item should show. It is a static_string, i.e. does
   /// not heap allocate.
   ///
-  /// The input and tick handler are also non heap allocating, although capturing lambda's and
-  /// similar custom function objects can only be bound via placement new. See \ref
-  /// sgl::Callable<Ret(Args...)> "Callable" for more details.
   ///
-  /// \section item_input_handling Item Input Handling
   /// The input handler handles user input. It get's called every time the item's handle_input()
-  /// method is called. The signature of a input handler is ``sgl::error(item_type&, sgl::Input)
-  /// noexcept``. The item's input handler is called when a page is in edit mode and the page
-  /// receives an input. The input handler's job is to decide what to do with the given user input,
-  /// and return the appropiate sgl::error value. The library default way of handling things is the
-  /// following:
-  ///  - if the item is clickable (as indicated by the item traits), the handler will call the
-  ///  item's click() method and return sgl::error::edit_finished if the return value of click() is
-  ///  sgl::error::no_error. This achieves the effect of only needing to click an item once to
-  ///  get an effect and not be stuck editing the item. If the click() call returns something other
-  ///  than sgl::error::no_error, the call's return value will be returned.
-  ///  - if the item is not clickable, sgl::error::edit_finished is returned, i.e. by default items
-  ///  cannot be edited.
-  ///  - if an input handler is provided by the user, it is simply invoked and the behaviour is
-  ///  completely up to the provided handler.
+  /// method is called. For more info on input handling see [here](markdown/input_handling.md).
   ///
-  /// Your custom input handler should keep to the conventions of the input handler return value,
-  /// i.e. return sgl::error::no_error to keep the page edit mode, sgl::error::edit_finished to make
-  /// the page go into navigation mode and other values to indicate failures and also switch to edit
-  /// mode.
-  ///
-  /// \section item_tick_handling Item Tick Handling
   /// The tick handler is used for items which need to be periodically updated externally (i.e. for
   /// displaying sensor values etc.). It gets called every time the item's tick() method is called.
-  /// The signature of a tick handler is void(item_type&) noexcept. The tick handler is just passed
-  /// a reference to the item it belongs to and does not return a value. The tick handlers of all
-  /// items in a menu are then called at once through a call to the menu's tick() method. This makes
-  /// the logic of how to update an item displaying a sensor value local to the item, while making
-  /// the invocation as simple as possible. As the end user, you can simply call the menu's tick()
-  /// on every gui loop or however often you see fit.
-  ///
-  ///
-  /// \tparam ItemImpl concrete item type.
+  /// For more info on external updates see [here](markdown/external_updates.md).
+  /// The input and tick handler allow flexible behavioral changes without a need to create a new
+  /// derived type for every differently acting item using the same old data. They are also non heap
+  /// allocating, although capturing lambda's and similar custom function objects can only be bound
+  /// via placement new, i.e. they are not constexpr. See \ref sgl::Callable<Ret(Args...)>
+  /// "Callable" for more details. 
+  /// 
+  /// \tparam ItemImpl concrete item type, i.e. the custom Item.
   /// \tparam Traits ItemTraits type for ItemImpl. This is used because accessing inner typedefs of
   /// yet undefined classes cannot be done in C++.
   template <typename ItemImpl, typename Traits = sgl::ItemTraits<ItemImpl>>

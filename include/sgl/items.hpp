@@ -12,7 +12,7 @@
 #include "sgl/numeric.hpp"
 #include "sgl/page_link.hpp"
 #include "sgl/pass_through_button.hpp"
-/// \defgroup sgl_concepts Concepts
+/// \defgroup sgl_traits Traits
 /// \defgroup item_types Item Types
 /// \defgroup item_factories Item Factory Functions
 /// \defgroup button_factories Button Factory Functions

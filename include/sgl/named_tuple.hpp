@@ -3,7 +3,7 @@
  * \author Pelé Constam (you\domain.com)
  * \version 0.1
  * \date 2022-06-20
- * \brief This file defines the NamedTuple class and it's iteration functions, sgl::for_each() and
+ * \brief This file defines the NamedTuple class and its iteration functions, sgl::for_each() and
  * sgl::for_each_with_name().
  * \copyright Copyright (c) 2022
  *
@@ -354,7 +354,7 @@ namespace sgl {
 
   /**
    * \brief apply f on each element in the tuple with the elements name and value. f must be
-   * invocable with a sgl::string_view<char> as it's first argument and a reference to T as it's
+   * invocable with a sgl::string_view<char> as its first argument and a reference to T as its
    * second argument, for every T in TypeList.
    * \code
    * NamedTuple tuple(name1<<= 1, name2 <<=5.0);
@@ -373,8 +373,8 @@ namespace sgl {
 
   /**
    * \brief apply f on each element in the tuple with the elements name and value. f must be
-   * invocable with a sgl::string_view<char> as it's first argument and a const reference to T as
-   * it's second argument, for every T in TypeList.
+   * invocable with a sgl::string_view<char> as its first argument and a const reference to T as
+   * its second argument, for every T in TypeList.
    * \code
    * const NamedTuple tuple(name1<<= 1, name2 <<=5.0);
    * sgl::for_each_with_name([](sgl::string_view<char> name, const auto& value){...});
