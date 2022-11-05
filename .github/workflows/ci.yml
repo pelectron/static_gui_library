@@ -22,8 +22,6 @@ jobs:
       - uses: actions/setup-python@v4
       - name: installing meson
         run: pip3 install meson==0.60.0
-      - name: installing ninja
-        run: pip3 install ninja
       - name: ninja location
         run: which ninja
       - name: setup build directory
