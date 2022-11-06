@@ -5,7 +5,7 @@ The concept is always provided as a table of variables and a table of expression
 
 ## Item
 
-Items are the things which occupy one line in the display. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button).
+Items are the things which occupy one line in the display. As such, an Item should have a text storage, be able to handle input and get ticked. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button or link).
 For a type `T` to satisfy the item concept, the following must hold:
 
 | variable | type       |
@@ -18,7 +18,7 @@ For a type `T` to satisfy the item concept, the following must hold:
 
 | Expression              | type                                                   | Notes               |
 | ----------------------- | ------------------------------------------------------ | ------------------- |
-| `typename T::char_type` | `char / char16_t / char32_t`                           | typename            |
+| `typename T::char_type` | `char` or `char16_t` or `char32_t`                     | typename            |
 | `T::text_size`          | `size_t`                                               | constant expression |
 | `t.handle_input(i)`     | `sgl::error`                                           | non throwing        |
 | `t.set_menu(&m)`        | `void`                                                 | non throwing        |
@@ -42,15 +42,15 @@ public:
   using char_type = char;
   static constexpr size_t text_size = 25;
 
-  sgl::error handle_input(sgl::Input) noexcept { return sgl::error::edit_finished; }
+  constexpr sgl::error handle_input(sgl::Input) noexcept { return sgl::error::edit_finished; }
 
-  void tick() noexcept {}
+  constexpr void tick() noexcept {}
 
-  void set_menu(void*) noexcept {}
+  constexpr void set_menu(void*) noexcept {}
 
-  sgl::static_string<char_type, text_size>& text() noexcept { return str_; }
+  constexpr sgl::static_string<char_type, text_size>& text() noexcept { return str_; }
 
-  const sgl::static_string<char_type, text_size>& text() const noexcept { return str_; }
+  constexpr const sgl::static_string<char_type, text_size>& text() const noexcept { return str_; }
 
 private:
   sgl::static_string<char_type, text_size> str_;

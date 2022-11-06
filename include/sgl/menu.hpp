@@ -29,7 +29,7 @@ namespace sgl {
   /// \endcond
 
   /// @headerfile menu.hpp "sgl/menu.hpp"
-  /// @brief @anchor Menu The menu class brings everything together and holds all the pages of the
+  /// @brief The menu class brings everything together and holds all the pages of the
   /// menu.
   /// @details It consists of a NameTuple of pages, an index to keep track of the current page, and
   /// an input handler. The default input handler just delegates the input to the current page and

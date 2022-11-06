@@ -28,8 +28,8 @@ namespace sgl {
 
   /**
    * \headerfile named_tuple.hpp "sgl/named_tuple.hpp"
-   * \brief \anchor NamedTuple A NamedTuple is fixed-size collection of heterogeneous and named values (essentially
-   * std::tuple). The difference to std::tuple is that elements in a NamedTuple can also also be
+   * \brief NamedTuple is fixed-size collection of heterogeneous and named values (essentially
+   * std::tuple). \anchor NamedTuple The difference to std::tuple is that elements in a NamedTuple can also also be
    * accessed by the elements \ref sgl::Name "name" instead of just by index.
    *
    * \details Creating a NamedTuple is most easily done with the \ref

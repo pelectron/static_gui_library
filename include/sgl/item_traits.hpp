@@ -8,11 +8,12 @@ namespace sgl {
   /// so that manual specialization is required.
   template <typename ItemType>
   struct ItemTraits {
-    static_assert(detail::always_false<ItemType>,
-                  "This traits structure is not correctly defined. Either manually specialize "
-                  "ItemTraits or implement your own traits struct. You can statically assert that "
-                  "your traits structure is correctly implemented by using "
-                  "sgl::is_item_trait_v<YourTraitsType>");
+    static_assert(
+        detail::always_false<ItemType>,
+        "This traits structure is not correctly defined. Either manually specialize "
+        "sgl::ItemTraits or implement your own traits struct. You can statically assert that "
+        "your traits structure is correctly implemented by using "
+        "sgl::is_item_trait_v<YourTraitsType>");
   };
 
   /// \cond

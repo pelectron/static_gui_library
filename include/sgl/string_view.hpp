@@ -11,17 +11,6 @@
 #include <type_traits>
 
 namespace sgl {
-  template <typename T, typename = void>
-  struct is_str_like : std::false_type {};
-
-  template <typename T>
-  struct is_str_like<
-      T,
-      std::void_t<decltype(std::declval<T>.data()), decltype(std::declval<T>.size())>>
-      : std::true_type {};
-
-  template <typename T>
-  inline constexpr bool is_str_like_v = is_str_like<T>::value;
 
   /// \headerfile string_view.hpp "sgl/string_view.hpp"
   /// \brief A non owning 'view' of CharT elements. See std::string_view for an explanation of the

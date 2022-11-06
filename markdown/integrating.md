@@ -51,3 +51,5 @@ As you can see it is quite easy. All that needs to be done is to translate the u
 Tick updates are also very easy. If a tick needs to happen, for example indicated by a timer peripheral, simply call the menus tick() function. In the example, the tick is also used for the frame rate of the menu, i.e. every time the menu is ticked, it's content is printed on the display.
 
 Note that both handle_input() and tick() should never be used in an ISR itself. Always do it in this polling way in your main loop or another low priority task. These calls can become expensive, involving for example floating point formatting. Your gui updating exactly on the exact microsecond is not important, and running in an ISR is a quick way to blocking more important stuff from happening.
+
+## Printing to a display

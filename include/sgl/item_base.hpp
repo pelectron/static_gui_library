@@ -19,31 +19,31 @@
 #include "sgl/string_view.hpp"
 
 namespace sgl {
-
-  /// \headerfile item_base.hpp "sgl/item_base.hpp"
-  /// \brief CRTP base class for every item type.
-  /// \details An item  minimally consists of a text field, plus methods for handling inputs and
-  /// ticks. ItemBase is used to reduce code duplication and NOT for runtime polymorphism.
-  ///
-  /// The text field contains the text which the item should show. It is a static_string, i.e. does
-  /// not heap allocate.
-  ///
-  ///
-  /// The input handler handles user input. It get's called every time the item's handle_input()
-  /// method is called. For more info on input handling see [here](markdown/input_handling.md).
-  ///
-  /// The tick handler is used for items which need to be periodically updated externally (i.e. for
-  /// displaying sensor values etc.). It gets called every time the item's tick() method is called.
-  /// For more info on external updates see [here](markdown/external_updates.md).
-  /// The input and tick handler allow flexible behavioral changes without a need to create a new
-  /// derived type for every differently acting item using the same old data. They are also non heap
-  /// allocating, although capturing lambda's and similar custom function objects can only be bound
-  /// via placement new, i.e. they are not constexpr. See \ref sgl::Callable<Ret(Args...)>
-  /// "Callable" for more details. 
-  /// 
-  /// \tparam ItemImpl concrete item type, i.e. the custom Item.
-  /// \tparam Traits ItemTraits type for ItemImpl. This is used because accessing inner typedefs of
-  /// yet undefined classes cannot be done in C++.
+  /**
+   * \headerfile item_base.hpp "sgl/item_base.hpp"
+   * \brief CRTP base class for [Items](concepts.md#item).
+   * \details An item  minimally consists of a text field with const and non const getters, and
+   * methods for handling inputs and ticks.
+   *
+   * ItemBase can be inherited from to enable these features via the CRTP pattern. Besides the
+   * minimal features of an [Item](concepts.md#item), ItemBase also provides means to change the
+   * input and tick handling strategy at runtime and constexpr time.
+   *
+   * ItemBase has an sgl::Callable member for input and tick handling, which can be set with the
+   * set_input_handler() and set_tick_handler() functions respectively. The installed handlers will
+   * then be called when the items handle_input() and tick() methods are called. See also the
+   * [input handling docs](markdown/input_handling.md) and 
+   * [tick handling docs](markdown/external_updates.md).
+   *
+   * The text field contains the text which the item should show. It is a static_string, i.e. does
+   * not heap allocate and has a fixed capacity.
+   *
+   *
+   * \tparam ItemImpl concrete item type, i.e. the custom Item. ItemImpl must be derived from
+   * ItemBase. This will be the item type the input and tick handler members accept.
+   * \tparam Traits ItemTraits type for ItemImpl. This is used because accessing inner
+   * typedefs of yet undefined classes cannot be done in C++.
+   */
   template <typename ItemImpl, typename Traits = sgl::ItemTraits<ItemImpl>>
   class ItemBase {
   public:
@@ -115,7 +115,7 @@ namespace sgl {
     constexpr void set_menu(Menu* m) noexcept;
 
     /// \brief calls the items input handler. Usually called by the containing page.
-    /// \param input input to handle
+    /// \param input input to handle.
     /// \return sgl::error::no_error in case of no error.
     /// \return sgl::error::edit_finished in case the item is done being edited.
     /// See input handling for more details.
@@ -142,14 +142,14 @@ namespace sgl {
 
     /// \brief Set the input handler.
     /// \tparam InputHandler input handler type
-    /// \param handler input handler
+    /// \param handler custom [input handler](concepts.md#tick-handler).
     /// \return item_type&
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
     constexpr item_type& set_input_handler(InputHandler&& handler) noexcept;
 
-    /// \brief Set the tick handler of this item
+    /// \brief Set the tick handler of this item.
     /// \tparam TickHandler tick handler type
-    /// \param handler custom tick handler
+    /// \param handler custom [tick handler](concepts.md#tick-handler).
     /// \return item_type&
     template <typename TickHandler, enable_if_is_tick_handler<TickHandler, item_type> = true>
     constexpr item_type& set_tick_handler(TickHandler&& handler) noexcept;

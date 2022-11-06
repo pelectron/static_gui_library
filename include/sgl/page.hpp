@@ -47,7 +47,7 @@ namespace sgl {
    * delegating user input the the current item.
    *
    * \details A page consists of the following data:
-   *  - a \ref sgl::NamedTuple "named tuple" of items.
+   *  - a \ref NamedTuple "named tuple" of items.
    *  - an [input handler](markdown/concepts.md#input-handler). It manages how the page gets
    * navigated and how user input is passed on to its items.
    *  - an enter and exit action/handler. These will be called by the menu when a page is entered,

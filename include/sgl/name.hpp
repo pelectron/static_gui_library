@@ -21,8 +21,8 @@
 namespace sgl {
   /**
    * \headerfile name.hpp "slg/name.hpp"
-   * \brief This class represents a compile time string used by sgl::NamedValue and
-   * sgl::NamedTuple. To create a name, there are two ways:
+   * \brief This class represents a compile time string used by NamedValue and
+   * [NamedTuple](#NamedTuple). To create a name, there are two ways:
    *
    * \code
    * #include "sgl/named.hpp"
