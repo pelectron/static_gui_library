@@ -17,18 +17,31 @@
 #define SGL_PAGE_HPP
 #include "sgl/callable.hpp"
 #include "sgl/error.hpp"
+#include "sgl/fwd.hpp"
 #include "sgl/input.hpp"
 #include "sgl/item_concepts.hpp"
 #include "sgl/named_tuple.hpp"
 #include "sgl/smallest_type.hpp"
 #include "sgl/static_string.hpp"
-#include "sgl/fwd.hpp"
 
 namespace sgl {
+  /// \cond
+  namespace detail {
+    template <typename... Ts>
+    constexpr bool all_same_char_type(sgl::type_list<Ts...>) {
+      return sgl::all_same_v<typename Ts::char_type...>;
+    }
+
+    template <typename... Ts>
+    constexpr bool all_are_name_types(sgl::type_list<Ts...>) {
+      return (sgl::is_name_type_v<Ts> && ...);
+    }
+  } // namespace detail
+
+  /// \endcond
 
   /**
    * \headerfile page.hpp "sgl/page.hpp"
-   * <a href="sgl_page">link text</a> 
    * \brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
    * page cannot contain a subpage. A page is responsible for navigating through the items and
    * delegating user input the the current item.
@@ -38,57 +51,40 @@ namespace sgl {
    *  - an [input handler](markdown/concepts.md#input-handler). It manages how the page gets
    * navigated and how user input is passed on to its items.
    *  - an enter and exit action/handler. These will be called by the menu when a page is entered,
-   *  i.e. becomes the current page, or exited, i.e. get's switched from. By default these do
-   *  nothing. More on this [here](markdown/concepts.md#page-action).
+   *  i.e. becomes the current page, or exited, i.e. another pge becomes current. By default these
+   * do nothing. More on this [here](markdown/concepts.md#page-action).
    *  - a boolean to indicate edit or navigation mode.
    *  - a start and stop edit input value. Receiving an input equal to this value set's the page
    * into edit or navigation mode respectively.
    *  - an index to keep track of the current page.
    *
-   *
-   * \tparam Names names of the items
-   * \tparam Items item types
+   * \tparam NameList sgl::type_list of sgl::Name
+   * \tparam ItemList sgl::type_list of item types
    */
-  template <typename... Names, typename... Items>
-  class Page<sgl::type_list<Names...>, sgl::type_list<Items...>> {
-    template <typename F>
-    static constexpr bool nothrow_applicable = noexcept(
-        sgl::for_each(std::declval<sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>(),
-                      std::declval<F>()));
-    template <typename F>
-    static constexpr bool const_nothrow_applicable = noexcept(sgl::for_each(
-        std::declval<const sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>(),
-        std::declval<F>()));
-    template <typename F>
-    static constexpr bool nothrow_applicable_with_name = noexcept(sgl::for_each_with_name(
-        std::declval<sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>(),
-        std::declval<F>()));
-    template <typename F>
-    static constexpr bool const_nothrow_applicable_with_name = noexcept(sgl::for_each_with_name(
-        std::declval<const sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>(),
-        std::declval<F>()));
-    static constexpr bool nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<
-        sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>;
-    static constexpr bool nothrow_move_constructible = std::is_nothrow_move_constructible_v<
-        sgl::NamedTuple<type_list<Names...>, type_list<Items...>>>;
+  template <typename NameList, typename ItemList>
+  class Page {
+    static_assert(sgl::is_type_list_v<ItemList>,
+                  "ItemList must ba an instance of sgl::type_list<Items...>");
 
-  public:
-    static_assert((sgl::is_name_type_v<Names> && ...),
-                  "One of the types begin used as a name is not instance of sgl::Name<...>.");
-    static_assert(sgl::all_unique_v<Names...>,
+    static_assert(sgl::is_type_list_v<NameList>,
+                  "NameList must ba an instance of sgl::type_list<Names...>");
+
+    static_assert(sgl::detail::all_are_name_types(NameList{}),
+                  "All names in NameList must be an instance of sgl::Name<Chars...>");
+
+    static_assert(sgl::all_unique_v<NameList>,
                   "sgl::Page can't have duplicate names for its items! Make sure to give every "
                   "item in the page a unique name.");
-    static_assert(sgl::all_same_v<typename Items::traits_type::char_type...>,
+
+    static_assert(sgl::detail::all_same_char_type(ItemList{}),
                   "All items in a page must have the same char_type! Make sure ech item has the "
                   "expected character type.");
-    /// type list of item types
-    using item_list = sgl::type_list<Items...>;
 
-    /// type list of the item names
-    using name_list = sgl::type_list<Names...>;
+    using ItemTuple = sgl::NamedTuple<NameList, ItemList>;
 
+  public:
     /// the character type of the items
-    using char_type = typename sgl::first_t<item_list>::traits_type::char_type;
+    using char_type = typename sgl::first_t<ItemList>::char_type;
     /// \brief Concrete input handler type. A page input handler is a callable with a call signature
     /// equal to sgl::error(Page&, sgl::Input).[See here](markdown/concepts.md#input-handler) for
     /// more info.
@@ -100,14 +96,16 @@ namespace sgl {
     using PageAction_t = sgl::Callable<sgl::error(Page&)>;
 
     /// construct Page from named items
-    /// \param items items of the page
-    constexpr explicit Page(const sgl::NamedValue<Names, Items>&... items) noexcept(
-        nothrow_copy_constructible);
+    /// \param named_items items of the page
+    template <typename... Names, typename... Items>
+    constexpr explicit Page(const sgl::NamedValue<Names, Items>&... named_items) noexcept(
+        std::is_nothrow_copy_constructible_v<ItemTuple>);
 
     /// construct Page from named items
-    /// \param items items to be moved into the page
-    constexpr explicit Page(sgl::NamedValue<Names, Items>&&... items) noexcept(
-        nothrow_move_constructible);
+    /// \param named_items items of the page
+    template <typename... Names, typename... Items>
+    constexpr explicit Page(sgl::NamedValue<Names, Items>&&... named_items) noexcept(
+        std::is_nothrow_move_constructible_v<ItemTuple>);
 
     /// get number of items in page
     /// \return size_t
@@ -123,7 +121,7 @@ namespace sgl {
     constexpr Page& set_current_item(size_t i) noexcept;
 
     /// set current item by name.
-    /// \tparam Name characters of name
+    /// \tparam Cs characters of name
     /// \param name item name
     /// \return Page&
     template <char... Cs>
@@ -179,14 +177,14 @@ namespace sgl {
 
     /// \brief Set enter action.
     /// \tparam PageAction action type. See PageAction_t for more info.
-    /// \param action action instance
+    /// \param action action instance. Must be invocable with signature sgl::error(Page&)noexcept.
     /// \return Page&
     template <typename Action>
     constexpr Page& set_on_enter(Action&& action) noexcept;
 
     /// \brief Set exit action.
     /// \tparam PageAction action type. See PageAction_t for more info.
-    /// \param action action instance
+    /// \param action action instance. Must be invocable with signature sgl::error(Page&)noexcept.
     /// \return Page&
     template <typename Action>
     constexpr Page& set_on_exit(Action&& action) noexcept;
@@ -206,10 +204,10 @@ namespace sgl {
     /// \param f callable
     /// \{
     template <typename F>
-    constexpr void for_each_item(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr void for_each_item(F&& f);
 
     template <typename F>
-    constexpr void for_each_item(F&& f) const noexcept(const_nothrow_applicable<F>);
+    constexpr void for_each_item(F&& f) const;
     /// \}
 
     /// \brief apply f on each item in page with the items name. See NamedTuple::for_each_with_name
@@ -218,11 +216,10 @@ namespace sgl {
     /// \param f functor instance
     /// \{
     template <typename F>
-    constexpr void for_each_item_with_name(F&& f) noexcept(nothrow_applicable_with_name<F>);
+    constexpr void for_each_item_with_name(F&& f);
 
     template <typename F>
-    constexpr void for_each_item_with_name(F&& f) const
-        noexcept(const_nothrow_applicable_with_name<F>);
+    constexpr void for_each_item_with_name(F&& f) const;
     /// \}
 
     /// \brief apply f on the current item. An example is below.
@@ -240,14 +237,14 @@ namespace sgl {
     /// \return f(current_item), if f returns a non void value.
     /// \{
     template <typename F>
-    constexpr decltype(auto) for_current_item(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_item(F&& f);
 
     template <typename F>
-    constexpr decltype(auto) for_current_item(F&& f) const noexcept(const_nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_item(F&& f) const;
     /// \}
 
     /// \brief get item by name
-    /// \tparam Name characters of name
+    /// \tparam Cs characters of name
     /// \param name name instance
     /// \return reference to item
     ////
@@ -284,11 +281,10 @@ namespace sgl {
     [[nodiscard]] constexpr static sgl::error default_page_action(Page& page) noexcept;
 
     template <size_t I, typename F>
-    constexpr decltype(auto) for_current_item_impl(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_item_impl(F&& f);
 
     template <size_t I, typename F>
-    constexpr decltype(auto) for_current_item_impl(F&& f) const
-        noexcept(const_nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_item_impl(F&& f) const;
 
     template <size_t I>
     constexpr sgl::string_view<char> item_name_impl(size_t i) const noexcept;
@@ -296,8 +292,7 @@ namespace sgl {
     template <size_t I>
     constexpr sgl::string_view<char_type> item_text_impl(size_t i) const noexcept;
 
-    sgl::NamedTuple<sgl::type_list<Names...>, sgl::type_list<Items...>>
-                   items_;                                ///< storage for the items
+    ItemTuple      items_;                                ///< storage for the items
     InputHandler_t input_handler_{&default_handle_input}; ///< page input handler
     PageAction_t   on_enter_{&default_page_action}; ///< action to execute when page is entered.
     PageAction_t   on_exit_{&default_page_action};  ///< action to execute when page is exited
@@ -306,15 +301,18 @@ namespace sgl {
     sgl::Input stop_edit_{sgl::Input::enter}; ///< page will switch to navigation mode when an input
                                               ///< equal to stop_edit_ is given.
     bool elem_in_edit_{false};                ///< indicates navigation(false)/edit(true) mode.
-    sgl::smallest_type_t<sizeof...(Items)> index_{0}; ///< index of the current item.
+    sgl::smallest_type_t<sgl::list_size_v<ItemList>> index_{0}; ///< index of the current item.
   };
 
+  /// \cond
+  // deduction guides for Page
   template <typename... Names, typename... Ts>
   Page(NamedValue<Names, Ts>&&... elems) -> Page<sgl::type_list<Names...>, sgl::type_list<Ts...>>;
-
+  // deduction guides for Page
   template <typename... Names, typename... Ts>
   Page(const NamedValue<Names, Ts>&... elems)
       -> Page<sgl::type_list<Names...>, sgl::type_list<Ts...>>;
+  /// \endcond
 
   /// \brief apply f on each item in a page. This will call f with a reference to the item for each
   /// item.
@@ -324,8 +322,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each(sgl::Page<NameList, ItemList>& page,
-                F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f))));
+  void for_each(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /// \brief apply f on each item in a page. This will call f with a const reference to the item for
   /// each item.
@@ -335,8 +332,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each(const sgl::Page<NameList, ItemList>& page,
-                F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f))));
+  void for_each(const sgl::Page<NameList, ItemList>& page, F&& f);
 
   /// \brief apply f on each item in a page. f will be called with the name of the item as an
   /// sgl::string_view<char> as the first argument and a reference to the corresponding item as
@@ -347,8 +343,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(page.template for_each_item_with_name(std::forward<F>(f))));
+  void for_each_with_name(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /// \brief apply f on each item in a page. f will be called with the name of the item as an
   /// sgl::string_view<char> as the first argument and a const reference to the corresponding item
@@ -357,8 +352,7 @@ namespace sgl {
   /// \param page page instance
   /// \param f functor instance
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(const sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(page.template for_each_item_with_name(std::forward<F>(f))));
+  void for_each_with_name(const sgl::Page<NameList, ItemList>& page, F&& f);
 
   /// \brief apply functor f on the current item of a page. This will call f with a reference to the
   /// current item of the page.
@@ -369,8 +363,7 @@ namespace sgl {
   /// \param f functor instance
   /// \return returns the return value of f.
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(std::declval<Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
+  decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /// \brief apply functor f on the current item of a page. This will call f with a const reference
   /// to the current item of the page.
@@ -381,8 +374,7 @@ namespace sgl {
   /// \param f functor instance
   /// \return returns the return value of f.
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f) noexcept(noexcept(
-      std::declval<const Page<NameList, ItemList>>().for_current_item(std::forward<F>(f))));
+  decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f);
 
 } // namespace sgl
 

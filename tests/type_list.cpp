@@ -7,6 +7,11 @@ template <typename... Ts>
 struct apply_test {};
 
 TEST_CASE("type_list") {
+  SECTION("is_type_list"){
+        using list = sgl::type_list<int, char, double, float, unsigned>;
+    STATIC_REQUIRE(sgl::is_type_list_v<list>);
+    STATIC_REQUIRE_FALSE(sgl::is_type_list_v<int>);
+  }
   SECTION("head") {
     using list = sgl::type_list<int, char, double, float, unsigned>;
     STATIC_REQUIRE(std::is_same_v<int, sgl::head_t<list>>);

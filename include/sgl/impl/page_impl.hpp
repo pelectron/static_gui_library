@@ -9,231 +9,203 @@
 
 namespace sgl {
 
+  template <typename NameList, typename ItemList>
   template <typename... Names, typename... Items>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::Page(
-      const sgl::NamedValue<Names, Items>&... items) noexcept(nothrow_copy_constructible)
+  constexpr Page<NameList, ItemList>::Page(const sgl::NamedValue<Names, Items>&... items) noexcept(
+      std::is_nothrow_copy_constructible_v<ItemTuple>)
       : items_(std::move(items)...) {}
 
+  template <typename NameList, typename ItemList>
   template <typename... Names, typename... Items>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::Page(
-      sgl::NamedValue<Names, Items>&&... items) noexcept(nothrow_move_constructible)
+  constexpr Page<NameList, ItemList>::Page(sgl::NamedValue<Names, Items>&&... items) noexcept(
+      std::is_nothrow_move_constructible_v<ItemTuple>)
       : items_(std::move(items)...) {}
 
-  template <typename... Names, typename... Items>
-  constexpr size_t Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::size() const noexcept {
-    return sizeof...(Items);
+  template <typename NameList, typename ItemList>
+  constexpr size_t Page<NameList, ItemList>::size() const noexcept {
+    return sgl::list_size_v<ItemList>;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr size_t Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::current_item_index()
-      const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr size_t Page<NameList, ItemList>::current_item_index() const noexcept {
     return index_;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_current_item(
-          size_t i) noexcept {
-    index_ = i % sizeof...(Items);
+  template <typename NameList, typename ItemList>
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_current_item(size_t i) noexcept {
+    index_ = i % sgl::list_size_v<ItemList>;
     return *this;
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <char... Cs>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_current_item(
-          sgl::Name<Cs...> name) noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_current_item(sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No Item with such a name exists in this page");
     } else {
-      index_ = sgl::index_of_v<sgl::Name<Cs...>, name_list>;
+      index_ = sgl::index_of_v<sgl::Name<Cs...>, NameList>;
       static_cast<void>(name);
     }
     return *this;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::error Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::handle_input(
-      sgl::Input i) noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::error Page<NameList, ItemList>::handle_input(sgl::Input i) noexcept {
     return input_handler_(*this, i);
   }
 
-  template <typename... Names, typename... Items>
-  constexpr bool
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::is_in_edit_mode() const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr bool Page<NameList, ItemList>::is_in_edit_mode() const noexcept {
     return elem_in_edit_;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr void
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_edit_mode() noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr void Page<NameList, ItemList>::set_edit_mode() noexcept {
     elem_in_edit_ = true;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr void
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_navigation_mode() noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr void Page<NameList, ItemList>::set_navigation_mode() noexcept {
     elem_in_edit_ = false;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::Input
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::get_start_edit() const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::Input Page<NameList, ItemList>::get_start_edit() const noexcept {
     return start_edit_;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_start_edit(
-          sgl::Input start_edit) noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_start_edit(sgl::Input start_edit) noexcept {
     start_edit_ = start_edit;
     return *this;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::Input
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::get_stop_edit() const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::Input Page<NameList, ItemList>::get_stop_edit() const noexcept {
     return stop_edit_;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_stop_edit(
-          sgl::Input stop_edit) noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_stop_edit(sgl::Input stop_edit) noexcept {
     stop_edit_ = stop_edit;
     return *this;
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename Menu>
-  constexpr void
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_menu(Menu* menu) noexcept {
+  constexpr void Page<NameList, ItemList>::set_menu(Menu* menu) noexcept {
     sgl::for_each(items_, [menu](auto& item) noexcept { item.set_menu(menu); });
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr void Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_each_item(
-      F&& f) noexcept(nothrow_applicable<F>) {
+  constexpr void Page<NameList, ItemList>::for_each_item(F&& f) {
     sgl::for_each(items_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr void
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_each_item(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
+  constexpr void Page<NameList, ItemList>::for_each_item(F&& f) const {
     sgl::for_each(items_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr void Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_each_item_with_name(
-      F&& f) noexcept(nothrow_applicable_with_name<F>) {
+  constexpr void Page<NameList, ItemList>::for_each_item_with_name(F&& f) {
     sgl::for_each_with_name(items_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr void
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_each_item_with_name(F&& f) const
-      noexcept(const_nothrow_applicable_with_name<F>) {
+  constexpr void Page<NameList, ItemList>::for_each_item_with_name(F&& f) const {
     sgl::for_each_with_name(items_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr decltype(auto)
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_current_item(F&& f) noexcept(
-          nothrow_applicable<F>) {
+  constexpr decltype(auto) Page<NameList, ItemList>::for_current_item(F&& f) {
     return for_current_item_impl<0>(std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename F>
-  constexpr decltype(auto)
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_current_item(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
+  constexpr decltype(auto) Page<NameList, ItemList>::for_current_item(F&& f) const {
     return for_current_item_impl<0>(std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <char... Cs>
-  constexpr auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](
-      sgl::Name<Cs...> name) noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  constexpr auto& Page<NameList, ItemList>::operator[](sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No item with this name found in this page");
     } else {
       return items_[name];
     }
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <char... Cs>
-  constexpr const auto& Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::operator[](
-      sgl::Name<Cs...> name) const noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  constexpr const auto& Page<NameList, ItemList>::operator[](sgl::Name<Cs...> name) const noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No item with this name found in this page");
     } else {
       return items_[name];
     }
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename Action>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_on_enter(
-          Action&& action) noexcept {
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_on_enter(Action&& action) noexcept {
     on_enter_ = std::forward<Action>(action);
     return *this;
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <typename Action>
-  constexpr Page<sgl::type_list<Names...>, sgl::type_list<Items...>>&
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::set_on_exit(
-          Action&& action) noexcept {
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_on_exit(Action&& action) noexcept {
     on_exit_ = std::forward<Action>(action);
     return *this;
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::error
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::on_enter() noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::error Page<NameList, ItemList>::on_enter() noexcept {
     return on_enter_(*this);
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::error
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::on_exit() noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::error Page<NameList, ItemList>::on_exit() noexcept {
     return on_exit_(*this);
   }
 
-  template <typename... Names, typename... Items>
-  constexpr void Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::tick() noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr void Page<NameList, ItemList>::tick() noexcept {
     sgl::for_each(items_, [](auto& item) { item.tick(); });
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::string_view<char>
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_name(size_t i) const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::string_view<char> Page<NameList, ItemList>::item_name(size_t i) const noexcept {
     return item_name_impl<0>(i);
   }
 
-  template <typename... Names, typename... Items>
-  constexpr sgl::string_view<typename Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::char_type>
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_text(size_t i) const noexcept {
+  template <typename NameList, typename ItemList>
+  constexpr sgl::string_view<typename Page<NameList, ItemList>::char_type>
+      Page<NameList, ItemList>::item_text(size_t i) const noexcept {
     return this->item_text_impl(i);
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   constexpr sgl::error
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::default_handle_input(
-          Page<sgl::type_list<Names...>, sgl::type_list<Items...>>& page,
-          sgl::Input                                                i) noexcept {
+      Page<NameList, ItemList>::default_handle_input(Page<NameList, ItemList>& page,
+                                                     sgl::Input                i) noexcept {
     if ((i == page.get_start_edit()) and not page.is_in_edit_mode()) {
       page.set_edit_mode();
     } else if ((i == page.get_stop_edit()) and page.is_in_edit_mode()) {
@@ -276,12 +248,10 @@ namespace sgl {
     return sgl::error::no_error;
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <size_t I, typename F>
-  constexpr decltype(auto)
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_current_item_impl(
-          F&& f) noexcept(nothrow_applicable<F>) {
-    if constexpr (I == (sizeof...(Items) - 1)) {
+  constexpr decltype(auto) Page<NameList, ItemList>::for_current_item_impl(F&& f) {
+    if constexpr (I == (list_size_v<ItemList> - 1)) {
       return std::forward<F>(f)(sgl::get<I>(items_));
     } else {
       if (index_ == I) {
@@ -291,12 +261,10 @@ namespace sgl {
     }
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <size_t I, typename F>
-  constexpr decltype(auto)
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::for_current_item_impl(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
-    if constexpr (I == (sizeof...(Items) - 1)) {
+  constexpr decltype(auto) Page<NameList, ItemList>::for_current_item_impl(F&& f) const {
+    if constexpr (I == (list_size_v<ItemList> - 1)) {
       return std::forward<F>(f)(sgl::get<I>(items_));
     } else {
       if (index_ == I) {
@@ -306,35 +274,32 @@ namespace sgl {
     }
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   constexpr sgl::error
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::default_page_action(
-          Page<sgl::type_list<Names...>, sgl::type_list<Items...>>& page) noexcept {
+      Page<NameList, ItemList>::default_page_action(Page<NameList, ItemList>& page) noexcept {
     static_cast<void>(page);
     return sgl::error::no_error;
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <size_t I>
   constexpr sgl::string_view<char>
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_name_impl(
-          size_t i) const noexcept {
-    if constexpr (I == sizeof...(Items)) {
+      Page<NameList, ItemList>::item_name_impl(size_t i) const noexcept {
+    if constexpr (I == list_size_v<ItemList>) {
       return {};
     } else {
       if (I == i) {
-        return sgl::type_at_t<I, name_list>{}.to_view();
+        return sgl::type_at_t<I, NameList>{}.to_view();
       }
       return item_name_impl<I + 1>();
     }
   }
 
-  template <typename... Names, typename... Items>
+  template <typename NameList, typename ItemList>
   template <size_t I>
-  constexpr sgl::string_view<typename Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::char_type>
-      Page<sgl::type_list<Names...>, sgl::type_list<Items...>>::item_text_impl(
-          size_t i) const noexcept {
-    if constexpr (I == sizeof...(Items)) {
+  constexpr sgl::string_view<typename Page<NameList, ItemList>::char_type>
+      Page<NameList, ItemList>::item_text_impl(size_t i) const noexcept {
+    if constexpr (I == list_size_v<ItemList>) {
       return {};
     } else {
       if (I == i) {
@@ -345,38 +310,32 @@ namespace sgl {
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each(Page<NameList, ItemList>& page,
-                F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f)))) {
-    return page.template for_each_item(std::forward<F>(f));
+  void for_each(Page<NameList, ItemList>& page, F&& f) {
+    return page.for_each_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each(const Page<NameList, ItemList>& page,
-                F&& f) noexcept(noexcept(page.template for_each_item(std::forward<F>(f)))) {
-    return page.template for_each_item(std::forward<F>(f));
+  void for_each(const Page<NameList, ItemList>& page, F&& f) {
+    return page.for_each_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(page.template for_each_item_with_name(std::forward<F>(f)))) {
-    page.template for_each_item_with_name(std::forward<F>(f));
+  void for_each_with_name(Page<NameList, ItemList>& page, F&& f) {
+    page.for_each_item_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(const Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(page.template for_each_item_with_name(std::forward<F>(f)))) {
-    page.template for_each_item_with_name(std::forward<F>(f));
+  void for_each_with_name(const Page<NameList, ItemList>& page, F&& f) {
+    page.for_each_item_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(Page<NameList, ItemList>& page, F&& f) noexcept(
-      noexcept(std::declval<Page<NameList, ItemList>>().for_current_item(std::forward<F>(f)))) {
+  decltype(auto) for_current(Page<NameList, ItemList>& page, F&& f) {
     return page.for_current_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(const Page<NameList, ItemList>& page, F&& f) noexcept(noexcept(
-      std::declval<const Page<NameList, ItemList>>().for_current_item(std::forward<F>(f)))) {
+  decltype(auto) for_current(const Page<NameList, ItemList>& page, F&& f) {
     return page.for_current_item(std::forward<F>(f));
   }
 

@@ -131,8 +131,7 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(
-      F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>) {
+  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) {
     if constexpr (!(std::is_invocable_r_v<void, F, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, Ts&> && ...),
                     "f must be invocable with T& for each T in this "
@@ -144,8 +143,8 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const
-      noexcept(nothrow_invocable_for_each<F, const Ts&...>) {
+  constexpr void
+      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each(F&& f) const {
     if constexpr (!(std::is_invocable_r_v<void, F, const Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, const Ts&> && ...),
                     "f must be invocable with const T& for each T in this "
@@ -157,29 +156,27 @@ namespace sgl {
 
   template <typename... Names, typename... Ts>
   template <typename F>
-  constexpr void NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(
-      F&& f) noexcept((std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, Ts&> &&
-                       ...)) {
+  constexpr void
+      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) {
     if constexpr (!(std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...),
                     "f must be invocable with (sgl::string_view<char>, T&) for each T in this "
                     "tuple.");
     } else {
-      (std::forward<F>(f)(sgl::string_view<char>(Names{}), this->get(Names{})), ...);
+      (std::forward<F>(f)(sgl::string_view<char>(Names{}.to_view()), this->get(Names{})), ...);
     }
   }
 
   template <typename... Names, typename... Ts>
   template <typename F>
   constexpr void
-      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) const
-      noexcept((std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> && ...)) {
+      NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) const {
     if constexpr (!(std::is_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> && ...),
                     "f must be invocable with (sgl::string_view<char>, const T&) for each T in "
                     "this tuple.");
     } else {
-      (std::forward<F>(f)(sgl::string_view<char>(Names{}), this->get(Names{})), ...);
+      (std::forward<F>(f)(sgl::string_view<char>(Names{}.to_view()), this->get(Names{})), ...);
     }
   }
 
@@ -204,27 +201,22 @@ namespace sgl {
   }
 
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(
-      noexcept(std::declval<NamedTuple<NameList, TypeList>>().for_each(std::forward<F>(f)))) {
+  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f) {
     tuple.for_each(std::forward<F>(f));
   }
 
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(
-      noexcept(std::declval<const NamedTuple<NameList, TypeList>>().for_each(std::forward<F>(f)))) {
+  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f) {
     tuple.for_each(std::forward<F>(f));
   }
 
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each_with_name(NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
-      std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f)))) {
+  constexpr void for_each_with_name(NamedTuple<NameList, TypeList>& tuple, F&& f) {
     tuple.for_each_with_name(std::forward<F>(f));
   }
 
   template <typename F, typename NameList, typename TypeList>
-  constexpr void
-      for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
-          std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f)))) {
+  constexpr void for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f) {
     tuple.for_each_with_name(std::forward<F>(f));
   }
 } // namespace sgl

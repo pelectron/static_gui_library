@@ -14,6 +14,15 @@ namespace sgl {
   template <typename... Ts>
   struct type_list {};
 
+  template <typename T>
+  struct is_type_list : std::false_type {};
+
+  template <typename... Ts>
+  struct is_type_list<sgl::type_list<Ts...>> : std::true_type {};
+
+  template <typename T>
+  inline constexpr bool is_type_list_v = is_type_list<T>::value;
+  
   template <typename>
   struct head;
 
@@ -257,6 +266,9 @@ namespace sgl {
     static constexpr bool value = ((!std::is_same_v<T, Rest>)&&...) && all_unique<Rest...>::value;
   };
 
+  template <typename... Ts>
+  struct all_unique<sgl::type_list<Ts...>> : all_unique<Ts...> {};
+
   /// @brief check if every type in \a Ts is unique
   /// \details For example all_unique_v<char,int,double> == true,
   /// but all_unique_v<char,int,char>==false.
@@ -270,12 +282,17 @@ namespace sgl {
   template <typename T>
   struct all_same<T> : std::true_type {};
 
-  template <typename T,typename... Rest>
+  template <typename T, typename... Rest>
   struct all_same<T, Rest...> {
     static constexpr bool value = (std::is_same_v<T, Rest> && ...);
   };
-  /// @brief check if every type in Ts is the same, i.e. all_same_v<int,int,int> == true, all_same_v<int,int,char> == false
-  /// @tparam ...Ts 
+
+  template <typename... Ts>
+  struct all_same<sgl::type_list<Ts...>> : all_same<Ts...> {};
+
+  /// @brief check if every type in Ts is the same, i.e. all_same_v<int,int,int> == true,
+  /// all_same_v<int,int,char> == false
+  /// @tparam ...Ts
   template <typename... Ts>
   inline constexpr bool all_same_v = all_same<Ts...>::value;
   ///\endcond

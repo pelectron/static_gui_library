@@ -18,6 +18,7 @@
 #include "sgl/error.hpp"
 #include "sgl/input.hpp"
 #include "sgl/named_tuple.hpp"
+#include "sgl/page.hpp"
 #include "sgl/smallest_type.hpp"
 
 namespace sgl {
@@ -28,90 +29,70 @@ namespace sgl {
   /// \endcond
 
   /// @headerfile menu.hpp "sgl/menu.hpp"
-  /// @brief The menu class brings everything together and holds all the pages of the menu.
+  /// @brief @anchor Menu The menu class brings everything together and holds all the pages of the
+  /// menu.
   /// @details It consists of a NameTuple of pages, an index to keep track of the current page, and
   /// an input handler. The default input handler just delegates the input to the current page and
   /// returns its result.
-  /// @tparam Names names of the pages
-  /// @tparam Pages types of the pages
-  template <typename... Names, typename... Pages>
-  class Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>> {
-
-    static_assert((sgl::is_name_type_v<Names> && ...),
-                  "One of the types used as a name is of type sgl::Name<...>.");
-
-    static_assert(sgl::all_unique_v<Names...>,
-                  "sgl::Menu can't have duplicate names for its pages! Make sure to use a unique "
-                  "name for each page in the menu.");
-
-    static_assert(sgl::all_same_v<typename Pages::char_type...>,
-                  "All pages in a menu must have the same char_type! Make sure each page has the "
-                  "expected character type.");
-
+  /// Constructing a menu is the same as constructing a [sgl::NamedTuple](#NamedTuple) of pages.
+  /// @tparam NameList name of the pages. The type of NameList is sgl::type_list<sgl::Name<...>...>.
+  /// @tparam PageList page types. The type of PageList is sgl::type_list<Pages...>.
+  template <typename NameList, typename PageList>
+  class Menu {
   public:
-    /// \brief is true if F is nothrow invocable with a reference to each page in page_list
-    /// \tparam F functor type
-    template <typename F>
-    static constexpr bool nothrow_applicable = (std::is_nothrow_invocable_v<F, Pages&> && ...);
+    static_assert(sgl::is_type_list_v<PageList>,
+                  "ItemList must ba an instance of sgl::type_list<Items...>");
 
-    /// \brief is true if F is nothrow invocable with a const reference to each page in page_list
-    /// \tparam F functor type
-    template <typename F>
-    static constexpr bool
-        const_nothrow_applicable = (std::is_nothrow_invocable_v<F, const Pages&> && ...);
+    static_assert(sgl::is_type_list_v<NameList>,
+                  "NameList must ba an instance of sgl::type_list<Names...>");
 
-    /// \brief is true if F is nothrow invocable with a string_view<char> as its first argument and
-    /// a reference to each page in page_list as its second.
-    /// \tparam F functor type
-    template <typename F>
-    static constexpr bool nothrow_applicable_with_name =
-        (std::is_nothrow_invocable_v<F, sgl::string_view<char>, Pages&> && ...);
+    static_assert(sgl::detail::all_are_name_types(NameList{}),
+                  "All names in NameList must be an instance of sgl::Name<Chars...>");
 
-    /// \brief is true if F is nothrow invocable with a string_view<char> as its first argument and
-    /// a const reference to each page in page_list as its second.
-    /// \tparam F functor type
-    template <typename F>
-    static constexpr bool const_nothrow_applicable_with_name =
-        (std::is_nothrow_invocable_v<F, sgl::string_view<char>, const Pages&> && ...);
+    static_assert(sgl::all_unique_v<NameList>,
+                  "sgl::Page can't have duplicate names for its items! Make sure to give every "
+                  "item in the page a unique name.");
 
-    /// page names of the menu
-    using name_list = sgl::type_list<Names...>;
-    /// page types of the menu
-    using page_list = sgl::type_list<Pages...>;
+    static_assert(sgl::detail::all_same_char_type(PageList{}),
+                  "All items in a page must have the same char_type! Make sure ech item has the "
+                  "expected character type.");
+    using PageTuple = sgl::NamedTuple<NameList, PageList>;
+
+    static constexpr bool nothrow_copy_constructible =
+        std::is_nothrow_copy_constructible_v<PageTuple>;
+
+    static constexpr bool nothrow_move_constructible =
+        std::is_nothrow_move_constructible_v<PageTuple>;
+
+    /// @brief page names
+    using name_list = NameList;
+    using page_list = PageList;
     /// character type of the menu
-    using char_type = typename sgl::first_t<page_list>::char_type;
+    using char_type = typename sgl::first_t<PageList>::char_type;
     /// string view type of the menu
     using StringView = sgl::string_view<char_type>;
     /// concrete input handler type
-    using InputHandler_t =
-        sgl::Callable<sgl::error(sgl::Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>&,
-                                 sgl::Input)>;
-
-    /// \brief true if menu is nothrow copy constructible
-    static constexpr bool nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<
-        sgl::NamedTuple<type_list<Names...>, type_list<Pages...>>>;
-
-    /// \brief true if menu is nothrow move constructible
-    static constexpr bool nothrow_move_constructible = std::is_nothrow_move_constructible_v<
-        sgl::NamedTuple<type_list<Names...>, type_list<Pages...>>>;
+    using InputHandler_t = sgl::Callable<sgl::error(sgl::Menu<NameList, PageList>&, sgl::Input)>;
 
     /// \brief copy ctor
     /// \param other menu to copy
-    constexpr Menu(const Menu& other) noexcept(nothrow_copy_constructible);
+    constexpr Menu(const Menu& other) noexcept(std::is_nothrow_copy_constructible_v<PageTuple>);
 
     /// \brief move ctor
     /// \param other menu to move from
-    constexpr Menu(Menu&& other) noexcept(nothrow_move_constructible);
+    constexpr Menu(Menu&& other) noexcept(std::is_nothrow_move_constructible_v<PageTuple>);
 
     /// \brief construct menu from named pages
     /// \param pages pages as named arguments.
+    template <typename... Names, typename... Pages>
     constexpr explicit Menu(const sgl::NamedValue<Names, Pages>&... pages) noexcept(
-        nothrow_copy_constructible);
+        std::is_nothrow_copy_constructible_v<PageTuple>);
 
     /// \brief construct menu from named pages
     /// \param pages pages as named arguments.
+    template <typename... Names, typename... Pages>
     constexpr explicit Menu(sgl::NamedValue<Names, Pages>&&... pages) noexcept(
-        nothrow_move_constructible);
+        std::is_nothrow_move_constructible_v<PageTuple>);
 
     /// invoke the menu's input handler
     /// \param i input to handle
@@ -207,10 +188,10 @@ namespace sgl {
     /// \param f functor
     /// \{
     template <typename F>
-    constexpr void for_each_page(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr void for_each_page(F&& f);
 
     template <typename F>
-    constexpr void for_each_page(F&& f) const noexcept(const_nothrow_applicable<F>);
+    constexpr void for_each_page(F&& f) const;
 
     /// \}
 
@@ -232,12 +213,12 @@ namespace sgl {
     /// \param f functor
     /// \{
     template <typename F>
-    constexpr void for_each_page_with_name(F&& f) noexcept(nothrow_applicable<F>) {
+    constexpr void for_each_page_with_name(F&& f) {
       sgl::for_each_with_name(pages_, std::forward<F>(f));
     }
 
     template <typename F>
-    constexpr void for_each_page_with_name(F&& f) const noexcept(const_nothrow_applicable<F>) {
+    constexpr void for_each_page_with_name(F&& f) const {
       sgl::for_each_with_name(pages_, std::forward<F>(f));
     }
 
@@ -250,10 +231,10 @@ namespace sgl {
     /// void.
     /// \{
     template <typename F>
-    constexpr decltype(auto) for_current_page(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_page(F&& f);
 
     template <typename F>
-    constexpr decltype(auto) for_current_page(F&& f) const noexcept(const_nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_page(F&& f) const;
     /// \}
 
   private:
@@ -261,11 +242,10 @@ namespace sgl {
                                                                    Input input) noexcept;
 
     template <size_t I, typename F>
-    constexpr decltype(auto) for_current_page_impl(F&& f) noexcept(nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_page_impl(F&& f);
 
     template <size_t I, typename F>
-    constexpr decltype(auto) for_current_page_impl(F&& f) const
-        noexcept(const_nothrow_applicable<F>);
+    constexpr decltype(auto) for_current_page_impl(F&& f) const;
 
     template <size_t I>
     [[nodiscard]] constexpr sgl::string_view<char> page_name_impl() const noexcept;
@@ -274,9 +254,9 @@ namespace sgl {
 
     [[nodiscard]] constexpr sgl::string_view<char_type> item_text_impl(size_t i) const noexcept;
 
-    sgl::NamedTuple<name_list, page_list> pages_;         ///< pages owned by this menu
-    InputHandler_t input_handler_{&default_handle_input}; ///< menu input handler
-    sgl::smallest_type_t<sizeof...(Pages)> index_{0};     ///< index of current page
+    PageTuple      pages_;                                      ///< pages owned by this menu
+    InputHandler_t input_handler_{&default_handle_input};       ///< menu input handler
+    sgl::smallest_type_t<sgl::list_size_v<PageList>> index_{0}; ///< index of current page
   };
 
   /// \cond

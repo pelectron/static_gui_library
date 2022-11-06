@@ -28,7 +28,7 @@ namespace sgl {
 
   /**
    * \headerfile named_tuple.hpp "sgl/named_tuple.hpp"
-   * \brief A NamedTuple is fixed-size collection of heterogeneous and named values (essentially
+   * \brief \anchor NamedTuple A NamedTuple is fixed-size collection of heterogeneous and named values (essentially
    * std::tuple). The difference to std::tuple is that elements in a NamedTuple can also also be
    * accessed by the elements \ref sgl::Name "name" instead of just by index.
    *
@@ -195,7 +195,7 @@ namespace sgl {
      * \param f callable instance
      */
     template <typename F>
-    constexpr void for_each(F&& f) noexcept(nothrow_invocable_for_each<F, Ts&...>);
+    constexpr void for_each(F&& f) ;
 
     /**
      * \brief apply a callable f on each value in the tuple.
@@ -205,7 +205,7 @@ namespace sgl {
      * callable type \param f callable instance
      */
     template <typename F>
-    constexpr void for_each(F&& f) const noexcept(nothrow_invocable_for_each<F, const Ts&...>);
+    constexpr void for_each(F&& f) const ;
 
     /**
      * \brief apply a callable f on each element. f will be called with the name of the element as
@@ -214,8 +214,7 @@ namespace sgl {
      * \param f callable instance
      */
     template <typename F>
-    constexpr void for_each_with_name(F&& f) noexcept(
-        (std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...));
+    constexpr void for_each_with_name(F&& f);
 
     /**
      * \brief apply a callable f on each element. f will be called with the name of the element as
@@ -224,9 +223,7 @@ namespace sgl {
      * \param f callable instance
      */
     template <typename F>
-    constexpr void for_each_with_name(F&& f) const
-        noexcept((std::is_nothrow_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> &&
-                  ...));
+    constexpr void for_each_with_name(F&& f) const;
 
   private:
     using This_t = NamedTuple<type_list<Names...>, type_list<Ts...>>;
@@ -332,8 +329,7 @@ namespace sgl {
    * \param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(
-      noexcept(std::declval<NamedTuple<NameList, TypeList>>().for_each(std::forward<F>(f))));
+  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f) ;
 
   /**
    * \brief apply f on each value in the const tuple. f must be invocable with every const type
@@ -349,8 +345,7 @@ namespace sgl {
    * \param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(
-      noexcept(std::declval<const NamedTuple<NameList, TypeList>>().for_each(std::forward<F>(f))));
+  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f) ;
 
   /**
    * \brief apply f on each element in the tuple with the elements name and value. f must be
@@ -368,8 +363,7 @@ namespace sgl {
    * \param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each_with_name(NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
-      std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f))));
+  constexpr void for_each_with_name(NamedTuple<NameList, TypeList>& tuple, F&& f);
 
   /**
    * \brief apply f on each element in the tuple with the elements name and value. f must be
@@ -387,8 +381,7 @@ namespace sgl {
    */
   template <typename F, typename NameList, typename TypeList>
   constexpr void
-      for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f) noexcept(noexcept(
-          std::declval<NamedTuple<NameList, TypeList>>().for_each_with_name(std::forward<F>(f))));
+      for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f);
 } // namespace sgl
 
 #include "sgl/impl/named_tuple_impl.hpp"

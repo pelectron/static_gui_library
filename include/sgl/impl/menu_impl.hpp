@@ -10,190 +10,172 @@
 
 namespace sgl {
 
-  template <typename... Names, typename... Pages>
-  constexpr Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::Menu(
-      const Menu& other) noexcept(nothrow_copy_constructible)
+  template <typename NameList, typename PageList>
+  constexpr Menu<NameList, PageList>::Menu(const Menu& other) noexcept(
+      std::is_nothrow_copy_constructible_v<PageTuple>)
       : pages_(other.pages_), input_handler_(other.input_handler_), index_(other.index_) {
     for_each(pages_, [this](auto& page) { page.set_menu(this); });
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::Menu(Menu&& other) noexcept(
-      nothrow_move_constructible)
+  template <typename NameList, typename PageList>
+  constexpr Menu<NameList, PageList>::Menu(Menu&& other) noexcept(
+      std::is_nothrow_move_constructible_v<PageTuple>)
       : pages_(std::move(other.pages_)), input_handler_(std::move(other.input_handler_)),
         index_(std::move(other.index_)) {
     for_each(pages_, [this](auto& page) { page.set_menu(this); });
   }
 
+  template <typename NameList, typename PageList>
   template <typename... Names, typename... Pages>
-  constexpr Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::Menu(
-      const sgl::NamedValue<Names, Pages>&... pages) noexcept(nothrow_copy_constructible)
+  constexpr Menu<NameList, PageList>::Menu(const sgl::NamedValue<Names, Pages>&... pages) noexcept(
+      std::is_nothrow_copy_constructible_v<PageTuple>)
       : pages_(pages...) {
     for_each(pages_, [this](auto& page) { page.set_menu(this); });
   }
 
+  template <typename NameList, typename PageList>
   template <typename... Names, typename... Pages>
-  constexpr Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::Menu(
-      sgl::NamedValue<Names, Pages>&&... pages) noexcept(nothrow_move_constructible)
+  constexpr Menu<NameList, PageList>::Menu(sgl::NamedValue<Names, Pages>&&... pages) noexcept(
+      std::is_nothrow_move_constructible_v<PageTuple>)
       : pages_(std::move(pages)...) {
     for_each(pages_, [this](auto& page) { page.set_menu(this); });
   }
 
-  template <typename... Names, typename... Pages>
-  sgl::error Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::handle_input(
-      sgl::Input i) noexcept {
-    return for_current_page([i](auto& page) { return page.handle_input(i); });
+  template <typename NameList, typename PageList>
+  sgl::error Menu<NameList, PageList>::handle_input(sgl::Input i) noexcept {
+    return for_current_page(
+        [i](auto& page) noexcept -> sgl::error { return page.handle_input(i); });
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr void Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::tick() noexcept {
+  template <typename NameList, typename PageList>
+  constexpr void Menu<NameList, PageList>::tick() noexcept {
     for_each(pages_, [](auto& page) { page.tick(); });
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr size_t Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::current_page_index()
-      const noexcept {
+  template <typename NameList, typename PageList>
+  constexpr size_t Menu<NameList, PageList>::current_page_index() const noexcept {
     return index_;
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr size_t Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::size() const noexcept {
-    return sizeof...(Pages);
+  template <typename NameList, typename PageList>
+  constexpr size_t Menu<NameList, PageList>::size() const noexcept {
+    return sgl::list_size_v<PageList>;
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::error Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::set_current_page(
-      size_t page_index) noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::error Menu<NameList, PageList>::set_current_page(size_t page_index) noexcept {
     auto ec = for_current_page([](auto& page) { return page.on_exit(); });
     if (ec != sgl::error::no_error) {
       return ec;
     }
-    index_ = page_index % sizeof...(Pages);
+    index_ = page_index % sgl::list_size_v<PageList>;
     return for_current_page([](auto& page) { return page.on_enter(); });
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <char... Cs>
-  constexpr sgl::error Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::set_current_page(
-      sgl::Name<Cs...> name) noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  constexpr sgl::error Menu<NameList, PageList>::set_current_page(sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No page with such a name found in this menu");
     } else {
       static_cast<void>(name);
-      return set_current_page(sgl::index_of_v<sgl::Name<Cs...>, name_list>);
+      return set_current_page(sgl::index_of_v<sgl::Name<Cs...>, NameList>);
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <char... Cs>
-  auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::operator[](
-      sgl::Name<Cs...> name) noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No page with such a name exists in this menu");
     } else {
       return pages_[name];
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <char... Cs>
-  const auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::operator[](
-      sgl::Name<Cs...> name) const noexcept {
-    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, name_list>) {
-      static_assert(sgl::contains_v<sgl::Name<Cs...>, name_list>,
+  const auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) const noexcept {
+    if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
+      static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No page with such a name exists in this menu");
     } else {
       return pages_[name];
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I>
-  constexpr auto& Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::get_page() noexcept {
-    if constexpr (I >= sizeof...(Pages)) {
-      static_assert(I < sizeof...(Pages), "index out of range");
+  constexpr auto& Menu<NameList, PageList>::get_page() noexcept {
+    if constexpr (I >= sgl::list_size_v<PageList>) {
+      static_assert(I < sgl::list_size_v<PageList>, "index out of range");
     } else {
       return sgl::get<I>(pages_);
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I>
-  constexpr const auto&
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::get_page() const noexcept {
-    if constexpr (I >= sizeof...(Pages)) {
-      static_assert(I < sizeof...(Pages), "index out of range");
+  constexpr const auto& Menu<NameList, PageList>::get_page() const noexcept {
+    if constexpr (I >= sgl::list_size_v<PageList>) {
+      static_assert(I < sgl::list_size_v<PageList>, "index out of range");
     } else {
       return sgl::get<I>(pages_);
     }
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::string_view<char>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::page_name() const noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::string_view<char> Menu<NameList, PageList>::page_name() const noexcept {
     return page_name_impl<0>();
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::string_view<char>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_name(size_t i) const noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::string_view<char> Menu<NameList, PageList>::item_name(size_t i) const noexcept {
     return item_name_impl(i);
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::string_view<
-      typename Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::char_type>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_text(size_t i) const noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::string_view<typename Menu<NameList, PageList>::char_type>
+      Menu<NameList, PageList>::item_text(size_t i) const noexcept {
     return this->item_text_impl(i);
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <typename F>
-  constexpr void Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_each_page(
-      F&& f) noexcept(nothrow_applicable<F>) {
+  constexpr void Menu<NameList, PageList>::for_each_page(F&& f) {
     sgl::for_each(pages_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <typename F>
-  constexpr void
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_each_page(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
+  constexpr void Menu<NameList, PageList>::for_each_page(F&& f) const {
     sgl::for_each(pages_, std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <typename F>
-  constexpr decltype(auto)
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_current_page(F&& f) noexcept(
-          nothrow_applicable<F>) {
+  constexpr decltype(auto) Menu<NameList, PageList>::for_current_page(F&& f) {
     return for_current_page_impl<0>(std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <typename F>
-  constexpr decltype(auto)
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_current_page(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
+  constexpr decltype(auto) Menu<NameList, PageList>::for_current_page(F&& f) const {
     return for_current_page_impl<0>(std::forward<F>(f));
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::error
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::default_handle_input(
-          Menu& menu,
-          Input input) noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::error Menu<NameList, PageList>::default_handle_input(Menu& menu,
+                                                                      Input input) noexcept {
     return menu.for_current_page([input](auto& page) { return page.handle_input(input); });
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I, typename F>
-  constexpr decltype(auto)
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_current_page_impl(
-          F&& f) noexcept(nothrow_applicable<F>) {
-    if constexpr (I == (sizeof...(Pages) - 1)) {
+  constexpr decltype(auto) Menu<NameList, PageList>::for_current_page_impl(F&& f) {
+    if constexpr (I == (sgl::list_size_v<PageList> - 1)) {
       return std::forward<F>(f)(sgl::get<I>(pages_));
     } else {
       if (I == index_) {
@@ -203,12 +185,10 @@ namespace sgl {
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I, typename F>
-  constexpr decltype(auto)
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::for_current_page_impl(F&& f) const
-      noexcept(const_nothrow_applicable<F>) {
-    if constexpr (I == (sizeof...(Pages) - 1)) {
+  constexpr decltype(auto) Menu<NameList, PageList>::for_current_page_impl(F&& f) const {
+    if constexpr (I == (sgl::list_size_v<PageList> - 1)) {
       return std::forward<F>(f)(sgl::get<I>(pages_));
     } else {
       if (I == index_) {
@@ -218,33 +198,29 @@ namespace sgl {
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I>
-  constexpr sgl::string_view<char>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::page_name_impl() const noexcept {
-    if constexpr (I == sizeof...(Pages))
+  constexpr sgl::string_view<char> Menu<NameList, PageList>::page_name_impl() const noexcept {
+    if constexpr (I == sgl::list_size_v<PageList>)
       return {};
     else {
       if (index_ == I)
-        return sgl::type_at_t<I, name_list>{}.to_view();
+        return sgl::type_at_t<I, NameList>{}.to_view();
       return this->page_name_impl<I + 1>();
     }
   }
 
-  template <typename... Names, typename... Pages>
+  template <typename NameList, typename PageList>
   template <size_t I>
   [[nodiscard]] constexpr sgl::string_view<char>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_name_impl(
-          size_t i) const noexcept {
+      Menu<NameList, PageList>::item_name_impl(size_t i) const noexcept {
     return this->for_current_page(
         [i](const auto& page) -> sgl::string_view<char> { return page.item_name(i); });
   }
 
-  template <typename... Names, typename... Pages>
-  constexpr sgl::string_view<
-      typename Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::char_type>
-      Menu<sgl::type_list<Names...>, sgl::type_list<Pages...>>::item_text_impl(
-          size_t i) const noexcept {
+  template <typename NameList, typename PageList>
+  constexpr sgl::string_view<typename Menu<NameList, PageList>::char_type>
+      Menu<NameList, PageList>::item_text_impl(size_t i) const noexcept {
     return this->for_current_page([i](const auto& page) { return page.item_text(i); });
   }
 
