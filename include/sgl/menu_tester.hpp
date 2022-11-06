@@ -80,12 +80,12 @@ namespace sgl {
       if (i != sgl::Input::none) {
         return menu_.handle_input(i);
       }
-      if (input.size() == 0)
+      if (input.size() == 0) {
         return menu_.handle_input(sgl::Input::enter);
-      else {
-        sgl::error ec;
-        for (size_t i = 0; i < input.size() and ec == sgl::error::no_error; ++i) {
-          ec = menu_.handle_input(sgl::to_input(input[i]));
+      } else {
+        sgl::error ec{sgl::error::no_error};
+        for (size_t k = 0; k < input.size() and ec == sgl::error::no_error; ++k) {
+          ec = menu_.handle_input(sgl::to_input(input[k]));
         }
         return ec;
       }

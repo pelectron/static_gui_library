@@ -2,16 +2,18 @@ project('static gui library',['cpp'], default_options:[ 'cpp_std=c++17',
                                                         'warning_level=3'])
 
 sgl_include_dir = include_directories('include')
-
-dependencies = [dependency('gcem', fallback:['gcem','gcem_dep'])]
+gcem_dep = dependency('gcem', fallback:['gcem','gcem_dep'])
+dependencies = [gcem_dep]
 
 defines = []
-if meson.get_compiler('cpp').get_id() == 'clang'
+cxx = meson.get_compiler('cpp').get_id()
+if cxx == 'clang'
   defines += '-Wno-language-extension-token'
+  if host_machine.system() == 'windows'
+    defines += '-Wno-microsoft-enum-value'
+  endif
 endif
-if host_machine.system() == 'windows'
-  defines += '-Wno-microsoft-enum-value'
-endif
+
 
 if get_option('optimize_size')
   defines += '-DRYU_OPTIMIZE_SIZE'

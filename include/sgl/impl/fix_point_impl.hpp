@@ -77,13 +77,13 @@ namespace sgl {
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  constexpr fixpoint_value_type_t<unsigned_fixed<IntDigits, FracDigits>::num_int_digits>
+  [[nodiscard]] constexpr fixpoint_value_type_t<IntDigits>
       unsigned_fixed<IntDigits, FracDigits>::integer() const {
     return value_ >> num_frac_digits;
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  constexpr fixpoint_value_type_t<unsigned_fixed<IntDigits, FracDigits>::num_frac_digits>
+  [[nodiscard]] constexpr fixpoint_value_type_t<FracDigits>
       unsigned_fixed<IntDigits, FracDigits>::fraction() const {
     return value_ & fraction_mask;
   }
@@ -159,13 +159,13 @@ namespace sgl {
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  constexpr fixpoint_value_type_t<signed_fixed<IntDigits, FracDigits>::num_int_digits>
+  [[nodiscard]]constexpr fixpoint_value_type_t<IntDigits>
       signed_fixed<IntDigits, FracDigits>::integer() const {
     return value_ >> num_frac_digits;
   }
 
   template <size_t IntDigits, size_t FracDigits>
-  constexpr fixpoint_value_type_t<signed_fixed<IntDigits, FracDigits>::num_frac_digits>
+  [[nodiscard]]constexpr fixpoint_value_type_t<FracDigits>
       signed_fixed<IntDigits, FracDigits>::fraction() const {
     return value_ & fraction_mask;
   }

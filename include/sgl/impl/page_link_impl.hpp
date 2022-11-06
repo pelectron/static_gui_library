@@ -12,7 +12,7 @@ namespace sgl {
 
   template <typename Name, size_t TextSize, typename CharT>
   constexpr PageLink<Name, TextSize, CharT>::PageLink(Name page_to_link) noexcept
-      : Base(sgl::string_view<char>(Name{})) {
+      : Base(Name{}.to_view()) {
     static_cast<void>(page_to_link);
   }
 

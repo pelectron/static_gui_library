@@ -233,7 +233,7 @@ namespace sgl {
         if (val >= 0 && val < 10) {
           return static_cast<CharT>(val + '0');
         }
-        if (val < static_cast<T>(base)) {
+        if (val < static_cast<T>(16)) {
           return static_cast<CharT>(val + 'A' - 10);
         }
         return 0;
@@ -251,7 +251,7 @@ namespace sgl {
       }
       buf.append("0x", 2);
       for (size_t pow16 = biggest_pow16(value); pow16 != 0; pow16 /= base) {
-        buf.append(hex_char(value / pow16));
+        buf.append(hex_char(static_cast<T>(value / pow16)));
         value = value % pow16;
       }
       if (buf.size() >= len) {

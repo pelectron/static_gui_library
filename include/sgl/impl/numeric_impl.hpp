@@ -59,7 +59,7 @@ namespace sgl {
   template <size_t TextSize, typename CharT, typename T>
   constexpr Numeric<TextSize, CharT, T>::Numeric(const cx_arg<T, TextSize>& initial_value,
                                                  T                          delta) noexcept
-      : Numeric<TextSize, CharT, T>(initial_value.value, delta, StringView(initial_value.string)) {}
+      : Numeric<TextSize, CharT, T>(initial_value.value, delta, StringView{initial_value.string}) {}
 
   template <size_t TextSize, typename CharT, typename T>
   template <typename Formatter,

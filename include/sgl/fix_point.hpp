@@ -91,11 +91,11 @@ namespace sgl {
 
     /// get the raw integer bits
     /// \return smallest unsigned integer with at least num_int_digits bits
-    [[nodiscard]] constexpr fixpoint_value_type_t<num_int_digits> integer() const;
+    [[nodiscard]] constexpr fixpoint_value_type_t<IntDigits> integer() const;
 
     /// get the raw fraction bits
     /// \return smallest unsigned integer with at least num_frac_digits bits
-    [[nodiscard]] constexpr fixpoint_value_type_t<num_frac_digits> fraction() const;
+    [[nodiscard]] constexpr fixpoint_value_type_t<FracDigits> fraction() const;
 
   private:
     value_type value_{0};
@@ -146,11 +146,11 @@ namespace sgl {
 
     /// get the raw integer bits
     /// \return smallest unsigned integer with at least num_int_digits bits
-    [[nodiscard]] constexpr fixpoint_value_type_t<num_int_digits> integer() const;
+    [[nodiscard]] constexpr fixpoint_value_type_t<IntDigits> integer() const;
 
     /// get the raw fraction bits
     /// \return smallest unsigned integer with at least num_frac_digits bits
-    [[nodiscard]] constexpr fixpoint_value_type_t<num_frac_digits> fraction() const;
+    [[nodiscard]] constexpr fixpoint_value_type_t<FracDigits> fraction() const;
 
     /// check if this is negative.
     /// \return true if this is smaller than 0.

@@ -71,7 +71,7 @@ namespace ryu::detail {
     // Reuse the umul128 implementation.
     // Optimizers will likely eliminate the instructions used to compute the
     // low part of the product.
-    uint64_t hi;
+    uint64_t hi{0};
     umul128(a, b, &hi);
     return hi;
   }

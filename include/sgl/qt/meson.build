@@ -1,7 +1,7 @@
 
 qt_name = 'qt@0@'.format(get_option('qt_major_version'))
 qt_mod = import(qt_name)
-qt_dep = dependency(qt_name, modules: ['Core', 'Gui', 'Widgets'])
+dependencies += dependency(qt_name, modules: ['Core', 'Gui', 'Widgets'])
 
 moc_headers = files(
   'display_item.hpp',
@@ -26,11 +26,9 @@ gui_src = [
   'section.cpp',
 ]
 
-gui_dep = declare_dependency(
+dependencies += declare_dependency(
   sources: gui_src, 
+  compile_args: '-DSGL_BUILD_LIB',
   include_directories: sgl_include_dir,
-  compile_args:['-DSGL_BUILD_LIB'],
-  dependencies: [qt_dep, dependencies]
+  dependencies: [dependencies]
 )
-
-dependencies += gui_dep

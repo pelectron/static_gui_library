@@ -459,15 +459,15 @@ namespace ryu::detail {
       if (blocks <= MIN_BLOCK_2[idx]) {
         i = blocks;
         // memset(result + index, '0', precision);
-        for (int i = 0; i < static_cast<int>(precision); ++i) {
-          result[index + i] = static_cast<CharT>('0');
+        for (int k = 0; k < static_cast<int>(precision); ++k) {
+          result[index + k] = static_cast<CharT>('0');
         }
         index += static_cast<int>(precision);
       } else if (i < MIN_BLOCK_2[idx]) {
         i = MIN_BLOCK_2[idx];
         // memset(result + index, '0', 9 * i);
-        for (int idx = 0; idx < static_cast<int>(9 * i); ++idx) {
-          result[index + idx] = static_cast<CharT>('0');
+        for (int k = 0; k < static_cast<int>(9 * i); ++k) {
+          result[index + k] = static_cast<CharT>('0');
         }
         index += static_cast<int>(9 * i);
       }
@@ -479,8 +479,8 @@ namespace ryu::detail {
           // No rounding required in this case.
           const uint32_t fill = precision - 9 * i;
           // memset(result + index, '0', fill);
-          for (int i = 0; i < static_cast<int>(fill); ++i) {
-            result[index + i] = static_cast<CharT>('0');
+          for (int k = 0; k < static_cast<int>(fill); ++k) {
+            result[index + k] = static_cast<CharT>('0');
           }
           index += static_cast<int>(fill);
           break;

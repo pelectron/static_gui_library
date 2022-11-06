@@ -12,12 +12,12 @@
 namespace sgl {
   template <char... Chars>
   constexpr Name<Chars...>::operator sgl::string_view<char>() {
-    return {chars, sizeof(chars) - 1};
+    return sgl::string_view<char>{chars, sizeof(chars) - 1};
   }
 
   template <char... Chars>
   constexpr sgl::string_view<char> Name<Chars...>::to_view() const {
-    return {chars, sizeof(chars) - 1};
+    return sgl::string_view<char>{chars, sizeof(chars) - 1};
   }
 
   /// \cond

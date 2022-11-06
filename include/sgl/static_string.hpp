@@ -169,14 +169,14 @@ namespace sgl {
     /// \param new_size new size of string. Sets all new characters to null.
     constexpr void resize(size_t new_size) noexcept {
       if (size_ == 0) {
-        size_ = new_size;
+        size_ = static_cast<sgl::smallest_type_t<Capacity>>(new_size > Capacity ? Capacity : new_size);
         return;
       }
       // when new_size < size_, then fill with the newly unused characters to 0
       for (size_t i = size_ - 1; i >= new_size; --i) {
         data_[i] = 0;
       }
-      size_ = new_size > Capacity ? Capacity : new_size;
+      size_ = static_cast<sgl::smallest_type_t<Capacity>>(new_size > Capacity ? Capacity : new_size);
     }
 
     /// access to i-th character. Undefined behaviour if i > Capacity.

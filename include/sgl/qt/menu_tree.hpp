@@ -174,7 +174,7 @@ namespace sgl::qt {
   class PageNode : public AbstractPageNode {
   public:
     PageNode(std::string_view name, Page& page, Node* parent)
-        : AbstractPageNode(name, Type::page), page_(page) {
+        : AbstractPageNode(name, Type::page,parent), page_(page) {
       sgl::for_each_with_name(page_, [this](auto name, auto& item) {
         this->children().push_back(
             new ItemNode(std::string_view{name.data(), name.size()}, item, this));
