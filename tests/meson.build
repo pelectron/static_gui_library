@@ -18,6 +18,7 @@ test_sources = [
   'input.cpp',
   'item_concept.cpp',
   'limits.cpp',
+  'menu.cpp',
   'name.cpp',
   'named_tuple.cpp',
   'named_value.cpp',

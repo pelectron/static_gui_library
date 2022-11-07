@@ -291,7 +291,7 @@ namespace sgl {
       if (I == i) {
         return sgl::type_at_t<I, NameList>{}.to_view();
       }
-      return item_name_impl<I + 1>();
+      return this->item_name_impl<I + 1>(i);
     }
   }
 
@@ -305,7 +305,7 @@ namespace sgl {
       if (I == i) {
         return sgl::get<I>(items_).text();
       }
-      return item_text_impl<I + 1>();
+      return item_text_impl<I + 1>(i);
     }
   }
 

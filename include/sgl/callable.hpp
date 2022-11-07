@@ -17,6 +17,7 @@ namespace sgl {
   /// \endcond
 
   /// \headerfile callable.hpp "sgl/callable.hpp"
+  /// \anchor Callable
   /// \brief This class implements a callable with the guarantee that it does not
   /// heap allocate, throw, and doesn't have the constness bug of std::function. Additionally,
   /// constexpr fee functions and non capturing lambdas can be executed at compile time, i.e. the

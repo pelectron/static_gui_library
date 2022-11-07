@@ -17,18 +17,7 @@ A quick explanation of the picture:
 - Pages exist standalone and only contain items but not other pages.
   In the example, the 'Home Page' does not contain the 'Settings Page' and vice versa, they merely link to each other.
 - The items on a page can be interacted with and scrolled through.
-  Which items exactly and how is up to the library user/menu designer,
-  but sgl provides sensible defaults. More on this in [here](input_handling.md).
 - Items can have wildly different functions, from displaying live or static values (pink) to linking to other pages (green).
-
-If you think of the 'Home Page' as the root page, y
-Because of the nature of alphanumeric displays, the following things should also be obvious rules for a menus behavior:
-
-- One, and only one, page is 'active' or 'current' at any time in a menu, which means that it's contents should be shown. No two pages are showing at the same time.
-
-- The items on a page can be scrolled through and interacted with via user input. Which items exactly and how is up to the library user/menu designer, but sgl provides (hopefully) sensible defaults. More on this in [here](input_handling.md).
-
-- One, and only one, item is the current item of a page. The current item is that item on which the user input acts upon if its page is in edit mode. Again, more on this in [here](input_handling.md).
 
 In the end, we have three layers:
 
@@ -44,30 +33,29 @@ This section will elaborate the differences between the conceptual and abstract/
 
 sgl provides the type sgl::Menu. It implements a menu, i.e. contains pages and relays the user input to them.
 
-Above, it is said that a menu consists of a tree of pages. sgl takes a slightly different approach in the implementation. Because no page ever owns a subpage, the tree structure can be flattened with the link items preserving the tree structure. The flat container used for storing the pages is a [sgl::NamedTuple](#NamedTuple).
+Above, the from a sort of tree. sgl takes a slightly different approach in the implementation. Because no page ever owns a subpage, the tree structure can be flattened with the link items preserving the tree structure. The flat container used for storing the pages is a [sgl::NamedTuple](#NamedTuple).
 
 This approach has some advantages over building a tree with nodes:
 
 - The pages can be independent and reusable.
 - The full type of a page is is preserved, because the NamedTuple functions like a std::tuple.
-- Using NameTuple it is possible to detect linking errors between pages at compile time while still keeping them standalone. This means that pages containing links can be constructed with  on their own without any errors. However, if the page is added to a menu and the pages links do not link to any other page in the menu, then a static_assert is triggered.
+- Using NameTuple it is possible to detect linking errors between pages at compile time while still keeping them standalone. This means that pages containing links can be constructed with  on their own without any errors. However, if the page is added to a menu and the links do not link to any other page in the menu, then a static_assert is triggered.
 - The root page is flexibly set, i.e. the menu can be initialized with any of its pages as the current page.
   
 The disadvantage would be that heavy template programming is required to implement this. The library user however does not need to worry. sgl::Menu has a runtime interface to access the current pages (and its items) content, so no template programming is required from the library users perspective.
 
-### Page
+### Pages
 
-Another type sgl provides is sgl::Page. It implements a page. Since a page conceptually is a flat container of items and the type of the items should be preserved, sgl also uses a NamedTuple to hold the items in a page. Structurally speaking, there is no real difference between the model and the implementation.
+Another type sgl provides is sgl::Page. It implements a page. A page conceptually is a flat container of items. sgl also uses a [sgl::NamedTuple](#NamedTuple) to hold the items in a page.
+The items can be accessed with compile time indices, like in a sd::tuple, or with runtime indices. With the runtime indices, only the text and the name of an item can be accessed.
 
 ### Items
 
-Items can be of any type, as long as they fulfill the [Item concept](concepts.md#item).
-sgl provides various classes implementing this concept for different uses, but this can easily extended. Some examples are:
+Items represent a single line in the display. There really aren't any other requirements(other than being able to handle [inputs](input_handling.md) and [ticks](external_updates.md)). As such, sgl uses a simple concept for an Item, which can be checked [here](concepts.md#item).
+sgl provides various classes implementing this concept for different uses. Some examples are:
 
-- [boolean items](#sgl::Boolean)
-- [numerical items](#sgl::Numeric)
-- [enumerated items](#sgl::Enum)
-- [buttons](#sgl::Button)
-- [links](#sgl::PageLink)
-  
-The exact requirements of the Item concept can be checked [here](concepts.md).
+- [sgl::Boolean](#sgl::Boolean) for items representing a boolean value.
+- [sgl::Numeric](#sgl::Numeric) for items representing a numeric value.
+- [sgl::Enum](#sgl::Enum) for items with limited value range, like enums.
+- [sgl::Button](#sgl::Button) for button like behavior.
+- [sgl::PageLink](#sgl::PageLink) for linking between pages.

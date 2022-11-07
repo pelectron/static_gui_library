@@ -54,9 +54,9 @@ If you simply want to use the library without the qt visualizer, no special inst
 
 Alternatively you can use the meson build system. Just include this repo as a subproject, i.e. with a wrap file or just cloning it. Then in your main meson.build file, you can get the required dependency by using the command below:
 
-``sgl_dep = dependency('sgl', fallback:['sgl', 'sgl_dep'])``. 
+``sgl_dep = dependency('sgl', fallback:['sgl', 'sgl_dep'])``.
 
-Note that if you want to also have access to the qt visualizer, you will need to slightly modify the dependency call by setting default options:
+Note that if you want to also have access to the visualizer, you will need to slightly modify the dependency call by setting default options:
 
 ``sgl_dep = dependency('sgl', fallback: ['sgl', 'sgl_dep'], default_options: ['gui=true'])``
 
@@ -66,6 +66,8 @@ Note that qmake needs to be available in your path for this to work!
 For compiling with Qt5, you should set `qt_major_version=5` in the default options.
 
 More on the visualizer can be found [here](markdown/visualizer.md).
+
+To build the examples, the `example` option should be set to `enabled`.
 
 ## Testing
 
@@ -180,4 +182,4 @@ If you have a feature request or an idea that would improve the library, again f
 
 ## Licensing
 
-This library is distributed under the Boost Software License, Version 1.0. See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt.
+This library is distributed under the Boost Software License, Version 1.0. See accompanying file LICENSE_1_0.txt or copy at [https://www.boost.org/LICENSE_1_0.txt].

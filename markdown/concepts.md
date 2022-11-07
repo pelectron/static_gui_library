@@ -6,7 +6,7 @@ The concept is always provided as a table of variables and a table of expression
 ## Item
 
 Items are the things which occupy one line in the display. As such, an Item should have a text storage, be able to handle input and get ticked. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button or link).
-For a type `T` to satisfy the item concept, the following must hold:
+For a type `T` to satisfy the `Item` concept, the following must hold:
 
 | variable | type       |
 | -------- | ---------- |
@@ -64,8 +64,8 @@ the custom type can inherit from [sgl::ItemBase](#sgl::ItemBase).
 
 ## Input Handler
 
-An `InputHandler` handles user input for an item, page or menu. 
-The syntactic requirements for a type F to be an `InputHandler` for T are the following:
+An `InputHandler` handles user input for an item provided by sgl. The items store their input handler in a [sgl::Callable](#Callable).
+The syntactic requirements for a type `F` to be an `InputHandler` for `T` are the following:
 
 | variable | type         |
 | -------- | ------------ |
@@ -103,6 +103,7 @@ struct Handler_t{
     // ...;
   }
 };
+
 Handler_t handler3 {/* ... */};
 
 // items provided by sgl store their input handler as an sgl::Callable
@@ -117,7 +118,8 @@ t.set_input_handler(handler2);
 t.set_input_handler(handler3);
 t.set_input_handler(handler4);
 
-sgl::Input i = /* ... */;
+sgl::Input i {/* ... */};
+
 t.handle_input(i); // calls the handler
 ```
 
@@ -125,12 +127,13 @@ For more info on the whole input handling process, see [here](markdown/input_han
 
 ## Click Handler
 
-A `ClickHandler` handles click inputs for a clickable [item](concepts.md#item). It is called every time the item's click() method is called.
+A `ClickHandler` handles click inputs for a clickable [item](concepts.md#item). It is called every time the items click() method is called.
 The following must hold for a type F to be an `ClickHandler` for Item.
-| variable | type  |
-| -------- | ----- |
-| `f`      | F     |
-| `item`   | Item& |
+
+| variable | type    |
+| -------- | ------- |
+| `f`      | `F`     |
+| `item`   | `Item&` |
 
 
 | Expression                                  | Return type or value |
@@ -145,7 +148,7 @@ This concept can be checked with `sgl::is_click_handler_for_v<F,Item>`.
 
 ## Tick Handler
 
-A `TickHandler` handles tick events for an [item](concepts.md#item). The tick handler is called when an item's tick() method is called. It is used to update an item through external means. 
+A `TickHandler` handles tick events for an [item](concepts.md#item) provided by sgl. The tick handler is called when an items tick() method is called. It is used to update an item through external means. Like the input handler, the tick handler is also stored as a [sgl::Callable](#Callable).
 
 The following must hold for a type F to be an `TickHandler` for Item.
 
