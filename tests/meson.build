@@ -1,5 +1,6 @@
 test_sources = [
-  'main.cpp', 
+  'main.cpp',
+
   'ryu/common_test.cpp',
   'ryu/d2fixed_test.cpp',
   'ryu/d2s_intrinsics_test.cpp',
@@ -31,7 +32,6 @@ test_sources = [
 catch_dep = dependency('catch2')
 
 executable('test_main', 
-            include_directories: sgl_include_dir,
             sources: test_sources,
-            dependencies: [catch_dep, dependencies]
+            dependencies: [catch_dep, sgl_dep]
 )
