@@ -30,10 +30,10 @@ In addition, I wanted an easy way to visualize menus without deploying to an
 MCU. For this, sgl provides two solutions:
 
 - a command line tester. Look into the header menu_tester.hpp and the example
-menu_tester.cpp for more info.
+  menu_tester.cpp for more info.
 - A menu visualizer made with Qt. This will give you a better insight into
-what's going on, but requires a Qt installation.
-See [here](markdown/visualizer.md) for more info.
+  what's going on, but requires a Qt installation.
+  See [here](markdown/visualizer.md) for more info.
 
 Feedback, comments and question are greatly welcome. I would love to hear from
 you! Keep in mind that this is written by an EE student and not some c++ wizard,
@@ -58,7 +58,7 @@ The only standard headers required are:
 ### Dependencies
 
 sgl uses [gcem](https://github.com/kthohr/gcem) for constexpr math. If you don't
-use meson, you will also need to clone [gcem](https://github.com/kthohr/gcem)
+use meson, you will need to clone [gcem](https://github.com/kthohr/gcem)
 and add its include directory to your compilers include path. gcem is a header-only
 library, so there is no need to build and link against anything.
 
@@ -121,6 +121,13 @@ For compiling with Qt5, you should set `qt_major_version=5` in the default optio
 More on the visualizer can be found [here](markdown/visualizer.md).
 
 To build the examples, the `example` option should be set to `enabled`.
+
+The full command line invocation for building the examples and tests is
+
+```sh
+meson setup build -Dtest=enabled -Dgui=true -Dexample=enabled -Dqt_major_version=6
+meson compile -C build
+```
 
 ## Testing
 
