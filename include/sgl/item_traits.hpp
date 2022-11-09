@@ -60,6 +60,8 @@ namespace sgl {
     using char_type = CharT;
     static constexpr size_t text_size = TextSize;
   };
+
+  /// \endcond
 } // namespace sgl
 
 #endif /* SGL_ITEM_TRAITS_HPP */

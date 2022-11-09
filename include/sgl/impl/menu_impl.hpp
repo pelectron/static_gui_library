@@ -42,7 +42,7 @@ namespace sgl {
   }
 
   template <typename NameList, typename PageList>
-  sgl::error Menu<NameList, PageList>::handle_input(sgl::Input i) noexcept {
+  constexpr sgl::error Menu<NameList, PageList>::handle_input(sgl::Input i) noexcept {
     return for_current_page(
         [i](auto& page) noexcept -> sgl::error { return page.handle_input(i); });
   }
@@ -86,7 +86,7 @@ namespace sgl {
 
   template <typename NameList, typename PageList>
   template <char... Cs>
-  auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) noexcept {
+  constexpr auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) noexcept {
     if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
       static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No page with such a name exists in this menu");
@@ -97,7 +97,7 @@ namespace sgl {
 
   template <typename NameList, typename PageList>
   template <char... Cs>
-  const auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) const noexcept {
+  constexpr const auto& Menu<NameList, PageList>::operator[](sgl::Name<Cs...> name) const noexcept {
     if constexpr (!sgl::contains_v<sgl::Name<Cs...>, NameList>) {
       static_assert(sgl::contains_v<sgl::Name<Cs...>, NameList>,
                     "No page with such a name exists in this menu");
@@ -133,7 +133,7 @@ namespace sgl {
 
   template <typename NameList, typename PageList>
   constexpr sgl::string_view<char> Menu<NameList, PageList>::item_name(size_t i) const noexcept {
-    return item_name_impl(i);
+    return this->item_name_impl(i);
   }
 
   template <typename NameList, typename PageList>
@@ -211,7 +211,6 @@ namespace sgl {
   }
 
   template <typename NameList, typename PageList>
-  template <size_t I>
   [[nodiscard]] constexpr sgl::string_view<char>
       Menu<NameList, PageList>::item_name_impl(size_t i) const noexcept {
     return this->for_current_page(
@@ -225,38 +224,32 @@ namespace sgl {
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>()))) {
+  void for_each(Menu<NameList, PageList>& menu, F&& f){
     menu.for_each_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(const Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>()))) {
+  void for_each(const Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
-      std::declval<Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>()))) {
+  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
-      std::declval<const Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>()))) {
+  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>()))) {
+  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) {
     return menu.for_current_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
-      std::declval<const Menu<NameList, PageList>>().for_current_page(std::declval<F>()))) {
+  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) {
     return menu.for_current_page(std::forward<F>(f));
   }
 } // namespace sgl

@@ -1,0 +1,4 @@
+-Iinclude
+-Isubprojects/gcem/include
+-Isubprojects/Catch2-2.13.8/single_include
+-std=c++17

@@ -97,7 +97,7 @@ namespace sgl {
     /// invoke the menu's input handler
     /// \param i input to handle
     /// \return sgl::error
-    [[nodiscard]] sgl::error handle_input(sgl::Input i) noexcept;
+    [[nodiscard]] constexpr sgl::error handle_input(sgl::Input i) noexcept;
 
     /// invoke tick() method for each item in the menu.
     /// \note Keep in mind that this function call can take a non negligible time to complete if you
@@ -129,14 +129,14 @@ namespace sgl {
     /// \param name name instance
     /// \return reference to page
     template <char... Cs>
-    [[nodiscard]] auto& operator[](sgl::Name<Cs...> name) noexcept;
+    [[nodiscard]] constexpr auto& operator[](sgl::Name<Cs...> name) noexcept;
 
     /// \brief get page by name
     /// \tparam Name name type
     /// \param name name instance
     /// \return const reference to page
     template <char... Cs>
-    [[nodiscard]] const auto& operator[](sgl::Name<Cs...> name) const noexcept;
+    [[nodiscard]] constexpr const auto& operator[](sgl::Name<Cs...> name) const noexcept;
 
     /// \brief get reference to page at index I
     /// \tparam I page index
@@ -249,7 +249,7 @@ namespace sgl {
 
     template <size_t I>
     [[nodiscard]] constexpr sgl::string_view<char> page_name_impl() const noexcept;
-    template <size_t I>
+
     [[nodiscard]] constexpr sgl::string_view<char> item_name_impl(size_t i) const noexcept;
 
     [[nodiscard]] constexpr sgl::string_view<char_type> item_text_impl(size_t i) const noexcept;
@@ -275,12 +275,10 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>())));
+  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f) ;
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(const Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_each_page(std::declval<F>())));
+  void for_each(const Menu<NameList, PageList>& menu, F&& f);
   /// \}
 
   /// \brief apply f on each page of the menu, with the name of the page.
@@ -292,12 +290,10 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
-      std::declval<Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>())));
+  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) noexcept(noexcept(
-      std::declval<const Menu<NameList, PageList>>().for_each_page_with_name(std::declval<F>())));
+  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) ;
   /// \}
 
   /// \brief apply f on the current page of the menu.
@@ -308,12 +304,10 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
+  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) ;
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) noexcept(
-      noexcept(std::declval<const Menu<NameList, PageList>>().for_current_page(std::declval<F>())));
+  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) ;
   /// \}
 
 } // namespace sgl

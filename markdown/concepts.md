@@ -1,12 +1,18 @@
 # Concepts
 
 This library has a few concepts.
-The concept is always provided as a table of variables and a table of expressions using those variables. The table of expressions must be fulfilled in order for the concept to be satisfied.
+The concept is always provided as a table of variables and a table of expressions
+using those variables. The table of expressions must be fulfilled in order for
+the concept to be satisfied.
 
 ## Item
 
-Items are the things which occupy one line in the display. As such, an Item should have a text storage, be able to handle input and get ticked. They can be used for displaying values, mutable and immutable text, or have more of a functional role (for example a button or link).
-For a type `T` to satisfy the item concept, the following must hold:
+Items are the things which occupy one line in the display. As such, an Item should
+have a text storage, be able to handle input and get ticked. They can be used for
+displaying values, mutable and immutable text, or have more of a functional role
+(for example a button or link).
+
+For a type `T` to satisfy the `Item` concept, the following must hold:
 
 | variable | type       |
 | -------- | ---------- |
@@ -14,7 +20,6 @@ For a type `T` to satisfy the item concept, the following must hold:
 | ct       | const T    |
 | i        | sgl::Input |
 | m        | sgl::Menu  |
-
 
 | Expression              | type                                                   | Notes               |
 | ----------------------- | ------------------------------------------------------ | ------------------- |
@@ -26,9 +31,11 @@ For a type `T` to satisfy the item concept, the following must hold:
 | `t.text()`              | `sgl::static_string<T::char_type,T::text_size>&`       |                     |
 | `ct.text()`             | `const sgl::static_string<T::char_type,T::text_size>&` |                     |
 
-sgl already provides various kinds of item types, but if it isn't enough, this is the starting point for creating your own.
-All that is required are the three member functions described above. The ``handle_input`` method should return
-sgl::error::edit_finished by default, as described in [input handling](input_handling.md).
+sgl already provides various kinds of item types, but if it isn't enough, this
+is the starting point for creating your own.
+All that is required are the three member functions described above.
+The ``handle_input`` method should return sgl::error::edit_finished by default,
+as described in [input handling](input_handling.md).
 
 This concept can be checked with ``sgl::is_item_v<ItemType>``.
 
@@ -42,15 +49,21 @@ public:
   using char_type = char;
   static constexpr size_t text_size = 25;
 
-  constexpr sgl::error handle_input(sgl::Input) noexcept { return sgl::error::edit_finished; }
+  constexpr sgl::error handle_input(sgl::Input) noexcept { 
+    return sgl::error::edit_finished; 
+  }
 
   constexpr void tick() noexcept {}
 
   constexpr void set_menu(void*) noexcept {}
 
-  constexpr sgl::static_string<char_type, text_size>& text() noexcept { return str_; }
+  constexpr sgl::static_string<char_type, text_size>& text() noexcept { 
+    return str_; 
+  }
 
-  constexpr const sgl::static_string<char_type, text_size>& text() const noexcept { return str_; }
+  constexpr const sgl::static_string<char_type, text_size>& text() const noexcept {
+    return str_; 
+  }
 
 private:
   sgl::static_string<char_type, text_size> str_;
@@ -59,20 +72,22 @@ private:
 static_assert(sgl::is_item_v<CustomItem>);
 ```
 
-To reduced boilerplate and allow for the same mechanism of changing input and tick handlers as the item types sgl provides,
-the custom type can inherit from [sgl::ItemBase](#sgl::ItemBase).
+To reduced boilerplate and allow for the same mechanism of changing input and
+tick handlers as the item types sgl provides, the custom type can inherit from
+[sgl::ItemBase](#sgl::ItemBase).
 
 ## Input Handler
 
-An `InputHandler` handles user input for an item, page or menu. 
-The syntactic requirements for a type F to be an `InputHandler` for T are the following:
+An `InputHandler` handles user input for an item provided by sgl.
+The items store their input handler in a [sgl::Callable](#Callable).
+The syntactic requirements for a type `F` to be an `InputHandler` for `T` are
+the following:
 
 | variable | type         |
 | -------- | ------------ |
 | `f`      | `F`          |
 | `t`      | `T&`         |
 | `i`      | `sgl::Input` |
-
 
 | Expression                                  | Return type/value |
 | ------------------------------------------- | ----------------- |
@@ -103,6 +118,7 @@ struct Handler_t{
     // ...;
   }
 };
+
 Handler_t handler3 {/* ... */};
 
 // items provided by sgl store their input handler as an sgl::Callable
@@ -117,21 +133,24 @@ t.set_input_handler(handler2);
 t.set_input_handler(handler3);
 t.set_input_handler(handler4);
 
-sgl::Input i = /* ... */;
+sgl::Input i {/* ... */};
+
 t.handle_input(i); // calls the handler
 ```
 
-For more info on the whole input handling process, see [here](markdown/input_handling.md).
+For more info on the whole input handling process,
+see [here](markdown/input_handling.md).
 
 ## Click Handler
 
-A `ClickHandler` handles click inputs for a clickable [item](concepts.md#item). It is called every time the item's click() method is called.
+A `ClickHandler` handles click inputs for a clickable [item](concepts.md#item).
+It is called every time the items click() method is called.
 The following must hold for a type F to be an `ClickHandler` for Item.
-| variable | type  |
-| -------- | ----- |
-| `f`      | F     |
-| `item`   | Item& |
 
+| variable | type    |
+| -------- | ------- |
+| `f`      | `F`     |
+| `item`   | `Item&` |
 
 | Expression                                  | Return type or value |
 | ------------------------------------------- | -------------------- |
@@ -145,7 +164,10 @@ This concept can be checked with `sgl::is_click_handler_for_v<F,Item>`.
 
 ## Tick Handler
 
-A `TickHandler` handles tick events for an [item](concepts.md#item). The tick handler is called when an item's tick() method is called. It is used to update an item through external means. 
+A `TickHandler` handles tick events for an [item](concepts.md#item) provided by sgl.
+The tick handler is called when an items tick() method is called. It is used to
+update an item through external means. Like the input handler, the tick handler
+is also stored as a [sgl::Callable](#Callable).
 
 The following must hold for a type F to be an `TickHandler` for Item.
 
@@ -153,7 +175,6 @@ The following must hold for a type F to be an `TickHandler` for Item.
 | -------- | ----- |
 | `f`      | F     |
 | `item`   | Item& |
-
 
 | Expression                                  | Return type or value |
 | ------------------------------------------- | -------------------- |
@@ -216,7 +237,6 @@ For F to be a Formatter for Item, the following must hold:
 | precision | uint32_t         |
 | format    | sgl::format_t    |
 
-
 | Expression                                            | Return type/value  |
 | ----------------------------------------------------- | ------------------ |
 | `f(str, str_len, value, precision, format)`           | sgl::format_result |
@@ -227,16 +247,17 @@ For F to be a Formatter for Item, the following must hold:
 
 ## Page Action
 
- A page action is a callable that gets executed on certain events on a page. 
- For now, the only actions are the enter and exit actions, which are called when a page becomes the current page(i.e. is entered) or when the current page switches(i.e. is exited).
+A page action is a callable that gets executed on certain events on a page.
+For now, the only actions are the enter and exit actions, which are called when
+a page becomes the current page(i.e. is entered) or when the current page
+switches (i.e. is exited).
 
- For a type F to be a page action, the following must hold:
- 
+For a type F to be a page action, the following must hold:
+
 | variable | type       |
 | -------- | ---------- |
 | `f`      | F          |
 | `page`   | sgl::Page& |
-
 
 | Expression                                  | Return type or value |
 | ------------------------------------------- | -------------------- |
@@ -246,7 +267,8 @@ For F to be a Formatter for Item, the following must hold:
 | `std::is_trivially_move_constructible_v<F>` | `true`               |
 | `std::is_trivially_copyable_v<F>`           | `true`               |
 
-An good example for an enter action would be a function that resets a pages current item index to 0 every time a page is entered, i.e. the page has no memory:
+An good example for an enter action would be a function that resets a pages
+current item index to 0 every time a page is entered, i.e. the page has no memory:
 
 ```cpp
 template<typename Names, typename Types>
@@ -256,4 +278,5 @@ sgl::error reset_enter_action(sgl::Page<Names,Types>& page) noexcept{
 }
 ```
 
-By default, this is not the case and a page will keep its current item index unchanged when being entered or exited.
+By default, this is not the case and a page will keep its current item index
+unchanged when being entered or exited.
