@@ -14,25 +14,25 @@
 #if defined(_MSC_VER)
   #include <intrin.h>
 
-namespace ryu {
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
+namespace ryu::detail {
+  inline uint32_t floor_log2(const uint32_t value) noexcept {
     unsigned long index;
     return _BitScanReverse(&index, value) ? index : 32;
   }
 
-  static inline uint32_t floor_log2(const uint64_t value) noexcept {
+  inline uint32_t floor_log2(const uint64_t value) noexcept {
     unsigned long index;
     return _BitScanReverse64(&index, value) ? index : 64;
   }
 } // namespace ryu
 #else
-namespace ryu {
+namespace ryu::detail {
 
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
+  inline uint32_t floor_log2(const uint32_t value) noexcept {
     return 31 - __builtin_clz(value);
   }
 
-  static inline uint32_t floor_log2(const uint64_t value) noexcept {
+  inline uint32_t floor_log2(const uint64_t value) noexcept {
     return 63 - __builtin_clzll(value);
   }
 } // namespace ryu

@@ -267,7 +267,7 @@ namespace ryu {
   }
 
   [[nodiscard]] status s2f_n(const char* buffer, const int len, float* result) noexcept {
-    return ryu::detail::s2f_n(buffer, len, result, &floor_log2, &int32Bits2Float);
+    return ryu::detail::s2f_n(buffer, len, result, &ryu::detail::floor_log2, &int32Bits2Float);
   }
 } // namespace ryu
 

@@ -13,6 +13,7 @@
 
 #include <catch2/catch.hpp>
 #include <cmath>
+#include <cfloat>
 
 #define EXPECT_S2F(a, b)                                          \
   []() {                                                          \

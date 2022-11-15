@@ -268,7 +268,7 @@ namespace ryu {
   } // namespace cx
 
   [[nodiscard]] inline status s2d_n(const char* buffer, const int len, double* result) noexcept {
-    return detail::s2d_n(buffer, len, result, &ryu::detail::bits_to_double, &ryu::floor_log2);
+    return detail::s2d_n(buffer, len, result, &ryu::detail::bits_to_double, &ryu::detail::floor_log2);
   }
 } // namespace ryu
 #endif // !RYU_IMPL_S2D_IMPL_HPP
