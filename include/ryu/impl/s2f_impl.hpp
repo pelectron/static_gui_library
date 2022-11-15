@@ -9,54 +9,25 @@
 //
 #ifndef RYU_IMPL_S2F_IMPL_HPP
 #define RYU_IMPL_S2F_IMPL_HPP
+#include "gcem.hpp"
+#include "gcem_incl/pow.hpp"
 #include "ryu/common.hpp"
 #include "ryu/s2f.hpp"
 
-#if defined(_MSC_VER)
-  #include <intrin.h>
+#include <limits>
 
 namespace ryu {
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
-    unsigned long index;
-    return _BitScanReverse(&index, value) ? index : 32;
-  }
-} // namespace ryu
-#else
-namespace ryu {
-
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
-    return 31 - __builtin_clz(value);
-  }
-} // namespace ryu
-#endif
-
-namespace ryu {
-  namespace cx {
-    constexpr uint32_t floor_log2(const uint32_t value) noexcept {
-      for (uint32_t i = 31; i >= 0; ++i) {
-        if (value & (1u << i) == (1u << i)) {
-          return i;
-        }
-      }
-      return 32;
-    }
-
-    constexpr float int32Bits2Float(uint32_t bits) noexcept { return 0.0f; }
-
-    constexpr Status s2f_n(const char* buffer, const int len, float* result) noexcept {
-      return ryu::s2f_n(buffer, len, result, ryu::cx::floor_log2, ryu::cx::int32Bits2Float);
-    }
-  } // namespace cx
 
   namespace detail {
-    // The max function is already defined on Windows.
-    constexpr int32_t max32(int32_t a, int32_t b) noexcept { return a < b ? b : a; }
-
     static inline float int32Bits2Float(uint32_t bits) noexcept {
       float f;
       memcpy(&f, &bits, sizeof(float));
       return f;
     }
+
+    using Log2Function = uint32_t (*)(const uint32_t) noexcept;
+
+    using BitsToFloatFunction = float (*)(const uint32_t) noexcept;
 
     constexpr ryu::Status s2f_n(const char*         buffer,
                                 const int           len,
@@ -237,9 +208,65 @@ namespace ryu {
       *result = bit_cast(ieee);
       return Status::success;
     }
+
+    constexpr uint32_t mask(uint32_t num_bits) noexcept {
+      uint32_t ret{0};
+      for (uint32_t i = 0; i < num_bits; ++i) {
+        ret |= uint32_t{1} << i;
+      }
+      return ret;
+    }
+
+    static_assert(mask(1) == 1);
+    static_assert(mask(2) == 0b11);
   } // namespace detail
 
-  inline Status s2f_n(const char* buffer, const int len, float* result) noexcept {
+  namespace cx {
+    constexpr bool is_nan(uint32_t bits) {
+      return ((0x7F800000u & bits) == 0x7F800000u) and ((bits & ~0xFF800000u) != 0);
+    }
+
+    constexpr float int32Bits2Float(uint32_t bits) noexcept {
+      if (bits == 0)
+        return 0.0f;
+      if (ryu::cx::is_nan(bits))
+        return std::numeric_limits<float>::quiet_NaN();
+      if (bits == 0x80000000u)
+        return -0.0f;
+      if (bits == 0x7F800000u)
+        return ryu::f_infinity;
+      if (bits == 0xFF800000u)
+        return -ryu::f_infinity;
+
+      int sign = ((bits >> 31) == 1) ? -1 : 1;
+      int exponent = ((bits >> ryu::float_mantissa_bits) & detail::mask(ryu::float_exponent_bits)) -
+                     ryu::float_bias;
+
+      uint32_t mantissa = bits & detail::mask(ryu::float_mantissa_bits);
+      if (exponent == -127) {
+        return sign * (mantissa / gcem::pow(2.0f, ryu::float_mantissa_bits)) *
+               gcem::pow(2.0f, -126);
+      }
+      return sign * (1 + mantissa / gcem::pow(2.0f, ryu::float_mantissa_bits)) *
+             gcem::pow(2.0f, exponent);
+    }
+
+    [[nodiscard]] constexpr Status s2f_n(const char* buffer, const int len, float* result) noexcept {
+      return ryu::detail::s2f_n(buffer,
+                                len,
+                                result,
+                                &ryu::cx::floor_log2,
+                                &ryu::cx::int32Bits2Float);
+    }
+  } // namespace cx
+
+  inline float int32Bits2Float(uint32_t bits) noexcept {
+    float f{0};
+    memcpy(&f, &bits, 4);
+    return f;
+  }
+
+  [[nodiscard]] Status s2f_n(const char* buffer, const int len, float* result) noexcept {
     return ryu::detail::s2f_n(buffer, len, result, &floor_log2, &int32Bits2Float);
   }
 } // namespace ryu
