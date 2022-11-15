@@ -64,16 +64,16 @@ namespace sgl {
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr sgl::error
       Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
-                                                                     sgl::Input input) noexcept {
+                                                                     sgl::input input) noexcept {
     switch (input) {
-      case sgl::Input::right:
+      case sgl::input::right:
         [[fallthrough]];
-      case sgl::Input::up:
+      case sgl::input::up:
         enum_item.set_index((enum_item.index() + 1) % enum_item.num_values());
         break;
-      case sgl::Input::left:
+      case sgl::input::left:
         [[fallthrough]];
-      case sgl::Input::down:
+      case sgl::input::down:
         enum_item.set_index(enum_item.index() == 0 ? enum_item.num_values() - 1
                                                    : enum_item.index() - 1);
         break;

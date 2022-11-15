@@ -10,7 +10,7 @@ For a type `T` to satisfy the page concept, the following must hold:
  | t             | T                                 |
  | ct            | const T                           |
  | idx           | size_t                            |
- | i             | sgl::Input                        |
+ | i             | sgl::input                        |
  | input_handler | InputHandler for T                |
  | tick_handler  | TickHandler for T                 |
  | name_vis      | NamedVisitor for items in T       |
@@ -25,8 +25,8 @@ For a type `T` to satisfy the page concept, the following must hold:
 | ct.size()                              | size_t                       |
 | ct.current_item_index()                | size_t                       |
 | ct.is_in_edit_mode()                   | bool                         |
-| ct.get_start_edit()                    | sgl::Input                   |
-| ct.get_stop_edit()                     | sgl::Input                   |
+| ct.get_start_edit()                    | sgl::input                   |
+| ct.get_stop_edit()                     | sgl::input                   |
 | sgl::for_each(ct, cvis)                | void                         |
 | sgl::for_each_with_name(ct, cname_vis) | void                         |
 | sgl::for_current(ct, cvis)             | return type of cvis          |

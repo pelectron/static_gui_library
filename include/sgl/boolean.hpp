@@ -57,7 +57,7 @@ namespace sgl {
     /// default input handler
     /// \return sgl::error
     [[nodiscard]] static constexpr sgl::error default_handle_input(Boolean<TextSize, CharT>& item,
-                                                                   sgl::Input i) noexcept;
+                                                                   sgl::input i) noexcept;
 
     StringView true_string_{};  ///< view of true string
     StringView false_string_{}; ///< view of false string

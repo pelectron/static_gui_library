@@ -25,9 +25,9 @@ The top right shows a rendering of the display. This can be used to visually che
 The bottom part of the gui contains an error log. Every time the menus handle_input returns an error other than sgl::error::no_error, it will display the error as well as the input that caused it.
 ![error log](images/visualier_error_log.jpg)
 
-### Input
+### input
 
-Input to the menu is given through the keyboard, where alphanumeric inputs are forwarded as a char inputs to the menu under test. The up, down, left and right arrows as well as the enter key are forwarded as their sgl::Input equivalents.
+input to the menu is given through the keyboard, where alphanumeric inputs are forwarded as a char inputs to the menu under test. The up, down, left and right arrows as well as the enter key are forwarded as their sgl::input equivalents.
 
 ## Debugging your own menu
 

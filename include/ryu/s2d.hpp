@@ -7,11 +7,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
 //
-#ifndef RYU_RYU_PARSE_HPP
-#define RYU_RYU_PARSE_HPP
-#include "ryu/s2d.hpp"
-#include "ryu/s2f.hpp"
 
+#ifndef RYU_S2D_HPP
+#define RYU_S2D_HPP
+#include "ryu/common.hpp"
 // This is an experimental implementation of parsing strings to 64-bit floats
 // using a Ryu-like algorithm. At this time, it only support up to 17 non-zero
 // digits in the input, and also does not support all formats. Use at your own
@@ -19,9 +18,29 @@
 //
 // This implementation does not currently support -DRYU_OPTIMIZE_SIZE and always
 // compiles against the large lookup tables.
-
 namespace ryu {
+  /**
+   * \brief parse a double from buffer.
+   * \param buffer string to parse.
+   * \param len length of the string.
+   * \param result where to store the result.
+   * \return status result of the parse.
+   */
+  [[nodiscard]] inline status s2d_n(const char* buffer, const int len, double* result) noexcept;
 
+  namespace cx {
+    /**
+     * \brief parse a double from buffer. This function can be called in a constexpr context.
+     * \param buffer string to parse.
+     * \param len length of the string.
+     * \param result where to store the result.
+     * \return status result of the parse.
+     */
+    [[nodiscard]] constexpr status
+        s2d_n(const char* buffer, const int len, double* result) noexcept;
+
+  } // namespace cx
 } // namespace ryu
 
-#endif /* RYU_RYU_PARSE_HPP */
+#include "ryu/impl/s2d_impl.hpp"
+#endif // !RYU_S2D_HPP

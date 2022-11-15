@@ -18,7 +18,7 @@ For a type `T` to satisfy the `Item` concept, the following must hold:
 | -------- | ---------- |
 | t        | T          |
 | ct       | const T    |
-| i        | sgl::Input |
+| i        | sgl::input |
 | m        | sgl::Menu  |
 
 | Expression              | type                                                   | Notes               |
@@ -49,7 +49,7 @@ public:
   using char_type = char;
   static constexpr size_t text_size = 25;
 
-  constexpr sgl::error handle_input(sgl::Input) noexcept { 
+  constexpr sgl::error handle_input(sgl::input) noexcept { 
     return sgl::error::edit_finished; 
   }
 
@@ -76,7 +76,7 @@ To reduced boilerplate and allow for the same mechanism of changing input and
 tick handlers as the item types sgl provides, the custom type can inherit from
 [sgl::ItemBase](#sgl::ItemBase).
 
-## Input Handler
+## input Handler
 
 An `InputHandler` handles user input for an item provided by sgl.
 The items store their input handler in a [sgl::Callable](#Callable).
@@ -87,7 +87,7 @@ the following:
 | -------- | ------------ |
 | `f`      | `F`          |
 | `t`      | `T&`         |
-| `i`      | `sgl::Input` |
+| `i`      | `sgl::input` |
 
 | Expression                                  | Return type/value |
 | ------------------------------------------- | ----------------- |
@@ -103,18 +103,18 @@ The few examples of input handlers:
 
 ```cpp
 // as a free function
-sgl::error handler1(T& item, sgl::Input i) noexcept{
+sgl::error handler1(T& item, sgl::input i) noexcept{
   // ...;
 }
 
 // as a lambda
-auto handler2 = [](T& item, sgl::Input i) noexcept->sgl::error{
+auto handler2 = [](T& item, sgl::input i) noexcept->sgl::error{
   // ...;
 };
 
 // an instance of a struct with call operator
 struct Handler_t{
-  sgl::error operator()(T& item, sgl::Input i)noexcept{
+  sgl::error operator()(T& item, sgl::input i)noexcept{
     // ...;
   }
 };
@@ -122,7 +122,7 @@ struct Handler_t{
 Handler_t handler3 {/* ... */};
 
 // items provided by sgl store their input handler as an sgl::Callable
-sgl::Callable<sgl::error(T&,sgl::Input)> handler_4{/*...*/};
+sgl::Callable<sgl::error(T&,sgl::input)> handler_4{/*...*/};
 
 // Now for a type T provided by sgl, i.e. an item, sgl::Page or sgl::Menu
 T t{/*...*/};
@@ -133,7 +133,7 @@ t.set_input_handler(handler2);
 t.set_input_handler(handler3);
 t.set_input_handler(handler4);
 
-sgl::Input i {/* ... */};
+sgl::input i {/* ... */};
 
 t.handle_input(i); // calls the handler
 ```
@@ -201,7 +201,7 @@ auto handler2 = [](Item& item) noexcept -> void{
 
 // an instance of a struct with call operator
 struct Handler_t{
-  sgl::error operator()(T& item, sgl::Input i)noexcept{
+  sgl::error operator()(T& item, sgl::input i)noexcept{
     // ...;
   }
 };

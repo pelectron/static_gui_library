@@ -321,7 +321,7 @@ namespace sgl {
       static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
-      if (ryu::s2d_n(str, len, &value) == ryu::Status::success)
+      if (ryu::s2d_n(str, len, &value) == ryu::status::success)
         return sgl::error::no_error;
       else
         return sgl::error::format_error;
@@ -330,7 +330,7 @@ namespace sgl {
       static_assert(std::is_same_v<CharT, char>,
                     "only CharT=char supported with floating point parsing");
 
-      if (ryu::s2f_n(str, &value) == ryu::Status::success)
+      if (ryu::s2f_n(str, &value) == ryu::status::success)
         return sgl::error::no_error;
       else
         return sgl::error::format_error;

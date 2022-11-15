@@ -39,7 +39,7 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  constexpr sgl::error ItemBase<ItemImpl, Traits>::handle_input(sgl::Input input) noexcept {
+  constexpr sgl::error ItemBase<ItemImpl, Traits>::handle_input(sgl::input input) noexcept {
     return handler_(*static_cast<item_type*>(this), input);
   }
 
@@ -78,7 +78,7 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(item_type&, sgl::Input) noexcept {
+  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(item_type&, sgl::input) noexcept {
     return sgl::error::edit_finished;
   }
 

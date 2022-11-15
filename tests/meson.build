@@ -7,9 +7,14 @@ test_sources = [
   'ryu/d2s_table_test.cpp',
   'ryu/d2s_test.cpp',
   'ryu/f2s_test.cpp',
+  'ryu/s2f_test.cpp',
+  'ryu/s2d_test.cpp',
+
   'ryu/cx/f2s_test.cpp',
   'ryu/cx/d2s_test.cpp',
   'ryu/cx/d2fixed_test.cpp',
+ 'ryu/cx/s2f_test.cpp',
+  'ryu/cx/s2d_test.cpp',
 
   'array.cpp',
   'callable.cpp',

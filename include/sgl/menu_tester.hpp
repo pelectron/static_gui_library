@@ -11,15 +11,15 @@
 
 namespace sgl {
 
-  /// \brief pair of sgl::Input and sgl::string_view<char>
+  /// \brief pair of sgl::input and sgl::string_view<char>
   /// \tparam char character type
   template <typename CharT>
   struct InputPair {
-    sgl::Input              input;
+    sgl::input              input;
     sgl::string_view<CharT> string;
   };
 
-  /// \brief This class is used to map sgl::Input values to string_views. It is
+  /// \brief This class is used to map sgl::input values to string_views. It is
   /// used by the MenuTester class.
   /// \tparam char character type
   /// \tparam N number of mapped values
@@ -32,12 +32,12 @@ namespace sgl {
 
     InputPair<CharT> map[N];
 
-    sgl::Input get(sgl::string_view<CharT> string) {
+    sgl::input get(sgl::string_view<CharT> string) {
       for (const auto& e : map) {
         if (string == e.string)
           return e.input;
       }
-      return sgl::Input::none;
+      return sgl::input::none;
     }
   };
 
@@ -53,16 +53,16 @@ namespace sgl {
     ///
     /// \code
     /// auto tester = MenuTester(sgl::make_menu(...), // the menu to test
-    ///                          // input map mapping sgl::Input to strings
-    ///                          {{sgl::Input::up, "up"},
-    ///                           {sgl::Input::down, "down"},
-    ///                           {sgl::Input::left, "left"},
-    ///                           {sgl::Input::right, "right"},
-    ///                           {sgl::Input::enter, "enter"}});
+    ///                          // input map mapping sgl::input to strings
+    ///                          {{sgl::input::up, "up"},
+    ///                           {sgl::input::down, "down"},
+    ///                           {sgl::input::left, "left"},
+    ///                           {sgl::input::right, "right"},
+    ///                           {sgl::input::enter, "enter"}});
     /// \endcode
     ///
     /// \param menu menu to test
-    /// \param input_map map of sgl::Input to sgl::string_view<char>
+    /// \param input_map map of sgl::input to sgl::string_view<char>
     /// \{
     MenuTester(const Menu& menu, const InputPair<char> (&input_map)[N])
         : menu_(menu), map(input_map) {}
@@ -76,12 +76,12 @@ namespace sgl {
     /// \param input user input as string
     /// \return sgl::error
     sgl::error handle_input(sgl::string_view<char> input) {
-      sgl::Input i = map.get(input);
-      if (i != sgl::Input::none) {
+      sgl::input i = map.get(input);
+      if (i != sgl::input::none) {
         return menu_.handle_input(i);
       }
       if (input.size() == 0) {
-        return menu_.handle_input(sgl::Input::enter);
+        return menu_.handle_input(sgl::input::enter);
       } else {
         sgl::error ec{sgl::error::no_error};
         for (size_t k = 0; k < input.size() and ec == sgl::error::no_error; ++k) {

@@ -80,7 +80,7 @@ namespace sgl {
       return sgl::error::no_error;
     }
 
-    constexpr static sgl::error button_input_handler(item_type& item, sgl::Input) noexcept {
+    constexpr static sgl::error button_input_handler(item_type& item, sgl::input) noexcept {
       sgl::error ec = item.click();
       switch (ec) {
         case sgl::error::no_error:

@@ -9,10 +9,39 @@
 //
 #ifndef RYU_IMPL_COMMON_IMPL_HPP
 #define RYU_IMPL_COMMON_IMPL_HPP
-#include "../common.hpp"
+#include "ryu/common.hpp"
+
+#if defined(_MSC_VER)
+  #include <intrin.h>
+
+namespace ryu {
+  static inline uint32_t floor_log2(const uint32_t value) noexcept {
+    unsigned long index;
+    return _BitScanReverse(&index, value) ? index : 32;
+  }
+
+  static inline uint32_t floor_log2(const uint64_t value) noexcept {
+    unsigned long index;
+    return _BitScanReverse64(&index, value) ? index : 64;
+  }
+} // namespace ryu
+#else
+namespace ryu {
+
+  static inline uint32_t floor_log2(const uint32_t value) noexcept {
+    return 31 - __builtin_clz(value);
+  }
+
+  static inline uint32_t floor_log2(const uint64_t value) noexcept {
+    return 63 - __builtin_clzll(value);
+  }
+} // namespace ryu
+#endif
 
 namespace ryu {
   namespace detail {
+    constexpr int32_t max32(int32_t a, int32_t b) noexcept { return a < b ? b : a; }
+
     // Returns the number of decimal digits in v, which must not contain more than 9 digits.
     constexpr uint32_t decimalLength9(const uint32_t v) noexcept {
       // Function precondition: v is not a 10-digit number.
@@ -225,6 +254,25 @@ namespace ryu {
       return (static_cast<uint64_t>(sign) << 63) | (static_cast<uint64_t>(exponent) << 52) |
              significand;
     }
+
+    constexpr uint32_t floor_log2(const uint32_t value) noexcept {
+      for (int32_t i = 31; i >= 0; --i) {
+        if ((value & (1u << i)) == (1u << i)) {
+          return i;
+        }
+      }
+      return 32;
+    }
+
+    constexpr uint32_t floor_log2(const uint64_t value) noexcept {
+      for (int32_t i = 63; i >= 0; --i) {
+        if ((value & (uint64_t{1} << i)) == (uint64_t{1}<< i)) {
+          return i;
+        }
+      }
+      return 64;
+    }
+
   } // namespace cx
 
 } // namespace ryu

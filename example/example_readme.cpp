@@ -52,5 +52,5 @@ constexpr auto make_menu() {
 
 int main() {
   auto menu = make_menu();
-  return (int)menu.handle_input(sgl::Input::up);
+  return (int)menu.handle_input(sgl::input::up);
 }

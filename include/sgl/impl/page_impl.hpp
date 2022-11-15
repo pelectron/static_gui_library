@@ -53,7 +53,7 @@ namespace sgl {
   }
 
   template <typename NameList, typename ItemList>
-  constexpr sgl::error Page<NameList, ItemList>::handle_input(sgl::Input i) noexcept {
+  constexpr sgl::error Page<NameList, ItemList>::handle_input(sgl::input i) noexcept {
     return input_handler_(*this, i);
   }
 
@@ -73,25 +73,25 @@ namespace sgl {
   }
 
   template <typename NameList, typename ItemList>
-  constexpr sgl::Input Page<NameList, ItemList>::get_start_edit() const noexcept {
+  constexpr sgl::input Page<NameList, ItemList>::get_start_edit() const noexcept {
     return start_edit_;
   }
 
   template <typename NameList, typename ItemList>
   constexpr Page<NameList, ItemList>&
-      Page<NameList, ItemList>::set_start_edit(sgl::Input start_edit) noexcept {
+      Page<NameList, ItemList>::set_start_edit(sgl::input start_edit) noexcept {
     start_edit_ = start_edit;
     return *this;
   }
 
   template <typename NameList, typename ItemList>
-  constexpr sgl::Input Page<NameList, ItemList>::get_stop_edit() const noexcept {
+  constexpr sgl::input Page<NameList, ItemList>::get_stop_edit() const noexcept {
     return stop_edit_;
   }
 
   template <typename NameList, typename ItemList>
   constexpr Page<NameList, ItemList>&
-      Page<NameList, ItemList>::set_stop_edit(sgl::Input stop_edit) noexcept {
+      Page<NameList, ItemList>::set_stop_edit(sgl::input stop_edit) noexcept {
     stop_edit_ = stop_edit;
     return *this;
   }
@@ -164,7 +164,7 @@ namespace sgl {
   template <typename Action>
   constexpr Page<NameList, ItemList>&
       Page<NameList, ItemList>::set_on_enter(Action&& action) noexcept {
-    on_enter_ = std::forward<Action>(action);
+    on_enter_.bind(std::forward<Action>(action));
     return *this;
   }
 
@@ -172,7 +172,7 @@ namespace sgl {
   template <typename Action>
   constexpr Page<NameList, ItemList>&
       Page<NameList, ItemList>::set_on_exit(Action&& action) noexcept {
-    on_exit_ = std::forward<Action>(action);
+    on_exit_.bind(std::forward<Action>(action));
     return *this;
   }
 
@@ -205,7 +205,7 @@ namespace sgl {
   template <typename NameList, typename ItemList>
   constexpr sgl::error
       Page<NameList, ItemList>::default_handle_input(Page<NameList, ItemList>& page,
-                                                     sgl::Input                i) noexcept {
+                                                     sgl::input                i) noexcept {
     if ((i == page.get_start_edit()) and not page.is_in_edit_mode()) {
       page.set_edit_mode();
     } else if ((i == page.get_stop_edit()) and page.is_in_edit_mode()) {
@@ -229,14 +229,14 @@ namespace sgl {
       // page navigation mode -> move up/down items_ with keypad
       if (!is_keyboard_input(i)) {
         switch (i) {
-          case sgl::Input::down:
+          case sgl::input::down:
             [[fallthrough]];
-          case sgl::Input::right:
+          case sgl::input::right:
             page.set_current_item(page.current_item_index() + 1);
             break;
-          case sgl::Input::up:
+          case sgl::input::up:
             [[fallthrough]];
-          case sgl::Input::left:
+          case sgl::input::left:
             page.set_current_item(page.current_item_index() == 0 ? page.size() - 1
                                                                  : page.current_item_index() - 1);
             break;

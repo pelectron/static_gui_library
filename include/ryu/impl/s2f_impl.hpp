@@ -6,65 +6,36 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
-//
+
 #ifndef RYU_IMPL_S2F_IMPL_HPP
 #define RYU_IMPL_S2F_IMPL_HPP
+#include "gcem.hpp"
+#include "gcem_incl/pow.hpp"
 #include "ryu/common.hpp"
 #include "ryu/s2f.hpp"
 
-#if defined(_MSC_VER)
-  #include <intrin.h>
+#include <limits>
 
 namespace ryu {
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
-    unsigned long index;
-    return _BitScanReverse(&index, value) ? index : 32;
-  }
-} // namespace ryu
-#else
-namespace ryu {
-
-  static inline uint32_t floor_log2(const uint32_t value) noexcept {
-    return 31 - __builtin_clz(value);
-  }
-} // namespace ryu
-#endif
-
-namespace ryu {
-  namespace cx {
-    constexpr uint32_t floor_log2(const uint32_t value) noexcept {
-      for (uint32_t i = 31; i >= 0; ++i) {
-        if (value & (1u << i) == (1u << i)) {
-          return i;
-        }
-      }
-      return 32;
-    }
-
-    constexpr float int32Bits2Float(uint32_t bits) noexcept { return 0.0f; }
-
-    constexpr Status s2f_n(const char* buffer, const int len, float* result) noexcept {
-      return ryu::s2f_n(buffer, len, result, ryu::cx::floor_log2, ryu::cx::int32Bits2Float);
-    }
-  } // namespace cx
 
   namespace detail {
-    // The max function is already defined on Windows.
-    constexpr int32_t max32(int32_t a, int32_t b) noexcept { return a < b ? b : a; }
-
     static inline float int32Bits2Float(uint32_t bits) noexcept {
       float f;
       memcpy(&f, &bits, sizeof(float));
       return f;
     }
 
-    constexpr ryu::Status s2f_n(const char*         buffer,
+    using Log2Function = uint32_t (*)(const uint32_t) noexcept;
+
+    using BitsToFloatFunction = float (*)(const uint32_t) noexcept;
+
+    constexpr ryu::status s2f_n(const char*         buffer,
                                 const int           len,
                                 float*              result,
                                 Log2Function        floor_log2_func,
                                 BitsToFloatFunction bit_cast) noexcept {
       if (len == 0) {
-        return Status::input_too_short;
+        return status::input_too_short;
       }
       int      m10digits = 0;
       int      e10digits = 0;
@@ -83,7 +54,7 @@ namespace ryu {
         char c = buffer[i];
         if (c == '.') {
           if (dotIndex != len) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           dotIndex = i;
           continue;
@@ -92,7 +63,7 @@ namespace ryu {
           break;
         }
         if (m10digits >= 9) {
-          return Status::input_too_long;
+          return status::input_too_long;
         }
         m10 = 10 * m10 + (c - '0');
         if (m10 != 0) {
@@ -109,11 +80,11 @@ namespace ryu {
         for (; i < len; i++) {
           char c = buffer[i];
           if ((c < '0') || (c > '9')) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           if (e10digits > 3) {
             // TODO: Be more lenient. Return +/-Infinity or +/-0 instead.
-            return Status::input_too_long;
+            return status::input_too_long;
           }
           e10 = 10 * e10 + (c - '0');
           if (e10 != 0) {
@@ -122,7 +93,7 @@ namespace ryu {
         }
       }
       if (i < len) {
-        return Status::malformed_input;
+        return status::malformed_input;
       }
       if (signedE) {
         e10 = -e10;
@@ -130,21 +101,21 @@ namespace ryu {
       e10 -= dotIndex < eIndex ? eIndex - dotIndex - 1 : 0;
       if (m10 == 0) {
         *result = signedM ? -0.0f : 0.0f;
-        return Status::success;
+        return status::success;
       }
 
       if ((m10digits + e10 <= -46) || (m10 == 0)) {
         // Number is less than 1e-46, which should be rounded down to 0; return +/-0.0.
         uint32_t ieee = ((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
       if (m10digits + e10 >= 40) {
         // Number is larger than 1e+39, which should be rounded to +/-Infinity.
         uint32_t ieee = (((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits)) |
                         (0xffu << float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // Convert to binary float m2 * 2^e2, while retaining information about whether the conversion
@@ -204,7 +175,7 @@ namespace ryu {
         uint32_t ieee = (((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits)) |
                         (0xffu << float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // We need to figure out how much we need to shift m2. The tricky part is that we need to take
@@ -235,11 +206,67 @@ namespace ryu {
                        << float_mantissa_bits) |
                       ieee_m2;
       *result = bit_cast(ieee);
-      return Status::success;
+      return status::success;
     }
+
+    constexpr uint32_t mask(uint32_t num_bits) noexcept {
+      uint32_t ret{0};
+      for (uint32_t i = 0; i < num_bits; ++i) {
+        ret |= uint32_t{1} << i;
+      }
+      return ret;
+    }
+
+    static_assert(mask(1) == 1);
+    static_assert(mask(2) == 0b11);
   } // namespace detail
 
-  inline Status s2f_n(const char* buffer, const int len, float* result) noexcept {
+  namespace cx {
+    constexpr bool is_nan(uint32_t bits) {
+      return ((0x7F800000u & bits) == 0x7F800000u) and ((bits & ~0xFF800000u) != 0);
+    }
+
+    constexpr float int32Bits2Float(uint32_t bits) noexcept {
+      if (bits == 0)
+        return 0.0f;
+      if (ryu::cx::is_nan(bits))
+        return std::numeric_limits<float>::quiet_NaN();
+      if (bits == 0x80000000u)
+        return -0.0f;
+      if (bits == 0x7F800000u)
+        return ryu::f_infinity;
+      if (bits == 0xFF800000u)
+        return -ryu::f_infinity;
+
+      int sign = ((bits >> 31) == 1) ? -1 : 1;
+      int exponent = ((bits >> ryu::float_mantissa_bits) & detail::mask(ryu::float_exponent_bits)) -
+                     ryu::float_bias;
+
+      uint32_t mantissa = bits & detail::mask(ryu::float_mantissa_bits);
+      if (exponent == -127) {
+        return sign * (mantissa / gcem::pow(2.0f, ryu::float_mantissa_bits)) *
+               gcem::pow(2.0f, -126);
+      }
+      return sign * (1 + mantissa / gcem::pow(2.0f, ryu::float_mantissa_bits)) *
+             gcem::pow(2.0f, exponent);
+    }
+
+    [[nodiscard]] constexpr status s2f_n(const char* buffer, const int len, float* result) noexcept {
+      return ryu::detail::s2f_n(buffer,
+                                len,
+                                result,
+                                &ryu::cx::floor_log2,
+                                &ryu::cx::int32Bits2Float);
+    }
+  } // namespace cx
+
+  inline float int32Bits2Float(uint32_t bits) noexcept {
+    float f{0};
+    memcpy(&f, &bits, 4);
+    return f;
+  }
+
+  [[nodiscard]] status s2f_n(const char* buffer, const int len, float* result) noexcept {
     return ryu::detail::s2f_n(buffer, len, result, &floor_log2, &int32Bits2Float);
   }
 } // namespace ryu

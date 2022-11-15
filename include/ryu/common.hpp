@@ -7,8 +7,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
 //
-#ifndef SGL_RYU_COMMON_HPP
-#define SGL_RYU_COMMON_HPP
+#ifndef RYU_COMMON_HPP
+#define RYU_COMMON_HPP
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -17,6 +17,8 @@
   #define RYU_32_BIT_PLATFORM
 #endif
 namespace ryu {
+
+  enum class status { success, input_too_short, input_too_long, malformed_input };
 
   inline constexpr int    float_mantissa_bits = 23;
   inline constexpr int    float_exponent_bits = 8;
@@ -57,7 +59,15 @@ namespace ryu {
                                         const bool   sign,
                                         const bool   exponent,
                                         const bool   mantissa) noexcept;
+
+    static inline uint32_t floor_log2(const uint32_t value) noexcept;
+    static inline uint32_t floor_log2(const uint64_t value) noexcept;
+    constexpr int32_t      max32(int32_t a, int32_t b) noexcept;
   } // namespace detail
+
+  namespace cx {
+    constexpr uint32_t floor_log2(const uint32_t value) noexcept;
+  }
 
   /// @brief get the bits of f as a uint32_t efficiently at runtime. Uses memcpy.
   /// @param f float to convert
@@ -90,4 +100,4 @@ namespace ryu {
 } // namespace ryu
 
 #include "impl/common_impl.hpp"
-#endif /* SGL_RYU_COMMON_HPP */
+#endif /* RYU_COMMON_HPP */

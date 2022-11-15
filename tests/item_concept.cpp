@@ -6,7 +6,7 @@ struct Item {
     using char_type = char;
     static constexpr size_t text_size = 25;
 
-  sgl::error handle_input(sgl::Input) noexcept { return sgl::error::edit_finished; }
+  sgl::error handle_input(sgl::input) noexcept { return sgl::error::edit_finished; }
 
   void tick() noexcept {}
 
@@ -20,7 +20,7 @@ struct Item2 {
     using char_type = char;
     static constexpr size_t text_size = 322;
 
-  sgl::error handle_input(sgl::Input) noexcept { return sgl::error::edit_finished; }
+  sgl::error handle_input(sgl::input) noexcept { return sgl::error::edit_finished; }
 
   void tick() noexcept {}
 

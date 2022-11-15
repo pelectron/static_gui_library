@@ -25,7 +25,7 @@ namespace sgl {
    * | 0 - 55  | free for use, but sgl assumes character inputs are at most 32 bits in size.  |
    *
    */
-  enum class Input : uint64_t {
+  enum class input : uint64_t {
     none = 0, ///< invalid input
 
     keyboard_type_mask = 0x8000000000000000, ///< mask for keyboard type inputs
@@ -42,99 +42,102 @@ namespace sgl {
     char32_mask = 0x00000000FFFFFFFF, ///< 32 bit character mask
   };
 
-  /// \brief bitwise OR operator for Input
+  /// \brief bitwise OR operator for input
   /// \param a first input
   /// \param b second input
-  /// \return Input
-  constexpr Input operator&(Input a, Input b) {
-    return static_cast<Input>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
+  /// \return input
+  constexpr input operator&(input a, input b) {
+    return static_cast<input>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
   }
 
-  /// \brief bitwise AND operator for Input
+  /// \brief bitwise AND operator for input
   /// \param a first input
   /// \param b second input
-  /// \return Input
-  constexpr Input operator|(Input a, Input b) {
-    return static_cast<Input>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
+  /// \return input
+  constexpr input operator|(input a, input b) {
+    return static_cast<input>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
   }
 
-  /// \addtogroup input_conversion Input Conversion functions
+  /// \addtogroup input_conversion input Conversion functions
   /// \{
 
   /// \brief get input as keypad input constant, or none if it is not a key pad input.
   /// \param input input to convert
   /// \return either keypad constant or Input::none
-  constexpr Input get_keypad_input(Input input) {
-    if ((input & sgl::Input::keypad_mask) == input)
+  constexpr input get_keypad_input(input input) {
+    if ((input & sgl::input::keypad_mask) == input)
+  /// \return either keypad constant or input::none
+  constexpr input get_keypad_input(input input) {
+    if ((input & sgl::input::keypad_mask) == input)
       return input;
-    return sgl::Input::none;
+    return sgl::input::none;
   }
 
   /// \brief check if input is a keyboard input.
   /// \param input input to check
   /// \return bool
-  constexpr bool is_keyboard_input(Input input) {
-    return (input & Input::keyboard_type_mask) == Input::keyboard_type_mask;
+  constexpr bool is_keyboard_input(input input) {
+    return (input & input::keyboard_type_mask) == input::keyboard_type_mask;
   }
 
   /// \brief check if input is a keypad input.
   /// \param input input to check
   /// \return bool
-  constexpr bool is_keypad_input(Input input) { return (input & sgl::Input::keypad_mask) == input; }
+  constexpr bool is_keypad_input(input input) { return (input & sgl::input::keypad_mask) == input; }
 
-  /// \brief convert char to sgl::Input.
+  /// \brief convert char to sgl::input.
   /// \param c character to convert
-  /// \return sgl::Input
-  constexpr Input to_input(char c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
+  /// \return sgl::input
+  constexpr input to_input(char c) { return static_cast<input>(c) | input::keyboard_type_mask; }
 
-  /// \brief convert char16_t to sgl::Input.
+  /// \brief convert char16_t to sgl::input.
   /// \param c character to convert
-  /// \return sgl::Input
-  constexpr Input to_input(char16_t c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
+  /// \return sgl::input
+  constexpr input to_input(char16_t c) { return static_cast<input>(c) | input::keyboard_type_mask; }
 
-  /// \brief convert char32_t to Input.
+  /// \brief convert char32_t to input.
   /// \param c character to convert
-  /// \return sgl::Input
-  constexpr Input to_input(char32_t c) { return static_cast<Input>(c) | Input::keyboard_type_mask; }
+  /// \return sgl::input
+  constexpr input to_input(char32_t c) { return static_cast<input>(c) | input::keyboard_type_mask; }
 
-  /// \brief convert sgl::Input to char.
+  /// \brief convert sgl::input to char.
   /// \param i input to convert
   /// \return char
-  constexpr char get_char8(Input i) { return static_cast<char>(i & Input::char8_mask); }
+  constexpr char get_char8(input i) { return static_cast<char>(i & input::char8_mask); }
 
-  /// \brief convert sgl::Input to char16_t
+  /// \brief convert sgl::input to char16_t
   /// \param i input to convert
   /// \return char16_t
-  constexpr char16_t get_char16(Input i) { return static_cast<char16_t>(i & Input::char16_mask); }
+  constexpr char16_t get_char16(input i) { return static_cast<char16_t>(i & input::char16_mask); }
 
-  /// \brief convert sgl::Input to char32_t
+  /// \brief convert sgl::input to char32_t
   /// \param i input to convert
   /// \return char32_t
-  constexpr char32_t get_char32(Input i) { return static_cast<char32_t>(i & Input::char32_mask); }
+  constexpr char32_t get_char32(input i) { return static_cast<char32_t>(i & input::char32_mask); }
 
-  /// \brief convert sgl::Input to CharT.
+  /// \brief convert sgl::input to CharT.
   /// \details this will clear the upper 32 bits of i and then static_cast to charT
   /// \tparam CharT character type
   /// \param i input to convert
   /// \return CharT
   template <typename CharT>
-  constexpr CharT get_char(Input i) {
-    return static_cast<CharT>(i & Input::char32_mask);
+  constexpr CharT get_char(input i) {
+    return static_cast<CharT>(i & input::char32_mask);
   }
 
   /// \cond
   template <>
-  constexpr char get_char<char>(Input i) {
+  constexpr char get_char<char>(input i) {
     return get_char8(i);
   }
 
   template <>
-  constexpr char16_t get_char<char16_t>(Input i) {
+  constexpr char16_t get_char<char16_t>(input i) {
     return get_char16(i);
   }
 
   template <>
-  constexpr char32_t get_char<char32_t>(Input i) {
+  constexpr char32_t get_char<char32_t>(input i) {
     return get_char32(i);
   }
 

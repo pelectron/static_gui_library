@@ -87,7 +87,7 @@ namespace sgl {
   /// @tparam Item item type
   template <typename F, typename Item>
   inline constexpr bool is_input_handler_for_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::Input>and
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::input>and
           std::is_trivially_destructible_v<F>and std::is_trivially_move_constructible_v<F>and
                                                  std::is_trivially_copyable_v<F>;
 
@@ -167,12 +167,12 @@ namespace sgl {
   template <typename T>
   struct has_handle_input<
       T,
-      std::void_t<decltype(std::declval<T>().handle_input(std::declval<sgl::Input>()))>> {
+      std::void_t<decltype(std::declval<T>().handle_input(std::declval<sgl::input>()))>> {
     static constexpr bool value = std::is_same_v<
         sgl::error,
         decltype(std::declval<T>().handle_input(
-            std::declval<sgl::Input>()))>&& noexcept(std::declval<T>()
-                                                         .handle_input(std::declval<sgl::Input>()));
+            std::declval<sgl::input>()))>&& noexcept(std::declval<T>()
+                                                         .handle_input(std::declval<sgl::input>()));
   };
 
   template <typename T>
@@ -317,7 +317,7 @@ namespace sgl {
   template <typename T>
   struct has_get_start_edit<T, std::void_t<decltype(std::declval<T>().get_start_edit())>> {
     static constexpr bool value =
-        std::is_same_v<sgl::Input, decltype(std::declval<T>().get_start_edit())>;
+        std::is_same_v<sgl::input, decltype(std::declval<T>().get_start_edit())>;
   };
 
   template <typename T>
@@ -329,7 +329,7 @@ namespace sgl {
   template <typename T>
   struct has_set_start_edit<
       T,
-      std::void_t<decltype(std::declval<T>().set_start_edit(std::declval<sgl::Input>()))>>
+      std::void_t<decltype(std::declval<T>().set_start_edit(std::declval<sgl::input>()))>>
       : std::true_type {};
 
   template <typename T>
@@ -341,7 +341,7 @@ namespace sgl {
   template <typename T>
   struct has_get_stop_edit<T, std::void_t<decltype(std::declval<T>().get_stop_edit())>> {
     static constexpr bool value =
-        std::is_same_v<sgl::Input, decltype(std::declval<T>().get_stop_edit())>;
+        std::is_same_v<sgl::input, decltype(std::declval<T>().get_stop_edit())>;
   };
 
   template <typename T>
@@ -353,7 +353,7 @@ namespace sgl {
   template <typename T>
   struct has_set_stop_edit<
       T,
-      std::void_t<decltype(std::declval<T>().set_stop_edit(std::declval<sgl::Input>()))>>
+      std::void_t<decltype(std::declval<T>().set_stop_edit(std::declval<sgl::input>()))>>
       : std::true_type {};
 
   template <typename T>

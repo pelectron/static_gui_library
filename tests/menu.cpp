@@ -52,33 +52,96 @@ constexpr auto make_menu() {
 TEST_CASE("sgl::Menu") {
   auto menu = sgl::Menu(NAME("page1") <<= Page1(), NAME("page2") <<= Page2());
 
+  bool page1_entered = false;
+  bool page1_exited = false;
+  bool page2_entered = false;
+  bool page2_exited = false;
+
+  menu[NAME("page1")].set_on_enter([&page1_entered](auto&) noexcept -> sgl::error {
+    page1_entered = true;
+    return sgl::error::no_error;
+  });
+
+  menu[NAME("page1")].set_on_exit([&page1_exited](auto&) noexcept -> sgl::error {
+    page1_exited = true;
+    return sgl::error::no_error;
+  });
+
+  menu[NAME("page2")].set_on_enter([&page2_entered](auto&) noexcept -> sgl::error {
+    page2_entered = true;
+    return sgl::error::no_error;
+  });
+
+  menu[NAME("page2")].set_on_exit([&page2_exited](auto&) noexcept -> sgl::error {
+    page2_exited = true;
+    return sgl::error::no_error;
+  });
+
   REQUIRE(menu.size() == 2);
-  
-  SECTION("item_name() and page_name()"){
-  REQUIRE(menu.page_name() == "page1"_sv);
-  REQUIRE(menu.item_name(0) == "bool item 1"_sv);
-  REQUIRE(menu.item_name(1) == "setting item 1"_sv);
-  REQUIRE(menu.item_name(2) == "double item 1"_sv);
-  REQUIRE(menu.item_name(3) == "float item 1"_sv);
-  REQUIRE(menu.item_name(4) == "int item 1"_sv);
-  REQUIRE(menu.item_name(5) == "link to page 2"_sv);
 
-  auto error = menu.set_current_page(1);
-  REQUIRE(menu.page_name() == "page2"_sv);
-  REQUIRE(error == sgl::error::no_error);
+  SECTION("current_page_index") { REQUIRE(menu.current_page_index() == 0); }
+  SECTION("set_current_page(size_t)") {
+    REQUIRE(menu.current_page_index() == 0);
 
-  REQUIRE(menu.item_name(0) == "bool item 2"_sv);
-  REQUIRE(menu.item_name(1) == "OtherSetting item 1"_sv);
-  REQUIRE(menu.item_name(2) == "double item 2"_sv);
-  REQUIRE(menu.item_name(3) == "float item 2"_sv);
-  REQUIRE(menu.item_name(4) == "int item 2"_sv);
-  REQUIRE(menu.item_name(5) == "link to page 1"_sv);
+    auto error = menu.set_current_page(1);
+
+    REQUIRE(error == sgl::error::no_error);
+    REQUIRE(menu.current_page_index() == 1);
+    REQUIRE(page1_exited);
+    REQUIRE(page2_entered);
+
+    error = menu.set_current_page(2);
+    REQUIRE(error == sgl::error::out_of_range);
+
+    page1_entered = false;
+    page2_exited = false;
+    error = menu.set_current_page(0);
+    REQUIRE(page1_entered);
+    REQUIRE(page2_exited);
+  }
+  SECTION("set_current_page(sgl::Name)") {
+   
+    REQUIRE(menu.current_page_index() == 0);
+
+    auto error = menu.set_current_page(NAME("page2"));
+    
+    REQUIRE(error == sgl::error::no_error);
+    REQUIRE(menu.current_page_index() == 1);
+    REQUIRE(page1_exited);
+    REQUIRE(page2_entered);
+    
+    page1_entered = false;
+    page2_exited = false;
+    error = menu.set_current_page(NAME("page1"));
+    REQUIRE(error == sgl::error::no_error);
+    REQUIRE(page1_entered);
+    REQUIRE(page2_exited);
+  }
+  SECTION("item_name() and page_name()") {
+    REQUIRE(menu.page_name() == "page1"_sv);
+    REQUIRE(menu.item_name(0) == "bool item 1"_sv);
+    REQUIRE(menu.item_name(1) == "setting item 1"_sv);
+    REQUIRE(menu.item_name(2) == "double item 1"_sv);
+    REQUIRE(menu.item_name(3) == "float item 1"_sv);
+    REQUIRE(menu.item_name(4) == "int item 1"_sv);
+    REQUIRE(menu.item_name(5) == "link to page 2"_sv);
+
+    auto error = menu.set_current_page(1);
+    REQUIRE(menu.page_name() == "page2"_sv);
+    REQUIRE(error == sgl::error::no_error);
+
+    REQUIRE(menu.item_name(0) == "bool item 2"_sv);
+    REQUIRE(menu.item_name(1) == "OtherSetting item 1"_sv);
+    REQUIRE(menu.item_name(2) == "double item 2"_sv);
+    REQUIRE(menu.item_name(3) == "float item 2"_sv);
+    REQUIRE(menu.item_name(4) == "int item 2"_sv);
+    REQUIRE(menu.item_name(5) == "link to page 1"_sv);
   }
 
   SECTION("switching pages") {
     REQUIRE(menu.set_current_page(0) == sgl::error::no_error);
-    REQUIRE(menu.handle_input(sgl::Input::up) == sgl::error::no_error);
-    REQUIRE(menu.handle_input(sgl::Input::enter) == sgl::error::no_error);
+    REQUIRE(menu.handle_input(sgl::input::up) == sgl::error::no_error);
+    REQUIRE(menu.handle_input(sgl::input::enter) == sgl::error::no_error);
     REQUIRE(menu.current_page_index() == 1);
   }
 }
