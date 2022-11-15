@@ -25,8 +25,8 @@ namespace sgl {
   /// \brief This class models a numeric item. It consists of a value of type T,
   /// a delta value of type T and a formatter to format T's into strings.
   /// \details The default behaviour of this item when it is edited is as follows: an input of
-  /// sgl::Input::up/right increases the item's value by its delta value, i.e. value += delta. An
-  /// input equal to sgl::Input::down/left decreases the item's value by its delta value, i.e.
+  /// sgl::input::up/right increases the item's value by its delta value, i.e. value += delta. An
+  /// input equal to sgl::input::down/left decreases the item's value by its delta value, i.e.
   /// value -= value.
   /// \tparam T value type
   /// \tparam TextSize display width
@@ -84,7 +84,7 @@ namespace sgl {
     /// handler.
     ///
     /// \tparam Formatter formatter type, see formatter_check for more details.
-    /// \tparam InputHandler Input handler type, see input_handler_for_v
+    /// \tparam InputHandler input handler type, see input_handler_for_v
     /// for more details.
     /// \param initial_value initial value
     /// \param delta delta value
@@ -131,7 +131,7 @@ namespace sgl {
     /// \return sgl::error
     constexpr sgl::error        format(T val) noexcept;
     constexpr static sgl::error default_handle_input(Numeric<TextSize, CharT, T>& numeric_item,
-                                                     sgl::Input                   input) noexcept;
+                                                     sgl::input                   input) noexcept;
 
     constexpr static sgl::format_result default_format(CharT*      str,
                                                        size_t      len,

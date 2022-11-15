@@ -24,9 +24,9 @@ namespace ryu {
    * \param buffer string to parse.
    * \param len length of the string.
    * \param result where to store the result.
-   * \return Status result of the parse.
+   * \return status result of the parse.
    */
-  [[nodiscard]] inline Status s2d_n(const char* buffer, const int len, double* result) noexcept;
+  [[nodiscard]] inline status s2d_n(const char* buffer, const int len, double* result) noexcept;
 
   namespace cx {
     /**
@@ -34,9 +34,9 @@ namespace ryu {
      * \param buffer string to parse.
      * \param len length of the string.
      * \param result where to store the result.
-     * \return Status result of the parse.
+     * \return status result of the parse.
      */
-    [[nodiscard]] constexpr Status
+    [[nodiscard]] constexpr status
         s2d_n(const char* buffer, const int len, double* result) noexcept;
 
   } // namespace cx

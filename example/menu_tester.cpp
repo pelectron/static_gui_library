@@ -70,16 +70,16 @@ constexpr auto MainMenu() {
 }
 
 int main() {
-  // making a menu tester with the menu and supplying a mapping of sgl::Input values to
+  // making a menu tester with the menu and supplying a mapping of sgl::input values to
   // sgl::string_view. The tester will check if a command line input matches any of the strings in
-  // the input map and forward the corresponding sgl::Input value. If the command line input is not
+  // the input map and forward the corresponding sgl::input value. If the command line input is not
   // in the map, the tester will call handle_input for every character in the input string.
   auto tester = MenuTester(MainMenu(),
-                           {{sgl::Input::up, "up"_sv},
-                            {sgl::Input::down, "down"_sv},
-                            {sgl::Input::left, "left"_sv},
-                            {sgl::Input::right, "right"_sv},
-                            {sgl::Input::enter, "enter"_sv}});
+                           {{sgl::input::up, "up"_sv},
+                            {sgl::input::down, "down"_sv},
+                            {sgl::input::left, "left"_sv},
+                            {sgl::input::right, "right"_sv},
+                            {sgl::input::enter, "enter"_sv}});
   // print just shows the current page with all items
   tester.print();
 

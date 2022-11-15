@@ -92,7 +92,7 @@ namespace sgl {
     /// default input handler
     /// \return sgl::error
     constexpr static sgl::error default_handle_input(item_type& enum_item,
-                                                     sgl::Input input) noexcept;
+                                                     sgl::input input) noexcept;
 
     sgl::EnumMap<T, NumEnumerators, CharT> map_; ///< map containing array of enum string pairs.
     sgl::smallest_type_t<NumEnumerators>   index_{0}; ///< map index of current value
@@ -160,7 +160,7 @@ namespace sgl {
   /// enum class Setting { opt1, opt2, opt3 };
   /// // the type of setting_item is sgl::Enum<Setting,3,8,char>, get_value() would return
   /// // Setting::opt2.
-  /// constexpr auto setting_item = sgl::make_enum([](auto&item,sgl::Input i){...}, 1,
+  /// constexpr auto setting_item = sgl::make_enum([](auto&item,sgl::input i){...}, 1,
   /// Setting::opt1, "Option 1", Setting::opt2, "Option 2", Setting::opt3, "Option 3");
   /// \endcode
   ///

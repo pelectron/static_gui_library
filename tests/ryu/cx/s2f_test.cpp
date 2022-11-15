@@ -16,7 +16,7 @@
   STATIC_REQUIRE([] {                                                             \
     float value{0};                                                              \
     return ((ryu::cx::s2f_n(b, (sizeof(b) <= 1) ? 0 : (sizeof(b) - 1), &value) == \
-             ryu::Status::success)) &&                                            \
+             ryu::status::success)) &&                                            \
            ((a) == value);                                                        \
   }())
 

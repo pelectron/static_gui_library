@@ -10,7 +10,7 @@
 
 namespace sgl {
   /// \cond
-  enum class Input : uint64_t;
+  enum class input : uint64_t;
   enum class error : int;
   struct format_result;
 

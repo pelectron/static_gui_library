@@ -70,7 +70,7 @@ namespace sgl {
   template <size_t TextSize, typename CharT>
   constexpr sgl::error
       Boolean<TextSize, CharT>::default_handle_input(Boolean<TextSize, CharT>& boolean,
-                                                     sgl::Input                i) noexcept {
+                                                     sgl::input                i) noexcept {
     static_cast<void>(i);
     auto ec = boolean.set_value(!boolean.get_value());
     return ec == sgl::error::no_error ? sgl::error::edit_finished : ec;

@@ -137,17 +137,17 @@ namespace sgl {
   template <size_t TextSize, typename CharT, typename T>
   constexpr sgl::error
       Numeric<TextSize, CharT, T>::default_handle_input(Numeric<TextSize, CharT, T>& numeric_item,
-                                                        sgl::Input input) noexcept {
+                                                        sgl::input input) noexcept {
     if (!is_keyboard_input(input)) {
       switch (input) {
-        case sgl::Input::up:
+        case sgl::input::up:
           [[fallthrough]];
-        case sgl::Input::right:
+        case sgl::input::right:
           numeric_item.set_value(numeric_item.get_value() + numeric_item.get_delta());
           break;
-        case sgl::Input::down:
+        case sgl::input::down:
           [[fallthrough]];
-        case sgl::Input::left:
+        case sgl::input::left:
           numeric_item.set_value(numeric_item.get_value() - numeric_item.get_delta());
           break;
         default:

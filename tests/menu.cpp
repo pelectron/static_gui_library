@@ -140,8 +140,8 @@ TEST_CASE("sgl::Menu") {
 
   SECTION("switching pages") {
     REQUIRE(menu.set_current_page(0) == sgl::error::no_error);
-    REQUIRE(menu.handle_input(sgl::Input::up) == sgl::error::no_error);
-    REQUIRE(menu.handle_input(sgl::Input::enter) == sgl::error::no_error);
+    REQUIRE(menu.handle_input(sgl::input::up) == sgl::error::no_error);
+    REQUIRE(menu.handle_input(sgl::input::enter) == sgl::error::no_error);
     REQUIRE(menu.current_page_index() == 1);
   }
 }

@@ -138,7 +138,7 @@ namespace sgl::qt {
   class SGL_API AbstractMenuNode : public Node {
   public:
     using Node::Node;
-    virtual sgl::error           handle_input(sgl::Input i) = 0;
+    virtual sgl::error           handle_input(sgl::input i) = 0;
     [[nodiscard]] virtual size_t current_index() const = 0;
     virtual sgl::error           set_current_page(size_t index) = 0;
 
@@ -210,7 +210,7 @@ namespace sgl::qt {
 
     [[nodiscard]] std::string_view type_name() const override { return get_type_name<Menu>::value; }
 
-    sgl::error handle_input(sgl::Input i) override { return menu_.handle_input(i); }
+    sgl::error handle_input(sgl::input i) override { return menu_.handle_input(i); }
 
     sgl::error set_current_page(size_t index) override { return menu_.set_current_page(index); }
 

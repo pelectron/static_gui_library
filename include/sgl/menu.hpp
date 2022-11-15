@@ -75,7 +75,7 @@ namespace sgl {
     /// string view type of the menu
     using StringView = sgl::string_view<char_type>;
     /// concrete input handler type
-    using InputHandler_t = sgl::Callable<sgl::error(sgl::Menu<NameList, PageList>&, sgl::Input)>;
+    using InputHandler_t = sgl::Callable<sgl::error(sgl::Menu<NameList, PageList>&, sgl::input)>;
 
     /// \brief copy ctor
     /// \param other menu to copy
@@ -100,7 +100,7 @@ namespace sgl {
     /// invoke the menu's input handler
     /// \param i input to handle
     /// \return sgl::error
-    [[nodiscard]] constexpr sgl::error handle_input(sgl::Input i) noexcept;
+    [[nodiscard]] constexpr sgl::error handle_input(sgl::input i) noexcept;
 
     /// invoke tick() method for each item in the menu.
     /// \note Keep in mind that this function call can take a non negligible time to complete if you
@@ -243,7 +243,7 @@ namespace sgl {
 
   private:
     [[nodiscard]] constexpr static sgl::error default_handle_input(Menu& menu,
-                                                                   Input input) noexcept;
+                                                                   input input) noexcept;
 
     template <size_t I, typename F>
     constexpr decltype(auto) for_current_page_impl(F&& f);

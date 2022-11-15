@@ -7,8 +7,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
 //
-#ifndef SGL_RYU_COMMON_HPP
-#define SGL_RYU_COMMON_HPP
+#ifndef RYU_COMMON_HPP
+#define RYU_COMMON_HPP
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -18,7 +18,7 @@
 #endif
 namespace ryu {
 
-  enum class Status { success, input_too_short, input_too_long, malformed_input };
+  enum class status { success, input_too_short, input_too_long, malformed_input };
 
   inline constexpr int    float_mantissa_bits = 23;
   inline constexpr int    float_exponent_bits = 8;
@@ -100,4 +100,4 @@ namespace ryu {
 } // namespace ryu
 
 #include "impl/common_impl.hpp"
-#endif /* SGL_RYU_COMMON_HPP */
+#endif /* RYU_COMMON_HPP */

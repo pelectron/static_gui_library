@@ -39,7 +39,7 @@ namespace sgl::qt {
     void keyPressEvent(QKeyEvent* event) override;
 
   private:
-    void log(sgl::error, sgl::Input);
+    void log(sgl::error, sgl::input);
     void update_window();
     void init_ui();
 

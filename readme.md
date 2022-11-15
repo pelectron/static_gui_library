@@ -203,12 +203,12 @@ Add `sgl/menu_tester.hpp` to you includes, and add a main like so:
 #include <sgl/menu_tester.hpp>
 int main(){
   auto tester = sgl::MenuTester(make_menu(),
-                              {{sgl::Input::up, "up"_sv},
-                               {sgl::Input::down, "down"_sv},
-                               {sgl::Input::left, "left"_sv},
-                               {sgl::Input::right, "right"_sv},
-                               {sgl::Input::enter, "enter"_sv},
-                               {sgl::Input::enter, sgl::string_view<char>{}}});
+                              {{sgl::input::up, "up"_sv},
+                               {sgl::input::down, "down"_sv},
+                               {sgl::input::left, "left"_sv},
+                               {sgl::input::right, "right"_sv},
+                               {sgl::input::enter, "enter"_sv},
+                               {sgl::input::enter, sgl::string_view<char>{}}});
   // print just outputs the text of all items of the current page line by line.
   tester.print();
 

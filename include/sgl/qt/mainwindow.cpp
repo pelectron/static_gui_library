@@ -9,14 +9,14 @@
 
 namespace sgl::qt {
   static const char* to_string(sgl::error e);
-  static QString     to_string(sgl::Input i);
+  static QString     to_string(sgl::input i);
   static void        update_content(sgl::qt::AbstractMenuNode* menu, QTreeWidget* tree);
   QTreeWidget*
       make_tree(sgl::qt::AbstractMenuNode* menu, const QString& title, QWidget* parent = nullptr);
   static void update_item_leaves(sgl::qt::AbstractPageNode* page, QTreeWidgetItem* page_item);
 
   void MainWindow::keyPressEvent(QKeyEvent* event) {
-    sgl::Input input{sgl::Input::none};
+    sgl::input input{sgl::input::none};
     if ((event->key() >= Qt::Key_Space) and (event->key() <= Qt::Key_AsciiTilde)) {
       // ascii character input
       input = sgl::to_input(static_cast<char>(event->key()));
@@ -25,22 +25,22 @@ namespace sgl::qt {
         case Qt::Key_Return:
           [[fallthrough]];
         case Qt::Key_Enter:
-          input = sgl::Input::enter;
+          input = sgl::input::enter;
           break;
         case Qt::Key_Delete:
           // TODO: delete input
           break;
         case Qt::Key_Left:
-          input = sgl::Input::left;
+          input = sgl::input::left;
           break;
         case Qt::Key_Right:
-          input = sgl::Input::right;
+          input = sgl::input::right;
           break;
         case Qt::Key_Up:
-          input = sgl::Input::up;
+          input = sgl::input::up;
           break;
         case Qt::Key_Down:
-          input = sgl::Input::down;
+          input = sgl::input::down;
           break;
       }
     }
@@ -62,7 +62,7 @@ namespace sgl::qt {
     disp_ = new Display(tree_, center_frame);
     side_section_ = new VerticalSection("menu tree", Qt::Edge::RightEdge, center_frame);
     side_tree_ = make_tree(tree_.root(), "menu tree");
-    log_section_ = new Section("Input Error Log");
+    log_section_ = new Section("input Error Log");
     log_text_ = new QTextEdit;
 
     layout->addLayout(h_layout);
@@ -158,8 +158,8 @@ namespace sgl::qt {
     this->update_window();
   }
 
-  void MainWindow::log(sgl::error e, sgl::Input i) {
-    QString str = QString("Input event:\n\tError: ") + to_string(e) + QString("\n\tInput: ") +
+  void MainWindow::log(sgl::error e, sgl::input i) {
+    QString str = QString("input event:\n\tError: ") + to_string(e) + QString("\n\tInput: ") +
                   to_string(i) + '\n';
     log_text_->append(str);
   }
@@ -230,7 +230,7 @@ namespace sgl::qt {
       case error::invalid_format:
         return "Invalid Format";
       case error::invalid_input:
-        return "Invalid Input";
+        return "Invalid input";
       case error::invalid_page_index:
         return "Invalid Page Index";
       case error::invalid_value:
@@ -250,22 +250,22 @@ namespace sgl::qt {
     }
   }
 
-  QString to_string(sgl::Input i) {
+  QString to_string(sgl::input i) {
     if (sgl::is_keyboard_input(i)) {
       return QString{sgl::get_char8(i)};
     } else {
       switch (i) {
-        case sgl::Input::none:
+        case sgl::input::none:
           return "None";
-        case sgl::Input::down:
+        case sgl::input::down:
           return "Down";
-        case sgl::Input::up:
+        case sgl::input::up:
           return "Up";
-        case sgl::Input::right:
+        case sgl::input::right:
           return "Right";
-        case sgl::Input::left:
+        case sgl::input::left:
           return "Left";
-        case sgl::Input::enter:
+        case sgl::input::enter:
           return "Enter";
         default:
           break;

@@ -66,7 +66,7 @@ namespace sgl {
     /// string type used by this item for the text field.
     using String = sgl::static_string<char_type, text_size>;
     /// concrete input handler type.
-    using InputHandler_t = sgl::Callable<sgl::error(item_type&, sgl::Input)>;
+    using InputHandler_t = sgl::Callable<sgl::error(item_type&, sgl::input)>;
     /// concrete tick handler type.
     using TickHandler_t = sgl::Callable<void(item_type&)>;
 
@@ -119,7 +119,7 @@ namespace sgl {
     /// \return sgl::error::no_error in case of no error.
     /// \return sgl::error::edit_finished in case the item is done being edited.
     /// See input handling for more details.
-    constexpr sgl::error handle_input(sgl::Input input) noexcept;
+    constexpr sgl::error handle_input(sgl::input input) noexcept;
 
     /// invoke tick handler. Usually called by the page that owns this item.
     constexpr void tick() noexcept;
@@ -157,7 +157,7 @@ namespace sgl {
   private:
     /// default input handler. simply returns sgl::error::edit_finished.
     /// \return sgl::error
-    static sgl::error default_handle_input(item_type&, sgl::Input) noexcept;
+    static sgl::error default_handle_input(item_type&, sgl::input) noexcept;
 
     InputHandler_t handler_{&default_handle_input}; ///< handles user input
     TickHandler_t  tick_handler_{};                 ///< handles tick update

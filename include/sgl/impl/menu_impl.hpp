@@ -42,7 +42,7 @@ namespace sgl {
   }
 
   template <typename NameList, typename PageList>
-  constexpr sgl::error Menu<NameList, PageList>::handle_input(sgl::Input i) noexcept {
+  constexpr sgl::error Menu<NameList, PageList>::handle_input(sgl::input i) noexcept {
     return for_current_page(
         [i](auto& page) noexcept -> sgl::error { return page.handle_input(i); });
   }
@@ -175,7 +175,7 @@ namespace sgl {
 
   template <typename NameList, typename PageList>
   constexpr sgl::error Menu<NameList, PageList>::default_handle_input(Menu& menu,
-                                                                      Input input) noexcept {
+                                                                      input input) noexcept {
     return menu.for_current_page([input](auto& page) { return page.handle_input(input); });
   }
 

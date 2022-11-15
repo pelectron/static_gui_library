@@ -1,4 +1,4 @@
-# Input Handling
+# input Handling
 
 This section explains how the default input handling works in sgl.
 It assumes you are familiar with the [architecture of sgl](architecture.md).
@@ -88,9 +88,9 @@ In the end, the library user only needs to call the menus handle_input() method
 when a new input is received. This can be done in a low priority tasks or the
 main loop easily.
 
-## sgl::Input
+## sgl::input
 
-the enum class sgl::Input is used to handle all input in sgl. sgl assumes single
+the enum class sgl::input is used to handle all input in sgl. sgl assumes single
 character or action input. As such, Its underlying type is uint64_t to support the
 following requirements:
 

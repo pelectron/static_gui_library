@@ -86,9 +86,9 @@ namespace sgl {
     /// the character type of the items
     using char_type = typename sgl::first_t<ItemList>::char_type;
     /// \brief Concrete input handler type. A page input handler is a callable with a call signature
-    /// equal to sgl::error(Page&, sgl::Input).[See here](markdown/concepts.md#input-handler) for
+    /// equal to sgl::error(Page&, sgl::input).[See here](markdown/concepts.md#input-handler) for
     /// more info.
-    using InputHandler_t = Callable<error(Page&, sgl::Input)>;
+    using InputHandler_t = Callable<error(Page&, sgl::input)>;
 
     /// Concrete page action type. Page actions are callables which can be invoked with a reference
     /// to a page and return an sgl::error value. [See here](markdown/concepts.md#page-action) for
@@ -130,7 +130,7 @@ namespace sgl {
     /// handle input. Delegates to input handler.
     /// \param i input to handle
     /// \return sgl::error
-    [[nodiscard]] constexpr sgl::error handle_input(sgl::Input i) noexcept;
+    [[nodiscard]] constexpr sgl::error handle_input(sgl::input i) noexcept;
 
     /// execute enter action
     /// \return sgl::error
@@ -151,22 +151,22 @@ namespace sgl {
     constexpr void set_navigation_mode() noexcept;
 
     /// get the start edit input value.
-    /// \return sgl::Input
-    [[nodiscard]] constexpr sgl::Input get_start_edit() const noexcept;
+    /// \return sgl::input
+    [[nodiscard]] constexpr sgl::input get_start_edit() const noexcept;
 
     /// get the stop edit input.
-    /// \return sgl::Input
-    [[nodiscard]] constexpr sgl::Input get_stop_edit() const noexcept;
+    /// \return sgl::input
+    [[nodiscard]] constexpr sgl::input get_stop_edit() const noexcept;
 
     /// set the start edit input value
     /// \param start_edit value to start edit mode on
     /// \return Page&
-    constexpr Page& set_start_edit(sgl::Input start_edit) noexcept;
+    constexpr Page& set_start_edit(sgl::input start_edit) noexcept;
 
     /// set the sop edit input value
     /// \param stop_edit value to stop edit mode on
     /// \return Page&
-    constexpr Page& set_stop_edit(sgl::Input stop_edit) noexcept;
+    constexpr Page& set_stop_edit(sgl::input stop_edit) noexcept;
 
     /// \brief Set the menu for items which need it, for example sgl::PageLink.
     /// \tparam Menu menu type
@@ -275,7 +275,7 @@ namespace sgl {
   private:
     /// default input handler
     [[nodiscard]] static constexpr sgl::error default_handle_input(Page&      page,
-                                                                   sgl::Input i) noexcept;
+                                                                   sgl::input i) noexcept;
 
     /// default page action, does nothing
     [[nodiscard]] constexpr static sgl::error default_page_action(Page& page) noexcept;
@@ -296,9 +296,9 @@ namespace sgl {
     InputHandler_t input_handler_{&default_handle_input}; ///< page input handler
     PageAction_t   on_enter_{&default_page_action}; ///< action to execute when page is entered.
     PageAction_t   on_exit_{&default_page_action};  ///< action to execute when page is exited
-    sgl::Input     start_edit_{sgl::Input::enter};  ///< page will switch to edit mode when an input
+    sgl::input     start_edit_{sgl::input::enter};  ///< page will switch to edit mode when an input
                                                     ///< equal to start_edit_ is given.
-    sgl::Input stop_edit_{sgl::Input::enter}; ///< page will switch to navigation mode when an input
+    sgl::input stop_edit_{sgl::input::enter}; ///< page will switch to navigation mode when an input
                                               ///< equal to stop_edit_ is given.
     bool elem_in_edit_{false};                ///< indicates navigation(false)/edit(true) mode.
     sgl::smallest_type_t<sgl::list_size_v<ItemList>> index_{0}; ///< index of the current item.
