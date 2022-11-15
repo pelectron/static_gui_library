@@ -63,6 +63,9 @@ namespace sgl {
 
   /// \brief get input as keypad input constant, or none if it is not a key pad input.
   /// \param input input to convert
+  /// \return either keypad constant or Input::none
+  constexpr input get_keypad_input(input input) {
+    if ((input & sgl::input::keypad_mask) == input)
   /// \return either keypad constant or input::none
   constexpr input get_keypad_input(input input) {
     if ((input & sgl::input::keypad_mask) == input)
