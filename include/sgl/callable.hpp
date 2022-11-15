@@ -10,6 +10,7 @@
 
 namespace sgl {
   /// \cond
+
   // intentional forward declaration only. specialization follows below.
   template <typename Signature>
   class Callable;
@@ -38,7 +39,7 @@ namespace sgl {
     /// Default constructor
     constexpr Callable() noexcept = default;
     /// move constructor
-    /// \param other callable to move from
+    /// @param other callable to move from
     constexpr Callable(Callable<Ret(Args...)>&& other) noexcept;
     /// copy constructor
     /// \param other callable to copy

@@ -164,7 +164,7 @@ namespace sgl {
   template <typename Action>
   constexpr Page<NameList, ItemList>&
       Page<NameList, ItemList>::set_on_enter(Action&& action) noexcept {
-    on_enter_ = std::forward<Action>(action);
+    on_enter_.bind(std::forward<Action>(action));
     return *this;
   }
 
@@ -172,7 +172,7 @@ namespace sgl {
   template <typename Action>
   constexpr Page<NameList, ItemList>&
       Page<NameList, ItemList>::set_on_exit(Action&& action) noexcept {
-    on_exit_ = std::forward<Action>(action);
+    on_exit_.bind(std::forward<Action>(action));
     return *this;
   }
 

@@ -23,20 +23,23 @@
 
 namespace sgl {
   /// \cond
+
   template <typename NameList, typename PageTypeList>
   class Menu;
 
   /// \endcond
 
-  /// @headerfile menu.hpp "sgl/menu.hpp"
-  /// @brief The menu class brings everything together and holds all the pages of the
-  /// menu.
-  /// @details It consists of a NameTuple of pages, an index to keep track of the current page, and
-  /// an input handler. The default input handler just delegates the input to the current page and
-  /// returns its result.
-  /// Constructing a menu is the same as constructing a [sgl::NamedTuple](#NamedTuple) of pages.
-  /// @tparam NameList name of the pages. The type of NameList is sgl::type_list<sgl::Name<...>...>.
-  /// @tparam PageList page types. The type of PageList is sgl::type_list<Pages...>.
+  /**
+   * @headerfile menu.hpp "sgl/menu.hpp"
+   * @brief The menu class brings everything together and holds all the pages of the
+   * menu.
+   * @details It consists of a NameTuple of pages, an index to keep track of the current page, and
+   * an input handler. The default input handler just delegates the input to the current page and
+   * returns its result.
+   * Constructing a menu is the same as constructing a [NamedTuple](#NamedTuple) of pages.
+   * @tparam NameList name of the pages. The type of NameList is sgl::type_list<sgl::Name<...>...>.
+   * @tparam PageList page types. The type of PageList is sgl::type_list<Pages...>.
+   */
   template <typename NameList, typename PageList>
   class Menu {
   public:
@@ -138,9 +141,9 @@ namespace sgl {
     template <char... Cs>
     [[nodiscard]] constexpr const auto& operator[](sgl::Name<Cs...> name) const noexcept;
 
-    /// \brief get reference to page at index I
-    /// \tparam I page index
-    /// \return reference to I-th page
+    /// @brief get reference to page at index I
+    /// @tparam I page index
+    /// @return reference to I-th page
     template <size_t I>
     [[nodiscard]] constexpr auto& get_page() noexcept;
 
@@ -198,6 +201,7 @@ namespace sgl {
     /// \brief apply f on each page in menu.
     /// \details
     /// \code
+    ///
     /// // defined somewhere in a header
     /// template<typename Page>
     /// void global_func(sgl::string_view<char> name, Page& page){...};
@@ -275,7 +279,7 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f) ;
+  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
   void for_each(const Menu<NameList, PageList>& menu, F&& f);
@@ -293,7 +297,7 @@ namespace sgl {
   void for_each_with_name(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) ;
+  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f);
   /// \}
 
   /// \brief apply f on the current page of the menu.
@@ -304,10 +308,10 @@ namespace sgl {
   /// \param f functor instance
   /// \{
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) ;
+  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) ;
+  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f);
   /// \}
 
 } // namespace sgl

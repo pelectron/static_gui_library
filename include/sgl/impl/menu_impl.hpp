@@ -64,11 +64,18 @@ namespace sgl {
 
   template <typename NameList, typename PageList>
   constexpr sgl::error Menu<NameList, PageList>::set_current_page(size_t page_index) noexcept {
+
+    if (page_index >= sgl::list_size_v<PageList>) {
+      return sgl::error::out_of_range;
+    }
+
     auto ec = for_current_page([](auto& page) { return page.on_exit(); });
     if (ec != sgl::error::no_error) {
       return ec;
     }
-    index_ = page_index % sgl::list_size_v<PageList>;
+
+    index_ = page_index;
+
     return for_current_page([](auto& page) { return page.on_enter(); });
   }
 
@@ -224,7 +231,7 @@ namespace sgl {
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(Menu<NameList, PageList>& menu, F&& f){
+  void for_each(Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page(std::forward<F>(f));
   }
 
