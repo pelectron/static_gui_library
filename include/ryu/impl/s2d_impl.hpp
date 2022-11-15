@@ -1,3 +1,11 @@
+// The contents of this file originate from the ryu project by Ulf Adams (specifically the c version
+// of ryu), available at https://github.com/ulfjack/ryu.git. Changes made were merely to make the
+// ryu algorithm c++17 constexpr compliant, the core of the original algorithm remains unchanged.
+//
+//          Copyright Pele Constam 2022.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          https://www.boost.org/LICENSE_1_0.txt)
 #ifndef RYU_IMPL_S2D_IMPL_HPP
 #define RYU_IMPL_S2D_IMPL_HPP
 #include "ryu/common.hpp"
@@ -14,13 +22,13 @@ namespace ryu {
 
     using Log2Function64 = uint32_t (*)(const uint64_t) noexcept;
 
-    constexpr Status s2d_n(const char*        buffer,
+    constexpr status s2d_n(const char*        buffer,
                            const int          len,
                            double*            result,
                            DobuleCastFunction bit_cast,
                            Log2Function64     floor_log2_func) {
       if (len == 0) {
-        return Status::input_too_short;
+        return status::input_too_short;
       }
       int      m10digits = 0;
       int      e10digits = 0;
@@ -39,7 +47,7 @@ namespace ryu {
         char c = buffer[i];
         if (c == '.') {
           if (dotIndex != len) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           dotIndex = i;
           continue;
@@ -48,7 +56,7 @@ namespace ryu {
           break;
         }
         if (m10digits >= 17) {
-          return Status::input_too_long;
+          return status::input_too_long;
         }
         m10 = 10 * m10 + (c - '0');
         if (m10 != 0) {
@@ -65,11 +73,11 @@ namespace ryu {
         for (; i < len; i++) {
           char c = buffer[i];
           if ((c < '0') || (c > '9')) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           if (e10digits > 3) {
             // TODO: Be more lenient. Return +/-Infinity or +/-0 instead.
-            return Status::input_too_long;
+            return status::input_too_long;
           }
           e10 = 10 * e10 + (c - '0');
           if (e10 != 0) {
@@ -78,7 +86,7 @@ namespace ryu {
         }
       }
       if (i < len) {
-        return Status::malformed_input;
+        return status::malformed_input;
       }
       if (signedE) {
         e10 = -e10;
@@ -86,7 +94,7 @@ namespace ryu {
       e10 -= dotIndex < eIndex ? eIndex - dotIndex - 1 : 0;
       if (m10 == 0) {
         *result = signedM ? -0.0 : 0.0;
-        return Status::success;
+        return status::success;
       }
 
 #ifdef RYU_DEBUG
@@ -101,7 +109,7 @@ namespace ryu {
         uint64_t ieee = ((uint64_t)signedM)
                         << (ryu::double_exponent_bits + ryu::double_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
       if (m10digits + e10 >= 310) {
         // Number is larger than 1e+309, which should be rounded to +/-Infinity.
@@ -109,7 +117,7 @@ namespace ryu {
             (((uint64_t)signedM) << (ryu::double_exponent_bits + ryu::double_mantissa_bits)) |
             (0x7ffull << ryu::double_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // Convert to binary float m2 * 2^e2, while retaining information about whether the conversion
@@ -171,7 +179,7 @@ namespace ryu {
             (((uint64_t)signedM) << (ryu::double_exponent_bits + ryu::double_mantissa_bits)) |
             (0x7ffull << ryu::double_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // We need to figure out how much we need to shift m2. The tricky part is that we need to take
@@ -200,7 +208,7 @@ namespace ryu {
                        << ryu::double_mantissa_bits) |
                       ieee_m2;
       *result = bit_cast(ieee);
-      return Status::success;
+      return status::success;
     }
 
     inline double bits_to_double(uint64_t bits) noexcept {
@@ -253,13 +261,13 @@ namespace ryu {
     static_assert(ryu::cx::bits_to_double(uint64_t(0x3FF0000000000000u)) == 1.0);
     static_assert(ryu::cx::bits_to_double(uint64_t(0x4000000000000000u)) == 2.0);
 
-    constexpr Status s2d_n(const char* buffer, const int len, double* result) noexcept {
+    constexpr status s2d_n(const char* buffer, const int len, double* result) noexcept {
       return detail::s2d_n(buffer, len, result, &ryu::cx::bits_to_double, &ryu::cx::floor_log2);
     }
 
   } // namespace cx
 
-  [[nodiscard]] inline Status s2d_n(const char* buffer, const int len, double* result) noexcept {
+  [[nodiscard]] inline status s2d_n(const char* buffer, const int len, double* result) noexcept {
     return detail::s2d_n(buffer, len, result, &ryu::detail::bits_to_double, &ryu::floor_log2);
   }
 } // namespace ryu

@@ -15,7 +15,7 @@
   STATIC_REQUIRE([] {                                                             \
     double value{0};                                                              \
     return ((ryu::cx::s2d_n(b, (sizeof(b) <= 1) ? 0 : (sizeof(b) - 1), &value) == \
-             ryu::Status::success)) &&                                            \
+             ryu::status::success)) &&                                            \
            ((a) == value);                                                        \
   }())
 
@@ -28,15 +28,15 @@
 
 TEST_CASE("cx::s2d_n") {
   SECTION("bad input") {
-    ASSERT_RETURN("x", ryu::Status::malformed_input);
-    ASSERT_RETURN("1..1", ryu::Status::malformed_input);
-    ASSERT_RETURN("..", ryu::Status::malformed_input);
-    ASSERT_RETURN("1..1", ryu::Status::malformed_input);
-    ASSERT_RETURN("1ee1", ryu::Status::malformed_input);
-    ASSERT_RETURN("1e.1", ryu::Status::malformed_input);
-    ASSERT_RETURN("", ryu::Status::input_too_short);
-    ASSERT_RETURN("123456789012345678", ryu::Status::input_too_long);
-    ASSERT_RETURN("1e12345", ryu::Status::input_too_long);
+    ASSERT_RETURN("x", ryu::status::malformed_input);
+    ASSERT_RETURN("1..1", ryu::status::malformed_input);
+    ASSERT_RETURN("..", ryu::status::malformed_input);
+    ASSERT_RETURN("1..1", ryu::status::malformed_input);
+    ASSERT_RETURN("1ee1", ryu::status::malformed_input);
+    ASSERT_RETURN("1e.1", ryu::status::malformed_input);
+    ASSERT_RETURN("", ryu::status::input_too_short);
+    ASSERT_RETURN("123456789012345678", ryu::status::input_too_long);
+    ASSERT_RETURN("1e12345", ryu::status::input_too_long);
   }
 
   SECTION("basic") {

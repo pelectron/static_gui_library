@@ -19,22 +19,22 @@
   []() {                                                          \
     double     value;                                             \
     const auto size = (sizeof(b) <= 1) ? 0 : (sizeof(b) - 1);     \
-    REQUIRE(ryu::s2d_n(b, size, &value) == ryu::Status::success); \
+    REQUIRE(ryu::s2d_n(b, size, &value) == ryu::status::success); \
     REQUIRE(FullPrecision(a) == FullPrecision(value));            \
   }()
 
 TEST_CASE("s2d_n") {
   SECTION("bad input") {
     double value;
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("x", 1, &value));
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("1..1", 4, &value));
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("..", 2, &value));
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("1..1", 4, &value));
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("1ee1", 4, &value));
-    REQUIRE(ryu::Status::malformed_input == ryu::s2d_n("1e.1", 4, &value));
-    REQUIRE(ryu::Status::input_too_short == ryu::s2d_n("", 0, &value));
-    REQUIRE(ryu::Status::input_too_long == ryu::s2d_n("123456789012345678", 18, &value));
-    REQUIRE(ryu::Status::input_too_long == ryu::s2d_n("1e12345", 7, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("x", 1, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("1..1", 4, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("..", 2, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("1..1", 4, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("1ee1", 4, &value));
+    REQUIRE(ryu::status::malformed_input == ryu::s2d_n("1e.1", 4, &value));
+    REQUIRE(ryu::status::input_too_short == ryu::s2d_n("", 0, &value));
+    REQUIRE(ryu::status::input_too_long == ryu::s2d_n("123456789012345678", 18, &value));
+    REQUIRE(ryu::status::input_too_long == ryu::s2d_n("1e12345", 7, &value));
   }
 
   SECTION("basic") {

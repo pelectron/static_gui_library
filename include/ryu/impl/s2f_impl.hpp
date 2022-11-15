@@ -6,7 +6,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
-//
+
 #ifndef RYU_IMPL_S2F_IMPL_HPP
 #define RYU_IMPL_S2F_IMPL_HPP
 #include "gcem.hpp"
@@ -29,13 +29,13 @@ namespace ryu {
 
     using BitsToFloatFunction = float (*)(const uint32_t) noexcept;
 
-    constexpr ryu::Status s2f_n(const char*         buffer,
+    constexpr ryu::status s2f_n(const char*         buffer,
                                 const int           len,
                                 float*              result,
                                 Log2Function        floor_log2_func,
                                 BitsToFloatFunction bit_cast) noexcept {
       if (len == 0) {
-        return Status::input_too_short;
+        return status::input_too_short;
       }
       int      m10digits = 0;
       int      e10digits = 0;
@@ -54,7 +54,7 @@ namespace ryu {
         char c = buffer[i];
         if (c == '.') {
           if (dotIndex != len) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           dotIndex = i;
           continue;
@@ -63,7 +63,7 @@ namespace ryu {
           break;
         }
         if (m10digits >= 9) {
-          return Status::input_too_long;
+          return status::input_too_long;
         }
         m10 = 10 * m10 + (c - '0');
         if (m10 != 0) {
@@ -80,11 +80,11 @@ namespace ryu {
         for (; i < len; i++) {
           char c = buffer[i];
           if ((c < '0') || (c > '9')) {
-            return Status::malformed_input;
+            return status::malformed_input;
           }
           if (e10digits > 3) {
             // TODO: Be more lenient. Return +/-Infinity or +/-0 instead.
-            return Status::input_too_long;
+            return status::input_too_long;
           }
           e10 = 10 * e10 + (c - '0');
           if (e10 != 0) {
@@ -93,7 +93,7 @@ namespace ryu {
         }
       }
       if (i < len) {
-        return Status::malformed_input;
+        return status::malformed_input;
       }
       if (signedE) {
         e10 = -e10;
@@ -101,21 +101,21 @@ namespace ryu {
       e10 -= dotIndex < eIndex ? eIndex - dotIndex - 1 : 0;
       if (m10 == 0) {
         *result = signedM ? -0.0f : 0.0f;
-        return Status::success;
+        return status::success;
       }
 
       if ((m10digits + e10 <= -46) || (m10 == 0)) {
         // Number is less than 1e-46, which should be rounded down to 0; return +/-0.0.
         uint32_t ieee = ((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
       if (m10digits + e10 >= 40) {
         // Number is larger than 1e+39, which should be rounded to +/-Infinity.
         uint32_t ieee = (((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits)) |
                         (0xffu << float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // Convert to binary float m2 * 2^e2, while retaining information about whether the conversion
@@ -175,7 +175,7 @@ namespace ryu {
         uint32_t ieee = (((uint32_t)signedM) << (float_exponent_bits + float_mantissa_bits)) |
                         (0xffu << float_mantissa_bits);
         *result = bit_cast(ieee);
-        return Status::success;
+        return status::success;
       }
 
       // We need to figure out how much we need to shift m2. The tricky part is that we need to take
@@ -206,7 +206,7 @@ namespace ryu {
                        << float_mantissa_bits) |
                       ieee_m2;
       *result = bit_cast(ieee);
-      return Status::success;
+      return status::success;
     }
 
     constexpr uint32_t mask(uint32_t num_bits) noexcept {
@@ -251,7 +251,7 @@ namespace ryu {
              gcem::pow(2.0f, exponent);
     }
 
-    [[nodiscard]] constexpr Status s2f_n(const char* buffer, const int len, float* result) noexcept {
+    [[nodiscard]] constexpr status s2f_n(const char* buffer, const int len, float* result) noexcept {
       return ryu::detail::s2f_n(buffer,
                                 len,
                                 result,
@@ -266,7 +266,7 @@ namespace ryu {
     return f;
   }
 
-  [[nodiscard]] Status s2f_n(const char* buffer, const int len, float* result) noexcept {
+  [[nodiscard]] status s2f_n(const char* buffer, const int len, float* result) noexcept {
     return ryu::detail::s2f_n(buffer, len, result, &floor_log2, &int32Bits2Float);
   }
 } // namespace ryu

@@ -18,7 +18,7 @@
   []() {                                                          \
     float      value;                                             \
     const auto size = (sizeof(b) <= 1) ? 0 : (sizeof(b) - 1);     \
-    REQUIRE(ryu::s2f_n(b, size, &value) == ryu::Status::success); \
+    REQUIRE(ryu::s2f_n(b, size, &value) == ryu::status::success); \
     REQUIRE((a) == value);            \
   }()
 
