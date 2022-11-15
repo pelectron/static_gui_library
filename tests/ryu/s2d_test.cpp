@@ -12,8 +12,7 @@
 #include "ryu_test_util.hpp"
 
 #include <catch2/catch.hpp>
-#include <math.h>
-
+#include <cmath>
 
 #define EXPECT_S2D(a, b)                                          \
   []() {                                                          \

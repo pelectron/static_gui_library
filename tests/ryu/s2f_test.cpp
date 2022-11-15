@@ -12,14 +12,14 @@
 #include "ryu_test_util.hpp"
 
 #include <catch2/catch.hpp>
-
+#include <cmath>
 
 #define EXPECT_S2F(a, b)                                          \
   []() {                                                          \
     float      value;                                             \
     const auto size = (sizeof(b) <= 1) ? 0 : (sizeof(b) - 1);     \
     REQUIRE(ryu::s2f_n(b, size, &value) == ryu::status::success); \
-    REQUIRE((a) == value);            \
+    REQUIRE((a) == value);                                        \
   }()
 
 TEST_CASE("s2f") {

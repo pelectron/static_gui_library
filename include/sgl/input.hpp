@@ -63,57 +63,54 @@ namespace sgl {
 
   /// \brief get input as keypad input constant, or none if it is not a key pad input.
   /// \param input input to convert
-  /// \return either keypad constant or Input::none
-  constexpr input get_keypad_input(input input) {
-    if ((input & sgl::input::keypad_mask) == input)
   /// \return either keypad constant or input::none
-  constexpr input get_keypad_input(input input) {
-    if ((input & sgl::input::keypad_mask) == input)
-      return input;
+  constexpr input get_keypad_input(sgl::input i) {
+    if ((i & sgl::input::keypad_mask) == i)
+      return i;
     return sgl::input::none;
   }
 
   /// \brief check if input is a keyboard input.
   /// \param input input to check
   /// \return bool
-  constexpr bool is_keyboard_input(input input) {
-    return (input & input::keyboard_type_mask) == input::keyboard_type_mask;
+  constexpr bool is_keyboard_input(sgl::input i) {
+    return (i & sgl::input::keyboard_type_mask) == sgl::input::keyboard_type_mask;
   }
 
   /// \brief check if input is a keypad input.
   /// \param input input to check
   /// \return bool
-  constexpr bool is_keypad_input(input input) { return (input & sgl::input::keypad_mask) == input; }
+  constexpr bool is_keypad_input(sgl::input i) { return (i & sgl::input::keypad_mask) == i; }
 
   /// \brief convert char to sgl::input.
   /// \param c character to convert
   /// \return sgl::input
-  constexpr input to_input(char c) { return static_cast<input>(c) | input::keyboard_type_mask; }
+  constexpr input to_input(char c) { return static_cast<input>(c) | sgl::input::keyboard_type_mask; }
 
   /// \brief convert char16_t to sgl::input.
   /// \param c character to convert
   /// \return sgl::input
-  constexpr input to_input(char16_t c) { return static_cast<input>(c) | input::keyboard_type_mask; }
+  constexpr input to_input(char16_t c) { return static_cast<input>(c) | sgl::input::keyboard_type_mask; }
 
   /// \brief convert char32_t to input.
   /// \param c character to convert
   /// \return sgl::input
-  constexpr input to_input(char32_t c) { return static_cast<input>(c) | input::keyboard_type_mask; }
+  constexpr input to_input(char32_t c) { return static_cast<input>(c) | sgl::input::keyboard_type_mask; }
 
   /// \brief convert sgl::input to char.
   /// \param i input to convert
   /// \return char
-  constexpr char get_char8(input i) { return static_cast<char>(i & input::char8_mask); }
+  constexpr char get_char8(sgl::input i) { return static_cast<char>(i & sgl::input::char8_mask); }
 
   /// \brief convert sgl::input to char16_t
   /// \param i input to convert
   /// \return char16_t
-  constexpr char16_t get_char16(input i) { return static_cast<char16_t>(i & input::char16_mask); }
+  constexpr char16_t get_char16(sgl::input i) { return static_cast<char16_t>(i & sgl::input::char16_mask); }
 
   /// \brief convert sgl::input to char32_t
   /// \param i input to convert
   /// \return char32_t
-  constexpr char32_t get_char32(input i) { return static_cast<char32_t>(i & input::char32_mask); }
+  constexpr char32_t get_char32(sgl::input i) { return static_cast<char32_t>(i & sgl::input::char32_mask); }
 
   /// \brief convert sgl::input to CharT.
   /// \details this will clear the upper 32 bits of i and then static_cast to charT
@@ -121,23 +118,23 @@ namespace sgl {
   /// \param i input to convert
   /// \return CharT
   template <typename CharT>
-  constexpr CharT get_char(input i) {
-    return static_cast<CharT>(i & input::char32_mask);
+  constexpr CharT get_char(sgl::input i) {
+    return static_cast<CharT>(i & sgl::input::char32_mask);
   }
 
   /// \cond
   template <>
-  constexpr char get_char<char>(input i) {
+  constexpr char get_char<char>(sgl::input i) {
     return get_char8(i);
   }
 
   template <>
-  constexpr char16_t get_char<char16_t>(input i) {
+  constexpr char16_t get_char<char16_t>(sgl::input i) {
     return get_char16(i);
   }
 
   template <>
-  constexpr char32_t get_char<char32_t>(input i) {
+  constexpr char32_t get_char<char32_t>(sgl::input i) {
     return get_char32(i);
   }
 
