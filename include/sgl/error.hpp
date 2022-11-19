@@ -1,8 +1,8 @@
 /**
- * \file error.hpp
- * \author Pelé Constam (pelectron1602@gmail.com)
- * \brief This file defines the sgl::error enum.
- * \version 0.1
+ * @file error.hpp
+ * @author Pelé Constam (pelectron1602@gmail.com)
+ * @brief This file defines the sgl::error enum.
+ * @version 0.1
  * @date 2022-09-26
  *
  *          Copyright Pele Constam 2022.
@@ -16,7 +16,7 @@
 
 namespace sgl {
 
-  /// \headerfile error.hpp "sgl/error.hpp"
+  /// @headerfile error.hpp "sgl/error.hpp"
   /// @brief enumeration for error values.
   enum class error : int {
     no_error = 0,  //< no error occurred

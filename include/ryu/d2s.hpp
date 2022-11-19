@@ -7,9 +7,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          https://www.boost.org/LICENSE_1_0.txt)
 //
-// Runtime compiler options:
-// -DRYU_DEBUG Generate verbose debugging output to stdout.
-//
+
 // -DRYU_ONLY_64_BIT_OPS Avoid using uint128_t or 64-bit intrinsics. Slower,
 //     depending on your compiler.
 //
@@ -17,7 +15,7 @@
 //     required power of 5, only store every 26th entry, and compute
 //     intermediate values with a multiplication. This reduces the lookup table
 //     size by about 10x (only one case, and only double) at the cost of some
-//     performance. Currently requires MSVC intrinsics.
+//     performance.
 #ifndef RYU_D2S_HPP
 #define RYU_D2S_HPP
 
@@ -52,4 +50,5 @@ namespace ryu::detail {
 } // namespace ryu::detail
 
 #include "impl/d2s_impl.hpp"
+
 #endif /* RYU_D2S_HPP */

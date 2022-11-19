@@ -9,7 +9,7 @@
 #include <cstdint>
 
 namespace sgl {
-  /// \cond
+  /// @cond
   enum class input : uint64_t;
   enum class error : int;
   struct format_result;
@@ -64,6 +64,6 @@ namespace sgl {
 
   template <size_t... I>
   struct index_seq_t;
-  /// \endcond
+  /// @endcond
 } // namespace sgl
 #endif /* SGL_FWD_HPP */

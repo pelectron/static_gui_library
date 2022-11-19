@@ -35,7 +35,7 @@ namespace sgl {
              std::forward<TickHandler>(tick_handler)) {}
 
   template <typename String>
-  constexpr auto make_button(const String& text) {
+  constexpr auto button(const String& text) {
     return Button(text);
   }
 
@@ -43,7 +43,7 @@ namespace sgl {
             typename CharT,
             typename ClickHandler,
             enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>>>
-  constexpr Button<N - 1, CharT> make_button(const CharT (&text)[N], ClickHandler&& handler) {
+  constexpr Button<N - 1, CharT> button(const CharT (&text)[N], ClickHandler&& handler) {
     return Button(text, std::forward<ClickHandler>(handler));
   }
 
@@ -51,7 +51,7 @@ namespace sgl {
             typename CharT,
             typename ClickHandler,
             enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>>
-  constexpr Button<TextSize, CharT> make_button(sgl::string_view<CharT> text,
+  constexpr Button<TextSize, CharT> button(sgl::string_view<CharT> text,
                                                 ClickHandler&&          handler) {
     return Button<TextSize, CharT>(text, std::forward<ClickHandler>(handler));
   }
@@ -62,7 +62,7 @@ namespace sgl {
             typename TickHandler,
             enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>>,
             enable_if_is_tick_handler<TickHandler, Button<N - 1, CharT>>>
-  constexpr Button<N - 1, CharT> make_button(const CharT (&text)[N],
+  constexpr Button<N - 1, CharT> button(const CharT (&text)[N],
                                              ClickHandler&& click_handler,
                                              TickHandler&&  tick_handler) {
     return Button(text,
@@ -76,7 +76,7 @@ namespace sgl {
             typename TickHandler,
             enable_if_is_click_handler<ClickHandler, Button<TextSize, CharT>>,
             enable_if_is_tick_handler<TickHandler, Button<TextSize, CharT>>>
-  constexpr Button<TextSize, CharT> make_button(sgl::string_view<CharT> text,
+  constexpr Button<TextSize, CharT> button(sgl::string_view<CharT> text,
                                                 ClickHandler&&          click_handler,
                                                 TickHandler&&           tick_handler) {
     return Button<TextSize, CharT>(text,

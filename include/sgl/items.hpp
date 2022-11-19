@@ -12,11 +12,11 @@
 #include "sgl/numeric.hpp"
 #include "sgl/page_link.hpp"
 #include "sgl/pass_through_button.hpp"
-/// \defgroup sgl_traits Traits
-/// \defgroup item_types Item Types
-/// \defgroup item_factories Item Factory Functions
-/// \defgroup button_factories Button Factory Functions
-/// \defgroup boolean_factories Boolean Factory Functions
-/// \defgroup page_link_factories PageLink Factory Functions
-/// \defgroup numeric_factories Numeric Factory Functions
+/// @defgroup sgl_traits Traits
+/// @defgroup item_types Item Types
+/// @defgroup item_factories Item Factory Functions
+/// @defgroup button_factories Button Factory Functions
+/// @defgroup boolean_factories Boolean Factory Functions
+/// @defgroup page_link_factories PageLink Factory Functions
+/// @defgroup numeric_factories Numeric Factory Functions
 #endif /* SGL_ITEMS_HPP */

@@ -1,8 +1,41 @@
-option('optimize_size', type: 'boolean', value: false)
-option('char_type', type : 'combo', choices : ['char', 'char16_t', 'char32_t'], value : 'char')
-option('line_width', type:'integer', value: 0)
-option('instantiate', type:'boolean', value: false)
-option('test',type:'feature', value:'disabled', description: 'build tests')
-option('example',type:'feature', value:'disabled', description: 'build examples')
-option('gui', type: 'boolean', value: false, description: 'build qt based menu visualizer')
-option('qt_major_version', type: 'integer', value: 6, description: 'major version of qt to use to build the visalizer')
+option('optimize_size', 
+        type: 'boolean', 
+        value: false, 
+        description:  'setting this to true adds "-DRYU_OPTIMIZE_SIZE" to the compile arguments. '+
+                      'ryu will then use smaller lookup tables. Instead of storing every required '+
+                      'power of 5, only store every 26th entry, and compute intermediate values with' + 
+                      ' a multiplication. This reduces the lookup table size by about 10x (only one ' + 
+                      'case, and only double) at the cost of some performance.')
+option('char_type', 
+        type: 'combo', 
+        choices: ['char', 'char16_t', 'char32_t'], 
+        value: 'char', 
+        description:  'character type to use when instantiate is set to true')
+
+option('line_width', 
+        type:'integer', 
+        value: 0)
+
+option('instantiate',
+        type:'boolean',
+        value: false)
+
+option('test',
+        type:'feature', 
+        value:'disabled',
+        description: 'Build tests')
+
+option('example',
+        type:'feature', 
+        value:'disabled', 
+        description: 'Build examples. If gui is set to true and this option is enabled, this will also produce the gui example.')
+
+option('gui',
+        type: 'boolean', 
+        value: false, 
+        description: 'build the visualizer library and add it to the sgl_dep variable of this project.')
+
+option('qt_major_version', 
+        type: 'integer', 
+        value: 6, 
+        description: 'Qt version to use to build the visalizer library.')

@@ -79,6 +79,7 @@ namespace sgl {
 
     template <size_t I, size_t F>
     constexpr unsigned_fixed(unsigned_fixed<I, F> other) noexcept;
+
     constexpr unsigned_fixed(value_type value) noexcept;
 
     constexpr explicit unsigned_fixed(float value) noexcept;

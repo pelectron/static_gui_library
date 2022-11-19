@@ -9,7 +9,10 @@
 #include <utility>
 
 namespace sgl {
-  /// simple pair type
+  /// simple pair type. It holds two public members, `first` and `second` of type T1 or T2
+  /// respectively
+  /// @tparam T1 type of the first element
+  /// @tparam T2 type of the second elment.
   template <typename T1, typename T2>
   struct Pair {
     using first_type = T1;
@@ -32,9 +35,11 @@ namespace sgl {
     T2 second{};
   };
 
+  /// @cond
   template <typename T1, typename T2>
   Pair(T1&&, T2&&) -> Pair<std::decay_t<T1>, std::decay_t<T2>>;
   template <typename T1, typename T2>
   Pair(const T1&, const T2&) -> Pair<std::decay_t<const T1>, std::decay_t<const T2>>;
+  /// @endcond
 } // namespace sgl
 #endif

@@ -10,7 +10,11 @@
 #include <type_traits>
 
 namespace sgl {
-  /// type trait alias to get smallest type needed to store a value of N
+  /**
+   * @brief type alias to get smallest type needed to store a value of N, for example for
+   * N < 256 this evaluates to uint8_t.
+   * @tparam N value to store.
+   */
   template <size_t N>
   using smallest_type_t = std::conditional_t<
       N <= numeric_limits<uint8_t>::max(),

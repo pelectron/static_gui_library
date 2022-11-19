@@ -10,7 +10,7 @@
 #include <type_traits>
 
 namespace sgl {
-  ///\cond
+  ///@cond
   template <typename... Ts>
   struct type_list {};
 
@@ -22,7 +22,7 @@ namespace sgl {
 
   template <typename T>
   inline constexpr bool is_type_list_v = is_type_list<T>::value;
-  
+
   template <typename>
   struct head;
 
@@ -68,6 +68,7 @@ namespace sgl {
       return index_of_impl<T, Ts...>(i + 1);
     }
   }
+
   template <typename T, typename List>
   struct index_of;
 
@@ -76,6 +77,10 @@ namespace sgl {
     static constexpr size_t value = index_of_impl<T, Ts...>();
   };
 
+  /**
+   * @brief get index of T in type list. If List contains multiple Ts, the smallest index is
+   * returned.
+   */
   template <typename T, typename List>
   inline constexpr size_t index_of_v = index_of<T, List>::value;
   static_assert(index_of_v<int, type_list<int, double, char>> == 0);
@@ -88,12 +93,13 @@ namespace sgl {
     using type = type_list<T, Ts...>;
   };
 
+  /// @brief insert T at the front of the list.
   template <typename T, typename List>
   using push_front_t = typename push_front<T, List>::type;
 
-  /// \brief pop the first type from the list and return the shortened list.
-  /// \example pop_front<type_list<int,char>>::type == type_list<char>
-  /// \tparam List list pop front of.
+  /// @brief pop the first type from the list and return the shortened list.
+  /// @example pop_front<type_list<int,char>>::type == type_list<char>
+  /// @tparam List list pop front of.
   template <typename List>
   struct pop_front;
 
@@ -107,14 +113,14 @@ namespace sgl {
     using type = type_list<>;
   };
 
+  /// @brief get the first type in the list.
   template <typename List>
   using pop_front_t = typename pop_front<List>::type;
   static_assert(std::is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>);
 
-  /// \brief get N-th type in type_list List
-  ///
-  /// \tparam N index of type
-  /// \tparam List
+  /// @brief get N-th type in type_list List
+  /// @tparam N index of type
+  /// @tparam List
   template <size_t N, typename List>
   struct type_at;
 
@@ -122,6 +128,7 @@ namespace sgl {
   struct index_out_of_range {
     static_assert(N != 0, "index out of range");
   };
+
   template <size_t, typename...>
   struct type_at_impl;
 
@@ -156,10 +163,6 @@ namespace sgl {
   template <typename List>
   using last_t = type_at_t<list_size_v<List> - 1, List>;
 
-  /// \brief add T to end of List
-  /// \example push_back<double, type_list<int,char>>::type == type_list<int,
-  /// char, double>
-  /// \tparam List list pop front of.
   template <typename T, typename List>
   struct push_back;
 
@@ -168,11 +171,10 @@ namespace sgl {
     using type = type_list<Ts..., T>;
   };
 
-  /// \brief append T to List, like vector::push_back
-  /// \example push_back_t<double, type_list<int,char>> ==
-  /// type_list<int,char,double>
-  /// \tparam T
-  /// \tparam List
+  /// @brief add T to end of List
+  /// @example push_back<double, type_list<int,char>>::type == type_list<int,
+  /// char, double>
+  /// @tparam List list pop front of.
   template <typename T, typename List>
   using push_back_t = typename push_back<T, List>::type;
 
@@ -200,9 +202,9 @@ namespace sgl {
     using type = typename pop_back_impl<type_list<Ts...>, sizeof...(Ts)>::type;
   };
 
-  /// \brief pop last element of list and return the new list
+  /// @brief pop last element of list and return the new list
   ///
-  /// \tparam List
+  /// @tparam List
   template <typename List>
   using pop_back_t = typename pop_back<List>::type;
 
@@ -269,8 +271,8 @@ namespace sgl {
   template <typename... Ts>
   struct all_unique<sgl::type_list<Ts...>> : all_unique<Ts...> {};
 
-  /// @brief check if every type in \a Ts is unique
-  /// \details For example all_unique_v<char,int,double> == true,
+  /// @brief check if every type in @a Ts is unique
+  /// @details For example all_unique_v<char,int,double> == true,
   /// but all_unique_v<char,int,char>==false.
   /// @tparam ...Ts
   template <typename... Ts>
@@ -295,6 +297,8 @@ namespace sgl {
   /// @tparam ...Ts
   template <typename... Ts>
   inline constexpr bool all_same_v = all_same<Ts...>::value;
-  ///\endcond
+
+  ///@endcond
+
 } // namespace sgl
 #endif /* SGL_TYPE_LIST_HPP */

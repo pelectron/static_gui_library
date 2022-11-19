@@ -1,8 +1,16 @@
-//          Copyright Pele Constam 2022.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          https://www.boost.org/LICENSE_1_0.txt)
-//
+/**
+ * @file sgl/numeric.hpp
+ * @author Pelé Constam (pelectron1602@gmail.com)
+ * @brief This file contains the type traits like facilities to check the concepts exposed by sgl.
+ * [This document](markdown/concepts.md) provides a clear overview of these concepts.
+ * @version 0.1
+ * @date 2022-11-19
+ *
+ *          Copyright Pele Constam 2022.
+ * Distributed under the Boost Software License, Version 1.0.
+ *    (See accompanying file LICENSE_1_0.txt or copy at
+ *          https://www.boost.org/LICENSE_1_0.txt)
+ */
 #ifndef SGL_ITEM_CONCEPTS_HPP
 #define SGL_ITEM_CONCEPTS_HPP
 
@@ -77,9 +85,9 @@ namespace sgl {
   template <typename T>
   static constexpr bool is_item_trait_v = is_item_trait<T>::value;
 
-  /// \addtogroup handler_traits Handler traits
-  /// \ingroup sgl_traits
-  /// \{
+  /// @addtogroup handler_traits Handler traits
+  /// @ingroup sgl_traits
+  /// @{
 
   /// @brief true if F is a valid input handler for Item.
   /// Look [here](markdown/concepts.md#input-handler) for more info.
@@ -96,7 +104,7 @@ namespace sgl {
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
-  static constexpr bool                                      is_click_handler_for_v =
+  inline constexpr bool                                      is_click_handler_for_v =
       std::is_nothrow_invocable_r_v<sgl::error, F, Item&>and std::is_trivially_destructible_v<F>and
           std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
 
@@ -115,13 +123,13 @@ namespace sgl {
                                     sgl::format>and std::is_trivially_destructible_v<F>and
           std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
 
-  /// \brief true if F is a TickHandler for Item.
+  /// @brief true if F is a TickHandler for Item.
   /// @tparam F handler type
   /// @tparam Item item type
   template <typename F, typename Item>
   inline constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
 
-  /// \}
+  /// @}
 
   template <typename F, typename Item>
   using enable_if_is_input_handler =
@@ -138,10 +146,10 @@ namespace sgl {
   template <typename F, typename Item>
   using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
 
-  /// \addtogroup item_traits Item Traits
-  /// \ingroup sgl_traits
-  /// \{
-  /// \cond
+  /// @addtogroup item_traits Item Traits
+  /// @ingroup sgl_traits
+  /// @{
+  /// @cond
 
   template <typename T, typename = void>
   struct has_text : std::false_type {};
@@ -204,14 +212,14 @@ namespace sgl {
   template <typename T>
   inline constexpr bool has_tick_v = has_tick<T>::value;
 
-  /// \endcond
+  /// @endcond
 
-  /// \}
+  /// @}
 
-  /// \addtogroup page_traits Page traits
-  /// \ingroup sgl_traits
-  /// \{
-  /// \cond
+  /// @addtogroup page_traits Page traits
+  /// @ingroup sgl_traits
+  /// @{
+  /// @cond
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
@@ -429,20 +437,20 @@ namespace sgl {
         has_on_enter_v<T> and has_on_exit_v<T>;
   };
 
-  /// \endcond
+  /// @endcond
 
   /// @brief true if T fulfills the page concept
-  /// \tparam T type to check
+  /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_page_v = is_page<T>::value;
 
-  /// \}
+  /// @}
 
-  /// \addtogroup menu_traits Menu Traits
-  /// \ingroup sgl_traits
-  /// \{
+  /// @addtogroup menu_traits Menu Traits
+  /// @ingroup sgl_traits
+  /// @{
 
-  /// \cond
+  /// @cond
   template <typename T, typename = void>
   struct has_set_active_page : std::false_type {};
 
@@ -530,14 +538,14 @@ namespace sgl {
                                   has_index_v<T> and has_size_v<T>;
   };
 
-  /// \endcond
+  /// @endcond
 
   /// @brief  true if T fulfills the menu concept
   /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_menu_v = is_menu<T>::value;
 
-  /// \}
+  /// @}
 
   template <typename T>
   struct is_item {

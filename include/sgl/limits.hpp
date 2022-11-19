@@ -1,12 +1,12 @@
 
-/// \file limits.hpp
-/// \author Pelé Constam (you\domain.com)
-/// \brief This file defines a class template called numeric_limits, analogous to
+/// @file limits.hpp
+/// @author Pelé Constam (you@domain.com)
+/// @brief This file defines a class template called numeric_limits, analogous to
 /// std::numeric_limits.
-/// \version 0.1
-/// \date 2022-06-14
+/// @version 0.1
+/// @date 2022-06-14
 ///
-/// \copyright Copyright (c) 2022
+/// @copyright Copyright (c) 2022
 //          Copyright Pele Constam 2022.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -14,7 +14,7 @@
 //
 #ifndef SGL_LIMITS_HPP
 #define SGL_LIMITS_HPP
-/// \cond
+/// @cond
 
 #include <cfloat>
 #include <climits>
@@ -156,7 +156,7 @@ namespace sgl {
     static constexpr long double min() noexcept { return LDBL_MIN; }
   };
 
-  /// \endcond
+  /// @endcond
 } // namespace sgl
 
 #endif /* SGL_LIMITS_HPP */

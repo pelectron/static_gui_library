@@ -54,6 +54,7 @@ The only standard headers required are:
 - `<cstddef>`
 - `<cstring>` for memcpy
 - `<utility>` for std::forward and std::move
+- `<limits>` for numeric limits
 
 ### Dependencies
 
@@ -67,10 +68,15 @@ will manually need to download it if you are not using meson and want to build
 the tests. See more info [here](readme.md#testing).
 
 [Ryu](https://github.com/ulfjack/ryu) used to be an external dependency. I have
-however adapted it to be constexpr, which lives in the include/ryu subdirectory.
+however adapted it to be constexpr. The files are located in the `include/ryu`
+subdirectory.
 Ulf Adams (the creator of ryu) really did a wonderful job and without his brains,
-constexpr floating point formatting wouldn't have been possible for me with all
-the features (roundtripping, shortest form formatting, speed) of ryu.
+constexpr floating point formatting and parsing wouldn't have been possible or
+me with all the features (roundtripping, shortest form formatting, speed) of ryu.
+Most of the defines for the c api of ryu are also available for this version fo it.
+The most interesting define would be `RYU_OPTIMIZE_SIZE`. Adding this to the defines
+of your compiler reduces the size of the tables used by ryu drastically.
+See `meson_options.txt` for more info.
 
 ## Building and configuring
 
@@ -113,10 +119,11 @@ sgl_dep = sgl_proj.get_variable('sgl_dep')
 
 ``sgl_core_dep`` can then be used in an embedded environment.
 
-Note that Qt build tools, such as qmake, need to be available in your path for
+Note that Qt build tools, such as qmake, need to be available in your path
 when building with ``gui=true``!
 
 For compiling with Qt5, you should set `qt_major_version=5` in the default options.
+The default is Qt6.
 
 More on the visualizer can be found [here](markdown/visualizer.md).
 

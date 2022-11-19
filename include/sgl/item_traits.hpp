@@ -16,7 +16,7 @@ namespace sgl {
         "sgl::is_item_trait_v<YourTraitsType>");
   };
 
-  /// \cond
+  /// @cond
 
   // button item traits
   template <size_t TextSize, typename CharT>
@@ -61,7 +61,7 @@ namespace sgl {
     static constexpr size_t text_size = TextSize;
   };
 
-  /// \endcond
+  /// @endcond
 } // namespace sgl
 
 #endif /* SGL_ITEM_TRAITS_HPP */
