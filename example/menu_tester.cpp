@@ -35,8 +35,8 @@ enum class OtherSetting { Up, Down, Left, Right };
 
 constexpr auto HomePage() {
   return Page(bool_item <<= Boolean(true),
-              num1 <<= make_numeric<13, char>(1, 2),
-              float1 <<= make_numeric<24, char>(5.0f, 0.1f),
+              num1 <<= numeric<13, char>(1, 2),
+              float1 <<= numeric<24, char>(5.0f, 0.1f),
               settings_link <<= PageLink(settings_page),
               other_settings_link <<= PageLink(other_settings_page));
 }

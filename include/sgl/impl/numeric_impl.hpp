@@ -171,19 +171,19 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT, typename T>
-  constexpr Numeric<TextSize, CharT, T> make_numeric(T initial_value, T delta) noexcept {
+  constexpr Numeric<TextSize, CharT, T> numeric(T initial_value, T delta) noexcept {
     return Numeric<TextSize, CharT, T>(initial_value, delta);
   }
 
   template <size_t TextSize, typename CharT, typename T>
   constexpr Numeric<TextSize, CharT, T>
-      make_numeric(T initial_value, T delta, sgl::string_view<CharT> initial_text) noexcept {
+      numeric(T initial_value, T delta, sgl::string_view<CharT> initial_text) noexcept {
     return Numeric<TextSize, CharT, T>(initial_value, delta, initial_text);
   }
 
   template <size_t CxSize, typename T, size_t TextSize>
-  constexpr Numeric<TextSize, char, T> make_numeric(const cx_arg<T, CxSize>& initial_value,
-                                                    T                        delta) noexcept {
+  constexpr Numeric<TextSize, char, T> numeric(const cx_arg<T, CxSize>& initial_value,
+                                               T                        delta) noexcept {
     return Numeric<TextSize, char, T>(initial_value, delta);
   }
 
@@ -193,7 +193,7 @@ namespace sgl {
             typename Formatter,
             enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>>
   constexpr Numeric<TextSize, CharT, T>
-      make_numeric(T initial_value, T delta, Formatter&& formatter) noexcept {
+      numeric(T initial_value, T delta, Formatter&& formatter) noexcept {
     return Numeric<TextSize, CharT, T>(initial_value, delta, std::forward<Formatter>(formatter));
   }
 
@@ -204,10 +204,8 @@ namespace sgl {
             typename InputHandler,
             enable_if_is_value_formatter<Formatter, Numeric<TextSize, CharT, T>>,
             enable_if_is_input_handler<InputHandler, Numeric<TextSize, CharT, T>>>
-  constexpr Numeric<TextSize, CharT, T> make_numeric(T              initial_value,
-                                                     T              delta,
-                                                     Formatter&&    formatter,
-                                                     InputHandler&& handler) noexcept {
+  constexpr Numeric<TextSize, CharT, T>
+      numeric(T initial_value, T delta, Formatter&& formatter, InputHandler&& handler) noexcept {
     return Numeric<TextSize, CharT, T>(initial_value,
                                        delta,
                                        std::forward<Formatter>(formatter),

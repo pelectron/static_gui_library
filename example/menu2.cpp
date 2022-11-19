@@ -35,8 +35,8 @@ constexpr auto home() {
       bool_item <<= Boolean(true),
       settings <<=
       make_enum(Setting::opt1, "Option 1", Setting::opt2, "Option 2", Setting::opt3, "Option 3"),
-      num1 <<= make_numeric<13, char>(1, 2),
-      float1 <<= make_numeric<24, char>(5.0f, 0.1f),
+      num1 <<= numeric<13, char>(1, 2),
+      float1 <<= numeric<24, char>(5.0f, 0.1f),
       page2link <<= PageLink(page2));
 }
 
@@ -50,7 +50,7 @@ constexpr auto page_2() {
                                            "Left",
                                            OtherSetting::Right,
                                            "Right"),
-              num2 <<= make_numeric(25.234_double, 0.125),
+              num2 <<= numeric(25.234_double, 0.125),
               home_link <<= PageLink(home_page));
 }
 

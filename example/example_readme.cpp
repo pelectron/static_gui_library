@@ -19,9 +19,9 @@ constexpr auto Page1() noexcept {
                                                 "Option 2",
                                                 Setting::opt3,
                                                 "Option 3"),
-      NAME("double item 1") <<= sgl::make_numeric(1.0_double, 1.0), // item holding a double
-      NAME("float item 1") <<= sgl::make_numeric(1.0_float, 1.0f),  // item holding a float
-      NAME("int item 1") <<= sgl::make_numeric<12, char>(1, 2),     // item holding an int
+      NAME("double item 1") <<= sgl::numeric(1.0_double, 1.0), // item holding a double
+      NAME("float item 1") <<= sgl::numeric(1.0_float, 1.0f),  // item holding a float
+      NAME("int item 1") <<= sgl::numeric<12, char>(1, 2),     // item holding an int
       NAME("link to page 2") <<=
       sgl::pagelink(NAME("page2"), "return to page 2") // a page link
   );
@@ -37,9 +37,9 @@ constexpr auto Page2() noexcept {
                                                                   "Left",
                                                                   OtherSetting::Right,
                                                                   "Right"),
-                   NAME("double item 2") <<= sgl::make_numeric(2.0_double, 2.0),
-                   NAME("float item 2") <<= sgl::make_numeric(2.0_float, 2.0f),
-                   NAME("int item 2") <<= sgl::make_numeric<12, char>(2, 2),
+                   NAME("double item 2") <<= sgl::numeric(2.0_double, 2.0),
+                   NAME("float item 2") <<= sgl::numeric(2.0_float, 2.0f),
+                   NAME("int item 2") <<= sgl::numeric<12, char>(2, 2),
                    NAME("link to page 1") <<=
                    sgl::pagelink(NAME("page1"), "return to page 1"));
 }

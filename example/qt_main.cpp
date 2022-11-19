@@ -18,9 +18,9 @@ constexpr auto Page1() noexcept {
                                                        "Option 3"),
              NAME("fix point item") <<=
              sgl::Numeric<20, char, sgl::unsigned_fixed<4, 5>>(sgl::unsigned_fixed<4, 5>{4.5}, sgl::unsigned_fixed<4, 5>{0.25}),
-             NAME("double item 1") <<= sgl::make_numeric(12345.000000000_double, 0.1),
-             NAME("float item 1") <<= sgl::make_numeric(1.0000000000000_float, 0.25f),
-             NAME("int item 1") <<= sgl::make_numeric<12, char>(1, 2),
+             NAME("double item 1") <<= sgl::numeric(12345.000000000_double, 0.1),
+             NAME("float item 1") <<= sgl::numeric(1.0000000000000_float, 0.25f),
+             NAME("int item 1") <<= sgl::numeric<12, char>(1, 2),
              NAME("link to page 2") <<= sgl::pagelink(NAME("page2"), "return to page 2"),
              NAME("link to settings page") <<=
              sgl::pagelink(NAME("settings page"), "settings page"),
@@ -52,9 +52,9 @@ constexpr auto Page2() noexcept {
                                                             "Left",
                                                             OtherSetting::Right,
                                                             "Right"),
-             NAME("double item 2") <<= sgl::make_numeric(2.0000000_double, 0.15),
-             NAME("float item 2") <<= sgl::make_numeric(2.0_float, 2.0f),
-             NAME("int item 2") <<= sgl::make_numeric<12, char>(2, 2),
+             NAME("double item 2") <<= sgl::numeric(2.0000000_double, 0.15),
+             NAME("float item 2") <<= sgl::numeric(2.0_float, 2.0f),
+             NAME("int item 2") <<= sgl::numeric<12, char>(2, 2),
              NAME("link to page 1") <<= sgl::pagelink(NAME("page1"), "return to page 1"));
 }
 
