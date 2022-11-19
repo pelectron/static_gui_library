@@ -12,16 +12,6 @@
 #include "ryu/s2d.hpp"
 #include "ryu/s2f.hpp"
 
-// This is an experimental implementation of parsing strings to 64-bit floats
-// using a Ryu-like algorithm. At this time, it only support up to 17 non-zero
-// digits in the input, and also does not support all formats. Use at your own
-// risk.
-//
-// This implementation does not currently support -DRYU_OPTIMIZE_SIZE and always
-// compiles against the large lookup tables.
-
-namespace ryu {
-
-} // namespace ryu
+namespace ryu {} // namespace ryu
 
 #endif /* RYU_RYU_PARSE_HPP */

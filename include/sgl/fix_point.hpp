@@ -1,8 +1,8 @@
 /**
- * \file fix_point.hpp
- * \author Pelé Constam (pelectron1602@gmail.com)
- * \brief
- * \version 0.1
+ * @file fix_point.hpp
+ * @author Pelé Constam (pelectron1602@gmail.com)
+ * @brief
+ * @version 0.1
  * @date 2022-10-23
  *
  *
@@ -43,9 +43,9 @@ namespace sgl {
                                             std::conditional_t<num_digits <= 64, uint64_t, void>>>>;
 
   /**
-   * \brief unsigned fix point type.
-   * \tparam IntDigits number of integer digits
-   * \tparam FracDigits number of fractional digits
+   * @brief unsigned fix point type.
+   * @tparam IntDigits number of integer digits
+   * @tparam FracDigits number of fractional digits
    */
   template <size_t IntDigits, size_t FracDigits>
   class unsigned_fixed {
@@ -86,15 +86,15 @@ namespace sgl {
     constexpr explicit unsigned_fixed(double value) noexcept;
 
     /// access the raw value
-    /// \return smallest unsigned integer type with at least num_digits bits
+    /// @return smallest unsigned integer type with at least num_digits bits
     [[nodiscard]] constexpr value_type value() const;
 
     /// get the raw integer bits
-    /// \return smallest unsigned integer with at least num_int_digits bits
+    /// @return smallest unsigned integer with at least num_int_digits bits
     [[nodiscard]] constexpr fixpoint_value_type_t<IntDigits> integer() const;
 
     /// get the raw fraction bits
-    /// \return smallest unsigned integer with at least num_frac_digits bits
+    /// @return smallest unsigned integer with at least num_frac_digits bits
     [[nodiscard]] constexpr fixpoint_value_type_t<FracDigits> fraction() const;
 
   private:
@@ -140,20 +140,20 @@ namespace sgl {
     constexpr explicit signed_fixed(float value) noexcept;
     constexpr explicit signed_fixed(double value) noexcept;
 
-    /// access the fixpoint's raw value (stored in two's complement)
-    /// \return smallest unsigned integer type with at least num_digits bits
+    /// @brief access the fixpoint's raw value (stored in two's complement)
+    /// @return smallest unsigned integer type with at least num_digits bits
     [[nodiscard]] constexpr value_type value() const noexcept;
 
-    /// get the raw integer bits
-    /// \return smallest unsigned integer with at least num_int_digits bits
+    /// @brief get the raw integer bits
+    /// @return smallest unsigned integer with at least num_int_digits bits
     [[nodiscard]] constexpr fixpoint_value_type_t<IntDigits> integer() const;
 
-    /// get the raw fraction bits
-    /// \return smallest unsigned integer with at least num_frac_digits bits
+    /// @brief get the raw fraction bits
+    /// @return smallest unsigned integer with at least num_frac_digits bits
     [[nodiscard]] constexpr fixpoint_value_type_t<FracDigits> fraction() const;
 
-    /// check if this is negative.
-    /// \return true if this is smaller than 0.
+    /// @brief check if this is negative.
+    /// @return true if this is smaller than 0.
     [[nodiscard]] constexpr bool is_negative() const noexcept;
 
   private:
@@ -161,80 +161,81 @@ namespace sgl {
   };
 
   /**
-   * \brief unary plus operator
-   * \tparam I number of integer bits
-   * \tparam F number of fractional bits
-   * \param value
-   * \return unsigned_fixed<I, F>
+   * @brief unary plus operator
+   * @tparam I number of integer bits
+   * @tparam F number of fractional bits
+   * @param value
+   * @return unsigned_fixed<I, F>
    */
   template <size_t I, size_t F>
   constexpr unsigned_fixed<I, F> operator+(const unsigned_fixed<I, F>& value) noexcept;
 
   /**
-   * \brief unary minus operator
-   * \tparam I number of integer bits
-   * \tparam F number of fractional bits
-   * \param value value to invert
-   * \return signed_fixed<I + 1, F>
+   * @brief unary minus operator
+   * @tparam I number of integer bits
+   * @tparam F number of fractional bits
+   * @param value value to invert
+   * @return signed_fixed<I + 1, F>
    */
   template <size_t I, size_t F>
   constexpr signed_fixed<I + 1, F> operator-(const unsigned_fixed<I, F>& value) noexcept;
 
   /**
-   * \brief unsigned fixed point addition
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 first summand
-   * \param f2 second summand
-   * \return f1 + f2
+   * @brief unsigned fixed point addition
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 first summand
+   * @param f2 second summand
+   * @return f1 + f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr unsigned_fixed<gcem::max(I1, I2) + 1, gcem::max(F1, F2)>
       operator+(const unsigned_fixed<I1, F1>& f1, const unsigned_fixed<I2, F2>& f2) noexcept;
 
   /**
-   * \brief unsigned fixed point subtraction
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 minuend
-   * \param f2 subtrahend
-   * \return f1 - f2
+   * @brief unsigned fixed point subtraction
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 minuend
+   * @param f2 subtrahend
+   * @return f1 - f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr unsigned_fixed<gcem::max(I1, I2), gcem::max(F1, F2)>
       operator-(const unsigned_fixed<I1, F1>& f1, const unsigned_fixed<I2, F2>& f2) noexcept;
 
   /**
-   * \brief unsigned fixed point multiplication
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 first multiplicand
-   * \param f2 second multiplicand
-   * \return f1 * f2
+   * @brief unsigned fixed point multiplication
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 first multiplicand
+   * @param f2 second multiplicand
+   * @return f1 * f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr unsigned_fixed<I1 + I2, F1 + F2> operator*(const unsigned_fixed<I1, F1>& f1,
                                                        const unsigned_fixed<I2, F2>& f2) noexcept;
 
   /**
-   * \brief unsigned fixed point division
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 numerator
-   * \param f2 denominator
-   * \return f1 / f2
+   * @brief unsigned fixed point division
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 numerator
+   * @param f2 denominator
+   * @return f1 / f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr unsigned_fixed<I1 + F2, I2 + F1> operator/(const unsigned_fixed<I1, F1>& f1,
                                                        const unsigned_fixed<I2, F2>& f2);
+
   /**
    * @brief resize unsigned_fixed from <I2,F2> to <I1,F1>
    * @tparam I1 number of integer bits the return value should have
@@ -248,76 +249,76 @@ namespace sgl {
   constexpr unsigned_fixed<I1, F1> resize(unsigned_fixed<I2, F2> value) noexcept;
 
   /**
-   * \brief unary plus operator
-   * \tparam I number of integer bits
-   * \tparam F number of fractional bits
-   * \param value
-   * \return signed_fixed<I, F>
+   * @brief unary plus operator
+   * @tparam I number of integer bits
+   * @tparam F number of fractional bits
+   * @param value
+   * @return signed_fixed<I, F>
    */
   template <size_t I, size_t F>
   constexpr signed_fixed<I, F> operator+(const signed_fixed<I, F>& value) noexcept;
 
   /**
-   * \brief unary minus operator
-   * \tparam I number of integer bits
-   * \tparam F number of fractional bits
-   * \param value value to invert
-   * \return signed_fixed<I, F>
+   * @brief unary minus operator
+   * @tparam I number of integer bits
+   * @tparam F number of fractional bits
+   * @param value value to invert
+   * @return signed_fixed<I, F>
    */
   template <size_t I, size_t F>
   constexpr signed_fixed<I, F> operator-(const signed_fixed<I, F>& value) noexcept;
 
   /**
-   * \brief signed fixed point addition
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 first summand
-   * \param f2 second summand
-   * \return f1 + f2
+   * @brief signed fixed point addition
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 first summand
+   * @param f2 second summand
+   * @return f1 + f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr signed_fixed<gcem::max(I1, I2) + 1, gcem::max(F1, F2)>
       operator+(const signed_fixed<I1, F1>& f1, const signed_fixed<I2, F2>& f2) noexcept;
 
   /**
-   * \brief signed fixed point subtraction
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 minuend
-   * \param f2 subtrahend
-   * \return f1 - f2
+   * @brief signed fixed point subtraction
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 minuend
+   * @param f2 subtrahend
+   * @return f1 - f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr signed_fixed<gcem::max(I1, I2) + 1, gcem::max(F1, F2)>
       operator-(signed_fixed<I1, F1> f1, signed_fixed<I2, F2> f2) noexcept;
 
   /**
-   * \brief signed fixed point multiplication
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 first multiplicand
-   * \param f2 second multiplicand
-   * \return f1 * f2
+   * @brief signed fixed point multiplication
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 first multiplicand
+   * @param f2 second multiplicand
+   * @return f1 * f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr signed_fixed<I1 + I2 - 1, F1 + F2> operator*(signed_fixed<I1, F1> f1,
                                                          signed_fixed<I2, F2> f2) noexcept;
 
   /**
-   * \brief signed fixed point division
-   * \tparam I1 number of integer bits of f1
-   * \tparam F1 number of fractional bits of f1
-   * \tparam I2 number of integer bits of f2
-   * \tparam F2 number of fractional bits of f2
-   * \param f1 numerator
-   * \param f2 denominator
-   * \return f1 / f2
+   * @brief signed fixed point division
+   * @tparam I1 number of integer bits of f1
+   * @tparam F1 number of fractional bits of f1
+   * @tparam I2 number of integer bits of f2
+   * @tparam F2 number of fractional bits of f2
+   * @param f1 numerator
+   * @param f2 denominator
+   * @return f1 / f2
    */
   template <size_t I1, size_t F1, size_t I2, size_t F2>
   constexpr signed_fixed<I1 + F2, I2 + F1> operator/(signed_fixed<I1, F1> f1,
@@ -358,41 +359,41 @@ namespace sgl {
   constexpr sgl::signed_fixed<I, F> to_signed(sgl::unsigned_fixed<I, F> v) noexcept;
 
   /**
-   * @brief convert unsigned_Fixed to float.
+   * @brief convert unsigned_fixed to float.
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
-   * \return float
+   * @return float
    */
   template <size_t I, size_t F>
   constexpr float to_float(sgl::unsigned_fixed<I, F> v) noexcept;
 
   /**
-   * @brief convert signed_Fixed to float.
+   * @brief convert signed_fixed to float.
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
-   * \return float
+   * @return float
    */
   template <size_t I, size_t F>
   constexpr float to_float(sgl::signed_fixed<I, F> v) noexcept;
 
   /**
-   * @brief convert unsigned_Fixed to double.
+   * @brief convert unsigned_fixed to double.
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
-   * \return double
+   * @return double
    */
   template <size_t I, size_t F>
   constexpr double to_double(sgl::unsigned_fixed<I, F> v) noexcept;
 
   /**
-   * @brief convert signed_Fixed to double.
+   * @brief convert signed_fixed to double.
    * @tparam I number of integer digits
    * @tparam F number of fractional digits
    * @param v value to convert
-   * \return double
+   * @return double
    */
   template <size_t I, size_t F>
   constexpr double to_double(sgl::unsigned_fixed<I, F> v) noexcept;

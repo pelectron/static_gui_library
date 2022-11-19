@@ -97,13 +97,6 @@ namespace ryu {
         return status::success;
       }
 
-#ifdef RYU_DEBUG
-      printf("input=%s\n", buffer);
-      printf("m10digits = %d\n", m10digits);
-      printf("e10digits = %d\n", e10digits);
-      printf("m10 * 10^e10 = %" PRIu64 " * 10^%d\n", m10, e10);
-#endif
-
       if ((m10digits + e10 <= -324) || (m10 == 0)) {
         // Number is less than 1e-324, which should be rounded down to 0; return +/-0.0.
         uint64_t ieee = ((uint64_t)signedM)
