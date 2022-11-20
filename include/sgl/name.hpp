@@ -5,12 +5,10 @@
  * convenience macro.
  * @version 0.1
  * @date 2022-07-21
+ * @copyright Copyright Pele Constam 2022.
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
  */
-
-//          Copyright Pele Constam 2022.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          https://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef SGL_NAME_HPP
 #define SGL_NAME_HPP
@@ -21,21 +19,24 @@
 namespace sgl {
   /**
    * @headerfile name.hpp "slg/name.hpp"
+   *
    * @brief This class represents a compile time string used by NamedValue and
    * sgl::NamedTuple.
    *
    * To create a name, there are two ways:
    *
+   * Using the ``NAME`` macro defined at the bottom of this file
+   *
    * ```cpp
-   * #include "sgl/name.hpp"
-   *
-   * // using the NAME macro defined at the bottom of this file
-   *
    * constexpr auto name1 = NAME("a string literal");
+   * ```
    *
-   * // manually defining it like below, equivalent to 'constexpr auto name2 = NAME("N2");'
+   *  or manually defining it, equivalent to constexpr auto name2 = NAME("N2");'
    *
+   *
+   * ```cpp
    * constexpr Name<'N','2'> name2;
+   *
    * ```
    *
    * @tparam Chars characters of the name as template parameters

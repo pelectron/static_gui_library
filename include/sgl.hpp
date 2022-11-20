@@ -1,16 +1,14 @@
 /**
- * \file sgl.hpp
- * \author Pelé Constam (pelectron1602@gmail.com)
- * \brief 
- * \version 0.1
+ * @file sgl.hpp
+ * @author Pelé Constam (pelectron1602@gmail.com)
+ * @brief
+ * @version 0.1
  * @date 2022-10-23
- * 
-*/ 
-//          Copyright Pele Constam 2022.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          https://www.boost.org/LICENSE_1_0.txt)
-//
+ * @copyright Copyright Pele Constam 2022.
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+ */
+
 #ifndef SGL_HPP
 #define SGL_HPP
 #include "sgl/config.h"

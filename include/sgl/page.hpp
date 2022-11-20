@@ -42,9 +42,10 @@ namespace sgl {
 
   /**
    * @headerfile page.hpp "sgl/page.hpp"
-   * @brief This class represents a page of a menu. It is a non recursive data structure, i.e. a
-   * page cannot contain a subpage. A page is responsible for navigating through the items and
-   * delegating user input the the current item.
+   * @brief This class represents a page of a menu. A page is a flat container of
+   * [items](markdown/concepts.md#item). It is a non recursive data structure, i.e. a page cannot
+   * contain subpages as items, see sgl::PageLink for that. A page is responsible for navigating
+   * through the items and delegating user input the the current item.
    *
    * A page consists of the following data:
    *  - a @ref NamedTuple "named tuple" of [items](markdown/concepts.md#item).
@@ -56,16 +57,16 @@ namespace sgl {
    *  - a boolean to indicate edit or navigation mode.
    *  - a start and stop edit input value. Receiving an input equal to this value set's the page
    * into edit or navigation mode respectively.
-   *  - an index to keep track of the current page.
+   *  - an index to keep track of the current item.
    *
-   * Constructing a page is done the same way as constructing a @ref NamedTuple "named tuple", that
-   * is by providing the arguents as NamedValues of items. In the example below `name1` and `name2`
+   * Constructing a page is done the same way as constructing an sgl::NamedTuple, that
+   * is by providing the arguments as NamedValues of items. In the example below `name1` and `name2`
    * are of type sgl::Name, and `item1` and `item2` fullfill the item concept.
    *
    * ```cpp
    *  #include "sgl/page.hpp"
    *
-   *  auto page = sgl::Page(name1 <<= item1, name2 <<= item2, ...);
+   *  auto page = sgl::Page(name1 <<= item1, name2 <<= item2);
    * ```
    *
    * A static assert will be triggered if two items in a page have the same name, i.e. the follwoing
@@ -77,6 +78,11 @@ namespace sgl {
    *  auto page = sgl::Page(name1 <<= item1, name1 <<= item2, ...); // error, item1 and item2 have
    *                                                                // the same name
    * ```
+   *
+   * Like the sgl::NamedTuple, the page also offers possibilities to apply a fucntor on its items
+   * with overloads for sgl::for_each(), and Page::for_each_item(). Additionally, any functor thath
+   * can be applied with the aforementioned methods can also be called just on the current item with
+   * the Page::for_current_item() method.
    *
    * @tparam NameList sgl::type_list of sgl::Name
    * @tparam ItemList sgl::type_list of item types

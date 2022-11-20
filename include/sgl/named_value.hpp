@@ -22,8 +22,8 @@ namespace sgl {
 
   /**
    * @headerfile named_value.hpp "sgl/named_value.hpp"
-   * @brief This type represents a pair of a sgl::Name and a value of type T.  To create a
-   * NamedValue, either use the constructor or the @ref sgl::operator<<=(name, value). An
+   * @brief This type represents a pair of an sgl::Name and a value of type T. To create a
+   * NamedValue, either use the constructor or the @ref sgl::operator <<=() "operator <<=". An
    * example of how to use:
    *
    * @code
@@ -94,17 +94,17 @@ namespace sgl {
 
   /**
    * @brief This operator exists for easy creation of named arguments, i.e.
-   * @ref sgl::NamedValue<Name,T> "NamedValue". The return type of this operator is an @ref
-   * sgl::NamedValue<Name,T> "NamedValue", if T is not another name type. The reasons for using
-   * this operator to create a NamedValue are the following:
+   * sgl::NamedValue. The return type of this operator is an sgl::NamedValue<Name,T> "NamedValue",
+   * if T is not another name type. The reasons for using this operator to create a NamedValue are
+   * the following:
    *  - it is has the second lowest precedence.
    *  - it is not often used, i.e. no real danger of confusing it with anything else.
    *  - it can be implemented as a non member function.
    *
-   * @code
+   * ```cpp
    * // the type of named_value is NamedValue<Name<'n','a','m','e'>, float>
    * auto named_value {NAME("name") <<= 2.5f};
-   * @endcode
+   * ```
    *
    * @tparam T value type
    * @tparam Chars characters of the name

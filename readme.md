@@ -1,8 +1,8 @@
 # Static Gui Library
 
 Welcome to this repository. It contains the source code for sgl, the static gui
-library for character based displays. This is still a work in progress,
-documentation and testing is not complete yet, as well as some feature missing
+library for alphanumeric displays. This is still a work in progress,
+documentation and testing is not complete yet, as well as some features missing
 or being buggy.
 
 ## About

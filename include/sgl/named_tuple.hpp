@@ -22,53 +22,73 @@
 
 namespace sgl {
 
-  template <typename F, typename... Ts>
-  inline constexpr bool
-      nothrow_invocable_for_each = (std::is_nothrow_invocable_v<std::decay_t<F>, Ts> && ...);
-
   /**
    * @headerfile named_tuple.hpp "sgl/named_tuple.hpp"
-   * @brief NamedTuple is fixed-size collection of heterogeneous and named values (essentially
-   * std::tuple). @anchor NamedTuple The difference to std::tuple is that elements in a NamedTuple can also also be
-   * accessed by the elements @ref sgl::Name "name" instead of just by index.
+   * @brief NamedTuple is fixed-size collection of heterogeneous values (essentially std::tuple).
+   * @anchor NamedTuple The difference to std::tuple is that elements in a NamedTuple can also also
+   * be accessed by the elements @ref sgl::Name "name" instead of just by index.
    *
-   * @details Creating a NamedTuple is most easily done with the @ref
-   * sgl::operator<<=(). This way, CTAD will do all the magic for you.
+   * @details Creating a NamedTuple is most easily done with the @ref sgl::operator <<=() "operator <<=".
+   * This way, CTAD will do all the magic for you.
    *
-   * @code
+   * First create the names of the tuple elements. Names must be of type sgl::Name<...>. Using the
+   * NAME macro is the easiest way to achieve this.
+   *
+   * ```cpp
    * #include "sgl/named_tuple.hpp"
    *
-   * // First create the names of the tuple elements. Names must be of type sgl::Name<...>.
-   * // Using the NAME macro is the easiest way to achieve this.
    * constexpr auto name1 = NAME("name1");
    * constexpr auto name2 = NAME("name2");
    * constexpr auto name3 = NAME("name3");
    *
-   * // Next, a named tuple can be created by constructing it from NamedValues.
-   * // A NamedValue is most easily created with the '<<=' operator. This operator takes an
-   * // sgl::Name N on the left hand side and a value of type T on the right hand side, and returns
-   * // a NamedValue<N,T>.
-   *  auto tuple = sgl::NamedTuple( name1 <<= 5, name2 <<= 1.15,  name3 <<= 5.3f);
+   * ```
    *
-   * @endcode
+   * Next, a named tuple can be created by constructing it from NamedValues.
+   * A NamedValue is most easily created with the '<<=' operator. This operator takes a name of
+   * type N on the left hand side and a value of type T on the right hand side, and returns a
+   * sgl::NamedValue<N,T>.
+   *
+   *
+   * ```cpp
+   *  auto tuple = sgl::NamedTuple( name1 <<= 5, name2 <<= 1.15,  name3 <<= 5.3f);
+   * ```
+   *
+   * Equivalent would be
+   *
+   * ```cpp
+   *
+   * auto tuple = sgl::NamedTuple(sgl::NamedValue{name1, 5}, sgl::NamedValue{name2, 1.15},
+   * sgl::NamedValue{name3, 5.3f});
+   *
+   * ```
    *
    * The named tuple can be accessed with the sgl::get() and NamedTuple::get() methods by index or
    * name. There is also a [] operator for indexing by name.
    *
-   * @code
-   * // prints '5, 1.15, 5.3', tuple indexed by different, but equivalent, methods
-   * std::cout << tuple[name1] << ", " << sgl::get(name2,tuple) << ", " << tuple.get(name3) << std::endl;
-   * // same as above
-   * std::cout << tuple.get<0>() ", " << sgl::get<1>(tuple) << ", " << tuple.get<2>() << std::endl;
-   * @endcode
+   * ```cpp
+   *  // prints '5, 1.15, 5.3', tuple indexed by different, but equivalent, methods
+   *  std::cout << tuple[name1] << ", " << sgl::get(name2,tuple) << ", " << tuple.get(name3) <<
+   *  std::endl;
+   *  // same as above
+   *  std::cout << tuple.get<0>() ", " << sgl::get<1>(tuple) << ", " << tuple.get<2>() << std::endl;
+   * ```
    *
    * A variadic functor like a generic lambda can be invoked on all values, again with free and
    * member function overloads:
    *
-   * @code
-   * sgl::for_each(tuple, [](auto& value){ ...});
-   * tuple.for_each([](auto& value) { ... });
-   * @endcode
+   * ```cpp
+   *  sgl::for_each(tuple, [](const auto& value){
+   *    std::cout << value << ", ";
+   *  });
+   * ```
+   *
+   * or as a member function:
+   *
+   * ```cpp
+   *  tuple.for_each([](const auto& value){
+   *    std::cout << value << ", ";
+   *  });
+   * ```
    *
    * @tparam Names names of the elements. Must be of type sgl::Name<....>.
    * @tparam Ts value types of the elements.
@@ -196,7 +216,7 @@ namespace sgl {
      * @param f callable instance
      */
     template <typename F>
-    constexpr void for_each(F&& f) ;
+    constexpr void for_each(F&& f);
 
     /**
      * @brief apply a callable f on each value in the tuple.
@@ -206,7 +226,7 @@ namespace sgl {
      * callable type @param f callable instance
      */
     template <typename F>
-    constexpr void for_each(F&& f) const ;
+    constexpr void for_each(F&& f) const;
 
     /**
      * @brief apply a callable f on each element. f will be called with the name of the element as
@@ -330,7 +350,7 @@ namespace sgl {
    * @param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f) ;
+  constexpr void for_each(NamedTuple<NameList, TypeList>& tuple, F&& f);
 
   /**
    * @brief apply f on each value in the const tuple. f must be invocable with every const type
@@ -346,7 +366,7 @@ namespace sgl {
    * @param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f) ;
+  constexpr void for_each(const NamedTuple<NameList, TypeList>& tuple, F&& f);
 
   /**
    * @brief apply f on each element in the tuple with the elements name and value. f must be
@@ -381,8 +401,7 @@ namespace sgl {
    * @param f functor
    */
   template <typename F, typename NameList, typename TypeList>
-  constexpr void
-      for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f);
+  constexpr void for_each_with_name(const NamedTuple<NameList, TypeList>& tuple, F&& f);
 } // namespace sgl
 
 #include "sgl/impl/named_tuple_impl.hpp"
