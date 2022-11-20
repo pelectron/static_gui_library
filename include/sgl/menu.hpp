@@ -37,6 +37,7 @@ namespace sgl {
    * @details It consists of a NameTuple of pages, an index to keep track of the current page, and
    * an input handler. The default input handler just delegates the input to the current page and
    * returns its result.
+   *
    * Constructing a menu is the same as constructing a [NamedTuple](#NamedTuple) of pages.
    *
    * @tparam NameList name of the pages. The type of NameList is sgl::type_list<sgl::Name<...>...>.
@@ -257,14 +258,10 @@ namespace sgl {
      * @{
      */
     template <typename F>
-    constexpr void for_each_page_with_name(F&& f) {
-      sgl::for_each_with_name(pages_, std::forward<F>(f));
-    }
+    constexpr void for_each_page_with_name(F&& f);
 
     template <typename F>
-    constexpr void for_each_page_with_name(F&& f) const {
-      sgl::for_each_with_name(pages_, std::forward<F>(f));
-    }
+    constexpr void for_each_page_with_name(F&& f) const;
 
     /** @} */
 
@@ -325,10 +322,10 @@ namespace sgl {
    * @{
    */
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f);
+  constexpr decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(const Menu<NameList, PageList>& menu, F&& f);
+  constexpr void for_each(const Menu<NameList, PageList>& menu, F&& f);
   /** @} */
 
   /**
@@ -342,10 +339,10 @@ namespace sgl {
    * @{
    */
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f);
+  constexpr void for_each_with_name(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f);
+  constexpr void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f);
   /** @} */
 
   /**
@@ -358,10 +355,10 @@ namespace sgl {
    * @{
    */
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f);
+  constexpr decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f);
+  constexpr decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f);
   /** @} */
 
 } // namespace sgl

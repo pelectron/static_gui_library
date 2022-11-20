@@ -230,33 +230,45 @@ namespace sgl {
     return this->for_current_page([i](const auto& page) { return page.item_text(i); });
   }
 
+  template <typename NameList, typename PageList>
+  template <typename F>
+  constexpr void Menu<NameList, PageList>::for_each_page_with_name(F&& f) {
+    sgl::for_each_with_name(pages_, std::forward<F>(f));
+  }
+
+  template <typename NameList, typename PageList>
+  template <typename F>
+  constexpr void Menu<NameList, PageList>::for_each_page_with_name(F&& f) const {
+    sgl::for_each_with_name(pages_, std::forward<F>(f));
+  }
+
   template <typename NameList, typename PageList, typename F>
-  void for_each(Menu<NameList, PageList>& menu, F&& f) {
+  constexpr void for_each(Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each(const Menu<NameList, PageList>& menu, F&& f) {
+  constexpr void for_each(const Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(Menu<NameList, PageList>& menu, F&& f) {
+  constexpr void for_each_with_name(Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) {
+  constexpr void for_each_with_name(const Menu<NameList, PageList>& menu, F&& f) {
     menu.for_each_page_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) {
+  constexpr decltype(auto) for_current(Menu<NameList, PageList>& menu, F&& f) {
     return menu.for_current_page(std::forward<F>(f));
   }
 
   template <typename NameList, typename PageList, typename F>
-  decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) {
+  constexpr decltype(auto) for_current(const Menu<NameList, PageList>& menu, F&& f) {
     return menu.for_current_page(std::forward<F>(f));
   }
 } // namespace sgl

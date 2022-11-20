@@ -310,32 +310,32 @@ namespace sgl {
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each(Page<NameList, ItemList>& page, F&& f) {
+  constexpr void for_each(Page<NameList, ItemList>& page, F&& f) {
     return page.for_each_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each(const Page<NameList, ItemList>& page, F&& f) {
+  constexpr void for_each(const Page<NameList, ItemList>& page, F&& f) {
     return page.for_each_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(Page<NameList, ItemList>& page, F&& f) {
+  constexpr void for_each_with_name(Page<NameList, ItemList>& page, F&& f) {
     page.for_each_item_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(const Page<NameList, ItemList>& page, F&& f) {
+  constexpr void for_each_with_name(const Page<NameList, ItemList>& page, F&& f) {
     page.for_each_item_with_name(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(Page<NameList, ItemList>& page, F&& f) {
+  constexpr decltype(auto) for_current(Page<NameList, ItemList>& page, F&& f) {
     return page.for_current_item(std::forward<F>(f));
   }
 
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(const Page<NameList, ItemList>& page, F&& f) {
+  constexpr decltype(auto) for_current(const Page<NameList, ItemList>& page, F&& f) {
     return page.for_current_item(std::forward<F>(f));
   }
 

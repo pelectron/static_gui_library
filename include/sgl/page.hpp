@@ -404,7 +404,7 @@ namespace sgl {
    * @param f functor instance
    */
   template <typename NameList, typename ItemList, typename F>
-  void for_each(sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr void for_each(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /**
    * @brief apply f on each item in a page. This will call f with a const reference to the item for
@@ -416,7 +416,7 @@ namespace sgl {
    * @param f functor instance
    */
   template <typename NameList, typename ItemList, typename F>
-  void for_each(const sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr void for_each(const sgl::Page<NameList, ItemList>& page, F&& f);
 
   /**
    * @brief apply f on each item in a page. f will be called with the name of the item as an
@@ -429,7 +429,7 @@ namespace sgl {
    * @param f functor instance
    */
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr void for_each_with_name(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /**
    * @brief apply f on each item in a page. f will be called with the name of the item as an
@@ -440,7 +440,7 @@ namespace sgl {
    * @param f functor instance
    */
   template <typename NameList, typename ItemList, typename F>
-  void for_each_with_name(const sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr void for_each_with_name(const sgl::Page<NameList, ItemList>& page, F&& f);
 
   /**
    * @brief apply functor f on the current item of a page. This will call f with a reference to the
@@ -453,7 +453,7 @@ namespace sgl {
    * @return returns the return value of f.
    */
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr decltype(auto) for_current(sgl::Page<NameList, ItemList>& page, F&& f);
 
   /**
    * @brief apply functor f on the current item of a page. This will call f with a const reference
@@ -466,7 +466,7 @@ namespace sgl {
    * @return returns the return value of f.
    */
   template <typename NameList, typename ItemList, typename F>
-  decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f);
+  constexpr decltype(auto) for_current(const sgl::Page<NameList, ItemList>& page, F&& f);
 
 } // namespace sgl
 
