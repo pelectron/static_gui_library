@@ -124,7 +124,7 @@ namespace sgl {
       equal to sgl::error(Page&, sgl::input).[See here](markdown/concepts.md#input-handler) for
       more info.
      */
-    using InputHandler_t = Callable<error(Page&, sgl::input)>;
+    using InputHandler_t = sgl::Callable<error(Page&, sgl::input)>;
 
     /**
       Concrete page action type. Page actions are callables which can be invoked with a reference
@@ -162,14 +162,17 @@ namespace sgl {
     [[nodiscard]] constexpr size_t current_item_index() const noexcept;
 
     /**
-      set the current item index. Zero based index.
+      set the current item index. Zero based index. This will also reset the page back into
+      navigation mode.
       @param i page index
       @return Page&
      */
     constexpr Page& set_current_item(size_t i) noexcept;
 
     /**
-      set current item by name.
+      set current item by name. This will also reset the page back into
+      navigation mode.
+
       @tparam Cs characters of name
       @param name item name
       @return Page&
@@ -360,6 +363,10 @@ namespace sgl {
       @return sgl::string_view<char_type>
      */
     constexpr sgl::string_view<char_type> item_text(size_t i) const noexcept;
+
+    template <typename InputHandler,
+              enable_if_is_input_handler<InputHandler, Page<NameList, ItemList>> = true>
+    constexpr Page& set_input_handler(InputHandler&& handler) noexcept;
 
   private:
     // default input handler

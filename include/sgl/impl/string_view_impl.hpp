@@ -35,11 +35,6 @@ namespace sgl {
       : data_(str), size_(N - 1) {}
 
   template <typename CharT>
-  template <typename StrLike>
-  constexpr string_view<CharT>::string_view(const StrLike& str) noexcept
-      : data_(str.data()), size_(str.size()) {}
-
-  template <typename CharT>
   [[nodiscard]] constexpr const CharT* string_view<CharT>::data() const noexcept {
     return data_;
   }

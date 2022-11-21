@@ -49,12 +49,6 @@ namespace sgl {
     template <size_t N>
     explicit constexpr string_view(const CharT (&str)[N]) noexcept;
 
-    /// construct from string like type, i.e. must have a data() and a size()
-    /// function.
-    /// @param str string to view
-    template <typename StrLike>
-    explicit constexpr string_view(const StrLike& str) noexcept;
-
     /// use default constructor for empty string view
     string_view(std::nullptr_t, size_t) = delete;
 

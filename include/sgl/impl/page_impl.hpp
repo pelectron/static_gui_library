@@ -5,6 +5,7 @@
 //
 #ifndef SGL_IMPL_PAGE_IMPL_HPP
 #define SGL_IMPL_PAGE_IMPL_HPP
+#include "sgl/item_concepts.hpp"
 #include "sgl/page.hpp"
 
 namespace sgl {
@@ -51,6 +52,10 @@ namespace sgl {
       index_ = sgl::index_of_v<sgl::Name<Cs...>, NameList>;
       static_cast<void>(name);
     }
+
+    if (is_in_edit_mode())
+      set_navigation_mode();
+
     return *this;
   }
 
@@ -202,6 +207,15 @@ namespace sgl {
   constexpr sgl::string_view<typename Page<NameList, ItemList>::char_type>
       Page<NameList, ItemList>::item_text(size_t i) const noexcept {
     return this->item_text_impl<0>(i);
+  }
+
+  template <typename NameList, typename ItemList>
+  template <typename InputHandler,
+            enable_if_is_input_handler<InputHandler, Page<NameList, ItemList>>>
+  constexpr Page<NameList, ItemList>&
+      Page<NameList, ItemList>::set_input_handler(InputHandler&& handler) noexcept {
+    input_handler_.bind(std::forward<InputHandler>(handler));
+    return *this;
   }
 
   template <typename NameList, typename ItemList>

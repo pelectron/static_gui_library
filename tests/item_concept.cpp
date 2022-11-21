@@ -3,8 +3,8 @@
 #include <catch2/catch.hpp>
 
 struct Item {
-    using char_type = char;
-    static constexpr size_t text_size = 25;
+  using char_type = char;
+  static constexpr size_t text_size = 25;
 
   sgl::error handle_input(sgl::input) noexcept { return sgl::error::edit_finished; }
 
@@ -17,8 +17,8 @@ struct Item {
 };
 
 struct Item2 {
-    using char_type = char;
-    static constexpr size_t text_size = 322;
+  using char_type = char;
+  static constexpr size_t text_size = 322;
 
   sgl::error handle_input(sgl::input) noexcept { return sgl::error::edit_finished; }
 
@@ -31,7 +31,6 @@ struct Item2 {
 
   const sgl::static_string<char_type, text_size>& text() const noexcept;
 };
-
 
 TEST_CASE("sgl::is_item_v") {
   STATIC_REQUIRE(sgl::is_item_v<Item>);

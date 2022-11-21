@@ -68,7 +68,7 @@ namespace sgl {
       conversion operator to string_view
       @return sgl::string_view<CharT>
      */
-    constexpr explicit operator string_view<CharT>() noexcept;
+    constexpr explicit operator string_view<CharT>() const noexcept;
 
     /**
       get size of static string, i.e. number of characters.
