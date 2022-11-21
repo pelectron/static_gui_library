@@ -2,3 +2,6 @@ docs/**
 subprojects/**
 **build**
 .vscode/**
+compile_commands.json
+compile_commands.json.lnk
+.cache

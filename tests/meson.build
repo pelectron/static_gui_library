@@ -28,6 +28,7 @@ test_sources = [
   'name.cpp',
   'named_tuple.cpp',
   'named_value.cpp',
+  'page.cpp',
   'pair.cpp',
   'static_string.cpp',
   'string_view.cpp',

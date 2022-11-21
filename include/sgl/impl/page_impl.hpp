@@ -35,6 +35,8 @@ namespace sgl {
   constexpr Page<NameList, ItemList>&
       Page<NameList, ItemList>::set_current_item(size_t i) noexcept {
     index_ = i % sgl::list_size_v<ItemList>;
+    if (is_in_edit_mode())
+      set_navigation_mode();
     return *this;
   }
 
@@ -199,7 +201,7 @@ namespace sgl {
   template <typename NameList, typename ItemList>
   constexpr sgl::string_view<typename Page<NameList, ItemList>::char_type>
       Page<NameList, ItemList>::item_text(size_t i) const noexcept {
-    return this->item_text_impl(i);
+    return this->item_text_impl<0>(i);
   }
 
   template <typename NameList, typename ItemList>
@@ -303,7 +305,7 @@ namespace sgl {
       return {};
     } else {
       if (I == i) {
-        return sgl::get<I>(items_).text();
+        return {sgl::get<I>(items_).text().data(), sgl::get<I>(items_).text().size()};
       }
       return item_text_impl<I + 1>(i);
     }

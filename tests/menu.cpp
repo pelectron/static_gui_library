@@ -10,20 +10,18 @@ enum class Setting { opt1, opt2, opt3 };
 enum class OtherSetting { Up, Down, Left, Right };
 
 constexpr auto Page1() noexcept {
-  // a page is more or less a named_tuple of items. The <<= operator 'binds' the name(created with
-  // the NAME macro) on the left hand side to the item on the right hand side.
-  return sgl::Page(
-      NAME("bool item 1") <<= sgl::Boolean(true),              // boolean item
-      NAME("setting item 1") <<= sgl::make_enum(Setting::opt1, // enumerated item
-                                                "Option 1",
-                                                Setting::opt2,
-                                                "Option 2",
-                                                Setting::opt3,
-                                                "Option 3"),
-      NAME("double item 1") <<= sgl::numeric(1.0_double, 1.0), // item holding a double
-      NAME("float item 1") <<= sgl::numeric(1.0_float, 1.0f),  // item holding a float
-      NAME("int item 1") <<= sgl::numeric<12, char>(1, 2),     // item holding an int
-      NAME("link to page 2") <<= sgl::pagelink(NAME("page2"), "return to page 2") // a page link
+  return sgl::Page(NAME("bool item 1") <<= sgl::Boolean(true),              // boolean item
+                   NAME("setting item 1") <<= sgl::make_enum(Setting::opt1, // enumerated item
+                                                             "Option 1",
+                                                             Setting::opt2,
+                                                             "Option 2",
+                                                             Setting::opt3,
+                                                             "Option 3"),
+                   NAME("double item 1") <<= sgl::numeric(1.0_double, 1.0), // item holding a double
+                   NAME("float item 1") <<= sgl::numeric(1.0_float, 1.0f),  // item holding a float
+                   NAME("int item 1") <<= sgl::numeric<12, char>(1, 2),     // item holding an int
+                   NAME("link to page 2") <<=
+                   sgl::pagelink(NAME("page2"), "return to page 2") // a page link
   );
 }
 
@@ -49,6 +47,9 @@ constexpr auto make_menu() {
   return sgl::Menu(NAME("page1") <<= Page1(), NAME("page2") <<= Page2());
 }
 
+constexpr auto page1 = NAME("page1");
+constexpr auto page2 = NAME("page2");
+
 TEST_CASE("sgl::Menu") {
   auto menu = sgl::Menu(NAME("page1") <<= Page1(), NAME("page2") <<= Page2());
 
@@ -56,23 +57,27 @@ TEST_CASE("sgl::Menu") {
   bool page1_exited = false;
   bool page2_entered = false;
   bool page2_exited = false;
+  bool bool1_ticked = false;
 
-  menu[NAME("page1")].set_on_enter([&page1_entered](auto&) noexcept -> sgl::error {
+  menu[page1].set_on_enter([&page1_entered](auto&) noexcept -> sgl::error {
     page1_entered = true;
     return sgl::error::no_error;
   });
 
-  menu[NAME("page1")].set_on_exit([&page1_exited](auto&) noexcept -> sgl::error {
+  menu[page1].set_on_exit([&page1_exited](auto&) noexcept -> sgl::error {
     page1_exited = true;
     return sgl::error::no_error;
   });
 
-  menu[NAME("page2")].set_on_enter([&page2_entered](auto&) noexcept -> sgl::error {
+  menu[page1][NAME("bool item 1")].set_tick_handler(
+      [&bool1_ticked](auto&) noexcept { bool1_ticked = true; });
+
+  menu[page2].set_on_enter([&page2_entered](auto&) noexcept -> sgl::error {
     page2_entered = true;
     return sgl::error::no_error;
   });
 
-  menu[NAME("page2")].set_on_exit([&page2_exited](auto&) noexcept -> sgl::error {
+  menu[page2].set_on_exit([&page2_exited](auto&) noexcept -> sgl::error {
     page2_exited = true;
     return sgl::error::no_error;
   });
@@ -80,6 +85,7 @@ TEST_CASE("sgl::Menu") {
   REQUIRE(menu.size() == 2);
 
   SECTION("current_page_index") { REQUIRE(menu.current_page_index() == 0); }
+
   SECTION("set_current_page(size_t)") {
     REQUIRE(menu.current_page_index() == 0);
 
@@ -100,24 +106,26 @@ TEST_CASE("sgl::Menu") {
     REQUIRE(page2_exited);
   }
   SECTION("set_current_page(sgl::Name)") {
-   
+
     REQUIRE(menu.current_page_index() == 0);
 
-    auto error = menu.set_current_page(NAME("page2"));
-    
+    auto error = menu.set_current_page(page2);
+
     REQUIRE(error == sgl::error::no_error);
     REQUIRE(menu.current_page_index() == 1);
     REQUIRE(page1_exited);
     REQUIRE(page2_entered);
-    
+
     page1_entered = false;
     page2_exited = false;
-    error = menu.set_current_page(NAME("page1"));
+    error = menu.set_current_page(page1);
     REQUIRE(error == sgl::error::no_error);
     REQUIRE(page1_entered);
     REQUIRE(page2_exited);
   }
+
   SECTION("item_name() and page_name()") {
+    REQUIRE(menu.current_page_index() == 0);
     REQUIRE(menu.page_name() == "page1"_sv);
     REQUIRE(menu.item_name(0) == "bool item 1"_sv);
     REQUIRE(menu.item_name(1) == "setting item 1"_sv);
@@ -125,6 +133,7 @@ TEST_CASE("sgl::Menu") {
     REQUIRE(menu.item_name(3) == "float item 1"_sv);
     REQUIRE(menu.item_name(4) == "int item 1"_sv);
     REQUIRE(menu.item_name(5) == "link to page 2"_sv);
+    REQUIRE(menu.item_name(6) == sgl::string_view<char>{});
 
     auto error = menu.set_current_page(1);
     REQUIRE(menu.page_name() == "page2"_sv);
@@ -136,12 +145,65 @@ TEST_CASE("sgl::Menu") {
     REQUIRE(menu.item_name(3) == "float item 2"_sv);
     REQUIRE(menu.item_name(4) == "int item 2"_sv);
     REQUIRE(menu.item_name(5) == "link to page 1"_sv);
+    REQUIRE(menu.item_name(6) == sgl::string_view<char>{});
   }
 
-  SECTION("switching pages") {
+  SECTION("switching pages with sgl::PageLink") {
     REQUIRE(menu.set_current_page(0) == sgl::error::no_error);
     REQUIRE(menu.handle_input(sgl::input::up) == sgl::error::no_error);
     REQUIRE(menu.handle_input(sgl::input::enter) == sgl::error::no_error);
     REQUIRE(menu.current_page_index() == 1);
+    REQUIRE_FALSE(menu[page1].is_in_edit_mode());
+  }
+
+  SECTION("item_text()") {
+    REQUIRE(menu.current_page_index() == 0);
+    REQUIRE(sgl::string_view<char>{menu[page1][NAME("bool item 1")].text().data(),
+                                   menu[page1][NAME("bool item 1")].text().size()} ==
+            menu.item_text(0));
+    REQUIRE(sgl::string_view<char>{menu[page1][NAME("int item 1")].text().data(),
+                                   menu[page1][NAME("int item 1")].text().size()} ==
+            menu.item_text(4));
+  }
+  SECTION("tick()") {
+    REQUIRE_FALSE(bool1_ticked);
+    menu.tick();
+    REQUIRE(bool1_ticked);
+  }
+
+  SECTION("get_page() and operator[]") {
+    REQUIRE(&menu[page1] == &menu.get_page<0>());
+    REQUIRE(&menu[page2] == &menu.get_page<1>());
+  }
+
+  SECTION("for_current_page") {
+    bool p1_visited = false;
+    bool p2_visited = false;
+    REQUIRE(menu.current_page_index() == 0);
+    menu.for_current_page([&p1_visited](auto&) noexcept { p1_visited = true; });
+    REQUIRE(p1_visited);
+    REQUIRE_FALSE(p2_visited);
+
+    p1_visited = false;
+    auto error = menu.set_current_page(1);
+    menu.for_current_page([&p2_visited](auto&) noexcept { p2_visited = true; });
+    REQUIRE(p2_visited);
+    REQUIRE_FALSE(p1_visited);
+    REQUIRE(error == sgl::error::no_error);
+  }
+  SECTION("for_current_page()const") {
+    bool p1_visited = false;
+    bool p2_visited = false;
+    REQUIRE(menu.current_page_index() == 0);
+    menu.for_current_page([&p1_visited](const auto&) noexcept { p1_visited = true; });
+    REQUIRE(p1_visited);
+    REQUIRE_FALSE(p2_visited);
+
+    p1_visited = false;
+    auto error = menu.set_current_page(1);
+    menu.for_current_page([&p2_visited](const auto&) noexcept { p2_visited = true; });
+    REQUIRE(p2_visited);
+    REQUIRE_FALSE(p1_visited);
+    REQUIRE(error == sgl::error::no_error);
   }
 }
