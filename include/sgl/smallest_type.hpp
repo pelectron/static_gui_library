@@ -10,9 +10,11 @@
 #include <type_traits>
 
 namespace sgl {
+  /// @headerfile smallest_type.hpp "sgl/smallest_type.hpp"
+
   /**
    * @brief type alias to get smallest type needed to store a value of N, for example for
-   * N < 256 this evaluates to uint8_t.
+   * N < 256 this evaluates to ``uint8_t``.
    * @tparam N value to store.
    */
   template <size_t N>

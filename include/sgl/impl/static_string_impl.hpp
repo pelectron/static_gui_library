@@ -2,6 +2,7 @@
 #define SGL_STATIC_STRING_IMPL_HPP
 #include "sgl/static_string.hpp"
 
+#include <type_traits>
 namespace sgl{
 
   template <typename CharT, size_t Capacity>

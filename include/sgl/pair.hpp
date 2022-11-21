@@ -9,10 +9,12 @@
 #include <utility>
 
 namespace sgl {
-  /// simple pair type. It holds two public members, `first` and `second` of type T1 or T2
-  /// respectively
-  /// @tparam T1 type of the first element
-  /// @tparam T2 type of the second elment.
+  /**
+    simple pair type. It holds two public members, `first` and `second` of type T1 or T2
+    respectively.
+    @tparam T1 type of the first element
+    @tparam T2 type of the second elment.
+   */
   template <typename T1, typename T2>
   struct Pair {
     using first_type = T1;

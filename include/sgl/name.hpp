@@ -1,13 +1,13 @@
 /**
- * @file sgl/name.hpp
- * @author Pelé Constam (pelectron1602@gmail.com)
- * @brief This file defines the sgl::Name class, the type trait sgl::is_name_v and the NAME
- * convenience macro.
- * @version 0.1
- * @date 2022-07-21
- * @copyright Copyright Pele Constam 2022.
- * Distributed under the Boost Software License, Version 1.0.
- * (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+  @file sgl/name.hpp
+  @author Pelé Constam (pelectron1602@gmail.com)
+  This file defines the sgl::Name class, the type trait sgl::is_name_v and the NAME
+  convenience macro.
+  @version 0.1
+  @date 2022-07-21
+  @copyright Copyright Pele Constam 2022.
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
  */
 
 #ifndef SGL_NAME_HPP
@@ -18,39 +18,39 @@
 
 namespace sgl {
   /**
-   * @headerfile name.hpp "slg/name.hpp"
-   *
-   * @brief This class represents a compile time string used by NamedValue and
-   * sgl::NamedTuple.
-   *
-   * To create a name, there are two ways:
-   *
-   * Using the ``NAME`` macro defined at the bottom of this file
-   *
-   * ```cpp
-   * constexpr auto name1 = NAME("a string literal");
-   * ```
-   *
-   *  or manually defining it, equivalent to constexpr auto name2 = NAME("N2");'
-   *
-   *
-   * ```cpp
-   * constexpr Name<'N','2'> name2;
-   *
-   * ```
-   *
-   * @tparam Chars characters of the name as template parameters
+    @headerfile name.hpp "slg/name.hpp"
+
+    This class represents a compile time string used by NamedValue and
+    sgl::NamedTuple.
+
+    To create a name, there are two ways:
+
+    Using the ``NAME`` macro defined at the bottom of this file
+
+    ```cpp
+    constexpr auto name1 = NAME("a string literal");
+    ```
+
+     or manually defining it, equivalent to constexpr auto name2 = NAME("N2");'
+
+
+    ```cpp
+    constexpr Name<'N','2'> name2;
+
+    ```
+
+    @tparam Chars characters of the name as template parameters
    */
   template <char... Chars>
   struct Name {
     /// static array of characters containing the name.
     static constexpr const char chars[]{Chars..., '\0'};
 
-    /// @brief conversion operator to sgl::string_view<char>
+    /// conversion operator to sgl::string_view<char>
     /// @return sgl::string_view<char>
     [[nodiscard]] constexpr explicit operator sgl::string_view<char>();
 
-    /// @brief get name as sgl::string_view<char>
+    /// get name as sgl::string_view<char>
     /// @return sgl::string_view<char>
     [[nodiscard]] constexpr sgl::string_view<char> to_view() const;
   };
@@ -69,9 +69,9 @@ namespace sgl {
   /// @endcond
 
   /**
-   * @brief evaluates to true if T is a name type, i.e. T = Name<Chars...>, where Chars is a
-   * parameter pack of char
-   * @tparam T type to check
+    evaluates to true if T is a name type, i.e. T = Name<Chars...>, where Chars is a
+    parameter pack of char
+    @tparam T type to check
    */
   template <typename T>
   static constexpr bool is_name_type_v = sgl::detail::is_name_type<T>::value;
@@ -80,19 +80,20 @@ namespace sgl {
 #include "impl/name_impl.hpp"
 
 /**
- * @brief convenience macro to define compile time string literals used by the NamedTuple for
- * indexing.
- * @details the way it works on a high level is the following:
- * NAME("hello") will turn into a value of type sgl::Name<'h','e','l','l','o'>. That is all there
- * is to it. An example of how to use:
- *
- * ```cpp
- *  constexpr auto name1 = NAME("name"); // equivalent to Name<'n','a','m','e'> name1;
- *
- *  constexpr auto home = NAME("homepage"); // Name<'h','o','m'','e','p','a','g','e'> home;
- * ```
- *
- * @param string_literal any valid string literal with character type char
+  Convenience macro to define compile time string literals used by the NamedTuple for
+  indexing.
+
+  the way it works on a high level is the following:
+  NAME("hello") will turn into a value of type sgl::Name<'h','e','l','l','o'>. That is all there
+  is to it. An example of how to use:
+ 
+  ```cpp
+   constexpr auto name1 = NAME("name"); // equivalent to Name<'n','a','m','e'> name1;
+
+   constexpr auto home = NAME("homepage"); // Name<'h','o','m'','e','p','a','g','e'> home;
+  ```
+
+  @param string_literal any valid string literal with character type char
  */
 #define NAME(string_literal)                                                                  \
   sgl::detail::compile_time::invoke([] {                                                      \

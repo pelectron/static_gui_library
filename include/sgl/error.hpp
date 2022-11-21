@@ -1,7 +1,7 @@
 /**
  * @file error.hpp
  * @author Pelé Constam (pelectron1602@gmail.com)
- * @brief This file defines the sgl::error enum.
+ * This file defines the sgl::error enum.
  * @version 0.1
  * @date 2022-09-26
  *
@@ -17,12 +17,13 @@
 namespace sgl {
 
   /// @headerfile error.hpp "sgl/error.hpp"
-  /// @brief enumeration for error values.
+
+  /// enumeration for error values.
   enum class error : int {
-    no_error = 0,  //< no error occurred
-    invalid_input, ///< invalid input received
-    out_of_range,
-    buffer_too_small,
+    no_error = 0,     ///< no error occurred
+    invalid_input,    ///< invalid input received
+    out_of_range,     ///< value or index ot of range
+    buffer_too_small, ///< buffer size is too small
     null_page,
     null_element,
     string_conversion,

@@ -76,10 +76,10 @@ namespace sgl {
     return ec == sgl::error::no_error ? sgl::error::edit_finished : ec;
   }
 
-  constexpr auto make_bool(bool initial_value) { return sgl::Boolean(initial_value); }
+  constexpr auto boolean(bool initial_value) { return sgl::Boolean(initial_value); }
 
   template <typename CharT, size_t NTrue, size_t NFalse>
-  constexpr auto make_bool(bool initial_value,
+  constexpr auto boolean(bool initial_value,
                            const CharT (&true_string)[NTrue],
                            const CharT (&false_string)[NFalse]) {
     return Boolean(initial_value, true_string, false_string);

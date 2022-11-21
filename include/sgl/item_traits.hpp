@@ -13,7 +13,8 @@ namespace sgl {
         "This traits structure is not correctly defined. Either manually specialize "
         "sgl::ItemTraits or implement your own traits struct. You can statically assert that "
         "your traits structure is correctly implemented by using "
-        "sgl::is_item_trait_v<YourTraitsType>");
+        "sgl::is_item_trait_v<YourTraitsType>. See the concepts section in the doxygen "
+        "documentation or the file 'markdown/concepts.md' in the project root folder.");
   };
 
   /// @cond

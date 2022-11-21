@@ -2,6 +2,9 @@
 #define SGL_STRING_VIEW_IMPL_HPP
 #include "sgl/string_view.hpp"
 
+#include <limits>
+#include <type_traits>
+
 namespace sgl {
 
   template <typename CharT>
@@ -19,7 +22,7 @@ namespace sgl {
   template <typename CharT>
   constexpr string_view<CharT>::string_view(const CharT* str) noexcept : data_(str) {
     for (size_t i = 0;; ++i) {
-      if ((str[i] == static_cast<CharT>('\0')) || (i == sgl::numeric_limits<size_t>::max())) {
+      if ((str[i] == static_cast<CharT>('\0')) || (i == std::numeric_limits<size_t>::max())) {
         size_ = i;
         break;
       }

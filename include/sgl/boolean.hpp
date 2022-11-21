@@ -8,32 +8,38 @@
 #include "sgl/item_base.hpp"
 
 namespace sgl {
-
   /// @headerfile boolean.hpp "sgl/boolean.hpp"
   /// @ingroup item_types
-  /// @brief This class implements a basic Boolean item. When clicked, it will
-  /// toggle its value and set its text accordingly.
-  /// A Boolean Item consists of the following data:
-  /// - bool value: the value of this item
-  /// - 'true' string_view: the text to show when value == true.
-  /// - 'false' string_view: the text to show when value == false.
-  /// @tparam TextSize number of characters per line in the menu
-  /// @tparam CharT character type of the item
+
+  /**
+    This class implements a basic Boolean item. When clicked, it will
+    toggle its value and set its text accordingly.
+
+    A Boolean Item consists of the following data:
+    - boolean value: the value of this item
+    - 'true' string_view: the text to show when value == true.
+    - 'false' string_view: the text to show when value == false.
+
+    @tparam TextSize number of characters per line in the menu
+    @tparam CharT character type of the item
+   */
   template <size_t TextSize, typename CharT>
   class Boolean : public sgl::ItemBase<Boolean<TextSize, CharT>> {
   public:
     /// string_view type used by this item
     using StringView = typename sgl::ItemBase<Boolean<TextSize, CharT>>::StringView;
 
-    /// @brief Construct a Boolean item, which toggles its text between "TRUE"
+    /// Construct a Boolean item, which toggles its text between "TRUE"
     /// and "FALSE" when clicked.
     /// @param initial_value initial value of the item
     explicit constexpr Boolean(bool initial_value) noexcept;
 
-    /// @brief Construct a Boolean item with custom true and false strings.
-    /// @param value inital value of item
-    /// @param true_text text to set when value is true
-    /// @param false_text text to set when value is false
+    /**
+      Construct a Boolean item with custom true and false strings.
+      @param value inital value of item
+      @param true_text text to set when value is true
+      @param false_text text to set when value is false
+     */
     constexpr Boolean(bool value, StringView true_text, StringView false_text) noexcept;
 
     /// get value of item
@@ -68,22 +74,25 @@ namespace sgl {
   /// @addtogroup boolean_factories
   /// @{
 
-  /// @brief create a boolean item with default true and false string
+  /// create a boolean item with default true and false string
   /// @param initial_value initial value of boolean
-  /// @return sgl::Boolean<5,char>
-  constexpr auto make_bool(bool initial_value);
+  /// @return sgl::Boolean
+  constexpr auto boolean(bool initial_value);
 
-  /// @brief Create make boolean item with custom true and false string.
-  /// @tparam CharT character type
-  /// @tparam NTrue true string character array size
-  /// @tparam NFalse false string character array size
-  /// @param initial_value initial value of boolean
-  /// @param true_string string to show when item's value is true
-  /// @param false_string string to show when item's value is false
+  /**
+    Create a boolean item with custom true and false string.
+    @tparam CharT character type
+    @tparam NTrue true string character array size
+    @tparam NFalse false string character array size
+    @param initial_value initial value of boolean
+    @param true_string string to show when item's value is true
+    @param false_string string to show when item's value is false
+    @return sgl::Boolean
+  */
   template <typename CharT, size_t NTrue, size_t NFalse>
-  constexpr auto make_bool(bool initial_value,
-                           const CharT (&true_string)[NTrue],
-                           const CharT (&false_string)[NFalse]);
+  constexpr auto boolean(bool initial_value,
+                         const CharT (&true_string)[NTrue],
+                         const CharT (&false_string)[NFalse]);
   /// @}
 } // namespace sgl
 

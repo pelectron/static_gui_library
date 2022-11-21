@@ -1,7 +1,7 @@
 /**
  * @file item_base.hpp
  * @author Pelé Constam (pelectron1602@gmail.com)
- * @brief This files defines the item_base class template.
+ * This files defines the item_base class template.
  * @version 0.1
  * @date 2022-09-26
  *
@@ -20,17 +20,19 @@
 
 namespace sgl {
 
+  /// @headerfile item_base.hpp "sgl/item_base.hpp"
+
   /**
-   * @headerfile item_base.hpp "sgl/item_base.hpp"
-   * @brief CRTP base class for [Items](concepts.md#item).
-   * @details An item  minimally consists of a text field with const and non const getters, and
+   * CRTP base class for to reduce boilerplate when writing items.
+   *
+   * An item  minimally consists of a text field with const and non const getters, and
    * methods for handling inputs and ticks.
    *
    * ItemBase can be inherited from to enable these features via the CRTP pattern. Besides the
-   * minimal features of an [Item](concepts.md#item), ItemBase also provides means to change the
+   * minimal requirement for items, ItemBase also provides means to change the
    * input and tick handling strategy at runtime and constexpr time.
    *
-   * ItemBase has an sgl::Callable member for input and tick handling, which can be set with the
+   * ItemBase has a sgl::Callable member for input and tick handling, which can be set with the
    * set_input_handler() and set_tick_handler() functions respectively. The installed handlers will
    * then be called when the items handle_input() and tick() methods are called. See also the
    * [input handling docs](markdown/input_handling.md) and
@@ -80,13 +82,13 @@ namespace sgl {
     using TickHandler_t = sgl::Callable<void(item_type&)>;
 
     /**
-     * @brief Construct an item with text.
+     * Construct an item with text.
      *  @param text text of the item
      */
     explicit constexpr ItemBase(StringView text) noexcept;
 
     /**
-     * @brief Construct an item with name, text and input handler.
+     * Construct an item with name, text and input handler.
      * @tparam InputHandler input handler type
      * @param text text of the item
      * @param handler input handler
@@ -95,7 +97,7 @@ namespace sgl {
     constexpr ItemBase(StringView text, InputHandler&& handler) noexcept;
 
     /**
-     * @brief Construct an item with name, text and tick handler. The tick handler is called every
+     * Construct an item with name, text and tick handler. The tick handler is called every
      * time the menu's tick() method is called.
      * @tparam TickHandler tick handler type
      * @param text text of the item
@@ -105,7 +107,7 @@ namespace sgl {
     constexpr ItemBase(StringView text, TickHandler&& handler) noexcept;
 
     /**
-     * @brief construct an item with text and custom input and tick handlers. See InputHandler_t
+     * construct an item with text and custom input and tick handlers. See InputHandler_t
      * and TickHandler_t for more details.
      *
      * @tparam InputHandler input handler type
@@ -123,7 +125,7 @@ namespace sgl {
                        TickHandler&&  tick_handler) noexcept;
 
     /**
-     * @brief Can be used to give access to the menu from an item. sgl::Menu will
+     * Can be used to give access to the menu from an item. sgl::Menu will
      * call this function for all items it contains with its declared type, i.e.
      * this function can be statically overridden in derived classes.See
      * PageLink for an example of how it is used.
@@ -134,7 +136,7 @@ namespace sgl {
     constexpr void set_menu(Menu* m) noexcept;
 
     /**
-     * @brief calls the items input handler. Usually called by the containing page.
+     * calls the items input handler. Usually called by the containing page.
      * @param input input to handle.
      * @return sgl::error::no_error in case of no error.
      * @return sgl::error::edit_finished in case the item is done being edited.
@@ -146,29 +148,29 @@ namespace sgl {
     constexpr void tick() noexcept;
 
     /**
-     * @brief set the text field
+     * set the text field
      * @param new_text new text
      * @return sgl::error
      */
     constexpr sgl::error set_text(StringView new_text) noexcept;
 
     /**
-     * @brief get mutable access to text field
+     * get mutable access to text field
      * @return String&
      */
     constexpr String& text() noexcept { return text_; }
 
     /**
-     * @brief get const reference to text field
+     * get const reference to text field
      * @return const String&
      */
     constexpr const String& text() const noexcept { return text_; }
 
-    /// @brief clear the text field.
+    /// clear the text field.
     constexpr void clear_text() noexcept;
 
     /**
-     * @brief Set the input handler.
+     * Set the input handler.
      * @tparam InputHandler input handler type
      * @param handler custom [input handler](concepts.md#tick-handler).
      * @return item_type&
@@ -177,7 +179,7 @@ namespace sgl {
     constexpr item_type& set_input_handler(InputHandler&& handler) noexcept;
 
     /**
-     * @brief Set the tick handler of this item.
+     * Set the tick handler of this item.
      * @tparam TickHandler tick handler type
      * @param handler custom [tick handler](concepts.md#tick-handler).
      * @return item_type&

@@ -22,8 +22,8 @@
 #include <cstdint>
 #include <cwchar>
 
-
 namespace sgl {
+  /// @cond
   template <typename T>
   struct numeric_limits {
     static constexpr T max() noexcept;

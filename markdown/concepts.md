@@ -5,7 +5,7 @@ The concept is always provided as a table of variables and a table of expression
 using those variables. The table of expressions must be fulfilled in order for
 the concept to be satisfied.
 
-## Item {#item}
+## Item
 
 Items are the things which occupy one line in the display. As such, an Item should
 have a text storage, be able to handle input and get ticked. They can be used for
@@ -139,7 +139,7 @@ t.handle_input(i); // calls the handler
 ```
 
 For more info on the whole input handling process,
-see [here](markdown/input_handling.md).
+see [here](input_handling.md).
 
 ## Click Handler
 

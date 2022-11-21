@@ -39,12 +39,13 @@ namespace sgl {
     T data[N];
   };
 
-  /// @{
+  /// @cond
   template <typename T, size_t N>
   Array(const T (&)[N]) -> Array<T, N>;
 
   template <class T, class... U>
   Array(T, U...) -> Array<T, 1 + sizeof...(U)>;
-  /// @}
+  /// @endcond
+
 } // namespace sgl
 #endif /* SGL_ARRAY_HPP */

@@ -5,16 +5,22 @@
 //
 #ifndef SGL_STRING_VIEW_HPP
 #define SGL_STRING_VIEW_HPP
-#include "sgl/limits.hpp"
 
 #include <cstddef>
-#include <type_traits>
 
 namespace sgl {
 
   /// @headerfile string_view.hpp "sgl/string_view.hpp"
-  /// @brief A non owning 'view' of CharT elements. See std::string_view for an explanation of the
-  /// concept if it is unclear. @tparam CharT character type of the string_view
+
+  /**
+    A non owning 'view' of CharT elements. See ``std::string_view``
+    for an explanation of the concept if it is unclear. This is of course
+    not as fully featuerd as std::string_view, just a simple wrapper around
+    pointer to CharT and a size_t. See the namespace sgl::string_view_literals
+    for the literal operators.
+   
+    @tparam CharT character type of the string_view
+   */
   template <typename CharT>
   class string_view {
   public:
@@ -81,7 +87,7 @@ namespace sgl {
     /// @return string_view&
     constexpr string_view& operator=(const string_view& other) noexcept = default;
 
-    /// index operator, undefined behaviour if i >= size().
+    /// access the i-th element
     /// @param i index
     /// @return const CharT&
     [[nodiscard]] constexpr const CharT& operator[](size_t i) const noexcept;
@@ -92,40 +98,40 @@ namespace sgl {
   };
 
   /**
-   * @brief lexicographical comparison operator
-   * @tparam CharT character type
-   * @param s1 first view
-   * @param s2 second view
-   * @return true lexicographically equal
-   * @return false lexicographically not equal
+    lexicographical comparison operator
+    @tparam CharT character type
+    @param s1 first view
+    @param s2 second view
+    @return true lexicographically equal
+    @return false lexicographically not equal
    */
   template <typename CharT>
   constexpr bool operator==(const string_view<CharT> s1, const string_view<CharT> s2) noexcept;
 
-  /// @brief this namespace contains sgl::string_view literal operators
+  /// this namespace contains sgl::string_view literal operators
   namespace string_view_literals {
 
     /**
-     * string_view<char> literal operator
-     * @param str pointer to literal
-     * @param n literal size
-     * @return sgl::string_view<char>
+      string_view<char> literal operator
+      @param str pointer to literal
+      @param n literal size
+      @return sgl::string_view<char>
      */
     constexpr sgl::string_view<char> operator"" _sv(const char* str, size_t n) noexcept;
 
     /**
-     * string_view<char16_t> literal operator
-     * @param str pointer to literal
-     * @param n literal size
-     * @return sgl::string_view<char16_t>
+      string_view<char16_t> literal operator
+      @param str pointer to literal
+      @param n literal size
+      @return sgl::string_view<char16_t>
      */
     constexpr sgl::string_view<char16_t> operator"" _sv16(const char16_t* str, size_t n) noexcept;
 
     /**
-     * string_view<char32_t> literal operator
-     * @param str pointer to literal
-     * @param n literal size
-     * @return sgl::string_view<char32_t>
+      string_view<char32_t> literal operator
+      @param str pointer to literal
+      @param n literal size
+      @return sgl::string_view<char32_t>
      */
     constexpr sgl::string_view<char32_t> operator"" _sv32(const char32_t* str, size_t n) noexcept;
 

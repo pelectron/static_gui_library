@@ -1,4 +1,4 @@
-# input Handling
+# Input Handling
 
 This section explains how the default input handling works in sgl.
 It assumes you are familiar with the [architecture of sgl](architecture.md).

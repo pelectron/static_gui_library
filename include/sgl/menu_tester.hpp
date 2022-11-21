@@ -11,7 +11,7 @@
 
 namespace sgl {
 
-  /// @brief pair of sgl::input and sgl::string_view<char>
+  /// pair of sgl::input and sgl::string_view<char>
   /// @tparam char character type
   template <typename CharT>
   struct InputPair {
@@ -19,7 +19,7 @@ namespace sgl {
     sgl::string_view<CharT> string;
   };
 
-  /// @brief This class is used to map sgl::input values to string_views. It is
+  /// This class is used to map sgl::input values to string_views. It is
   /// used by the MenuTester class.
   /// @tparam char character type
   /// @tparam N number of mapped values
@@ -41,7 +41,7 @@ namespace sgl {
     }
   };
 
-  /// @brief This class provides an easy ways to test menus.
+  /// This class provides an easy ways to test menus.
   /// @see menu_tester.cpp for a complete example on how to use this class.
   /// @tparam Menu menu type
   /// @tparam N number of inputs mapped
@@ -49,8 +49,8 @@ namespace sgl {
   class MenuTester {
   public:
 
-    /// @brief Construct a new Menu Tester.
-    /// @details Example of how to use:
+    /// Construct a new Menu Tester.
+    /// Example of how to use:
     ///
     /// @code
     /// auto tester = MenuTester(sgl::make_menu(...), // the menu to test
@@ -73,7 +73,7 @@ namespace sgl {
 
     /// @}
 
-    /// @brief handles input
+    /// handles input
     /// @param input user input as string
     /// @return sgl::error
     sgl::error handle_input(sgl::string_view<char> input) {
@@ -92,7 +92,7 @@ namespace sgl {
       }
     }
 
-    /// @brief prints current page and its content to std::out
+    /// prints current page and its content to std::out
     void print() const {
       std::cout << "\n---------------\n";
       menu_.for_current_page([](const auto& page) {

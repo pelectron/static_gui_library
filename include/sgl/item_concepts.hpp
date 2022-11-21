@@ -1,7 +1,7 @@
 /**
  * @file sgl/numeric.hpp
  * @author Pelé Constam (pelectron1602@gmail.com)
- * @brief This file contains the type traits like facilities to check the concepts exposed by sgl.
+ * This file contains the type traits like facilities to check the concepts exposed by sgl.
  * [This document](markdown/concepts.md) provides a clear overview of these concepts.
  * @version 0.1
  * @date 2022-11-19
@@ -22,6 +22,7 @@
 #include <type_traits>
 
 namespace sgl {
+  /// @cond
   namespace detail {
     template <typename T>
     static constexpr bool always_false = false;
@@ -50,17 +51,17 @@ namespace sgl {
       static constexpr bool value = std::is_convertible_v<decltype(T::text_size), size_t>;
     };
 
-    /// @brief evaluates to true if T has han inner typename item_type.
+    /// evaluates to true if T has han inner typename item_type.
     /// @tparam T type to check
     template <typename T>
     static constexpr bool has_item_type_typedef_v = detail::has_item_type_typedef<T>::value;
 
-    /// @brief evaluates to true if T has han inner typename char_type.
+    /// evaluates to true if T has han inner typename char_type.
     /// @tparam T type to check
     template <typename T>
     static constexpr bool has_char_type_typedef_v = detail::has_char_type_typedef<T>::value;
 
-    /// @brief evaluates to true if the expression ``T::text_size`` is a constant of
+    /// evaluates to true if the expression ``T::text_size`` is a constant of
     /// type```size_t``.
     /// @tparam T type to check
     template <typename T>
@@ -73,87 +74,9 @@ namespace sgl {
     static constexpr bool value = detail::has_char_type_typedef_v<T> and detail::has_text_size_v<T>;
   };
 
-  /// @brief check if T is an Item Trait. An a class T must satisfy the following to be an Item
-  /// Trait:
-  ///
-  /// expression or typename | type                        | notes                         |
-  /// -----------------------|-----------------------------|-------------------------------|
-  /// typename T::char_type  | char, char16_t or char32_t. |                               |
-  /// T::text_size           | size_t                      | must be a constant expression |
-  ///
-  /// @tparam T type to check
-  template <typename T>
-  static constexpr bool is_item_trait_v = is_item_trait<T>::value;
-
-  /// @addtogroup handler_traits Handler traits
-  /// @ingroup sgl_traits
-  /// @{
-
-  /// @brief true if F is a valid input handler for Item.
-  /// Look [here](markdown/concepts.md#input-handler) for more info.
-  /// @tparam F handler type
-  /// @tparam Item item type
-  template <typename F, typename Item>
-  inline constexpr bool is_input_handler_for_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::input>and
-          std::is_trivially_destructible_v<F>and std::is_trivially_move_constructible_v<F>and
-                                                 std::is_trivially_copyable_v<F>;
-
-  /// @brief true if F is a valid click handler for Item.
-  /// Look [here](markdown/concepts.md#click-handler) for more info.
-  /// @tparam F handler type
-  /// @tparam Item item type
-  template <typename F, typename Item>
-  inline constexpr bool                                      is_click_handler_for_v =
-      std::is_nothrow_invocable_r_v<sgl::error, F, Item&>and std::is_trivially_destructible_v<F>and
-          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
-
-  /// @brief true if F is a valid value formatter for Item.
-  /// Look [here](markdown/concepts.md#formatter) for more info.
-  /// @tparam F handler type
-  /// @tparam Item item type
-  template <typename F, typename Item>
-  static constexpr bool                             is_value_formatter_v =
-      std::is_nothrow_invocable_r_v<sgl::format_result,
-                                    F,
-                                    typename Item::char_type*,
-                                    size_t,
-                                    typename Item::value_type,
-                                    uint32_t,
-                                    sgl::format>and std::is_trivially_destructible_v<F>and
-          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
-
-  /// @brief true if F is a TickHandler for Item.
-  /// @tparam F handler type
-  /// @tparam Item item type
-  template <typename F, typename Item>
-  inline constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
-
-  /// @}
-
-  template <typename F, typename Item>
-  using enable_if_is_input_handler =
-      std::enable_if_t<is_input_handler_for_v<F, std::decay_t<Item>>, bool>;
-
-  template <typename F, typename Item>
-  using enable_if_is_value_formatter =
-      std::enable_if_t<is_value_formatter_v<F, std::decay_t<Item>>, bool>;
-
-  template <typename F, typename Item>
-  using enable_if_is_click_handler =
-      std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
-
-  template <typename F, typename Item>
-  using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
-
-  /// @addtogroup item_traits Item Traits
-  /// @ingroup sgl_traits
-  /// @{
-  /// @cond
 
   template <typename T, typename = void>
   struct has_text : std::false_type {};
-
   template <typename T>
   struct has_text<
       T,
@@ -212,14 +135,6 @@ namespace sgl {
   template <typename T>
   inline constexpr bool has_tick_v = has_tick<T>::value;
 
-  /// @endcond
-
-  /// @}
-
-  /// @addtogroup page_traits Page traits
-  /// @ingroup sgl_traits
-  /// @{
-  /// @cond
   namespace detail {
     [[maybe_unused]] auto pf = [](auto&) {};
     [[maybe_unused]] auto pcf = [](const auto&) {};
@@ -437,20 +352,11 @@ namespace sgl {
         has_on_enter_v<T> and has_on_exit_v<T>;
   };
 
-  /// @endcond
-
-  /// @brief true if T fulfills the page concept
+  /// true if T fulfills the page concept
   /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_page_v = is_page<T>::value;
 
-  /// @}
-
-  /// @addtogroup menu_traits Menu Traits
-  /// @ingroup sgl_traits
-  /// @{
-
-  /// @cond
   template <typename T, typename = void>
   struct has_set_active_page : std::false_type {};
 
@@ -538,14 +444,10 @@ namespace sgl {
                                   has_index_v<T> and has_size_v<T>;
   };
 
-  /// @endcond
-
-  /// @brief  true if T fulfills the menu concept
+  ///  true if T fulfills the menu concept
   /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_menu_v = is_menu<T>::value;
-
-  /// @}
 
   template <typename T>
   struct is_item {
@@ -553,10 +455,84 @@ namespace sgl {
         has_text_v<T> and has_set_menu_v<T> and has_handle_input_v<T> and has_tick_v<T>;
   };
 
-  /// @brief  check if T fulfills the item concept.
+  /// @endcond
+
+  ///  check if T fulfills the item concept.
   /// @tparam T type to check
   template <typename T>
   inline constexpr bool is_item_v = is_item<T>::value;
+
+  /**
+   * check if T is an Item Trait. A class T must satisfy the following to be an Item
+   * Trait:
+   *
+   * expression or typename | type                        | notes                         |
+   * -----------------------|-----------------------------|-------------------------------|
+   * typename T::char_type  | char, char16_t or char32_t. |                               |
+   * T::text_size           | size_t                      | must be a constant expression |
+   *
+   *@tparam T type to check
+   */
+  template <typename T>
+  static constexpr bool is_item_trait_v = is_item_trait<T>::value;
+
+  /**
+   * true if F is a valid input handler for Item.
+   * Look [here](markdown/concepts.md) for more info.
+   * @tparam F handler type
+   * @tparam Item item type
+   */
+  template <typename F, typename Item>
+  inline constexpr bool is_input_handler_for_v =
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&, sgl::input>and
+          std::is_trivially_destructible_v<F>and std::is_trivially_move_constructible_v<F>and
+                                                 std::is_trivially_copyable_v<F>;
+
+  /// true if F is a valid click handler for Item.
+  /// Look [here](markdown/concepts.md) for more info.
+  /// @tparam F handler type
+  /// @tparam Item item type
+  template <typename F, typename Item>
+  inline constexpr bool                                      is_click_handler_for_v =
+      std::is_nothrow_invocable_r_v<sgl::error, F, Item&>and std::is_trivially_destructible_v<F>and
+          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
+
+  /// true if F is a valid value formatter for Item.
+  /// Look [here](markdown/concepts.md) for more info.
+  /// @tparam F handler type
+  /// @tparam Item item type
+  template <typename F, typename Item>
+  static constexpr bool                             is_value_formatter_v =
+      std::is_nothrow_invocable_r_v<sgl::format_result,
+                                    F,
+                                    typename Item::char_type*,
+                                    size_t,
+                                    typename Item::value_type,
+                                    uint32_t,
+                                    sgl::format>and std::is_trivially_destructible_v<F>and
+          std::is_trivially_move_constructible_v<F>and std::is_trivially_copyable_v<F>;
+
+  /// true if F is a TickHandler for Item.
+  /// @tparam F handler type
+  /// @tparam Item item type
+  template <typename F, typename Item>
+  inline constexpr bool is_tick_handler_for_v = std::is_nothrow_invocable_r_v<void, F, Item&>;
+
+  template <typename F, typename Item>
+  using enable_if_is_input_handler =
+      std::enable_if_t<is_input_handler_for_v<F, std::decay_t<Item>>, bool>;
+
+  template <typename F, typename Item>
+  using enable_if_is_value_formatter =
+      std::enable_if_t<is_value_formatter_v<F, std::decay_t<Item>>, bool>;
+
+  template <typename F, typename Item>
+  using enable_if_is_click_handler =
+      std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
+
+  template <typename F, typename Item>
+  using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
+
 
 } // namespace sgl
 #endif /* SGL_ITEM_CONCEPTS_HPP */

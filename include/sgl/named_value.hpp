@@ -1,7 +1,7 @@
 /**
  * @file named_value.hpp
  * @author Pelé Constam (you@domain.com)
- * @brief This file defines the NamedValue and Name types used by NamedTuple and operator<<=().
+ * This file defines the NamedValue and Name types used by NamedTuple and operator<<=().
  * @version 0.1
  * @date 2022-07-19
  */
@@ -20,24 +20,25 @@
 
 namespace sgl {
 
+  /// @headerfile named_value.hpp "sgl/named_value.hpp"
+
   /**
-   * @headerfile named_value.hpp "sgl/named_value.hpp"
-   * @brief This type represents a pair of an sgl::Name and a value of type T. To create a
-   * NamedValue, either use the constructor or the @ref sgl::operator <<=() "operator <<=". An
-   * example of how to use:
-   *
-   * @code
-   *
-   *  auto named_val1 = NamedValue(NAME("N1"), 5.3f);
-   *
-   *  constexpr auto my_name = NAME("name");
-   *
-   *  auto named_val2 {my_name <<= 2.5f};
-   *
-   * @endcode
-   *
-   * @tparam T value type
-   * @tparam Chars characters of the name
+    This type represents a pair of an sgl::Name and a value of type T. To create a
+    NamedValue, either use the constructor or the @ref sgl::operator <<=() "operator <<=". An
+    example of how to use:
+
+    ```cpp
+
+     auto named_val1 = NamedValue(NAME("N1"), 5.3f);
+
+     constexpr auto my_name = NAME("name");
+
+     auto named_val2 {my_name <<= 2.5f};
+
+    ```
+
+    @tparam T value type
+    @tparam Chars characters of the name
    */
   template <typename Name, typename T>
   class NamedValue {
@@ -48,38 +49,38 @@ namespace sgl {
     /// name type of the argument
     using name_type = Name;
 
-    /// @brief default ctor.
+    /// default ctor.
     constexpr NamedValue() = default;
 
-    /// @brief copy ctor
+    /// copy ctor
     /// @param other object to copy
     constexpr NamedValue(const NamedValue& other) = default;
 
-    /// @brief move ctor
+    /// move ctor
     /// @param other object to move
     constexpr NamedValue(NamedValue&& other) = default;
 
-    /// @brief construct from name and value
+    /// construct from name and value
     /// @param name name of NamedValue
     /// @param value value of NamedValue
     constexpr NamedValue(name_type         name,
                          const value_type& value) noexcept(std::is_nothrow_copy_constructible_v<T>);
 
-    /// @brief move construct from name and value
+    /// move construct from name and value
     /// @param name name of NamedValue
     /// @param value value to move into NamedValue
     constexpr NamedValue(name_type    name,
                          value_type&& value) noexcept(std::is_nothrow_move_constructible_v<T>);
 
-    /// @brief get name as sgl::string_view<char>
+    /// get name as sgl::string_view<char>
     /// @return sgl::string_view<char>
     [[nodiscard]] constexpr sgl::string_view<char> name() const noexcept;
 
-    /// @brief get reference to value
+    /// get reference to value
     /// @return value_type&
     [[nodiscard]] constexpr value_type& value() noexcept;
 
-    /// @brief get const reference to value
+    /// get const reference to value
     /// @return const value_type&
     [[nodiscard]] constexpr const value_type& value() const noexcept;
 
@@ -93,24 +94,23 @@ namespace sgl {
   /// @endcond
 
   /**
-   * @brief This operator exists for easy creation of named arguments, i.e.
-   * sgl::NamedValue. The return type of this operator is an sgl::NamedValue<Name,T> "NamedValue",
-   * if T is not another name type. The reasons for using this operator to create a NamedValue are
-   * the following:
-   *  - it is has the second lowest precedence.
-   *  - it is not often used, i.e. no real danger of confusing it with anything else.
-   *  - it can be implemented as a non member function.
-   *
-   * ```cpp
-   * // the type of named_value is NamedValue<Name<'n','a','m','e'>, float>
-   * auto named_value {NAME("name") <<= 2.5f};
-   * ```
-   *
-   * @tparam T value type
-   * @tparam Chars characters of the name
-   * @param name name of the NamedValue
-   * @param value value of the NamedValue
-   * @return  NamedValue<Name<Chars...>, std::decay_t<T>>
+    This operator exists for easy creation of an sgl::NamedValue. The return type of this operator
+   is an sgl::NamedValue<Name,T>, if T is not another name type. The reasons for using
+   this operator to create a NamedValue are the following:
+     - it is has the second lowest precedence.
+     - it is not often used, i.e. no real danger of confusing it with anything else.
+     - it can be implemented as a non member function.
+
+    ```cpp
+    // the type of named_value is NamedValue<Name<'n','a','m','e'>, float>
+    auto named_value {NAME("name") <<= 2.5f};
+    ```
+
+    @tparam T value type
+    @tparam Chars characters of the name
+    @param name name of the NamedValue
+    @param value value of the NamedValue
+    @return  NamedValue<Name<Chars...>, std::decay_t<T>>
    */
   template <typename T, char... Chars>
   constexpr NamedValue<sgl::Name<Chars...>, std::decay_t<T>> operator<<=(sgl::Name<Chars...> name,

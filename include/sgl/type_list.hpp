@@ -271,7 +271,7 @@ namespace sgl {
   template <typename... Ts>
   struct all_unique<sgl::type_list<Ts...>> : all_unique<Ts...> {};
 
-  /// @brief check if every type in @a Ts is unique
+  /// @brief check if every type in Ts is unique
   /// @details For example all_unique_v<char,int,double> == true,
   /// but all_unique_v<char,int,char>==false.
   /// @tparam ...Ts

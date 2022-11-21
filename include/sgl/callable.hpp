@@ -17,57 +17,66 @@ namespace sgl {
 
   /// @endcond
 
+  /// @headerfile callable.hpp "sgl/callable.hpp"
+
   /**
-   * @headerfile callable.hpp "sgl/callable.hpp"
-   * @anchor Callable
-   * @brief This class implements a callable with the guarantee that it does not
-   * heap allocate, throw, and doesn't have the constness bug of std::function. Additionally,
-   * constexpr fee functions and non capturing lambdas can be executed at compile time, i.e. the
-   * following will successfully compile:
+   * This class implements a callable with the guarantee that it does not
+   * heap allocate, does not throw, and does not have the constness bug of std::function.
+   *
+   * @details
+   * @anchor Callable Additionally, constexpr free functions and non capturing
+   * lambdas can be executed at compile time, i.e. the following will successfully
+   * compile:
+   *
    * ```
    * static_assert(Callable<int()>([]() noexcept { return 0;})() == 0,"");
    * ```
    *
-   * @details This class can bind and execute function objects/functors/lambdas,
+   * This class can bind and execute function objects/functors/lambdas,
    * free functions and member functions with a return type of Ret and arguments
    * Args... . See std::function, google search for delegates, etc. if the
-   * concept is not clear.
+   * concept of a callble is not clear.
+   *
    * @tparam Ret return type of the callable
    * @tparam Args argument types
    */
   template <typename Ret, typename... Args>
   class Callable<Ret(Args...)> {
   public:
-    /// @brief Default constructor
+    /// Default constructor
     constexpr Callable() noexcept = default;
 
-    /// @brief move constructor
+    /// move constructor
     /// @param other callable to move from
     constexpr Callable(Callable<Ret(Args...)>&& other) noexcept;
 
-    /// @brief copy constructor
+    /// copy constructor
     /// @param other callable to copy
     constexpr Callable(const Callable<Ret(Args...)>& other) noexcept;
 
-    /// @brief Construct callable from free function pointer
+    /// Construct callable from free function pointer
     /// @param f pointer to free function
     constexpr explicit Callable(Ret (*f)(Args...) noexcept) noexcept;
 
-    /// @brief Construct a new callable from object and member function
-    /// @tparam T object type
-    /// @param obj object instance
-    /// @param member_function pointer to member function
+    /**
+     * Construct a new callable from object and member function
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function pointer to member function
+     */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) noexcept) noexcept;
 
-    /// @brief Construct a new callable from object and const member function
-    /// @tparam T object type
-    /// @param obj object instance
-    /// @param member_function pointer to member function
+    /**
+     * Construct a new callable from object and const member function
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function pointer to member function
+     */
     template <typename T>
     Callable(T& obj, Ret (T::*member_function)(Args...) const noexcept) noexcept;
 
-    /// @brief Construct a callable with a function object/functor
+    /// Construct a callable with a function object/functor
     /// @tparam F function object type
     /// @param f function object instance
     template <
@@ -76,7 +85,7 @@ namespace sgl {
             !std::is_same_v<Callable<Ret(Args...)>, std::decay_t<F>>)>* = nullptr>
     explicit Callable(F&& f) noexcept(std::is_nothrow_constructible_v<F>);
 
-    /// @brief move assignment operator
+    /// move assignment operator
     /// @param other callable to move assign from
     /// @return reference to this
     constexpr Callable& operator=(Callable<Ret(Args...)>&& other) noexcept;
@@ -108,23 +117,25 @@ namespace sgl {
     /// @param other callable to move
     constexpr void bind(Callable&& other) noexcept;
 
-    /// @brief bind object and member function
-    ///
-    /// @tparam T object type
-    /// @param obj object instance
-    /// @param member_function member function pointer
+    /**
+     * bind object and member function.
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function member function pointer
+     */
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...) noexcept) noexcept;
 
-    /// @brief bind object and const member function
-    ///
-    /// @tparam T object type
-    /// @param obj object instance
-    /// @param member_function pointer to const qualified member function
+    /**
+     * bind object and const qualified member function.
+     * @tparam T object type
+     * @param obj object instance
+     * @param member_function pointer to const qualified member function.
+     */
     template <typename T>
     void bind(T& obj, Ret (T::*member_function)(Args...) const noexcept) noexcept;
 
-    /// @brief bind capturing lambda/ custom functor
+    /// bind capturing lambda/ custom functor
     ///
     /// @tparam F invocable type
     /// @param f invocable instance
