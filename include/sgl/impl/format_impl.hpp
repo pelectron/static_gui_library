@@ -51,12 +51,12 @@ namespace sgl {
 
     template <>
     struct biggest_pow10_t<uint64_t> {
-      static constexpr size_t value = 1000000000;
+      static constexpr size_t value = 10000000000000000000ULL;
     };
 
     template <>
     struct biggest_pow10_t<int64_t> {
-      static constexpr size_t value = 1000000000;
+      static constexpr size_t value = 1000000000000000000;
     };
 
     template <typename T>
@@ -64,9 +64,52 @@ namespace sgl {
 
     template <typename T>
     constexpr size_t biggest_pow10(T val) {
+      // 18,446,744,073,709,551,616
+      if constexpr (numeric_limits<T>::max() > 10000000000000000000ULL)
+        if (val >= T{10000000000000000000ULL}) {
+          return 10000000000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 1000000000000000000ULL)
+        if (val >= T{1000000000000000000ULL}) {
+          return 1000000000000000000ULL;
+        }
+
+      if constexpr (numeric_limits<T>::max() > 100000000000000000ULL)
+        if (val >= T{100000000000000000ULL}) {
+          return 100000000000000000ULL;
+        }
+
+      if constexpr (numeric_limits<T>::max() > 10000000000000000ULL)
+        if (val >= T{10000000000000000ULL}) {
+          return 10000000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 1000000000000000ULL)
+        if (val >= T{1000000000000000ULL}) {
+          return 1000000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 100000000000000ULL)
+        if (val >= T{100000000000000ULL}) {
+          return 100000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 10000000000000ULL)
+        if (val >= T{10000000000000ULL}) {
+          return 10000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 1000000000000ULL)
+        if (val >= T{1000000000000ULL}) {
+          return 1000000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 100000000000ULL)
+        if (val >= T{100000000000ULL}) {
+          return 100000000000ULL;
+        }
+      if constexpr (numeric_limits<T>::max() > 10000000000ULL)
+        if (val >= T{10000000000ULL}) {
+          return 10000000000ULL;
+        }
       if constexpr (numeric_limits<T>::max() > 1000000000ULL)
         if (val >= T{1000000000ULL}) {
-          return 1000000000;
+          return 1000000000ULL;
         }
       if constexpr (numeric_limits<T>::max() > 100000000ULL)
         if (val >= T{100000000ULL}) {
@@ -126,22 +169,22 @@ namespace sgl {
 
     template <>
     struct max_buf_size<uint32_t> {
-      static constexpr size_t value = 7;
-    };
-
-    template <>
-    struct max_buf_size<int32_t> {
-      static constexpr size_t value = 8;
-    };
-
-    template <>
-    struct max_buf_size<uint64_t> {
       static constexpr size_t value = 10;
     };
 
     template <>
-    struct max_buf_size<int64_t> {
+    struct max_buf_size<int32_t> {
       static constexpr size_t value = 11;
+    };
+
+    template <>
+    struct max_buf_size<uint64_t> {
+      static constexpr size_t value = 20;
+    };
+
+    template <>
+    struct max_buf_size<int64_t> {
+      static constexpr size_t value = 21;
     };
 
     template <>
@@ -241,7 +284,7 @@ namespace sgl {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
       // static_assert(std::is_unsigned_v<T>, "");
       constexpr size_t           size = 2 * sizeof(T) + 3; // +2 for '0x', + 1 for '-'
-      static_string<CharT, size> buf;
+      static_string<CharT, size> buf{};
       if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
@@ -260,8 +303,7 @@ namespace sgl {
         *str = ch;
         ++str;
       }
-      *str = '\0';
-      return {sgl::error::no_error, size};
+      return {sgl::error::no_error, buf.size()};
     }
 
     template <typename CharT, typename T>
@@ -465,7 +507,7 @@ namespace sgl {
   template <typename CharT>
   sgl::format_result
       to_chars(CharT* str, size_t len, float value, uint32_t precision, sgl::format fmt) noexcept {
-    sgl::static_string<CharT, 24> buf{};
+    sgl::static_string<CharT, 24> buf{24, '\0'};
 
     unsigned size{0};
     switch (fmt) {
@@ -501,7 +543,7 @@ namespace sgl {
   template <typename CharT>
   sgl::format_result
       to_chars(CharT* str, size_t len, double value, uint32_t precision, sgl::format fmt) noexcept {
-    sgl::static_string<CharT, 24> buf;
+    sgl::static_string<CharT, 24> buf{24, '\0'};
 
     unsigned size{0};
     switch (fmt) {
@@ -540,7 +582,29 @@ namespace sgl {
                                         sgl::unsigned_fixed<I, F> value,
                                         uint32_t                  precision,
                                         sgl::format               fmt) noexcept {
-    (void)fmt; // unused
+    switch (fmt) {
+      case sgl::format::integer:
+        if (value.fraction() >= (gcem::pow(2ull, F) / 2))
+          return format_impl::basic_integer_format(str, len, value.integer() + 1);
+        return format_impl::basic_integer_format(str, len, value.integer());
+        break;
+      case sgl::format::fixed:
+        break;
+      case sgl::format::floating:
+        [[fallthrough]];
+      case sgl::format::exponential:
+        if constexpr ((I + F) > 32) {
+          return sgl::to_chars(str, len, sgl::to_double(value), precision, fmt);
+        } else {
+          return sgl::to_chars(str, len, sgl::to_float(value), precision, fmt);
+        }
+        break;
+      case sgl::format::hex:
+        return format_impl::basic_hex_format(str, len, value.value());
+        break;
+      default:
+        return {sgl::error::invalid_format, 0};
+    }
     // frac is the raw integer value of the fractional part of value.
     // This needs to be converted to a "normal" integer value for formatting.
     // the formatting precision is equal to F.
@@ -549,7 +613,7 @@ namespace sgl {
     // * 2^-F * 10^precision). factor = 2^-F * 10^precision can be calculated at compile time, with
     // only integer divisions at run time. This will unfortunately produce some rounding errors.
     constexpr auto factor =
-        static_cast<uint64_t>(gcem::round(gcem::pow(2.0, -double(F)) * gcem::pow(10.0, F)));
+        static_cast<uint64_t>(gcem::round(gcem::pow(10.0, F)) / gcem::pow(2.0, F));
     // fix point value to format after the decimal point
     auto res = sgl::format_impl::basic_integer_format(str, len, value.integer());
     if (res.ec != sgl::error::no_error) {
@@ -561,7 +625,7 @@ namespace sgl {
 
     if (precision < F) {
       auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
-                                                             len - res.size,
+                                                             len - res.size - 1,
                                                              (value.fraction() * factor) /
                                                                  gcem::pow(10u, F - precision));
       if (frac_res.ec != sgl::error::no_error)
@@ -571,7 +635,7 @@ namespace sgl {
     }
 
     auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
-                                                           len - res.size,
+                                                           len - res.size - 1,
                                                            (value.fraction() * factor) *
                                                                gcem::pow(10u, precision - F));
     if (frac_res.ec != sgl::error::no_error)
@@ -586,14 +650,19 @@ namespace sgl {
                                         sgl::signed_fixed<I, F> value,
                                         uint32_t                precision,
                                         sgl::format             fmt) noexcept {
-    if (value.is_negative()) {
+    bool negative = value.is_negative();
+    if (negative) {
       value = -value;
-      str[0] = static_cast<CharT>('-');
-      ++str;
-      --len;
     }
     sgl::unsigned_fixed<I, F> u_val{value.value()};
-    return sgl::to_chars(str, len, u_val, precision, fmt);
+    auto res = sgl::to_chars(str + negative, len - negative, u_val, precision, fmt);
+    if (res.ec != sgl::error::no_error) {
+      return res;
+    }
+    if (negative) {
+      str[0] = static_cast<CharT>('-');
+    }
+    return {sgl::error::no_error, res.size + negative};
   }
 
   namespace cx {

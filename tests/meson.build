@@ -21,6 +21,7 @@ test_sources = [
   'cx_arg.cpp',
   'enum_map.cpp',
   'fixed_point.cpp',
+  'format.cpp',
   'input.cpp',
   'item_concept.cpp',
   'limits.cpp',

@@ -30,14 +30,20 @@ namespace sgl {
     @{
    */
 
-  /// This enum is used to specify how to format a numerical value into a buffer in the
-  /// sgl::to_chars() and sgl::cx::to_chars() functions.
+  /**
+    This enum is used to specify how to format a numerical value into a buffer in the
+    sgl::to_chars() and sgl::cx::to_chars() functions.
+  */
   enum class format {
-    integer,     ///< format like an integer. For fp values this means roundin to nearest integer.
-    floating,    ///< shortest floating point representation, i.e. 0.3 gets formatted as '0.3'
-    exponential, ///< exponential notation, i.e. x.yyyEz.
-    fixed,       ///< fixed number of digits after the decimal point
-    hex          ///< binary representation in hex.
+    integer,  ///< rounds to nearest integer and prints that value.
+    floating, ///< general/shortest floating point representation i.e. 52.5f is printed as "5.25E1"
+              ///< regardless of precision. The sign of the exponent is only printed for negitve
+              ///< exponents.
+    exponential, ///< exponential in the form of "+-x.yyye+-vv", where there are precision number of
+                 ///< digits between the '.' and 'e'. The sign of the exponent is always printed.
+    fixed, ///< fixed number of digits after the decimal point and full decimal part, i.e. 52.5 with
+           ///< precision 3 is formatted to "52.500".
+    hex    ///< binary representation in hex. i.e. 2.0f formats to 0x40000000.
   };
 
   /// This class represent a format result. It contains an sgl::error value which is set when
@@ -51,7 +57,7 @@ namespace sgl {
    formats an integer value into str.
    @param str buffer to format into
    @param len buffer length
-   @value value to format.
+   @param value to format.
    @tparam CharT character type
    @tparam T integer type to format.
    */
@@ -65,7 +71,7 @@ namespace sgl {
    @param len buffer length
    @param value value to format
    @param precision number of digits after the decimal point
-   @param format output format
+   @param fmt output format
    @tparam CharT character type
    */
   template <typename CharT>
@@ -79,7 +85,7 @@ namespace sgl {
    @param len buffer length
    @param value value to format
    @param precision number of digits after the decimal point
-   @param format output format
+   @param fmt output format
    @tparam CharT character type
    */
   template <typename CharT>
@@ -92,9 +98,9 @@ namespace sgl {
    @param len buffer length
    @param value value to format
    @param precision number of digits after the decimal point
-   @param format output format
+   @param fmt output format
    @tparam CharT character type
-   @tparm I number of integer digits
+   @tparam I number of integer digits
    @tparam F number of fractional digits
    */
   template <typename CharT, size_t I, size_t F>
@@ -109,9 +115,9 @@ namespace sgl {
    @param len buffer length
    @param value value to format
    @param precision number of digits after the decimal point
-   @param format output format
+   @param fmt output format
    @tparam CharT character type
-   @tparm I number of integer digits
+   @tparam I number of integer digits
    @tparam F number of fractional digits
    */
   template <typename CharT, size_t I, size_t F>
@@ -136,7 +142,7 @@ namespace sgl {
      @param len buffer length
      @param value value to format
      @param precision number of digits after the decimal point
-     @param format output format
+     @param fmt output format
      @tparam CharT character type
      */
     template <typename CharT>
@@ -154,7 +160,7 @@ namespace sgl {
      @param len buffer length
      @param value value to format
      @param precision number of digits after the decimal point
-     @param format output format
+     @param fmt output format
      @tparam CharT character type
      */
     template <typename CharT>
