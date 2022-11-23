@@ -12,7 +12,9 @@ namespace sgl {
   template <typename ItemImpl, typename Traits>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
       typename PassThroughButton<ItemImpl, Traits>::StringView text) noexcept
-      : Base(text, &PassThroughButton::button_input_handler) {}
+      : Base(text) {
+    this->set_input_handler(&PassThroughButton::button_input_handler);
+  }
 
   template <typename ItemImpl, typename Traits>
   constexpr sgl::error PassThroughButton<ItemImpl, Traits>::click() noexcept {
@@ -26,8 +28,11 @@ namespace sgl {
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
       typename PassThroughButton<ItemImpl, Traits>::StringView text,
       ClickHandler&&                                           click_handler) noexcept
-      : Base(text, PassThroughButton::button_input_handler),
-        click_handler_(std::forward<ClickHandler>(click_handler)) {}
+      : Base(text),
+        click_handler_(std::forward<ClickHandler>(click_handler)) {
+
+    this->set_input_handler(&PassThroughButton::button_input_handler);
+}
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
@@ -41,9 +46,11 @@ namespace sgl {
       ClickHandler&&                                           click_handler,
       TickHandler&&                                            tick_handler) noexcept
       : Base(text,
-             PassThroughButton::button_input_handler,
              std::forward<TickHandler>(tick_handler)),
-        click_handler_(std::forward<ClickHandler>(click_handler)) {}
+        click_handler_(std::forward<ClickHandler>(click_handler)) {
+
+    this->set_input_handler(&PassThroughButton::button_input_handler);
+}
 
   template <typename ItemImpl, typename Traits>
   template <typename ClickHandler,
