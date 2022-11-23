@@ -24,8 +24,8 @@ namespace sgl {
             enable_if_is_click_handler<ClickHandler,
                                        typename PassThroughButton<ItemImpl, Traits>::item_type>>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
-      StringView     text,
-      ClickHandler&& click_handler) noexcept
+      typename PassThroughButton<ItemImpl, Traits>::StringView text,
+      ClickHandler&&                                           click_handler) noexcept
       : Base(text, PassThroughButton::button_input_handler),
         click_handler_(std::forward<ClickHandler>(click_handler)) {}
 
@@ -37,9 +37,9 @@ namespace sgl {
             enable_if_is_tick_handler<TickHandler,
                                       typename PassThroughButton<ItemImpl, Traits>::item_type>>
   constexpr PassThroughButton<ItemImpl, Traits>::PassThroughButton(
-      StringView     text,
-      ClickHandler&& click_handler,
-      TickHandler&&  tick_handler) noexcept
+      typename PassThroughButton<ItemImpl, Traits>::StringView text,
+      ClickHandler&&                                           click_handler,
+      TickHandler&&                                            tick_handler) noexcept
       : Base(text,
              PassThroughButton::button_input_handler,
              std::forward<TickHandler>(tick_handler)),
