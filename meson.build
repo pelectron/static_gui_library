@@ -7,7 +7,9 @@ gcem_dep = dependency('gcem', fallback:['gcem','gcem_dep'])
 
 defines = []
 
-
+if meson.get_compiler('cpp').get_id() == 'clang'
+  defines += '-Wno-sign-compare'
+endif
 
 if get_option('optimize_size')
   defines += '-DRYU_OPTIMIZE_SIZE'
