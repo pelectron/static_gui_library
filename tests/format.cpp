@@ -46,14 +46,14 @@ TEST_CASE("to_chars") {
       format(2, "2");
       format(3u, "3");
       format(0, "0");
-      format(12345ull, "12345");
+      format(12345u, "12345");
       format(-12345, "-12345");
     }
     SECTION("too_small") {
       format_too_small(20000);
       format_too_small(300u);
       format_too_small(10);
-      format_too_small(12345ull);
+      format_too_small(12345u);
       format_too_small(-12345);
     }
   }

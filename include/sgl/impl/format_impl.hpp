@@ -328,7 +328,7 @@ namespace sgl {
         *str = ch;
         ++str;
       }
-      return {sgl::error::no_error, buf.size()};
+      return sgl::format_result{sgl::error::no_error, buf.size()};
     }
 
     template <typename CharT, typename T>
