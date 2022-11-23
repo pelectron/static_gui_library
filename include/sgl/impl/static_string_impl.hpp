@@ -124,7 +124,7 @@ namespace sgl {
 
   template <typename CharT, size_t Capacity>
   constexpr static_string<CharT, Capacity>&
-      static_string<CharT, Capacity>::static_string<CharT, Capacity>::operator=(
+      static_string<CharT, Capacity>::operator=(
           const string_view<CharT> str) noexcept {
     this->overwrite(str.data(), str.size());
     for (size_t i = size_; i <= Capacity; ++i) {

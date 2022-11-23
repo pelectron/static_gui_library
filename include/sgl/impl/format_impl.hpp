@@ -266,7 +266,7 @@ namespace sgl {
     // NOLINTEND(readability-*)
 
     template <typename T>
-    static constexpr size_t max_buf_size_v = max_buf_size<T>::value;
+    static constexpr size_t max_buf_size_v = sgl::format_impl::max_buf_size<T>::value;
 
     template <typename CharT, typename T>
     constexpr sgl::format_result basic_hex_format(CharT* str, size_t len, T value) {
@@ -309,8 +309,8 @@ namespace sgl {
     template <typename CharT, typename T>
     constexpr sgl::format_result basic_integer_format(CharT* str, size_t len, T value) {
       static_assert(std::is_integral_v<T>, "T must be an integral type");
-      constexpr size_t                                     base = 10;
-      static_string<CharT, format_impl::max_buf_size_v<T>> buf{};
+      constexpr size_t                                          base = 10;
+      static_string<CharT, sgl::format_impl::max_buf_size_v<T>> buf{};
       if constexpr (std::is_signed_v<T>) {
         if (value < 0) {
           buf.append(CharT{'-'});
@@ -378,7 +378,7 @@ namespace sgl {
 
     } else {
 
-      if ((len > format_impl::max_buf_size_v<T>) || (len == 0))
+      if ((len > sgl::format_impl::max_buf_size_v<T>) || (len == 0))
         return sgl::error::format_error;
 
       bool   negative = false;
@@ -637,7 +637,7 @@ namespace sgl {
         return frac_res;
 
       buf[res.size] = static_cast<CharT>('.');
-      buf.resize(res.size + 1 +  frac_res.size);
+      buf.resize(res.size + 1 + frac_res.size);
       for (const auto& ch : buf) {
         *str = ch;
         ++str;
