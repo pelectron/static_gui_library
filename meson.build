@@ -7,7 +7,7 @@ gcem_dep = dependency('gcem', fallback:['gcem','gcem_dep'])
 
 defines = []
 
-if meson.get_compiler('cpp').get_id() == 'clang'
+if meson.get_compiler('cpp').get_id() == 'gcc'
   defines += '-Wno-sign-compare'
 endif
 
