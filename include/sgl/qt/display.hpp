@@ -17,7 +17,7 @@ namespace sgl::qt {
   class SGL_API Display : public QFrame {
     Q_OBJECT
   public:
-    Display(sgl::qt::MenuTree& menu, QWidget* parent = nullptr);
+    Display(sgl::qt::MenuTree& menu, size_t num_lines = 4, QWidget* parent = nullptr);
 
     void set_radius(qreal radius);
 

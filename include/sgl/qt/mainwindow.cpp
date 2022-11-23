@@ -52,14 +52,14 @@ namespace sgl::qt {
     this->update_window();
   }
 
-  void MainWindow::init_ui() {
+  void MainWindow::init_ui(size_t num_lines) {
     setUpdatesEnabled(false);
     auto* center_frame = new QFrame(this);
     this->setCentralWidget(center_frame);
     auto* layout = new QVBoxLayout(center_frame);
     auto* h_layout = new QHBoxLayout;
 
-    disp_ = new Display(tree_, center_frame);
+    disp_ = new Display(tree_, num_lines, center_frame);
     side_section_ = new VerticalSection("menu tree", Qt::Edge::RightEdge, center_frame);
     side_tree_ = make_tree(tree_.root(), "menu tree");
     log_section_ = new Section("input Error Log");

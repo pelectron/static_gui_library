@@ -25,10 +25,19 @@ auto format(const T& value, const char (&expected)[N], size_t precision, sgl::fo
 }
 
 template <typename T>
+auto format_too_small(const T& value, size_t precision, sgl::format fmt) {
+  String str{1, '\0'};
+  auto   result = sgl::to_chars(str.data(), str.size(), value, precision, fmt);
+  REQUIRE(result.ec == sgl::error::buffer_too_small);
+  REQUIRE(str[0] == '\0');
+}
+
+template <typename T>
 auto format_too_small(const T& value) {
-  String str{};
+  String str{1, '\0'};
   auto   result = sgl::to_chars(str.data(), str.size(), value);
   REQUIRE(result.ec == sgl::error::buffer_too_small);
+  REQUIRE(str[0] == '\0');
 }
 
 TEST_CASE("to_chars") {
@@ -41,9 +50,9 @@ TEST_CASE("to_chars") {
       format(-12345, "-12345");
     }
     SECTION("too_small") {
-      format_too_small(2);
-      format_too_small(3u);
-      format_too_small(0);
+      format_too_small(20000);
+      format_too_small(300u);
+      format_too_small(10);
       format_too_small(12345ull);
       format_too_small(-12345);
     }
@@ -67,7 +76,6 @@ TEST_CASE("to_chars") {
         format(52.52525252525252525, "5.2525252525e+01", 10, sgl::format::exponential);
       }
       SECTION("fixed") {
-
         format(52.5, "52.5000000000", 10, sgl::format::fixed);
         format(0.0, "0.0000000000", 10, sgl::format::fixed);
         format(52.52525252525252525, "52.5252525253", 10, sgl::format::fixed);
@@ -75,6 +83,20 @@ TEST_CASE("to_chars") {
       SECTION("hex") {
         format(2.0, "0x4000000000000000", 10, sgl::format::hex);
         format(12345.25, "0x40C81CA000000000", 10, sgl::format::hex);
+      }
+      SECTION("too_small") {
+
+        format_too_small(52.5, 10, sgl::format::floating);
+        format_too_small(0.0, 10, sgl::format::floating);
+        format_too_small(52.52525252525252525, 10, sgl::format::floating);
+
+        format_too_small(52.5, 10, sgl::format::exponential);
+        format_too_small(0.0, 10, sgl::format::exponential);
+        format_too_small(52.52525252525252525, 10, sgl::format::exponential);
+
+        format_too_small(52.5, 10, sgl::format::fixed);
+        format_too_small(0.0, 10, sgl::format::fixed);
+        format_too_small(52.52525252525252525, 10, sgl::format::fixed);
       }
     }
     SECTION("float") {
@@ -104,6 +126,20 @@ TEST_CASE("to_chars") {
         format(2.0f, "0x40000000", 10, sgl::format::hex);
         format(12345.25f, "0x4640E500", 10, sgl::format::hex);
       }
+      SECTION("too_small") {
+
+        format_too_small(52.5f, 10, sgl::format::floating);
+        format_too_small(0.0f, 10, sgl::format::floating);
+        format_too_small(52.52525252525252525f, 10, sgl::format::floating);
+
+        format_too_small(52.5f, 10, sgl::format::exponential);
+        format_too_small(0.0f, 10, sgl::format::exponential);
+        format_too_small(52.52525252525252525f, 10, sgl::format::exponential);
+
+        format_too_small(52.5f, 10, sgl::format::fixed);
+        format_too_small(0.0f, 10, sgl::format::fixed);
+        format_too_small(52.52525252525252525f, 10, sgl::format::fixed);
+      }
     }
   }
   SECTION("unsigned_fixed format") {
@@ -121,6 +157,14 @@ TEST_CASE("to_chars") {
     SECTION("fixed") {
       format(sgl::unsigned_fixed<16, 16>(0.5), "0.5000000000", 10, sgl::format::fixed);
       format(sgl::unsigned_fixed<16, 16>(52.5), "52.5000000000", 10, sgl::format::fixed);
+    }
+    SECTION("too small") {
+      format_too_small(sgl::unsigned_fixed<16, 16>(52.5), 1, sgl::format::integer);
+      format_too_small(sgl::unsigned_fixed<16, 16>(52.4), 10, sgl::format::integer);
+      format_too_small(sgl::unsigned_fixed<16, 16>(52.5), 10, sgl::format::floating);
+      format_too_small(sgl::unsigned_fixed<16, 16>(52.5), 10, sgl::format::exponential);
+      format_too_small(sgl::unsigned_fixed<16, 16>(0.5), 10, sgl::format::fixed);
+      format_too_small(sgl::unsigned_fixed<16, 16>(52.5), 10, sgl::format::fixed);
     }
   }
   SECTION("signed_fixed format") {
@@ -145,6 +189,17 @@ TEST_CASE("to_chars") {
       format(sgl::signed_fixed<16, 16>(-0.5), "-0.5000000000", 10, sgl::format::fixed);
       format(sgl::signed_fixed<16, 16>(52.5), "52.5000000000", 10, sgl::format::fixed);
       format(sgl::signed_fixed<16, 16>(52.5), "52.5000000000000000000", 19, sgl::format::fixed);
+    }
+    SECTION("too small") {
+      format_too_small(sgl::signed_fixed<16, 16>(52.5), 1, sgl::format::integer);
+      format_too_small(sgl::signed_fixed<16, 16>(52.4), 10, sgl::format::integer);
+      format_too_small(sgl::signed_fixed<16, 16>(-52.5), 10, sgl::format::floating);
+      format_too_small(sgl::signed_fixed<16, 16>(-0.5), 10, sgl::format::floating);
+      format_too_small(sgl::signed_fixed<16, 16>(52.5), 10, sgl::format::floating);
+      format_too_small(sgl::signed_fixed<16, 16>(52.5), 10, sgl::format::exponential);
+      format_too_small(sgl::signed_fixed<16, 16>(0.5), 10, sgl::format::fixed);
+      format_too_small(sgl::signed_fixed<16, 16>(52.5), 10, sgl::format::fixed);
+      format_too_small(sgl::signed_fixed<16, 16>(52.5), 19, sgl::format::fixed);
     }
   }
 }

@@ -12,7 +12,7 @@
 
 namespace sgl::qt {
 
-  Display::Display(sgl::qt::MenuTree& menu, QWidget* parent)
+  Display::Display(sgl::qt::MenuTree& menu, size_t num_lines, QWidget* parent)
       : QFrame(parent), menu_(menu), area_(new QScrollArea(this)),
         page_stack_(new QStackedWidget(this)) {
     auto* main_layout = new QBoxLayout(QBoxLayout::Direction::Down, this);
@@ -35,7 +35,7 @@ namespace sgl::qt {
     page_stack_->setFocusPolicy(Qt::NoFocus);
 
     for (auto& page : menu.root()->children()) {
-      auto* p = new DisplayPage((AbstractPageNode*)page);
+      auto* p = new DisplayPage((AbstractPageNode*)page, num_lines);
       p->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
       pages_.push_back(p);
       page_stack_->addWidget(p);

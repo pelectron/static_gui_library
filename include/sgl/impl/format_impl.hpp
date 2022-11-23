@@ -530,7 +530,7 @@ namespace sgl {
         return {sgl::error::invalid_format, 0};
     }
     if (size > len) {
-      return {sgl::error::format_error, 0};
+      return {sgl::error::buffer_too_small, 0};
     }
     buf.resize(size);
     for (const auto& ch : buf) {
@@ -566,7 +566,7 @@ namespace sgl {
         return {sgl::error::invalid_format, 0};
     }
     if (size > len) {
-      return {sgl::error::format_error, 0};
+      return {sgl::error::buffer_too_small, 0};
     }
     buf.resize(size);
     for (const auto& ch : buf) {
@@ -605,6 +605,11 @@ namespace sgl {
       default:
         return {sgl::error::invalid_format, 0};
     }
+    if (len < 3)
+      return {sgl::error::buffer_too_small, 0};
+
+    sgl::static_string<CharT, 50> buf{len, '\0'};
+
     // frac is the raw integer value of the fractional part of value.
     // This needs to be converted to a "normal" integer value for formatting.
     // the formatting precision is equal to F.
@@ -615,32 +620,45 @@ namespace sgl {
     constexpr auto factor =
         static_cast<uint64_t>(gcem::round(gcem::pow(10.0, F)) / gcem::pow(2.0, F));
     // fix point value to format after the decimal point
-    auto res = sgl::format_impl::basic_integer_format(str, len, value.integer());
+    auto res = sgl::format_impl::basic_integer_format(buf.data(), len, value.integer());
     if (res.ec != sgl::error::no_error) {
       return res;
     }
-    if ((len - res.size - 1) < precision) {
+    if (len < (res.size + 1 + precision)) {
       return {sgl::error::buffer_too_small, 0};
     }
 
     if (precision < F) {
-      auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
+      auto frac_res = sgl::format_impl::basic_integer_format(buf.data() + res.size + 1,
                                                              len - res.size - 1,
                                                              (value.fraction() * factor) /
                                                                  gcem::pow(10u, F - precision));
       if (frac_res.ec != sgl::error::no_error)
         return frac_res;
-      str[res.size] = static_cast<CharT>('.');
+
+      buf[res.size] = static_cast<CharT>('.');
+      buf.resize(res.size + 1 +  frac_res.size);
+      for (const auto& ch : buf) {
+        *str = ch;
+        ++str;
+      }
       return {sgl::error::no_error, res.size + 1 + frac_res.size};
     }
 
-    auto frac_res = sgl::format_impl::basic_integer_format(str + res.size + 1,
+    auto frac_res = sgl::format_impl::basic_integer_format(buf.data() + res.size + 1,
                                                            len - res.size - 1,
                                                            (value.fraction() * factor) *
                                                                gcem::pow(10u, precision - F));
     if (frac_res.ec != sgl::error::no_error)
       return frac_res;
-    str[res.size] = static_cast<CharT>('.');
+
+    buf[res.size] = static_cast<CharT>('.');
+    buf.resize(res.size + 1 + frac_res.size);
+    for (const auto& ch : buf) {
+      *str = ch;
+      ++str;
+    }
+
     return {sgl::error::no_error, res.size + 1 + frac_res.size};
   }
 
