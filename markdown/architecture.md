@@ -11,13 +11,13 @@ Consider this example ``menu`` below for a soldering station.
 
 The ``menu`` consists of three ``pages`` (white boxes).
 One of these ``pages`` is the active/current ``page`` in the ``menu``. ``sgl`` calls this
-the ``current``page```` of a ``menu``.
+the ``current page`` of a ``menu``.
 This is the ``page`` that should be shown on the display and the end user interacts with.
 
 The ``pages`` are made up of multiple entries (``sgl`` calls these ``items``) in a
 list like structure. These ``items`` can be scrolled through and interacted
 with by the end user when the ``page`` is current. A ``page`` also has a
-``current``item````, i.e. the one that should be shown as currently selected.
+``current item``, i.e. the one that should be shown as currently selected.
 
 The ``items`` of a ``page`` (pink and green boxes) represent one single line in the
 resulting display.
@@ -29,7 +29,7 @@ together ``pages`` (green).
 In the end, we have three main components:
 
 1. The ``items``, which are the smallest unit of functionality. They represent
-   individual entries on a ``page``.
+   individual entries on a ``page`` and a single line in the display.
 2. The ``pages`` bundle up ``items``. A ``page`` acts like an array of ``items`` structurally.
    A ``page`` does not contain ``subpages`` as ``items``. The linking between ``pages`` is
    done with link ``items``.
@@ -49,14 +49,14 @@ relays the user input to them.
 Above, the ``pages`` form a sort of tree. ``sgl`` takes a slightly different approach
 in the implementation. Because no ``page`` ever owns a subpage, the tree structure
 can be flattened with the [link ``items``](#sgl::PageLink) preserving the tree structure. The flat
-container used for storing the ``pages`` is a [sgl::NamedTuple](#NamedTuple).
+container used for storing the ``pages`` is a [sgl::NamedTuple](NamedTuple).
 
 This approach has some advantages over building a tree with nodes:
 
 - The ``menu`` and ``pages`` can be independent, reusable, and simple value types.
 - The full type of a ``page`` is is preserved, because the NamedTuple functions like
   a std::tuple.
-- Using [sgl::NamedTuple](#NamedTuple), it is possible to detect linking errors
+- Using [sgl::NamedTuple](NamedTuple), it is possible to detect linking errors
   between ``pages`` at compile time while still keeping them standalone. This means
  that ``pages`` containing links can be constructed with  on their own without any
   errors. However, if the ``page`` is added to a ``menu`` and the links do not link
@@ -86,7 +86,7 @@ More info on integrating sgl can be found [here](integrating.md).
 
 Another type ``sgl`` provides is [sgl::Page](#sgl::Page). It implements a ``page``.
 A ``page`` conceptually is a flat container of ``items``. ``sgl`` also uses a
-[sgl::NamedTuple](#NamedTuple) to hold the ``items`` in a ``page``. A ``page`` cannot have
+[sgl::NamedTuple](NamedTuple) to hold the ``items`` in a ``page``. A ``page`` cannot have
 another ``page`` as an ``item``. This is because ``sgl`` neither wants nor needs to deal
 complex ownership cycles.  Instead, linking or subpaging, whatever you may call
 it, is offloaded to an ``item``, namely the [sgl::PageLink](#sgl::PageLink).

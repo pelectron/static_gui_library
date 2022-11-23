@@ -26,7 +26,10 @@ namespace sgl {
 
   /**
     NamedTuple is fixed-size collection of heterogeneous values (essentially std::tuple).
-    @anchor NamedTuple The difference to std::tuple is that elements in a NamedTuple can also also
+
+    @anchor NamedTuple
+
+    The difference to std::tuple is that elements in a NamedTuple can also also
     be accessed by the elements @ref sgl::Name "name" instead of just by index.
 
     Creating a NamedTuple is most easily done with the @ref sgl::operator <<=() "operator <<=".

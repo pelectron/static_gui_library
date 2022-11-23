@@ -1,10 +1,16 @@
 # Qt Visualizer
 
-The qt visualizer allows for debugging a menu without deploying it on an mcu without writing much code. An screenshot of an example is shown below.
+The qt visualizer allows for debugging a menu without deploying it on an mcu
+without writing much code. A screenshot of an example is shown below.
 
 ![screenshot of example gui](images/qt_visualizer.PNG)
 
-To build the same example, configure the meson project with the example option set to enabled and the gui option set to true. This will compile and link the [qt_main file](/example/qt_main.cpp) in the example folder and produce an executable called 'gui_example'. See [this section](visualizer.md#building-the-visualizer-without-meson) for building the visualizer without meson.
+To build the same example, configure the meson project with the example
+option set to enabled and the gui option set to true. This will compile and
+link the [qt_main file](/example/qt_main.cpp) in the example folder and produce
+an executable called 'gui_example'.
+See [this section](visualizer.md#building-the-visualizer-without-meson) for
+building the visualizer without meson.
 
 ## Components
 
@@ -12,22 +18,37 @@ The visualizer consists of three parts.
 
 ### Tree view
 
-In the top left is a tree view of the whole menu. The current page and the current item of a page are marked in blue. When an item is being edited, the item and its page are marked in green. You can also double click a page entry to make it the current page, as well as double click an item entry to make it the active item. Below you can see that setting item 1 on page 1 is being edited.
+In the top left is a tree view of the whole menu. The current page and the
+current item of a page are marked in blue. When an item is being edited, the
+item and its page are marked in green. You can also double click a page entry
+to make it the current page, as well as double click an item entry to make it
+the active item. Below you can see that setting item 1 on page 1 is being
+edited.
+
 ![Tree view while item is edited](images/tree_view_edit_mode.jpg)
 
 ### Display
 
-The top right shows a rendering of the display. This can be used to visually check if the menu works as expected. It displays the active pages name at the top, as well as the text of its items in a list. The number of lines of the display rendering is configurable.
+The top right shows a rendering of the display. This can be used to visually
+check if the menu works as expected. It displays the active pages name at the
+top, as well as the text of its items in a list. The number of lines of the
+display rendering is configurable.
+
 ![visualizer display](images/visualizer_display.jpg)
 
 ### Error log
 
-The bottom part of the gui contains an error log. Every time the menus handle_input returns an error other than sgl::error::no_error, it will display the error as well as the input that caused it.
+The bottom part of the gui contains an error log. Every time the menus
+handle_input returns an error other than sgl::error::no_error, it will 
+display the error as well as the input that caused it.
+
 ![error log](images/visualier_error_log.jpg)
 
-### input
+### Input
 
-input to the menu is given through the keyboard, where alphanumeric inputs are forwarded as a char inputs to the menu under test. The up, down, left and right arrows as well as the enter key are forwarded as their sgl::input equivalents.
+Input to the menu is given through the keyboard, where alphanumeric inputs are
+forwarded as a char inputs to the menu under test. The up, down, left and right
+arrows as well as the enter key are forwarded as their sgl::input equivalents.
 
 ## Debugging your own menu
 
