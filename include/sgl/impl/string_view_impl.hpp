@@ -13,7 +13,7 @@ namespace sgl {
 
   template <typename CharT>
   constexpr string_view<CharT>::string_view(const string_view& other) noexcept
-      : data_(other.data_), size_(other.size_){};
+      : data_(other.data_), size_(other.size_){}
 
   template <typename CharT>
   constexpr string_view<CharT>::string_view(const CharT* str, size_t size) noexcept

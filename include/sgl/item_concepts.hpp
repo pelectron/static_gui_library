@@ -528,7 +528,7 @@ namespace sgl {
 
   template <typename F, typename Item>
   using enable_if_is_click_handler =
-      std::enable_if_t<std::is_nothrow_invocable_r_v<sgl::error, F, Item&>, bool>;
+      std::enable_if_t<is_click_handler_for_v<F, Item>, bool>;
 
   template <typename F, typename Item>
   using enable_if_is_tick_handler = std::enable_if_t<is_tick_handler_for_v<F, Item>, bool>;
