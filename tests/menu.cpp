@@ -1,4 +1,5 @@
 #include "sgl.hpp"
+#include "sgl/page.hpp"
 
 #include <catch2/catch.hpp>
 
@@ -158,19 +159,37 @@ TEST_CASE("sgl::Menu") {
 
   SECTION("item_text()") {
     REQUIRE(menu.current_page_index() == 0);
-    REQUIRE(sgl::string_view<char>{menu[page1][NAME("bool item 1")].text().data(),
-                                   menu[page1][NAME("bool item 1")].text().size()} ==
-            menu.item_text(0));
-    REQUIRE(sgl::string_view<char>{menu[page1][NAME("int item 1")].text().data(),
-                                   menu[page1][NAME("int item 1")].text().size()} ==
-            menu.item_text(4));
+    REQUIRE(sgl::string_view<char>(menu[page1][NAME("bool item 1")].text()) == menu.item_text(0));
+    REQUIRE(sgl::string_view<char>(menu[page1][NAME("int item 1")].text()) == menu.item_text(4));
   }
   SECTION("tick()") {
     REQUIRE_FALSE(bool1_ticked);
     menu.tick();
     REQUIRE(bool1_ticked);
   }
+  SECTION("handle_input") {
+    bool input_handled1 = false;
+    menu[page1].set_input_handler([&input_handled1](auto&, sgl::input i) noexcept {
+      REQUIRE(i == sgl::input::enter);
+      input_handled1 = true;
+      return sgl::error::edit_finished;
+    });
+    bool input_handled2 = false;
+    menu[page2].set_input_handler([&input_handled2](auto&, sgl::input i) noexcept {
+      REQUIRE(i == sgl::input::enter);
+      input_handled2 = true;
+      return sgl::error::edit_finished;
+    });
+    REQUIRE(menu.handle_input(sgl::input::enter) == sgl::error::edit_finished);
+    REQUIRE(input_handled1);
+    REQUIRE_FALSE(input_handled2);
 
+    input_handled1 = false;
+    (void)menu.set_current_page(page2);
+    REQUIRE(menu.handle_input(sgl::input::enter) == sgl::error::edit_finished);
+    REQUIRE(input_handled2);
+    REQUIRE_FALSE(input_handled1);
+  }
   SECTION("get_page() and operator[]") {
     REQUIRE(&menu[page1] == &menu.get_page<0>());
     REQUIRE(&menu[page2] == &menu.get_page<1>());
@@ -186,7 +205,7 @@ TEST_CASE("sgl::Menu") {
 
     p1_visited = false;
     auto error = menu.set_current_page(1);
-    menu.for_current_page([&p2_visited](auto&) noexcept { p2_visited = true; });
+    sgl::for_current(menu, [&p2_visited](auto&) noexcept { p2_visited = true; });
     REQUIRE(p2_visited);
     REQUIRE_FALSE(p1_visited);
     REQUIRE(error == sgl::error::no_error);
@@ -201,9 +220,34 @@ TEST_CASE("sgl::Menu") {
 
     p1_visited = false;
     auto error = menu.set_current_page(1);
-    menu.for_current_page([&p2_visited](const auto&) noexcept { p2_visited = true; });
+    sgl::for_current(menu, [&p2_visited](const auto&) noexcept { p2_visited = true; });
     REQUIRE(p2_visited);
     REQUIRE_FALSE(p1_visited);
     REQUIRE(error == sgl::error::no_error);
+  }
+  SECTION("for_each_page") {
+    bool p1_visited = false;
+    bool p2_visited = false;
+    menu[page1].set_input_handler([&p1_visited](auto&, sgl::input i) noexcept {
+      REQUIRE(i == sgl::input::enter);
+      p1_visited = true;
+      return sgl::error::edit_finished;
+    });
+    menu[page2].set_input_handler([&p2_visited](auto&, sgl::input i) noexcept {
+      REQUIRE(i == sgl::input::enter);
+      p2_visited = true;
+      return sgl::error::edit_finished;
+    });
+
+    menu.for_each_page([](auto& page) { (void)page.handle_input(sgl::input::enter); });
+    REQUIRE(p1_visited);
+    REQUIRE(p2_visited);
+
+    p1_visited = false;
+    p2_visited = false;
+
+    sgl::for_each(menu, [](auto& p) { (void)p.handle_input(sgl::input::enter); });
+    REQUIRE(p1_visited);
+    REQUIRE(p2_visited);
   }
 }

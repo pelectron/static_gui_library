@@ -313,7 +313,7 @@ namespace sgl {
     @{
    */
   template <typename NameList, typename PageList, typename F>
-  constexpr decltype(auto) for_each(Menu<NameList, PageList>& menu, F&& f);
+  constexpr void for_each(Menu<NameList, PageList>& menu, F&& f);
 
   template <typename NameList, typename PageList, typename F>
   constexpr void for_each(const Menu<NameList, PageList>& menu, F&& f);
