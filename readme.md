@@ -216,7 +216,7 @@ int main(){
                                {sgl::input::right, "right"_sv},
                                {sgl::input::enter, "enter"_sv},
                                {sgl::input::enter, sgl::string_view<char>{}}});
-  // print just outputs the text of all items of the current page line by line.
+  // just outputs the text of all items of the current page line by line.
   tester.print();
 
   // user input
@@ -225,7 +225,7 @@ int main(){
   while (std::getline(std::cin, s)) {
     if (s == "quit") {
       break;
-}
+    }
     tester.handle_input(sgl::string_view<char>(s));
     tester.print();
   }
