@@ -157,9 +157,8 @@ TEST_CASE("Page") {
     REQUIRE(page.get_stop_edit() == sgl::input::down);
   }
   SECTION("for_current_item()") {
-    auto lambda = [](auto& item) { return item.handle_input(sgl::input::none); };
 
-    auto error = page.for_current_item(lambda);
+    auto error = page.for_current_item([](auto& item) { return item.handle_input(sgl::input::none); });
     REQUIRE(error == sgl::error::edit_finished);
     REQUIRE(handled_input1);
     REQUIRE_FALSE(handled_input2);
@@ -167,19 +166,18 @@ TEST_CASE("Page") {
     handled_input1 = false;
     handled_input2 = false;
     page.set_current_item(i2);
-    sgl::for_current(page, lambda);
+    sgl::for_current(page, [](auto& item) { return item.handle_input(sgl::input::none); });
     REQUIRE(handled_input2);
     REQUIRE_FALSE(handled_input1);
   }
   SECTION("for_each_item()") {
-    auto lambda = [](auto& item) { item.handle_input(sgl::input::none); };
-    page.for_each_item(lambda);
+    page.for_each_item([](auto& item) { item.handle_input(sgl::input::none); });
     REQUIRE(handled_input1);
     REQUIRE(handled_input2);
 
     handled_input1 = false;
     handled_input2 = false;
-    sgl::for_each(page, lambda);
+    sgl::for_each(page, [](auto& item) { item.handle_input(sgl::input::none); });
     REQUIRE(handled_input1);
     REQUIRE(handled_input2);
   }
