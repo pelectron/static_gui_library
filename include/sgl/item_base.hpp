@@ -117,8 +117,8 @@ namespace sgl {
      */
     template <typename InputHandler,
               typename TickHandler,
-              enable_if_is_input_handler<InputHandler, item_type> = true,
-              enable_if_is_tick_handler<TickHandler, item_type> = true>
+              enable_if_is_input_handler<InputHandler, ItemImpl> = true,
+              enable_if_is_tick_handler<TickHandler, ItemImpl> = true>
     constexpr ItemBase(sgl::string_view<char_type>     text,
                        InputHandler&& input_handler,
                        TickHandler&&  tick_handler) noexcept;
@@ -174,8 +174,8 @@ namespace sgl {
       @param handler custom [input handler](concepts.md#tick-handler).
       @return item_type&
      */
-    template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
-    constexpr item_type& set_input_handler(InputHandler&& handler) noexcept;
+    template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl> = true>
+    constexpr ItemImpl& set_input_handler(InputHandler&& handler) noexcept;
 
     /**
       Set the tick handler of this item.
@@ -183,15 +183,15 @@ namespace sgl {
       @param handler custom [tick handler](concepts.md#tick-handler).
       @return item_type&
      */
-    template <typename TickHandler, enable_if_is_tick_handler<TickHandler, item_type> = true>
-    constexpr item_type& set_tick_handler(TickHandler&& handler) noexcept;
+    template <typename TickHandler, enable_if_is_tick_handler<TickHandler, ItemImpl> = true>
+    constexpr ItemImpl& set_tick_handler(TickHandler&& handler) noexcept;
 
   private:
     /**
       default input handler. simply returns sgl::error::edit_finished.
       @return sgl::error
      */
-    static sgl::error default_handle_input(item_type&, sgl::input) noexcept;
+    static sgl::error default_handle_input(ItemImpl&, sgl::input) noexcept;
 
     InputHandler_t handler_{&default_handle_input}; ///< handles user input
     TickHandler_t  tick_handler_{};                 ///< handles tick update

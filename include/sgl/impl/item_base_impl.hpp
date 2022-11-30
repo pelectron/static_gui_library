@@ -81,9 +81,7 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(
-      typename ItemBase<ItemImpl, Traits>::item_type&,
-      sgl::input) noexcept {
+  sgl::error ItemBase<ItemImpl, Traits>::default_handle_input(ItemImpl&, sgl::input) noexcept {
     return sgl::error::edit_finished;
   }
 

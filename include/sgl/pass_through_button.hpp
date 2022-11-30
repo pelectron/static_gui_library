@@ -23,17 +23,18 @@ namespace sgl {
     /// concrete item type
     using item_type = typename Base::item_type;
 
+    using char_type = typename Base::char_type;
     /// string_View type of this item
     using StringView = typename Base::StringView;
 
     /// concrete type used for storing click handlers.
-    using ClickHandler_t = Callable<sgl::error(item_type&)>;
+    using ClickHandler_t = Callable<sgl::error(ItemImpl&)>;
 
     /**
       create button with text
       @param text text of item
      */
-    explicit constexpr PassThroughButton(StringView text) noexcept;
+    explicit constexpr PassThroughButton(sgl::string_view<char_type> text) noexcept;
 
     /**
       Construct a Button with name, text, and click handler.
@@ -41,8 +42,8 @@ namespace sgl {
       @param click_handler click handler
       @tparam ClickHandler click handler type
      */
-    template <typename ClickHandler, enable_if_is_click_handler<ClickHandler, item_type> = true>
-    constexpr PassThroughButton(StringView text, ClickHandler&& click_handler) noexcept;
+    template <typename ClickHandler, enable_if_is_click_handler<ClickHandler, ItemImpl> = true>
+    constexpr PassThroughButton(sgl::string_view<char_type> text, ClickHandler&& click_handler) noexcept;
 
     /**
       Construct a Button with name, text, click handler and tick handler.
@@ -56,9 +57,9 @@ namespace sgl {
      */
     template <typename ClickHandler,
               typename TickHandler,
-              enable_if_is_click_handler<ClickHandler, item_type> = true,
-              enable_if_is_tick_handler<TickHandler, item_type> = true>
-    constexpr PassThroughButton(StringView     text,
+              enable_if_is_click_handler<ClickHandler, ItemImpl> = true,
+              enable_if_is_tick_handler<TickHandler, ItemImpl> = true>
+    constexpr PassThroughButton(sgl::string_view<char_type>     text,
                                 ClickHandler&& click_handler,
                                 TickHandler&&  tick_handler) noexcept;
 
@@ -66,10 +67,10 @@ namespace sgl {
       Set the click handler
       @tparam ClickHandler click handler type
       @param click_handler custom click handler
-      @return item_type&
+      @return ItemImpl&
      */
-    template <typename ClickHandler, enable_if_is_click_handler<ClickHandler, item_type> = true>
-    constexpr item_type& set_click_handler(ClickHandler&& click_handler) noexcept;
+    template <typename ClickHandler, enable_if_is_click_handler<ClickHandler, ItemImpl> = true>
+    constexpr ItemImpl& set_click_handler(ClickHandler&& click_handler) noexcept;
 
     /**
       execute click handler
@@ -78,8 +79,8 @@ namespace sgl {
     constexpr sgl::error click() noexcept;
 
   private:
-    constexpr static sgl::error default_handle_click(item_type&) noexcept;
-    constexpr static sgl::error button_input_handler(item_type& item, sgl::input) noexcept;
+    constexpr static sgl::error default_handle_click(ItemImpl&) noexcept;
+    constexpr static sgl::error button_input_handler(ItemImpl& item, sgl::input) noexcept;
 
     ClickHandler_t click_handler_{&default_handle_click};
   };
