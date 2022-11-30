@@ -25,16 +25,16 @@ namespace sgl {
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(bool initial_value) noexcept
       : sgl::ItemBase<Boolean<TextSize, CharT>>(initial_value
-                                                    ? StringView(sgl::detail::True<CharT>)
-                                                    : StringView(sgl::detail::False<CharT>),
+                                                    ? sgl::string_view<CharT>(sgl::detail::True<CharT>)
+                                                    : sgl::string_view<CharT>(sgl::detail::False<CharT>),
                                                 &default_handle_input),
         true_string_(sgl::detail::True<CharT>), false_string_(sgl::detail::False<CharT>),
         value_(initial_value) {}
 
   template <size_t TextSize, typename CharT>
   constexpr Boolean<TextSize, CharT>::Boolean(bool       value,
-                                              StringView true_text,
-                                              StringView false_text) noexcept
+                                              sgl::string_view<CharT> true_text,
+                                              sgl::string_view<CharT> false_text) noexcept
       : sgl::ItemBase<Boolean<TextSize, CharT>>(value ? true_text : false_text,
                                                 &default_handle_input),
         true_string_(true_text), false_string_(false_text), value_(value) {}
@@ -56,13 +56,13 @@ namespace sgl {
   }
 
   template <size_t TextSize, typename CharT>
-  constexpr typename Boolean<TextSize, CharT>::StringView
+  constexpr sgl::string_view<CharT>
       Boolean<TextSize, CharT>::true_string() const noexcept {
     return true_string_;
   }
 
   template <size_t TextSize, typename CharT>
-  constexpr typename Boolean<TextSize, CharT>::StringView
+  constexpr sgl::string_view<CharT>
       Boolean<TextSize, CharT>::false_string() const noexcept {
     return false_string_;
   }

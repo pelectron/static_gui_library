@@ -29,6 +29,8 @@ namespace sgl {
     /// string_view type used by this item
     using StringView = typename sgl::ItemBase<Boolean<TextSize, CharT>>::StringView;
 
+    using char_type = typename sgl::ItemBase<Boolean<TextSize, CharT>>::char_type;
+
     /// Construct a Boolean item, which toggles its text between "TRUE"
     /// and "FALSE" when clicked.
     /// @param initial_value initial value of the item
@@ -40,7 +42,9 @@ namespace sgl {
       @param true_text text to set when value is true
       @param false_text text to set when value is false
      */
-    constexpr Boolean(bool value, StringView true_text, StringView false_text) noexcept;
+    constexpr Boolean(bool                    value,
+                      sgl::string_view<CharT> true_text,
+                      sgl::string_view<CharT> false_text) noexcept;
 
     /// get value of item
     /// @return bool
@@ -52,12 +56,12 @@ namespace sgl {
     [[nodiscard]] constexpr sgl::error set_value(bool value) noexcept;
 
     /// get string_view to the true string
-    /// @return StringView
-    [[nodiscard]] constexpr StringView true_string() const noexcept;
+    /// @return sgl::string_view<CharT>
+    [[nodiscard]] constexpr sgl::string_view<CharT> true_string() const noexcept;
 
     /// get string_view to false string
-    /// @return StringView
-    [[nodiscard]] constexpr StringView false_string() const noexcept;
+    /// @return sgl::string_view<CharT>
+    [[nodiscard]] constexpr sgl::string_view<CharT> false_string() const noexcept;
 
   private:
     /// default input handler
@@ -65,9 +69,9 @@ namespace sgl {
     [[nodiscard]] static constexpr sgl::error default_handle_input(Boolean<TextSize, CharT>& item,
                                                                    sgl::input i) noexcept;
 
-    StringView true_string_{};  ///< view of true string
-    StringView false_string_{}; ///< view of false string
-    bool       value_{false};   ///< value of item
+    sgl::string_view<CharT> true_string_{};  ///< view of true string
+    sgl::string_view<CharT> false_string_{}; ///< view of false string
+    bool                    value_{false};   ///< value of item
   };
 
   /// @ingroup item_factories
