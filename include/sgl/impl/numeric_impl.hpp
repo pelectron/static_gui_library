@@ -164,9 +164,11 @@ namespace sgl {
                                                   T           value,
                                                   uint32_t    precision,
                                                   sgl::format format) noexcept {
-    if constexpr (std::is_integral_v<T>)
+    if constexpr (std::is_integral_v<T>) {
+      (void)precision;
+      (void)format;
       return sgl::to_chars(str, len, value);
-    else
+    } else
       return sgl::to_chars(str, len, value, precision, format);
   }
 
