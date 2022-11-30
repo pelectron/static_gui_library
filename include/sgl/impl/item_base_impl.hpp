@@ -9,16 +9,16 @@
 
 namespace sgl {
   template <typename ItemImpl, typename Traits>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(typename ItemBase<ItemImpl, Traits>::StringView text) noexcept : text_(text) {}
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(sgl::string_view<char_type> text) noexcept : text_(text) {}
 
   template <typename ItemImpl, typename Traits>
   template <typename InputHandler, enable_if_is_input_handler<InputHandler, typename ItemBase<ItemImpl, Traits>::item_type>>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(typename ItemBase<ItemImpl, Traits>::StringView text, InputHandler&& handler) noexcept
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(sgl::string_view<char_type> text, InputHandler&& handler) noexcept
       : handler_(std::forward<InputHandler>(handler)), text_{text} {}
 
   template <typename ItemImpl, typename Traits>
   template <typename TickHandler, enable_if_is_tick_handler<TickHandler, typename ItemBase<ItemImpl, Traits>::item_type>>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(typename ItemBase<ItemImpl, Traits>::StringView text, TickHandler&& handler) noexcept
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(sgl::string_view<char_type> text, TickHandler&& handler) noexcept
       : tick_handler_(std::forward<TickHandler>(handler)), text_(text) {}
 
   template <typename ItemImpl, typename Traits>
@@ -26,7 +26,7 @@ namespace sgl {
             typename TickHandler,
             enable_if_is_input_handler<InputHandler, typename ItemBase<ItemImpl, Traits>::item_type>,
             enable_if_is_tick_handler<TickHandler,  typename ItemBase<ItemImpl, Traits>::item_type>>
-  constexpr ItemBase<ItemImpl, Traits>::ItemBase(typename ItemBase<ItemImpl, Traits>::StringView     text,
+  constexpr ItemBase<ItemImpl, Traits>::ItemBase(sgl::string_view<char_type>     text,
                                                  InputHandler&& input_handler,
                                                  TickHandler&&  tick_handler) noexcept
       : handler_(std::forward<InputHandler>(input_handler)),
@@ -44,7 +44,7 @@ namespace sgl {
   }
 
   template <typename ItemImpl, typename Traits>
-  constexpr sgl::error ItemBase<ItemImpl, Traits>::set_text(typename ItemBase<ItemImpl, Traits>::StringView new_text) noexcept {
+  constexpr sgl::error ItemBase<ItemImpl, Traits>::set_text(sgl::string_view<char_type> new_text) noexcept {
     text_ = new_text;
     return sgl::error::no_error;
   }

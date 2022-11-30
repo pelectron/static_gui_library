@@ -84,7 +84,7 @@ namespace sgl {
       Construct an item with text.
        @param text text of the item
      */
-    explicit constexpr ItemBase(StringView text) noexcept;
+    explicit constexpr ItemBase(sgl::string_view<char_type> text) noexcept;
 
     /**
       Construct an item, text and input handler.
@@ -93,7 +93,7 @@ namespace sgl {
       @param handler input handler
      */
     template <typename InputHandler, enable_if_is_input_handler<InputHandler, ItemImpl> = true>
-    constexpr ItemBase(StringView text, InputHandler&& handler) noexcept;
+    constexpr ItemBase(sgl::string_view<char_type> text, InputHandler&& handler) noexcept;
 
     /**
       Construct an item with text and tick handler. The tick handler is called every
@@ -103,7 +103,7 @@ namespace sgl {
       @param handler tick handler
      */
     template <typename TickHandler, enable_if_is_tick_handler<TickHandler, ItemImpl> = true>
-    constexpr ItemBase(StringView text, TickHandler&& handler) noexcept;
+    constexpr ItemBase(sgl::string_view<char_type> text, TickHandler&& handler) noexcept;
 
     /**
       construct an item with text, and custom input and tick handlers. See InputHandler_t
@@ -119,7 +119,7 @@ namespace sgl {
               typename TickHandler,
               enable_if_is_input_handler<InputHandler, item_type> = true,
               enable_if_is_tick_handler<TickHandler, item_type> = true>
-    constexpr ItemBase(StringView     text,
+    constexpr ItemBase(sgl::string_view<char_type>     text,
                        InputHandler&& input_handler,
                        TickHandler&&  tick_handler) noexcept;
 
@@ -151,7 +151,7 @@ namespace sgl {
       @param new_text new text
       @return sgl::error
      */
-    constexpr sgl::error set_text(StringView new_text) noexcept;
+    constexpr sgl::error set_text(sgl::string_view<char_type> new_text) noexcept;
 
     /**
       get mutable access to text field
