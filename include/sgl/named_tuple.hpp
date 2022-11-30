@@ -243,8 +243,15 @@ namespace sgl {
 
     /**
       apply a callable f on each element. f will be called with the name of the element as
-      a sgl::string_view<char> and a reference to each elements value.
+      a sgl::Name and a reference to each elements value.
 
+      ```cpp
+      auto tuple = sgl::NamedTuple{...};
+      // the lambda will be invoked for every element in tuple with 
+      // the elemnets name as the first argument and the elemnts value as the second argument.
+      tuple.for_each_with_name([](auto name, auto& value));
+
+      ```
       @tparam F callable type
       @param f callable instance
      */
@@ -253,7 +260,15 @@ namespace sgl {
 
     /**
       apply a callable f on each element. f will be called with the name of the element as
-      a sgl::string_view<char> and a const reference to each elements value.
+      a sgl::Name and a const reference to each elements value.
+
+      ```cpp
+      auto tuple = sgl::NamedTuple{...};
+      // the lambda will be invoked for every element in tuple with 
+      // the elemnets name as the first argument and the elemnts value as the second argument.
+      tuple.for_each_with_name([](auto name, const auto& value));
+
+      ```
 
       @tparam F callable type
       @param f callable instance
@@ -390,12 +405,12 @@ namespace sgl {
 
   /**
     apply f on each element in the tuple with the elements name and value. f must be
-    invocable with a sgl::string_view<char> as its first argument and a reference to T as its
+    invocable with a sgl::Name as its first argument and a reference to T as its
     second argument, for every T in TypeList.
 
     ```cpp
     NamedTuple tuple(name1<<= 1, name2 <<=5.0);
-    sgl::for_each_with_name([](sgl::string_view<char> name, auto& value){...});
+    sgl::for_each_with_name([](auto name, auto& value){...});
     ```
     @tparam F functor type
     @tparam NameList list of
@@ -409,13 +424,14 @@ namespace sgl {
 
   /**
     apply f on each element in the tuple with the elements name and value. f must be
-    invocable with a sgl::string_view<char> as its first argument and a const reference to T as
+    invocable with a sgl::Name as its first argument and a const reference to T as
     its second argument, for every T in TypeList.
 
     ```cpp
     const NamedTuple tuple(name1<<= 1, name2 <<=5.0);
-    sgl::for_each_with_name([](sgl::string_view<char> name, const auto& value){...});
+    sgl::for_each_with_name([](auto name, const auto& value){...});
     ```
+
     @tparam F functor type
     @tparam NameList list of names of the tuple
     @tparam TypeList list of value types of the tuple

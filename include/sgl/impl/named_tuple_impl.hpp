@@ -158,12 +158,12 @@ namespace sgl {
   template <typename F>
   constexpr void
       NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) {
-    if constexpr (!(std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...)) {
-      static_assert((std::is_invocable_r_v<void, F, sgl::string_view<char>, Ts&> && ...),
-                    "f must be invocable with (sgl::string_view<char>, T&) for each T in this "
-                    "tuple.");
+    if constexpr (!(std::is_invocable_r_v<void, F, Names, Ts&> && ...)) {
+      static_assert((std::is_invocable_r_v<void, F, Names, Ts&> && ...),
+                    "f must be invocable with (sgl::string_view<char>, const T&) for each T in "
+                    "this tuple.");
     } else {
-      (std::forward<F>(f)(sgl::string_view<char>(Names{}.to_view()), this->get(Names{})), ...);
+      (std::forward<F>(f)(Names{}, this->get(Names{})), ...);
     }
   }
 
@@ -171,12 +171,12 @@ namespace sgl {
   template <typename F>
   constexpr void
       NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) const {
-    if constexpr (!(std::is_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> && ...)) {
-      static_assert((std::is_invocable_r_v<void, F, sgl::string_view<char>, const Ts&> && ...),
+    if constexpr (!(std::is_invocable_r_v<void, F, Names, const Ts&> && ...)) {
+      static_assert((std::is_invocable_r_v<void, F, Names, const Ts&> && ...),
                     "f must be invocable with (sgl::string_view<char>, const T&) for each T in "
                     "this tuple.");
     } else {
-      (std::forward<F>(f)(sgl::string_view<char>(Names{}.to_view()), this->get(Names{})), ...);
+      (std::forward<F>(f)(Names{}, this->get(Names{})), ...);
     }
   }
 

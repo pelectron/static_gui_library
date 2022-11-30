@@ -234,12 +234,12 @@ namespace sgl {
 
       // defined somewhere in a header
       template<typename Page>
-      void global_func(sgl::string_view<char> name, Page& page){...};
+      void global_func(auto name, Page& page){...};
 
       // some where a menu instance called menu used in a function
       menu.for_each_page(global_func);
       // or with a generic lambda
-      menu.for_each_page([](sgl::string_view<char> name, auto& page){...});
+      menu.for_each_page([](auto name, auto& page){...});
 
       ```
 
