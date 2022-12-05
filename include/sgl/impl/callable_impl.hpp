@@ -6,6 +6,7 @@
 #define SGL_IMPL_CALLABLE_IMPL_HPP
 
 #include "sgl/callable.hpp"
+#include <utility>
 
 namespace sgl {
   template <typename Ret, typename... Args>
