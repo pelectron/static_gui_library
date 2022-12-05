@@ -100,7 +100,7 @@ TEST_CASE("CommonTest", "[ryu][common]") {
     EXPECT_EQ(0xFFF0000000000000, ryu::to_bits(-std::numeric_limits<double>::infinity()));
   }
   SECTION("cx float to_bits") {
-    EXPECT_EQ(0u, ryu::to_bits(0.0f));
+    EXPECT_EQ(0u, ryu::cx::to_bits(0.0f));
     EXPECT_EQ(0x40490fda, ryu::cx::to_bits(3.1415926f));
     EXPECT_EQ(0x56E0910C, ryu::cx::to_bits(123456789101112.0f));
     EXPECT_EQ(0x7FC00000, ryu::cx::to_bits(std::numeric_limits<float>::quiet_NaN()));
@@ -109,7 +109,7 @@ TEST_CASE("CommonTest", "[ryu][common]") {
   }
 
   SECTION("cx double to_bits") {
-    EXPECT_EQ(0ull, ryu::to_bits(0.0));
+    EXPECT_EQ(0ull, ryu::cx::to_bits(0.0));
     EXPECT_EQ(0x400921FB54442D18, ryu::cx::to_bits(3.1415926535897932384626433));
     EXPECT_EQ(0x42DC122183CE8E00, ryu::cx::to_bits(123456789101112.0));
     EXPECT_EQ(0x7FF8000000000000, ryu::cx::to_bits(std::numeric_limits<double>::quiet_NaN()));
