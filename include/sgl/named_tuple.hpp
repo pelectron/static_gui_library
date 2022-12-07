@@ -49,8 +49,8 @@ namespace sgl {
 
     Next, a named tuple can be created by constructing it from NamedValues.
     A NamedValue is most easily created with the '<<=' operator. This operator takes a name of
-    type N on the left hand side and a value of type T on the right hand side, and returns a
-    sgl::NamedValue<N,T>.
+    type Size on the left hand side and a value of type T on the right hand side, and returns a
+    sgl::NamedValue<Size,T>.
 
 
     ```cpp
@@ -214,7 +214,7 @@ namespace sgl {
     /**
       apply a callable f on each value in the tuple.
       This means that f is invoked for every value in this with the **values type**. For
-      example, if this is constructed with a NamedValue<N,T>, then f is called with a reference to
+      example, if this is constructed with a NamedValue<Size,T>, then f is called with a reference to
       T. If you also want the name of the value, see for_each_with_name().
 
       ```cpp
@@ -232,7 +232,7 @@ namespace sgl {
     /**
       apply a callable f on each value in the tuple.
       This means that f is invoked for every value in this with the **values type**. For
-      example, if this is constructed with a NamedValue<N,T>, then f is called with a const
+      example, if this is constructed with a NamedValue<Size,T>, then f is called with a const
       reference to T. If you also want the name of the value, see for_each_with_name().
 
       @tparam F callable type
@@ -369,7 +369,7 @@ namespace sgl {
 
   /**
     apply f on each value in the tuple. This means that f is invoked for every value in
-    tuple with the **values type**, i.e. if you constructed the tuple with a NamedValue<N,T>, then
+    tuple with the **values type**, i.e. if you constructed the tuple with a NamedValue<Size,T>, then
     f is called with a reference to T. f must be invocable with every type in TypeList.
     ```cpp
     NamedTuple tuple(name1<<= 1, name2 <<=5.0);

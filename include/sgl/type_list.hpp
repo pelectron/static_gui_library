@@ -118,40 +118,40 @@ namespace sgl {
   using pop_front_t = typename pop_front<List>::type;
   static_assert(std::is_same_v<type_list<char, double>, pop_front_t<type_list<int, char, double>>>);
 
-  /// @brief get N-th type in type_list List
-  /// @tparam N index of type
+  /// @brief get Size-th type in type_list List
+  /// @tparam Size index of type
   /// @tparam List
-  template <size_t N, typename List>
+  template <size_t Size, typename List>
   struct type_at;
 
-  template <size_t N>
+  template <size_t Size>
   struct index_out_of_range {
-    static_assert(N != 0, "index out of range");
+    static_assert(Size != 0, "index out of range");
   };
 
   template <size_t, typename...>
   struct type_at_impl;
 
-  template <size_t N, typename T, typename... Ts>
-  struct type_at_impl<N, T, Ts...> : type_at_impl<N - 1, Ts...> {};
+  template <size_t Size, typename T, typename... Ts>
+  struct type_at_impl<Size, T, Ts...> : type_at_impl<Size - 1, Ts...> {};
 
   template <typename T, typename... Ts>
   struct type_at_impl<0, T, Ts...> {
     using type = T;
   };
 
-  template <size_t N>
-  struct type_at_impl<N> {
-    static_assert(N < 0, "type index out of range");
+  template <size_t Size>
+  struct type_at_impl<Size> {
+    static_assert(Size < 0, "type index out of range");
   };
 
-  template <size_t N, typename... Ts>
-  struct type_at<N, type_list<Ts...>> {
-    using type = typename type_at_impl<N, Ts...>::type;
+  template <size_t Size, typename... Ts>
+  struct type_at<Size, type_list<Ts...>> {
+    using type = typename type_at_impl<Size, Ts...>::type;
   };
 
-  template <size_t N, typename List>
-  using type_at_t = typename type_at<N, List>::type;
+  template <size_t Size, typename List>
+  using type_at_t = typename type_at<Size, List>::type;
 
   static_assert(std::is_same_v<type_at_t<0, type_list<int, double, char>>, int>);
   static_assert(std::is_same_v<type_at_t<1, type_list<int, double, char>>, double>);

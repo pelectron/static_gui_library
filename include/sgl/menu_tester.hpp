@@ -22,15 +22,15 @@ namespace sgl {
   /// This class is used to map sgl::input values to string_views. It is
   /// used by the MenuTester class.
   /// @tparam char character type
-  /// @tparam N number of mapped values
-  template <typename CharT, size_t N>
+  /// @tparam Size number of mapped values
+  template <typename CharT, size_t Size>
   struct InputMap {
-    InputMap(const InputPair<CharT> (&inp_map)[N]) {
-      for (size_t i = 0; i < N; ++i)
+    InputMap(const InputPair<CharT> (&inp_map)[Size]) {
+      for (size_t i = 0; i < Size; ++i)
         map[i] = inp_map[i];
     }
 
-    InputPair<CharT> map[N];
+    InputPair<CharT> map[Size];
 
     sgl::input get(sgl::string_view<CharT> string) {
       for (const auto& e : map) {
@@ -44,8 +44,8 @@ namespace sgl {
   /// This class provides an easy ways to test menus.
   /// @see menu_tester.cpp for a complete example on how to use this class.
   /// @tparam Menu menu type
-  /// @tparam N number of inputs mapped
-  template <typename Menu, size_t N>
+  /// @tparam Size number of inputs mapped
+  template <typename Menu, size_t Size>
   class MenuTester {
   public:
 
@@ -65,10 +65,10 @@ namespace sgl {
     /// @param menu menu to test
     /// @param input_map map of sgl::input to sgl::string_view<char>
     /// @{
-    MenuTester(const Menu& menu, const InputPair<char> (&input_map)[N])
+    MenuTester(const Menu& menu, const InputPair<char> (&input_map)[Size])
         : menu_(menu), map(input_map) {}
 
-    MenuTester(Menu&& menu, const InputPair<char> (&input_map)[N])
+    MenuTester(Menu&& menu, const InputPair<char> (&input_map)[Size])
         : menu_(std::move(menu)), map(input_map) {}
 
     /// @}
@@ -113,7 +113,7 @@ namespace sgl {
 
   private:
     Menu              menu_;
-    InputMap<char, N> map;
+    InputMap<char, Size> map;
   };
 } // namespace sgl
 #endif /* SGL_MENU_TESTER_HPP */

@@ -30,7 +30,7 @@ namespace sgl::qt {
     parent_ = p;
   }
 
-  size_t Node::index() const {
+  size_t Sizeode::index() const {
     if (not parent_) {
       return 0;
     }
@@ -57,7 +57,7 @@ namespace sgl::qt {
 
   const std::vector<Node*>& Node::children() const { return children_; }
 
-  size_t Node::size() const { return children_.size(); }
+  size_t Sizeode::size() const { return children_.size(); }
 
   std::string_view Node::name() const { return name_; }
 

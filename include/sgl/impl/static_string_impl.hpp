@@ -178,9 +178,9 @@ namespace sgl {
     }
   }
 
-  template <typename CharT, size_t N1, size_t N2>
-  constexpr bool operator==(const static_string<CharT, N1> s1,
-                            const static_string<CharT, N2> s2) noexcept {
+  template <typename CharT, size_t Size1, size_t Size2>
+  constexpr bool operator==(const static_string<CharT, Size1> s1,
+                            const static_string<CharT, Size2> s2) noexcept {
     if (s1.size() != s2.size()) {
       return false;
     }

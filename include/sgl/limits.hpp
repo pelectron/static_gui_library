@@ -88,7 +88,7 @@ namespace sgl {
 
   template <>
   struct numeric_limits<unsigned short> {
-    static constexpr unsigned short max() noexcept { return USHRT_MAX; }
+    static constexpr unsigned short max() noexcept { return 0xFFFF; }
 
     static constexpr unsigned short min() noexcept { return 0; }
   };

@@ -129,10 +129,10 @@ namespace sgl {
 
     @tparam Chars characters of page name
     @tparam CharT character type of pagelink
-    @tparam N size of text literal
+    @tparam Size size of text literal
     @param page_name name of the page to link to
     @param text text of the pagelink
-    @return PageLink<Name, N - 1, CharT>
+    @return PageLink<Name, Size - 1, CharT>
    */
   template <size_t TextSize, typename CharT, char... Chars>
   constexpr auto pagelink(sgl::Name<Chars...> page_name, const CharT (&text)[TextSize]) noexcept

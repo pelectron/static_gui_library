@@ -7,28 +7,28 @@
 #include "sgl/enum_map.hpp"
 
 namespace sgl {
-  template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(const EnumMap& other) noexcept : data(other.data) {}
+  template <typename E, size_t Size, typename CharT>
+  constexpr EnumMap<E, Size, CharT>::EnumMap(const EnumMap& other) noexcept : data(other.data) {}
 
-  template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(EnumMap&& other) noexcept : data(std::move(other.data)) {}
+  template <typename E, size_t Size, typename CharT>
+  constexpr EnumMap<E, Size, CharT>::EnumMap(EnumMap&& other) noexcept : data(std::move(other.data)) {}
 
-  template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(
-      const Array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept
+  template <typename E, size_t Size, typename CharT>
+  constexpr EnumMap<E, Size, CharT>::EnumMap(
+      const Array<Pair<E, sgl::string_view<CharT>>, Size>& map) noexcept
       : data(map) {}
 
-  template <typename E, size_t N, typename CharT>
-  constexpr EnumMap<E, N, CharT>::EnumMap(const Array<Pair<E, const CharT*>, N>& map) noexcept {
-    for (size_t i = 0; i < N; ++i) {
+  template <typename E, size_t Size, typename CharT>
+  constexpr EnumMap<E, Size, CharT>::EnumMap(const Array<Pair<E, const CharT*>, Size>& map) noexcept {
+    for (size_t i = 0; i < Size; ++i) {
       data[i].first = map[i].first;
       data[i].second = sgl::string_view<CharT>(map[i].second);
     }
   }
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   [[nodiscard]] constexpr E
-      EnumMap<E, N, CharT>::operator[](sgl::string_view<CharT> str) const noexcept {
+      EnumMap<E, Size, CharT>::operator[](sgl::string_view<CharT> str) const noexcept {
     for (const auto& elem : data) {
       if (elem.second == str)
         return elem.first;
@@ -36,9 +36,9 @@ namespace sgl {
     return E{};
   }
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   [[nodiscard]] constexpr sgl::string_view<CharT>
-      EnumMap<E, N, CharT>::operator[](E value) const noexcept {
+      EnumMap<E, Size, CharT>::operator[](E value) const noexcept {
     for (const auto& elem : data) {
       if (elem.first == value)
         return elem.second;
@@ -46,19 +46,19 @@ namespace sgl {
     return sgl::string_view<CharT>{};
   }
 
-  template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr bool EnumMap<E, N, CharT>::contains(E value) const noexcept {
+  template <typename E, size_t Size, typename CharT>
+  [[nodiscard]] constexpr bool EnumMap<E, Size, CharT>::contains(E value) const noexcept {
     return index_of(value) != numeric_limits<size_t>::max();
   }
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   [[nodiscard]] constexpr bool
-      EnumMap<E, N, CharT>::contains(sgl::string_view<CharT> string) const noexcept {
+      EnumMap<E, Size, CharT>::contains(sgl::string_view<CharT> string) const noexcept {
     return index_of(string) != numeric_limits<size_t>::max();
   }
 
-  template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr size_t EnumMap<E, N, CharT>::index_of(E value) const noexcept {
+  template <typename E, size_t Size, typename CharT>
+  [[nodiscard]] constexpr size_t EnumMap<E, Size, CharT>::index_of(E value) const noexcept {
     size_t i{0};
     for (const auto& elem : data) {
       if (elem.first == value)
@@ -68,9 +68,9 @@ namespace sgl {
     return numeric_limits<size_t>::max();
   }
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   [[nodiscard]] constexpr size_t
-      EnumMap<E, N, CharT>::index_of(sgl::string_view<CharT> string) const noexcept {
+      EnumMap<E, Size, CharT>::index_of(sgl::string_view<CharT> string) const noexcept {
     size_t i{0};
     for (const auto& elem : data) {
       if (elem.second == string)
@@ -80,15 +80,15 @@ namespace sgl {
     return numeric_limits<size_t>::max();
   }
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   [[nodiscard]] constexpr sgl::string_view<CharT>
-      EnumMap<E, N, CharT>::get_view(size_t i) const noexcept {
-    return data[i % N].second;
+      EnumMap<E, Size, CharT>::get_view(size_t i) const noexcept {
+    return data[i % Size].second;
   }
 
-  template <typename E, size_t N, typename CharT>
-  [[nodiscard]] constexpr E EnumMap<E, N, CharT>::get_value(size_t i) const noexcept {
-    return data[i % N].first;
+  template <typename E, size_t Size, typename CharT>
+  [[nodiscard]] constexpr E EnumMap<E, Size, CharT>::get_value(size_t i) const noexcept {
+    return data[i % Size].first;
   }
 
   template <typename T, typename T1, typename T2, typename... Ts>
@@ -117,8 +117,8 @@ namespace sgl {
     using type = CharT;
   };
 
-  template <typename CharT, size_t N>
-  struct get_char_type<const CharT (&)[N]> {
+  template <typename CharT, size_t Size>
+  struct get_char_type<const CharT (&)[Size]> {
     using type = CharT;
   };
 
@@ -132,14 +132,14 @@ namespace sgl {
     static constexpr size_t value = 0;
   };
 
-  template <typename T, size_t N>
-  struct get_string_size<T (&)[N]> {
-    static constexpr size_t value = N - 1;
+  template <typename T, size_t Size>
+  struct get_string_size<T (&)[Size]> {
+    static constexpr size_t value = Size - 1;
   };
 
-  template <typename T, size_t N>
-  struct get_string_size<T[N]> {
-    static constexpr size_t value = N - 1;
+  template <typename T, size_t Size>
+  struct get_string_size<T[Size]> {
+    static constexpr size_t value = Size - 1;
   };
 
   template <typename E, typename Str, typename... Rs>
@@ -149,8 +149,8 @@ namespace sgl {
            every_second_convertible<sgl::string_view<char_type>, Str, Rs...>();
   }
 
-  template <typename CharT, size_t N, typename E, typename Str, typename... Rest>
-  constexpr auto enum_map_impl2(Array<Pair<E, sgl::string_view<CharT>>, N>& data,
+  template <typename CharT, size_t Size, typename E, typename Str, typename... Rest>
+  constexpr auto enum_map_impl2(Array<Pair<E, sgl::string_view<CharT>>, Size>& data,
                                 size_t                                      index,
                                 const E&                                    e,
                                 const Str&                                  s,

@@ -25,10 +25,10 @@ namespace sgl {
     function. That function will deduced all template parameters for you.
 
     @tparam E enum/value type
-    @tparam N number of values this map contains.
+    @tparam Size number of values this map contains.
     @tparam CharT character type
    */
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   struct EnumMap {
 
     /// copy ctor
@@ -41,11 +41,11 @@ namespace sgl {
 
     /// construct EnumMap from Array of pairs
     /// @param map Array of pairs of E and sgl::string_view<CharT>
-    constexpr explicit EnumMap(const Array<Pair<E, sgl::string_view<CharT>>, N>& map) noexcept;
+    constexpr explicit EnumMap(const Array<Pair<E, sgl::string_view<CharT>>, Size>& map) noexcept;
 
     /// construct EnumMap from Array
     /// @param map Array of pairs of E and const CharT*
-    constexpr explicit EnumMap(const Array<Pair<E, const CharT*>, N>& map) noexcept;
+    constexpr explicit EnumMap(const Array<Pair<E, const CharT*>, Size>& map) noexcept;
 
     /// get value from string_view. If str is not mapped to any value, any of the contained
     /// values of E might be returned.
@@ -72,7 +72,7 @@ namespace sgl {
 
     /// get number of map entries
     /// @return constexpr size_t
-    [[nodiscard]] constexpr size_t size() const noexcept { return N; }
+    [[nodiscard]] constexpr size_t size() const noexcept { return Size; }
 
     /// get string_view of value by index
     /// @param i index
@@ -95,7 +95,7 @@ namespace sgl {
     /// @return constexpr E
     [[nodiscard]] constexpr E get_value(size_t i) const noexcept;
 
-    sgl::Array<sgl::Pair<E, sgl::string_view<CharT>>, N> data{};
+    sgl::Array<sgl::Pair<E, sgl::string_view<CharT>>, Size> data{};
   };
 
   /**

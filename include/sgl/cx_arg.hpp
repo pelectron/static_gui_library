@@ -21,23 +21,23 @@ namespace sgl {
     conjunction with the _double and _float operators defined in the sgl::cx_arg_literals
     namespace.
     @tparam T value type, i.e. float or double
-    @tparam N amount of characters in the literal
+    @tparam Size amount of characters in the literal
   */
-  template <typename T, size_t N>
+  template <typename T, size_t Size>
   struct cx_arg {
     T                      value{};  /// < parsed value
-    static_string<char, N> string{}; ///< string containing characters plus null terminator
+    static_string<char, Size> string{}; ///< string containing characters plus null terminator
 
     /**
       unary negation
       operator so that expressions like ```- 3.25_float``` are valid constructs.
-      @return cx_arg<T, N + 1>
+      @return cx_arg<T, Size + 1>
     */
-    constexpr cx_arg<T, N + 1> operator-() {
-      cx_arg<T, N + 1> ret;
+    constexpr cx_arg<T, Size + 1> operator-() {
+      cx_arg<T, Size + 1> ret;
       ret.value = -value;
       ret.string[0] = '-';
-      for (size_t i = 0; i < N; ++i) {
+      for (size_t i = 0; i < Size; ++i) {
         ret.string[i + 1] = string[i];
       }
       return ret;
@@ -46,9 +46,9 @@ namespace sgl {
     /**
       unary plus operator for same reason as negation operator,
       just that this time the value does not change.
-      @return cx_arg<T, N>
+      @return cx_arg<T, Size>
     */
-    constexpr cx_arg<T, N> operator+() { return *this; }
+    constexpr cx_arg<T, Size> operator+() { return *this; }
   };
 
   namespace cx_arg_literals {

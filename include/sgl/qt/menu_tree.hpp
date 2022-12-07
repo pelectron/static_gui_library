@@ -16,38 +16,38 @@ namespace sgl::qt {
     static constexpr std::string_view value{"custom type"};
   };
 
-  template <typename CharT, size_t N>
-  struct get_type_name<sgl::Button<N, CharT>> {
+  template <typename CharT, size_t Size>
+  struct get_type_name<sgl::Button<Size, CharT>> {
     static constexpr std::string_view value{"sgl::Button"};
   };
 
-  template <typename CharT, size_t N>
-  struct get_type_name<sgl::Boolean<N, CharT>> {
+  template <typename CharT, size_t Size>
+  struct get_type_name<sgl::Boolean<Size, CharT>> {
     static constexpr std::string_view value{"sgl::Boolean"};
   };
 
-  template <typename E, size_t Size, typename CharT, size_t N>
-  struct get_type_name<sgl::Enum<E, Size, N, CharT>> {
+  template <typename E, size_t Size, typename CharT, size_t Size>
+  struct get_type_name<sgl::Enum<E, Size, Size, CharT>> {
     static constexpr std::string_view value{"sgl::Enum"};
   };
 
-  template <typename CharT, size_t N, typename T>
-  struct get_type_name<sgl::Numeric<N, CharT, T>> {
+  template <typename CharT, size_t Size, typename T>
+  struct get_type_name<sgl::Numeric<Size, CharT, T>> {
     static constexpr std::string_view value{"sgl::Numeric with T = integer"};
   };
 
-  template <typename CharT, size_t N>
-  struct get_type_name<sgl::Numeric<N, CharT, float>> {
+  template <typename CharT, size_t Size>
+  struct get_type_name<sgl::Numeric<Size, CharT, float>> {
     static constexpr std::string_view value{"sgl::Numeric with T = float"};
   };
 
-  template <typename CharT, size_t N>
-  struct get_type_name<sgl::Numeric<N, CharT, double>> {
+  template <typename CharT, size_t Size>
+  struct get_type_name<sgl::Numeric<Size, CharT, double>> {
     static constexpr std::string_view value{"sgl::Numeric with T = double"};
   };
 
-  template <typename Name, typename CharT, size_t N>
-  struct get_type_name<sgl::PageLink<Name, N, CharT>> {
+  template <typename Name, typename CharT, size_t Size>
+  struct get_type_name<sgl::PageLink<Name, Size, CharT>> {
     static constexpr std::string_view value{"sgl::PageLink"};
   };
 

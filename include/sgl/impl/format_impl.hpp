@@ -7,10 +7,10 @@
 #include "ryu/ryu.hpp"
 #include "sgl/config.h"
 #include "sgl/format.hpp"
-#include "sgl/limits.hpp"
 #include "sgl/static_string.hpp"
 
 #include <gcem.hpp>
+#include <limits>
 #include <type_traits>
 
 namespace sgl {
@@ -145,7 +145,9 @@ namespace sgl {
     }
 
     template <typename T>
-    struct max_buf_size;
+    struct max_buf_size {
+      static constexpr size_t value = 25;// defualt, because some compilers have strange typedefs for the integers
+    };
 
     template <>
     struct max_buf_size<uint8_t> {
@@ -420,7 +422,7 @@ namespace sgl {
       return f;
     }
 
-    static constexpr size_t not_found{sgl::numeric_limits<size_t>::max()};
+    static constexpr size_t not_found{std::numeric_limits<size_t>::max()};
 
     constexpr auto to_num(char c) -> int64_t { return (c - '0'); }
 

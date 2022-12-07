@@ -32,7 +32,7 @@ namespace sgl {
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   class Enum;
 
-  template <typename E, size_t N, typename CharT>
+  template <typename E, size_t Size, typename CharT>
   struct EnumMap;
 
   template <typename PageName, size_t TextSize, typename CharT>
@@ -53,7 +53,7 @@ namespace sgl {
   template <typename NameList, typename ValueTypeList>
   class NamedTuple;
 
-  template <typename T, size_t N>
+  template <typename T, size_t Size>
   struct cx_arg;
 
   template <typename CharT, size_t Capacity>

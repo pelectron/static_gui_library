@@ -28,7 +28,7 @@ namespace sgl {
   }
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
-  constexpr typename Enum<T, NumEnumerators, TextSize, CharT>::StringView
+  constexpr sgl::string_view<CharT>
       Enum<T, NumEnumerators, TextSize, CharT>::current_string() const noexcept {
     return map_.get_view(index_);
   }
@@ -63,7 +63,7 @@ namespace sgl {
 
   template <typename T, size_t NumEnumerators, size_t TextSize, typename CharT>
   constexpr sgl::error
-      Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(item_type& enum_item,
+      Enum<T, NumEnumerators, TextSize, CharT>::default_handle_input(Enum<T, NumEnumerators, TextSize, CharT>& enum_item,
                                                                      sgl::input input) noexcept {
     switch (input) {
       case sgl::input::right:

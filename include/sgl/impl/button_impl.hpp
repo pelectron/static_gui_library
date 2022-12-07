@@ -39,11 +39,11 @@ namespace sgl {
     return Button(text);
   }
 
-  template <size_t N,
+  template <size_t Size,
             typename CharT,
             typename ClickHandler,
-            enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>>>
-  constexpr Button<N - 1, CharT> button(const CharT (&text)[N], ClickHandler&& handler) {
+            enable_if_is_click_handler<ClickHandler, Button<Size - 1, CharT>>>
+  constexpr Button<Size - 1, CharT> button(const CharT (&text)[Size], ClickHandler&& handler) {
     return Button(text, std::forward<ClickHandler>(handler));
   }
 
@@ -56,13 +56,13 @@ namespace sgl {
     return Button<TextSize, CharT>(text, std::forward<ClickHandler>(handler));
   }
 
-  template <size_t N,
+  template <size_t Size,
             typename CharT,
             typename ClickHandler,
             typename TickHandler,
-            enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>>,
-            enable_if_is_tick_handler<TickHandler, Button<N - 1, CharT>>>
-  constexpr Button<N - 1, CharT> button(const CharT (&text)[N],
+            enable_if_is_click_handler<ClickHandler, Button<Size - 1, CharT>>,
+            enable_if_is_tick_handler<TickHandler, Button<Size - 1, CharT>>>
+  constexpr Button<Size - 1, CharT> button(const CharT (&text)[Size],
                                              ClickHandler&& click_handler,
                                              TickHandler&&  tick_handler) {
     return Button(text,

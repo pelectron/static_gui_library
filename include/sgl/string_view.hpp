@@ -46,8 +46,8 @@ namespace sgl {
 
     /// construct from array/literal. Assumes str is null terminated.
     /// @param str array/literal to create view of
-    template <size_t N>
-    explicit constexpr string_view(const CharT (&str)[N]) noexcept;
+    template <size_t Size>
+    explicit constexpr string_view(const CharT (&str)[Size]) noexcept;
 
     /// use default constructor for empty string view
     string_view(std::nullptr_t, size_t) = delete;
@@ -111,7 +111,7 @@ namespace sgl {
       @param n literal size
       @return sgl::string_view<char>
      */
-    constexpr sgl::string_view<char> operator"" _sv(const char* str, size_t n) noexcept;
+    constexpr sgl::string_view<char> operator"" _sv(const char* str, size_t Size) noexcept;
 
     /**
       string_view<char16_t> literal operator
@@ -119,7 +119,7 @@ namespace sgl {
       @param n literal size
       @return sgl::string_view<char16_t>
      */
-    constexpr sgl::string_view<char16_t> operator"" _sv16(const char16_t* str, size_t n) noexcept;
+    constexpr sgl::string_view<char16_t> operator"" _sv16(const char16_t* str, size_t Size) noexcept;
 
     /**
       string_view<char32_t> literal operator
@@ -127,7 +127,7 @@ namespace sgl {
       @param n literal size
       @return sgl::string_view<char32_t>
      */
-    constexpr sgl::string_view<char32_t> operator"" _sv32(const char32_t* str, size_t n) noexcept;
+    constexpr sgl::string_view<char32_t> operator"" _sv32(const char32_t* str, size_t Size) noexcept;
 
   } // namespace string_view_literals
 } // namespace sgl

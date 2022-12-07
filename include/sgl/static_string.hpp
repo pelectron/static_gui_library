@@ -126,7 +126,7 @@ namespace sgl {
       @param n length of str to append
       @return numer of characters appended
      */
-    constexpr size_t append(const CharT* str, size_t n) noexcept;
+    constexpr size_t append(const CharT* str, size_t Size) noexcept;
     /**
       append string_view to this. Characters from str which do not fit are
       discarded.
@@ -169,7 +169,7 @@ namespace sgl {
       resize the string.
       @param new_size new size of string. Sets all new characters to zero.
      */
-    constexpr void resize(size_t new_size) noexcept;
+    constexpr void resize(size_t Sizeew_size) noexcept;
 
     /**
       access the i-th character. Undefined behaviour if i > Capacity.
@@ -186,15 +186,15 @@ namespace sgl {
     [[nodiscard]] constexpr const CharT& operator[](size_t i) const noexcept;
 
   private:
-    constexpr void overwrite(const CharT* str, size_t n) noexcept;
+    constexpr void overwrite(const CharT* str, size_t Size) noexcept;
 
     CharT                          data_[Capacity + 1]{0}; ///< holds the characters.
     sgl::smallest_type_t<Capacity> size_{0};               ///< size of the string.
   };
 
   /// @cond
-  template <typename CharT, size_t N>
-  static_string(const CharT (&string)[N]) -> static_string<CharT, N - 1>;
+  template <typename CharT, size_t Size>
+  static_string(const CharT (&string)[Size]) -> static_string<CharT, Size - 1>;
 
   /// @endcond
 
@@ -207,9 +207,9 @@ namespace sgl {
     @param s2 string 2
     @return bool
    */
-  template <typename CharT, size_t N1, size_t N2>
-  constexpr bool operator==(const static_string<CharT, N1> s1,
-                            const static_string<CharT, N2> s2) noexcept;
+  template <typename CharT, size_t Size1, size_t Size2>
+  constexpr bool operator==(const static_string<CharT, Size1> s1,
+                            const static_string<CharT, Size2> s2) noexcept;
 } // namespace sgl
 
 #include "sgl/impl/static_string_impl.hpp"

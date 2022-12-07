@@ -11,8 +11,8 @@ namespace sgl {
 
   /// simple array type
   /// @tparam T value type
-  /// @tparam N number of elements
-  template <typename T, size_t N>
+  /// @tparam Size number of elements
+  template <typename T, size_t Size>
   struct Array {
   public:
     /// get pointer to first element.
@@ -22,13 +22,13 @@ namespace sgl {
     constexpr const T* begin() const { return data; }
 
     /// get pointer to one past the last element.
-    constexpr T* end() { return data + N; }
+    constexpr T* end() { return data + Size; }
 
     /// get pointer to one past the last element.
-    constexpr const T* end() const { return data + N; }
+    constexpr const T* end() const { return data + Size; }
 
     /// number of elements in this array.
-    [[nodiscard]] constexpr size_t size() const { return N; }
+    [[nodiscard]] constexpr size_t size() const { return Size; }
 
     /// get i-th element. Undefined behaviour if i >= size().
     constexpr T& operator[](size_t i) { return data[i]; }
@@ -36,12 +36,12 @@ namespace sgl {
     /// get i-th element. Undefined behaviour if i >= size().
     constexpr const T& operator[](size_t i) const { return data[i]; }
 
-    T data[N];
+    T data[Size];
   };
 
   /// @cond
-  template <typename T, size_t N>
-  Array(const T (&)[N]) -> Array<T, N>;
+  template <typename T, size_t Size>
+  Array(const T (&)[Size]) -> Array<T, Size>;
 
   template <class T, class... U>
   Array(T, U...) -> Array<T, 1 + sizeof...(U)>;

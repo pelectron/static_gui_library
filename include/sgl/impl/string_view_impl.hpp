@@ -30,9 +30,9 @@ namespace sgl {
   }
 
   template <typename CharT>
-  template <size_t N>
-  constexpr string_view<CharT>::string_view(const CharT (&str)[N]) noexcept
-      : data_(str), size_(N - 1) {}
+  template <size_t n>
+  constexpr string_view<CharT>::string_view(const CharT (&str)[n]) noexcept
+      : data_(str), size_(n - 1) {}
 
   template <typename CharT>
   [[nodiscard]] constexpr const CharT* string_view<CharT>::data() const noexcept {

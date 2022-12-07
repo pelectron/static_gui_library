@@ -219,11 +219,11 @@ namespace sgl {
     @param initial_value value of item
     @param delta delta value of item
     @param initial_text text of the item
-    @return constexpr Numeric<N-1, CharT, T>
+    @return constexpr Numeric<Size-1, CharT, T>
    */
-  template <size_t N, typename CharT, typename T>
-  constexpr Numeric<N - 1, CharT, T>
-      numeric(T initial_value, T delta, const CharT (&initial_text)[N]) noexcept;
+  template <size_t Size, typename CharT, typename T>
+  constexpr Numeric<Size - 1, CharT, T>
+      numeric(T initial_value, T delta, const CharT (&initial_text)[Size]) noexcept;
 
   /**
     create a numeric item at compile time for floats and doubles with default formatter and

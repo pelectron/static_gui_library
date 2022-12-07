@@ -9,6 +9,7 @@
 #include "sgl/enum_map.hpp"
 #include "sgl/item_base.hpp"
 #include "sgl/smallest_type.hpp"
+#include "item_concepts.hpp"
 
 namespace sgl {
   /**
@@ -69,7 +70,7 @@ namespace sgl {
       @param handler enum input handler
       @param start_index which value to show first
      */
-    template <typename InputHandler, enable_if_is_input_handler<InputHandler, item_type> = true>
+    template <typename InputHandler, sgl::enable_if_is_input_handler<InputHandler, Enum<T, NumEnumerators, TextSize, CharT>> = true>
     constexpr Enum(const sgl::EnumMap<T, NumEnumerators, CharT>& map,
                    InputHandler&&                                handler,
                    size_t                                        start_index = 0) noexcept;
@@ -84,7 +85,7 @@ namespace sgl {
       get string of current value
       @return StringView
      */
-    [[nodiscard]] constexpr StringView current_string() const noexcept;
+    [[nodiscard]] constexpr sgl::string_view<CharT> current_string() const noexcept;
 
     /**
       get index of current value
@@ -117,7 +118,7 @@ namespace sgl {
       default input handler
       @return sgl::error
      */
-    constexpr static sgl::error default_handle_input(item_type& enum_item,
+    constexpr static sgl::error default_handle_input(Enum<T, NumEnumerators, TextSize, CharT>& enum_item,
                                                      sgl::input input) noexcept;
 
     sgl::EnumMap<T, NumEnumerators, CharT> map_; ///< map containing array of enum string pairs.

@@ -73,14 +73,14 @@ namespace sgl {
 
   /// @cond
 
-  template <size_t N, typename CharT>
-  Button(const CharT (&)[N]) -> Button<N - 1, CharT>;
+  template <size_t Size, typename CharT>
+  Button(const CharT (&)[Size]) -> Button<Size - 1, CharT>;
 
-  template <size_t N, typename CharT, typename ClickHandler>
-  Button(const CharT (&)[N], ClickHandler&&) -> Button<N - 1, CharT>;
+  template <size_t Size, typename CharT, typename ClickHandler>
+  Button(const CharT (&)[Size], ClickHandler&&) -> Button<Size - 1, CharT>;
 
-  template <size_t N, typename CharT, typename ClickHandler, typename TickHandler>
-  Button(const CharT (&)[N], ClickHandler&&, TickHandler&&) -> Button<N - 1, CharT>;
+  template <size_t Size, typename CharT, typename ClickHandler, typename TickHandler>
+  Button(const CharT (&)[Size], ClickHandler&&, TickHandler&&) -> Button<Size - 1, CharT>;
 
   /// @endcond
 
@@ -91,13 +91,13 @@ namespace sgl {
   /**
     create button with text
 
-    @tparam N size of character literal
+    @tparam Size size of character literal
     @tparam CharT character type
     @param text text to show, i.e. character literal
-    @return Button<N - 1, CharT>
+    @return Button<Size - 1, CharT>
   */
-  template <size_t N, typename CharT>
-  constexpr Button<N - 1, CharT> button(const CharT (&text)[N]);
+  template <size_t Size, typename CharT>
+  constexpr Button<Size - 1, CharT> button(const CharT (&text)[Size]);
 
   /**
     create button from text
@@ -109,11 +109,11 @@ namespace sgl {
   */
   template <size_t TextSize, typename CharT>
   constexpr Button<TextSize, CharT> button(sgl::string_view<CharT> text);
-  template <size_t N,
+  template <size_t Size,
             typename CharT,
             typename ClickHandler,
-            enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>> = true>
-  constexpr Button<N - 1, CharT> button(const CharT (&text)[N], ClickHandler&& handler);
+            enable_if_is_click_handler<ClickHandler, Button<Size - 1, CharT>> = true>
+  constexpr Button<Size - 1, CharT> button(const CharT (&text)[Size], ClickHandler&& handler);
 
   /**
     create button with text and custom click handler
@@ -134,23 +134,23 @@ namespace sgl {
   /**
     create button with text, and custom click and tick handler.
 
-    @tparam N size of character literal
+    @tparam Size size of character literal
     @tparam CharT character type
     @tparam ClickHandler click handler type
     @tparam TickHandler tick handler type
     @param text text to show
     @param click_handler custom click handler
     @param tick_handler custom tick handler
-    @return constexpr Button<N - 1, CharT>
+    @return constexpr Button<Size - 1, CharT>
   */
-  template <size_t N,
+  template <size_t Size,
             typename CharT,
             typename ClickHandler,
             typename TickHandler,
-            enable_if_is_click_handler<ClickHandler, Button<N - 1, CharT>> = true,
-            enable_if_is_tick_handler<TickHandler, Button<N - 1, CharT>> = true>
-  constexpr Button<N - 1, CharT>
-      button(const CharT (&text)[N], ClickHandler&& click_handler, TickHandler&& tick_handler);
+            enable_if_is_click_handler<ClickHandler, Button<Size - 1, CharT>> = true,
+            enable_if_is_tick_handler<TickHandler, Button<Size - 1, CharT>> = true>
+  constexpr Button<Size - 1, CharT>
+      button(const CharT (&text)[Size], ClickHandler&& click_handler, TickHandler&& tick_handler);
 
   /**
     create button with text, and custom click and tick handler.
