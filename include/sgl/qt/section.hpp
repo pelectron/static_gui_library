@@ -12,6 +12,11 @@
 
 namespace sgl::qt {
 
+  /**
+   * This class represent a horizontally collapsable section.
+   * It can be collapsed by pushing the section button.
+   *
+   */
   class SGL_API Section : public QWidget {
     Q_OBJECT
   public:
@@ -35,7 +40,7 @@ namespace sgl::qt {
   };
 
   /**
-   * \brief
+   * This class represents a vertical collapsable section.
    */
   class SGL_API VerticalSection : public QWidget {
     Q_OBJECT

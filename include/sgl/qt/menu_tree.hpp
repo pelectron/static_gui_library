@@ -26,8 +26,8 @@ namespace sgl::qt {
     static constexpr std::string_view value{"sgl::Boolean"};
   };
 
-  template <typename E, size_t Size, typename CharT, size_t Size>
-  struct get_type_name<sgl::Enum<E, Size, Size, CharT>> {
+  template <typename E, size_t S, typename CharT, size_t Size>
+  struct get_type_name<sgl::Enum<E, S, Size, CharT>> {
     static constexpr std::string_view value{"sgl::Enum"};
   };
 
@@ -177,7 +177,7 @@ namespace sgl::qt {
         : AbstractPageNode(name, Type::page,parent), page_(page) {
       sgl::for_each_with_name(page_, [this](auto name, auto& item) {
         this->children().push_back(
-            new ItemNode(std::string_view{name.data(), name.size()}, item, this));
+            new ItemNode(std::string_view{name.to_view().data(), name.to_view().size()}, item, this));
       });
     }
 
@@ -202,7 +202,7 @@ namespace sgl::qt {
     MenuNode(Menu menu) : AbstractMenuNode(std::string_view{}, Type::menu), menu_(std::move(menu)) {
       sgl::for_each_with_name(menu_, [this](auto name, auto& page) {
         this->children().push_back(
-            new PageNode(std::string_view{name.data(), name.size()}, page, this));
+            new PageNode(std::string_view{name.to_view().data(), name.to_view().size()}, page, this));
       });
     }
 
@@ -221,6 +221,7 @@ namespace sgl::qt {
   template <typename Menu>
   MenuNode(Menu) -> MenuNode<Menu>;
 
+  // stores the user provided menu and gives type erased access.
   class SGL_API MenuTree {
   public:
     template <typename Menu>

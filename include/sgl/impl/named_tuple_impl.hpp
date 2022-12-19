@@ -160,7 +160,7 @@ namespace sgl {
       NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) {
     if constexpr (!(std::is_invocable_r_v<void, F, Names, Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, Names, Ts&> && ...),
-                    "f must be invocable with (sgl::string_view<char>, const T&) for each T in "
+                    "f must be invocable with (sgl::Name<...>, const T&) for each name and T in "
                     "this tuple.");
     } else {
       (std::forward<F>(f)(Names{}, this->get(Names{})), ...);
@@ -173,7 +173,7 @@ namespace sgl {
       NamedTuple<sgl::type_list<Names...>, sgl::type_list<Ts...>>::for_each_with_name(F&& f) const {
     if constexpr (!(std::is_invocable_r_v<void, F, Names, const Ts&> && ...)) {
       static_assert((std::is_invocable_r_v<void, F, Names, const Ts&> && ...),
-                    "f must be invocable with (sgl::string_view<char>, const T&) for each T in "
+                    "f must be invocable with (sgl::Name<...>, const T&) for each name and T in "
                     "this tuple.");
     } else {
       (std::forward<F>(f)(Names{}, this->get(Names{})), ...);

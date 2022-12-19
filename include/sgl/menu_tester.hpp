@@ -97,14 +97,14 @@ namespace sgl {
       std::cout << "\n---------------\n";
       menu_.for_current_page([](const auto& page) {
         size_t i = 0;
-        for_each_with_name(page, [&i, &page](string_view<char> name, const auto& item) {
+        for_each_with_name(page, [&i, &page](auto name, const auto& item) {
           if (i == page.current_item_index()) {
             // current item of page
             std::cout << "--> ";
           } else {
             std::cout << "    ";
           }
-          std::cout << name.data() << ": " << item.text().data() << std::endl;
+          std::cout << name.to_view().data() << ": " << item.text().data() << std::endl;
           ++i;
         });
       });

@@ -89,7 +89,7 @@ int main() {
     if (s == "quit") {
       break;
     }
-    tester.handle_input(sgl::string_view<char>(s));
+    tester.handle_input(sgl::string_view<char>(s.data(), s.size()));
     tester.print();
   }
   return 0;
