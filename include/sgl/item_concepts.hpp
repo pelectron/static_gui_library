@@ -136,8 +136,8 @@ namespace sgl {
   inline constexpr bool has_tick_v = has_tick<T>::value;
 
   namespace detail {
-    [[maybe_unused]] auto pf = [](auto&) {};
-    [[maybe_unused]] auto pcf = [](const auto&) {};
+    [[maybe_unused]] inline auto pf = [](auto&) {};
+    [[maybe_unused]] inline auto pcf = [](const auto&) {};
   } // namespace detail
 
   template <typename T, typename = void>
